@@ -49,8 +49,11 @@ class Vala.Compiler {
 	static string target_glib;
 	[CCode (array_length = false, array_null_terminated = true)]
 	static string[] gresources;
+	[CCode (array_length = false, array_null_terminated = true)]
+	static string[] gresources_directories;
 
 	static bool ccode_only;
+	static bool abi_stability;
 	static string header_filename;
 	static bool use_header;
 	static string internal_header_filename;
@@ -88,12 +91,14 @@ class Vala.Compiler {
 	static bool enable_version_header;
 	static bool disable_version_header;
 	static bool fatal_warnings;
-	static bool disable_diagnostic_colors;
+	static bool disable_colored_output;
+	static Report.Colored colored_output = Report.Colored.AUTO;
 	static string dependencies;
 
 	static string entry_point;
 
 	static bool run_output;
+	static string run_args;
 
 	private CodeContext context;
 
@@ -107,7 +112,7 @@ class Vala.Compiler {
 		{ "shared-library", 0, 0, OptionArg.STRING, ref shared_library, "Shared library name used in generated gir", "NAME" },
 		{ "gir", 0, 0, OptionArg.STRING, ref gir, "GObject-Introspection repository file name", "NAME-VERSION.gir" },
 		{ "basedir", 'b', 0, OptionArg.FILENAME, ref basedir, "Base source directory", "DIRECTORY" },
-		{ "directory", 'd', 0, OptionArg.FILENAME, ref directory, "Output directory", "DIRECTORY" },
+		{ "directory", 'd', 0, OptionArg.FILENAME, ref directory, "Change output directory from current working directory", "DIRECTORY" },
 		{ "version", 0, 0, OptionArg.NONE, ref version, "Display version number", null },
 		{ "api-version", 0, 0, OptionArg.NONE, ref api_version, "Display API version number", null },
 		{ "ccode", 'C', 0, OptionArg.NONE, ref ccode_only, "Output C code", null },
@@ -124,7 +129,7 @@ class Vala.Compiler {
 		{ "compile", 'c', 0, OptionArg.NONE, ref compile_only, "Compile but do not link", null },
 		{ "output", 'o', 0, OptionArg.FILENAME, ref output, "Place output in file FILE", "FILE" },
 		{ "debug", 'g', 0, OptionArg.NONE, ref debug, "Produce debug information", null },
-		{ "thread", 0, 0, OptionArg.NONE, ref thread, "Enable multithreading support", null },
+		{ "thread", 0, 0, OptionArg.NONE, ref thread, "Enable multithreading support (DEPRECATED AND IGNORED)", null },
 		{ "enable-mem-profiler", 0, 0, OptionArg.NONE, ref mem_profiler, "Enable GLib memory profiler", null },
 		{ "define", 'D', 0, OptionArg.STRING_ARRAY, ref defines, "Define SYMBOL", "SYMBOL..." },
 		{ "main", 0, 0, OptionArg.STRING, ref entry_point, "Use SYMBOL as entry point", "SYMBOL..." },
@@ -147,14 +152,29 @@ class Vala.Compiler {
 		{ "profile", 0, 0, OptionArg.STRING, ref profile, "Use the given profile instead of the default", "PROFILE" },
 		{ "quiet", 'q', 0, OptionArg.NONE, ref quiet_mode, "Do not print messages to the console", null },
 		{ "verbose", 'v', 0, OptionArg.NONE, ref verbose_mode, "Print additional messages to the console", null },
-		{ "no-color", 0, 0, OptionArg.NONE, ref disable_diagnostic_colors, "Disable colored output", null },
+		{ "no-color", 0, 0, OptionArg.NONE, ref disable_colored_output, "Disable colored output, alias for --color=never", null },
+		{ "color", 0, OptionFlags.OPTIONAL_ARG, OptionArg.CALLBACK, (void*) option_parse_color, "Enable color output, options are 'always', 'never', or 'auto'", "WHEN" },
 		{ "target-glib", 0, 0, OptionArg.STRING, ref target_glib, "Target version of glib for code generation", "MAJOR.MINOR" },
-		{ "gresources", 0, 0, OptionArg.STRING_ARRAY, ref gresources, "XML of gresources", "FILE..." },
+		{ "gresources", 0, 0, OptionArg.FILENAME_ARRAY, ref gresources, "XML of gresources", "FILE..." },
+		{ "gresourcesdir", 0, 0, OptionArg.FILENAME_ARRAY, ref gresources_directories, "Look for resources in DIRECTORY", "DIRECTORY..." },
 		{ "enable-version-header", 0, 0, OptionArg.NONE, ref enable_version_header, "Write vala build version in generated files", null },
 		{ "disable-version-header", 0, 0, OptionArg.NONE, ref disable_version_header, "Do not write vala build version in generated files", null },
-		{ "", 0, 0, OptionArg.FILENAME_ARRAY, ref sources, null, "FILE..." },
+		{ "run-args", 0, 0, OptionArg.STRING, ref run_args, "Arguments passed to directly compiled executeable", null },
+		{ "abi-stability", 0, 0, OptionArg.NONE, ref abi_stability, "Enable support for ABI stability", null },
+		{ OPTION_REMAINING, 0, 0, OptionArg.FILENAME_ARRAY, ref sources, null, "FILE..." },
 		{ null }
 	};
+
+	static bool option_parse_color (string option_name, string? val, void* data) throws OptionError {
+		switch (val) {
+			case "auto": colored_output = Report.Colored.AUTO; break;
+			case "never": colored_output = Report.Colored.NEVER; break;
+			case null:
+			case "always": colored_output = Report.Colored.ALWAYS; break;
+			default: throw new OptionError.FAILED ("Invalid --color argument '%s'", val);
+		}
+		return true;
+	}
 
 	private int quit () {
 		if (context.report.get_errors () == 0 && context.report.get_warnings () == 0) {
@@ -177,12 +197,16 @@ class Vala.Compiler {
 		context = new CodeContext ();
 		CodeContext.push (context);
 
-		if (disable_diagnostic_colors == false) {
+		if (disable_colored_output) {
+			colored_output = Report.Colored.NEVER;
+		}
+
+		if (colored_output != Report.Colored.NEVER) {
 			unowned string env_colors = Environment.get_variable ("VALA_COLORS");
 			if (env_colors != null) {
-				context.report.set_colors (env_colors);
+				context.report.set_colors (env_colors, colored_output);
 			} else {
-				context.report.set_colors (DEFAULT_COLORS);
+				context.report.set_colors (DEFAULT_COLORS, colored_output);
 			}
 		}
 
@@ -214,6 +238,7 @@ class Vala.Compiler {
 		if (ccode_only && cc_options != null) {
 			Report.warning (null, "-X has no effect when -C or --ccode is set");
 		}
+		context.abi_stability = abi_stability;
 		context.compile_only = compile_only;
 		context.header_filename = header_filename;
 		if (header_filename == null && use_header) {
@@ -242,7 +267,6 @@ class Vala.Compiler {
 		context.gir_directories = gir_directories;
 		context.metadata_directories = metadata_directories;
 		context.debug = debug;
-		context.thread = thread;
 		context.mem_profiler = mem_profiler;
 		context.save_temps = save_temps;
 		if (ccode_only && save_temps) {
@@ -262,18 +286,23 @@ class Vala.Compiler {
 
 		context.run_output = run_output;
 
+		if (pkg_config_command == null) {
+			pkg_config_command = Environment.get_variable ("PKG_CONFIG") ?? "pkg-config";
+		}
+		context.pkg_config_command = pkg_config_command;
+
 		if (defines != null) {
 			foreach (string define in defines) {
 				context.add_define (define);
 			}
 		}
 
-		for (int i = 2; i <= 34; i += 2) {
+		for (int i = 2; i <= 40; i += 2) {
 			context.add_define ("VALA_0_%d".printf (i));
 		}
 
 		int glib_major = 2;
-		int glib_minor = 32;
+		int glib_minor = 40;
 		if (target_glib != null && target_glib.scanf ("%d.%d", out glib_major, out glib_minor) != 2) {
 			Report.error (null, "Invalid format for --target-glib");
 		}
@@ -311,6 +340,7 @@ class Vala.Compiler {
 		}
 
 		context.gresources = gresources;
+		context.gresources_directories = gresources_directories;
 
 		if (context.report.get_errors () > 0 || (fatal_warnings && context.report.get_warnings () > 0)) {
 			return quit ();
@@ -422,6 +452,11 @@ class Vala.Compiler {
 			}
 
 			library = null;
+		} else {
+			if (gir != null) {
+				Report.warning (null, "--gir has no effect without --library");
+				gir = null;
+			}
 		}
 
 		// The GIRWriter places the gir_namespace and gir_version into the top namespace, so write the vapi after that stage
@@ -444,7 +479,15 @@ class Vala.Compiler {
 			}
 
 			var interface_writer = new CodeWriter (CodeWriterType.INTERNAL);
-			interface_writer.set_cheader_override(header_filename, internal_header_filename);
+
+			if (context.includedir != null) {
+				var prefixed_header_filename = Path.build_path ("/", context.includedir, Path.get_basename (header_filename));
+				var prefixed_internal_header_filename = Path.build_path ("/", context.includedir, Path.get_basename (internal_header_filename));
+				interface_writer.set_cheader_override (prefixed_header_filename, prefixed_internal_header_filename);
+			} else {
+				interface_writer.set_cheader_override (header_filename, internal_header_filename);
+			}
+
 			string vapi_filename = internal_vapi_filename;
 
 			// put .vapi file in current directory unless -d has been explicitly specified
@@ -470,13 +513,10 @@ class Vala.Compiler {
 			if (cc_command == null && Environment.get_variable ("CC") != null) {
 				cc_command = Environment.get_variable ("CC");
 			}
-			if (pkg_config_command == null && Environment.get_variable ("PKG_CONFIG") != null) {
-				pkg_config_command = Environment.get_variable ("PKG_CONFIG");
-			}
 			if (cc_options == null) {
-				ccompiler.compile (context, cc_command, new string[] { }, pkg_config_command);
+				ccompiler.compile (context, cc_command, new string[] { });
 			} else {
-				ccompiler.compile (context, cc_command, cc_options, pkg_config_command);
+				ccompiler.compile (context, cc_command, cc_options);
 			}
 		}
 
@@ -484,52 +524,43 @@ class Vala.Compiler {
 	}
 
 	static int run_source (string[] args) {
-		int i = 1;
-		if (args[i] != null && args[i].has_prefix ("-")) {
-			try {
-				string[] compile_args;
-				Shell.parse_argv ("valac " + args[1], out compile_args);
-
-				var opt_context = new OptionContext ("- Vala");
-				opt_context.set_help_enabled (true);
-				opt_context.add_main_entries (options, null);
-				unowned string[] temp_args = compile_args;
-				opt_context.parse (ref temp_args);
-			} catch (ShellError e) {
-				stdout.printf ("%s\n", e.message);
-				return 1;
-			} catch (OptionError e) {
-				stdout.printf ("%s\n", e.message);
-				stdout.printf ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
-				return 1;
-			}
-
-			i++;
+		try {
+			var opt_context = new OptionContext ("- Vala Interpreter");
+			opt_context.set_help_enabled (true);
+			opt_context.add_main_entries (options, null);
+			opt_context.parse (ref args);
+		} catch (OptionError e) {
+			stdout.printf ("%s\n", e.message);
+			stdout.printf ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
+			return 1;
 		}
 
 		if (version) {
 			stdout.printf ("Vala %s\n", Config.BUILD_VERSION);
 			return 0;
 		} else if (api_version) {
-			stdout.printf ("%s\n", Config.PACKAGE_SUFFIX.substring (1));
+			stdout.printf ("%s\n", Config.API_VERSION);
 			return 0;
 		}
-		
-		if (args[i] == null) {
+
+		if (sources == null) {
 			stderr.printf ("No source file specified.\n");
 			return 1;
 		}
 
-		sources = { args[i] };
-		output = "%s/%s.XXXXXX".printf (Environment.get_tmp_dir (), Path.get_basename (args[i]));
+		output = "%s/%s.XXXXXX".printf (Environment.get_tmp_dir (), Path.get_basename (sources[0]));
 		int outputfd = FileUtils.mkstemp (output);
 		if (outputfd < 0) {
 			return 1;
 		}
 
+		ccode_only = false;
+		compile_only = false;
 		run_output = true;
 		disable_warnings = true;
 		quiet_mode = true;
+		library = null;
+		shared_library = null;
 
 		var compiler = new Compiler ();
 		int ret = compiler.run ();
@@ -544,9 +575,11 @@ class Vala.Compiler {
 		}
 
 		string[] target_args = { output };
-		while (i < args.length) {
-			target_args += args[i];
-			i++;
+		if (run_args != null) {
+			string[] target_run_args = run_args.split (" ");
+			foreach (string arg in target_run_args) {
+				target_args += arg;
+			}
 		}
 
 		try {
@@ -554,7 +587,7 @@ class Vala.Compiler {
 			var loop = new MainLoop ();
 			int child_status = 0;
 
-			Process.spawn_async (null, target_args, null, SpawnFlags.CHILD_INHERITS_STDIN | SpawnFlags.DO_NOT_REAP_CHILD | SpawnFlags.FILE_AND_ARGV_ZERO, null, out pid);
+			Process.spawn_async (null, target_args, null, SpawnFlags.CHILD_INHERITS_STDIN | SpawnFlags.DO_NOT_REAP_CHILD, null, out pid);
 
 			FileUtils.unlink (output);
 			ChildWatch.add (pid, (pid, status) => {
@@ -594,7 +627,7 @@ class Vala.Compiler {
 			stdout.printf ("Vala %s\n", Config.BUILD_VERSION);
 			return 0;
 		} else if (api_version) {
-			stdout.printf ("%s\n", Config.PACKAGE_SUFFIX.substring (1));
+			stdout.printf ("%s\n", Config.API_VERSION);
 			return 0;
 		}
 		

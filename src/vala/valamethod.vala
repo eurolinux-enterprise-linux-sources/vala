@@ -27,7 +27,7 @@ using GLib;
 /**
  * Represents a type or namespace method.
  */
-public class Vala.Method : Subroutine {
+public class Vala.Method : Subroutine, Callable {
 	List<TypeParameter> type_parameters;
 
 	/**
@@ -183,8 +183,6 @@ public class Vala.Method : Subroutine {
 
 	public bool is_async_callback { get; set; }
 
-	public int yield_count { get; set; }
-
 	private List<Parameter> parameters = new ArrayList<Parameter> ();
 	private List<Expression> preconditions;
 	private List<Expression> postconditions;
@@ -196,6 +194,7 @@ public class Vala.Method : Subroutine {
 	private bool base_methods_valid;
 
 	Method? callback_method;
+	Method? end_method;
 
 	// only valid for closures
 	List<LocalVariable> captured_variables;
@@ -307,6 +306,12 @@ public class Vala.Method : Subroutine {
 	 * @return true if the specified method is compatible to this method
 	 */
 	public bool compatible (Method base_method, out string? invalid_match) {
+		// method is always compatible to itself
+		if (this == base_method) {
+			invalid_match = null;
+			return true;
+		}
+
 		if (binding != base_method.binding) {
 			invalid_match = "incompatible binding";
 			return false;
@@ -342,7 +347,7 @@ public class Vala.Method : Subroutine {
 
 		var actual_base_type = base_method.return_type.get_actual_type (object_type, method_type_args, this);
 		if (!return_type.equals (actual_base_type)) {
-			invalid_match = "Base method expected return type `%s', but `%s' was provided".printf (actual_base_type.to_qualified_string (), return_type.to_qualified_string ());
+			invalid_match = "Base method expected return type `%s', but `%s' was provided".printf (actual_base_type.to_prototype_string (), return_type.to_prototype_string ());
 			return false;
 		}
 		
@@ -555,7 +560,8 @@ public class Vala.Method : Subroutine {
 				string invalid_match;
 				if (!compatible (base_method, out invalid_match)) {
 					error = true;
-					Report.error (source_reference, "overriding method `%s' is incompatible with base method `%s': %s.".printf (get_full_name (), base_method.get_full_name (), invalid_match));
+					var base_method_type = new MethodType (base_method);
+					Report.error (source_reference, "overriding method `%s' is incompatible with base method `%s': %s.".printf (get_full_name (), base_method_type.to_prototype_string (), invalid_match));
 					return;
 				}
 
@@ -601,7 +607,8 @@ public class Vala.Method : Subroutine {
 						string invalid_match = null;
 						if (!compatible (base_method, out invalid_match)) {
 							error = true;
-							Report.error (source_reference, "overriding method `%s' is incompatible with base method `%s': %s.".printf (get_full_name (), base_method.get_full_name (), invalid_match));
+							var base_method_type = new MethodType (base_method);
+							Report.error (source_reference, "overriding method `%s' is incompatible with base method `%s': %s.".printf (get_full_name (), base_method_type.to_prototype_string (), invalid_match));
 							return;
 						}
 						
@@ -613,7 +620,7 @@ public class Vala.Method : Subroutine {
 		}
 
 		if (base_interface_type != null) {
-			Report.error (source_reference, "%s: no suitable interface method found to implement".printf (get_full_name ()));
+			Report.error (source_reference, "`%s': no suitable interface method found to implement".printf (get_full_name ()));
 		}
 	}
 
@@ -629,6 +636,15 @@ public class Vala.Method : Subroutine {
 		}
 		if (get_attribute ("NoThrow") != null) {
 			get_error_types ().clear ();
+		}
+
+		if (parent_symbol is Class && (is_abstract || is_virtual)) {
+			var cl = (Class) parent_symbol;
+			if (cl.is_compact && cl.base_class != null) {
+				error = true;
+				Report.error (source_reference, "Abstract and virtual methods may not be declared in derived compact classes");
+				return false;
+			}
 		}
 
 		if (is_abstract) {
@@ -649,14 +665,6 @@ public class Vala.Method : Subroutine {
 				error = true;
 				Report.error (source_reference, "Virtual methods may not be declared outside of classes and interfaces");
 				return false;
-			}
-
-			if (parent_symbol is Class) {
-				var cl = (Class) parent_symbol;
-				if (cl.is_compact && cl != context.analyzer.gsource_type) {
-					Report.error (source_reference, "Virtual methods may not be declared in compact classes");
-					return false;
-				}
 			}
 		} else if (overrides) {
 			if (!(parent_symbol is Class)) {
@@ -713,20 +721,21 @@ public class Vala.Method : Subroutine {
 			Report.error (parameters[0].source_reference, "Named parameter required before `...'");
 		}
 
-		if (!coroutine) {
+		var optional_param = false;
+		foreach (Parameter param in parameters) {
+			param.check (context);
+			if (coroutine && param.direction == ParameterDirection.REF) {
+				error = true;
+				Report.error (param.source_reference, "Reference parameters are not supported for async methods");
+			}
 			// TODO: begin and end parameters must be checked separately for coroutines
-			var optional_param = false;
-			foreach (Parameter param in parameters) {
-				param.check (context);
-				if (coroutine && param.direction == ParameterDirection.REF) {
-					error = true;
-					Report.error (param.source_reference, "Reference parameters are not supported for async methods");
-				}
-				if (optional_param && param.initializer == null && !param.ellipsis) {
-					Report.warning (param.source_reference, "parameter without default follows parameter with default");
-				} else if (param.initializer != null) {
-					optional_param = true;
-				}
+			if (coroutine) {
+				continue;
+			}
+			if (optional_param && param.initializer == null && !param.ellipsis) {
+				Report.warning (param.source_reference, "parameter without default follows parameter with default");
+			} else if (param.initializer != null) {
+				optional_param = true;
 			}
 		}
 
@@ -768,7 +777,7 @@ public class Vala.Method : Subroutine {
 				return false;
 			}
 		} else if (overrides && base_method == null) {
-			Report.error (source_reference, "%s: no suitable method found to override".printf (get_full_name ()));
+			Report.error (source_reference, "`%s': no suitable method found to override".printf (get_full_name ()));
 		} else if ((is_abstract || is_virtual || overrides) && access == SymbolAccessibility.PRIVATE) {
 			error = true;
 			Report.error (source_reference, "Private member `%s' cannot be marked as override, virtual, or abstract".printf (get_full_name ()));
@@ -843,6 +852,37 @@ public class Vala.Method : Subroutine {
 				bool is_dynamic_error = body_error_type is ErrorType && ((ErrorType) body_error_type).dynamic_error;
 				if (!can_propagate_error && !is_dynamic_error) {
 					Report.warning (body_error_type.source_reference, "unhandled error `%s'".printf (body_error_type.to_string()));
+				}
+			}
+		}
+
+		// check that DBus methods at least throw "GLib.Error" or "GLib.DBusError, GLib.IOError"
+		if (!(this is CreationMethod) && binding == MemberBinding.INSTANCE
+		    && !overrides && access == SymbolAccessibility.PUBLIC
+		    && parent_symbol is ObjectTypeSymbol && parent_symbol.get_attribute ("DBus") != null) {
+			Attribute? dbus_attr = get_attribute ("DBus");
+			if (dbus_attr == null || dbus_attr.get_bool ("visible", true)) {
+				bool throws_gerror = false;
+				bool throws_gioerror = false;
+				bool throws_gdbuserror = false;
+				foreach (DataType error_type in get_error_types ()) {
+					if (!(error_type is ErrorType)) {
+						continue;
+					}
+					unowned ErrorDomain? error_domain = ((ErrorType) error_type).error_domain;
+					if (error_domain == null) {
+						throws_gerror = true;
+						break;
+					}
+					string? full_error_domain = error_domain.get_full_name ();
+					if (full_error_domain == "GLib.IOError") {
+						throws_gioerror = true;
+					} else if (full_error_domain == "GLib.DBusError") {
+						throws_gdbuserror = true;
+					}
+				}
+				if (!throws_gerror && !(throws_gioerror && throws_gdbuserror)) {
+					Report.warning (source_reference, "DBus methods are recommended to throw at least `GLib.Error' or `GLib.DBusError, GLib.IOError'");
 				}
 			}
 		}
@@ -951,6 +991,24 @@ public class Vala.Method : Subroutine {
 		return n;
 	}
 
+	public Method get_end_method () {
+		assert (this.coroutine);
+
+		if (end_method == null) {
+			end_method = new Method ("end", return_type, source_reference);
+			end_method.access = SymbolAccessibility.PUBLIC;
+			end_method.external = true;
+			end_method.owner = scope;
+			foreach (var param in get_async_end_parameters ()) {
+				end_method.add_parameter (param.copy ());
+			}
+			foreach (var param in get_type_parameters ()) {
+				end_method.add_type_parameter (param);
+			}
+		}
+		return end_method;
+	}
+
 	public Method get_callback_method () {
 		assert (this.coroutine);
 
@@ -1046,6 +1104,28 @@ public class Vala.Method : Subroutine {
 		if (closure) {
 			get_captured_variables ((Collection<LocalVariable>) collection);
 		}
+	}
+
+	public int get_format_arg_index () {
+		for (int i = 0; i < parameters.size; i++) {
+			if (parameters[i].format_arg) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public bool has_error_type_parameter () {
+		if (get_error_types ().size > 0) {
+			return true;
+		}
+		if (base_method != null && base_method != this && base_method.has_error_type_parameter ()) {
+			return true;
+		}
+		if (base_interface_method != null && base_interface_method != this && base_interface_method.has_error_type_parameter ()) {
+			return true;
+		}
+		return false;
 	}
 }
 

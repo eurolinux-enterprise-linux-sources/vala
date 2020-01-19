@@ -368,6 +368,9 @@ public class Vala.Struct : TypeSymbol {
 				var st = base_struct;
 				if (st != null) {
 					rank = st.get_rank ();
+				} else {
+					Report.error (source_reference, "internal error: struct has no rank");
+					return 0;
 				}
 			}
 		}
@@ -450,6 +453,7 @@ public class Vala.Struct : TypeSymbol {
 
 		foreach (Field f in fields) {
 			if (f.binding == MemberBinding.INSTANCE
+			    && f.get_attribute_bool ("CCode", "delegate_target", true)
 			    && f.variable_type.is_disposable ()) {
 				return true;
 			}

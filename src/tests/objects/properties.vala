@@ -1,5 +1,6 @@
 using GLib;
 
+[CCode (has_target = false)]
 public delegate void Delegate ();
 
 public struct RealStruct {
@@ -92,6 +93,14 @@ abstract class Maman.Foo : Object {
 	public abstract int abstract_base_property { get; set; }
 }
 
+enum FooEnum {
+	FOO
+}
+
+abstract class Maman.EnumDefault {
+	public abstract FooEnum bar { get; default = FooEnum.FOO; }
+}
+
 class Maman.Bar : Foo {
 	public int public_property { get; set; default = 3; }
 	public override int abstract_base_property { get; set; }
@@ -130,6 +139,19 @@ class Maman.Baz : Object, Ibaz {
 	public int number {
 		get { return 2; }
 	}
+}
+
+interface Maman.IBiz : Object {
+	public abstract int number { get; construct; }
+}
+
+abstract class Maman.ABiz : Object, IBiz {
+	public int number { get; construct; }
+	public abstract int number2 { get; construct; }
+}
+
+class Maman.Biz : ABiz {
+	public override int number2 { get; construct; }
 }
 
 void main () {

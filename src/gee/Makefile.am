@@ -10,7 +10,7 @@ AM_CPPFLAGS = \
 BUILT_SOURCES = gee.vala.stamp
 
 noinst_LTLIBRARIES = \
-	libgee.la
+	libgee.la \
 	$(NULL)
 
 libgee_la_VALASOURCES = \
@@ -24,6 +24,7 @@ libgee_la_VALASOURCES = \
 	list.vala \
 	map.vala \
 	set.vala \
+	timsort.vala \
 	$(NULL)
 
 libgee_la_SOURCES = \
@@ -43,6 +44,7 @@ gee.vapi gee.vala.stamp: $(libgee_la_VALASOURCES)
 		$(VALAFLAGS) \
 		-C \
 		--vapidir $(top_srcdir)/vapi --pkg gobject-2.0 \
+		--use-header \
 		-H valagee.h \
 		--library gee \
 		$^
@@ -53,7 +55,7 @@ libgee_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(NULL)
 
-EXTRA_DIST = $(libgee_la_VALASOURCES) gee.vapi gee.vala.stamp
+EXTRA_DIST = $(libgee_la_VALASOURCES) gee.vapi gee.vala.stamp valagee.h
 
 MAINTAINERCLEANFILES = \
 	gee.vapi \

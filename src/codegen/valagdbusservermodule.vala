@@ -409,7 +409,7 @@ public class Vala.GDBusServerModule : GDBusClientModule {
 	}
 
 	string generate_dbus_signal_wrapper (Signal sig, ObjectTypeSymbol sym, string dbus_iface_name) {
-		string wrapper_name = "_dbus_%s_%s".printf (get_ccode_lower_case_name (sym), get_ccode_name (sig));
+		string wrapper_name = "_dbus_%s_%s".printf (get_ccode_lower_case_name (sym), get_ccode_lower_case_name (sig));
 
 		var function = new CCodeFunction (wrapper_name, "void");
 		function.modifiers = CCodeModifiers.STATIC;
@@ -506,15 +506,21 @@ public class Vala.GDBusServerModule : GDBusClientModule {
 			}
 		}
 
-		var reply_expr = serialize_expression (prop.get_accessor.value_type, new CCodeIdentifier ("result"));
-
 		ccode.add_declaration ("GVariant*", new CCodeVariableDeclarator ("_reply"));
-		ccode.add_assignment (new CCodeIdentifier ("_reply"), reply_expr);
 
-		if (requires_destroy (prop.get_accessor.value_type)) {
-			// keep local alive (symbol_reference is weak)
-			var local = new LocalVariable (prop.get_accessor.value_type, ".result");
-			ccode.add_expression (destroy_local (local));
+		if (get_dbus_signature (prop) != null) {
+			// raw GVariant
+			ccode.add_assignment (new CCodeIdentifier ("_reply"), new CCodeIdentifier("result"));
+		} else {
+			var reply_expr = serialize_expression (prop.get_accessor.value_type, new CCodeIdentifier ("result"));
+
+			ccode.add_assignment (new CCodeIdentifier ("_reply"), reply_expr);
+
+			if (requires_destroy (prop.get_accessor.value_type)) {
+				// keep local alive (symbol_reference is weak)
+				var local = new LocalVariable (prop.get_accessor.value_type, ".result");
+				ccode.add_expression (destroy_local (local));
+			}
 		}
 
 		ccode.add_return (new CCodeIdentifier ("_reply"));
@@ -561,15 +567,20 @@ public class Vala.GDBusServerModule : GDBusClientModule {
 		}
 
 		var target = new CCodeIdentifier ("value");
-		var expr = deserialize_expression (prop.property_type, new CCodeIdentifier ("_value"), target);
-		ccode.add_assignment (target, expr);
 
-		ccode.add_expression (ccall);
+		if (get_dbus_signature (prop) != null) {
+			ccode.add_assignment (target, new CCodeIdentifier("_value"));
+			ccode.add_expression (ccall);
+		} else {
+			var expr = deserialize_expression (prop.property_type, new CCodeIdentifier ("_value"), target);
+			ccode.add_assignment (target, expr);
+			ccode.add_expression (ccall);
 
-		if (requires_destroy (owned_type)) {
-			// keep local alive (symbol_reference is weak)
-			var local = new LocalVariable (owned_type, "value");
-			ccode.add_expression (destroy_local (local));
+			if (requires_destroy (owned_type)) {
+				// keep local alive (symbol_reference is weak)
+				var local = new LocalVariable (owned_type, "value");
+				ccode.add_expression (destroy_local (local));
+			}
 		}
 
 		pop_function ();
@@ -605,7 +616,7 @@ public class Vala.GDBusServerModule : GDBusClientModule {
 				// disconnect the signals
 				var disconnect_call = new CCodeFunctionCall (new CCodeIdentifier ("g_signal_handlers_disconnect_by_func"));
 				disconnect_call.add_argument (new CCodeElementAccess (new CCodeIdentifier ("data"), new CCodeConstant ("0")));
-				disconnect_call.add_argument (new CCodeIdentifier ("_dbus_%s_%s".printf (get_ccode_lower_case_name (sym), get_ccode_name (sig))));
+				disconnect_call.add_argument (new CCodeIdentifier ("_dbus_%s_%s".printf (get_ccode_lower_case_name (sym), get_ccode_lower_case_name (sig))));
 				disconnect_call.add_argument (new CCodeIdentifier ("data"));
 				ccode.add_expression (disconnect_call);
 			}

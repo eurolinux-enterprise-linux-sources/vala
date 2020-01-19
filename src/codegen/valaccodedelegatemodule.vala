@@ -32,6 +32,11 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 			return;
 		}
 
+		// internally generated delegates don't require a typedef
+		if (d.sender_type != null) {
+			return;
+		}
+
 		string return_type_cname = get_ccode_name (d.return_type);
 
 		if (d.return_type.is_real_non_null_struct_type ()) {
@@ -71,10 +76,10 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 				var deleg_type = (DelegateType) param.variable_type;
 				var param_d = deleg_type.delegate_symbol;
 				if (param_d.has_target) {
-					cparam = new CCodeParameter (get_delegate_target_cname (get_variable_cname (param.name)), "void*");
+					cparam = new CCodeParameter (get_delegate_target_cname (get_variable_cname (param.name)), "gpointer");
 					cfundecl.add_parameter (cparam);
 					if (deleg_type.is_disposable ()) {
-						cparam = new CCodeParameter (get_delegate_target_destroy_notify_cname (get_variable_cname (param.name)), "GDestroyNotify*");
+						cparam = new CCodeParameter (get_delegate_target_destroy_notify_cname (get_variable_cname (param.name)), "GDestroyNotify");
 						cfundecl.add_parameter (cparam);
 					}
 				}
@@ -95,7 +100,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 			var deleg_type = (DelegateType) d.return_type;
 			var result_d = deleg_type.delegate_symbol;
 			if (result_d.has_target) {
-				var cparam = new CCodeParameter (get_delegate_target_cname ("result"), "void**");
+				var cparam = new CCodeParameter (get_delegate_target_cname ("result"), "gpointer*");
 				cfundecl.add_parameter (cparam);
 				if (deleg_type.is_disposable ()) {
 					cparam = new CCodeParameter (get_delegate_target_destroy_notify_cname ("result"), "GDestroyNotify*");
@@ -107,7 +112,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 			cfundecl.add_parameter (cparam);
 		}
 		if (d.has_target) {
-			var cparam = new CCodeParameter ("user_data", "void*");
+			var cparam = new CCodeParameter ("user_data", "gpointer");
 			cfundecl.add_parameter (cparam);
 		}
 		if (d.get_error_types ().size > 0) {
@@ -116,7 +121,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 		}
 
 		var ctypedef = new CCodeTypeDefinition (return_type_cname, cfundecl);
-		ctypedef.deprecated = d.version.deprecated;
+		ctypedef.modifiers |= (d.version.deprecated ? CCodeModifiers.DEPRECATED : 0);
 
 		decl_space.add_type_definition (ctypedef);
 	}
@@ -181,7 +186,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 		if (dynamic_sig != null) {
 			delegate_name = get_dynamic_signal_cname (dynamic_sig);
 		} else if (sig != null) {
-			delegate_name = get_ccode_lower_case_prefix (sig.parent_symbol) + get_ccode_name (sig);
+			delegate_name = get_ccode_lower_case_prefix (sig.parent_symbol) + get_ccode_lower_case_name (sig);
 		} else {
 			delegate_name = Symbol.camel_case_to_lower_case (get_ccode_name (d));
 		}
@@ -246,7 +251,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 			var deleg_type = (DelegateType) d.return_type;
 
 			if (deleg_type.delegate_symbol.has_target) {
-				var cparam = new CCodeParameter (get_delegate_target_cname ("result"), "void**");
+				var cparam = new CCodeParameter (get_delegate_target_cname ("result"), "gpointer*");
 				cparam_map.set (get_param_pos (get_ccode_delegate_target_pos (d)), cparam);
 				if (deleg_type.is_disposable ()) {
 					cparam = new CCodeParameter (get_delegate_target_destroy_notify_cname ("result"), "GDestroyNotify*");
@@ -460,7 +465,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 		}
 
 		string ctypename = get_ccode_name (param.variable_type);
-		string target_ctypename = "void*";
+		string target_ctypename = "gpointer";
 		string target_destroy_notify_ctypename = "GDestroyNotify";
 
 		if (param.parent_symbol is Delegate
@@ -484,11 +489,10 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 
 		if (param.variable_type is DelegateType) {
 			var deleg_type = (DelegateType) param.variable_type;
-			var d = deleg_type.delegate_symbol;
 
-			generate_delegate_declaration (d, decl_space);
+			generate_delegate_declaration (deleg_type.delegate_symbol, decl_space);
 
-			if (d.has_target) {
+			if (deleg_type.delegate_symbol.has_target) {
 				var cparam = new CCodeParameter (get_ccode_delegate_target_name (param), target_ctypename);
 				cparam_map.set (get_param_pos (get_ccode_delegate_target_pos (param)), cparam);
 				if (carg_map != null) {

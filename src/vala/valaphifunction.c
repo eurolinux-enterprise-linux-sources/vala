@@ -23,66 +23,16 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
+#include "vala.h"
 #include <valagee.h>
 #include <gobject/gvaluecollector.h>
 
-
-#define VALA_TYPE_PHI_FUNCTION (vala_phi_function_get_type ())
-#define VALA_PHI_FUNCTION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_PHI_FUNCTION, ValaPhiFunction))
-#define VALA_PHI_FUNCTION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_PHI_FUNCTION, ValaPhiFunctionClass))
-#define VALA_IS_PHI_FUNCTION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_PHI_FUNCTION))
-#define VALA_IS_PHI_FUNCTION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_PHI_FUNCTION))
-#define VALA_PHI_FUNCTION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_PHI_FUNCTION, ValaPhiFunctionClass))
-
-typedef struct _ValaPhiFunction ValaPhiFunction;
-typedef struct _ValaPhiFunctionClass ValaPhiFunctionClass;
-typedef struct _ValaPhiFunctionPrivate ValaPhiFunctionPrivate;
-
-#define VALA_TYPE_CODE_NODE (vala_code_node_get_type ())
-#define VALA_CODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_NODE, ValaCodeNode))
-#define VALA_CODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_NODE, ValaCodeNodeClass))
-#define VALA_IS_CODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CODE_NODE))
-#define VALA_IS_CODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CODE_NODE))
-#define VALA_CODE_NODE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CODE_NODE, ValaCodeNodeClass))
-
-typedef struct _ValaCodeNode ValaCodeNode;
-typedef struct _ValaCodeNodeClass ValaCodeNodeClass;
-
-#define VALA_TYPE_SYMBOL (vala_symbol_get_type ())
-#define VALA_SYMBOL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SYMBOL, ValaSymbol))
-#define VALA_SYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SYMBOL, ValaSymbolClass))
-#define VALA_IS_SYMBOL(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SYMBOL))
-#define VALA_IS_SYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SYMBOL))
-#define VALA_SYMBOL_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SYMBOL, ValaSymbolClass))
-
-typedef struct _ValaSymbol ValaSymbol;
-typedef struct _ValaSymbolClass ValaSymbolClass;
-
-#define VALA_TYPE_VARIABLE (vala_variable_get_type ())
-#define VALA_VARIABLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_VARIABLE, ValaVariable))
-#define VALA_VARIABLE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_VARIABLE, ValaVariableClass))
-#define VALA_IS_VARIABLE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_VARIABLE))
-#define VALA_IS_VARIABLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_VARIABLE))
-#define VALA_VARIABLE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_VARIABLE, ValaVariableClass))
-
-typedef struct _ValaVariable ValaVariable;
-typedef struct _ValaVariableClass ValaVariableClass;
 #define _vala_code_node_unref0(var) ((var == NULL) ? NULL : (var = (vala_code_node_unref (var), NULL)))
 #define _vala_iterable_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterable_unref (var), NULL)))
 typedef struct _ValaParamSpecPhiFunction ValaParamSpecPhiFunction;
-
-struct _ValaPhiFunction {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	ValaPhiFunctionPrivate * priv;
-};
-
-struct _ValaPhiFunctionClass {
-	GTypeClass parent_class;
-	void (*finalize) (ValaPhiFunction *self);
-};
 
 struct _ValaPhiFunctionPrivate {
 	ValaVariable* _original_variable;
@@ -96,73 +46,52 @@ struct _ValaParamSpecPhiFunction {
 
 static gpointer vala_phi_function_parent_class = NULL;
 
-gpointer vala_phi_function_ref (gpointer instance);
-void vala_phi_function_unref (gpointer instance);
-GParamSpec* vala_param_spec_phi_function (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_phi_function (GValue* value, gpointer v_object);
-void vala_value_take_phi_function (GValue* value, gpointer v_object);
-gpointer vala_value_get_phi_function (const GValue* value);
-GType vala_phi_function_get_type (void) G_GNUC_CONST;
-gpointer vala_code_node_ref (gpointer instance);
-void vala_code_node_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_node (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_node (GValue* value, gpointer v_object);
-void vala_value_take_code_node (GValue* value, gpointer v_object);
-gpointer vala_value_get_code_node (const GValue* value);
-GType vala_code_node_get_type (void) G_GNUC_CONST;
-GType vala_symbol_get_type (void) G_GNUC_CONST;
-GType vala_variable_get_type (void) G_GNUC_CONST;
 #define VALA_PHI_FUNCTION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_PHI_FUNCTION, ValaPhiFunctionPrivate))
-enum  {
-	VALA_PHI_FUNCTION_DUMMY_PROPERTY
-};
-ValaPhiFunction* vala_phi_function_new (ValaVariable* variable, gint num_of_ops);
-ValaPhiFunction* vala_phi_function_construct (GType object_type, ValaVariable* variable, gint num_of_ops);
-static void vala_phi_function_set_original_variable (ValaPhiFunction* self, ValaVariable* value);
-static void vala_phi_function_set_operands (ValaPhiFunction* self, ValaList* value);
-ValaList* vala_phi_function_get_operands (ValaPhiFunction* self);
-ValaVariable* vala_phi_function_get_original_variable (ValaPhiFunction* self);
-static void vala_phi_function_finalize (ValaPhiFunction* obj);
+static void vala_phi_function_set_original_variable (ValaPhiFunction* self,
+                                              ValaVariable* value);
+static void vala_phi_function_set_operands (ValaPhiFunction* self,
+                                     ValaList* value);
+static void vala_phi_function_finalize (ValaPhiFunction * obj);
 
 
-ValaPhiFunction* vala_phi_function_construct (GType object_type, ValaVariable* variable, gint num_of_ops) {
+ValaPhiFunction*
+vala_phi_function_construct (GType object_type,
+                             ValaVariable* variable,
+                             gint num_of_ops)
+{
 	ValaPhiFunction* self = NULL;
-	ValaVariable* _tmp0_ = NULL;
-	GEqualFunc _tmp1_ = NULL;
-	ValaArrayList* _tmp2_ = NULL;
-	ValaArrayList* _tmp3_ = NULL;
+	GEqualFunc _tmp0_;
+	ValaArrayList* _tmp1_;
+	ValaArrayList* _tmp2_;
 	g_return_val_if_fail (variable != NULL, NULL);
 	self = (ValaPhiFunction*) g_type_create_instance (object_type);
-	_tmp0_ = variable;
-	vala_phi_function_set_original_variable (self, _tmp0_);
-	_tmp1_ = g_direct_equal;
-	_tmp2_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp1_);
-	_tmp3_ = _tmp2_;
-	vala_phi_function_set_operands (self, (ValaList*) _tmp3_);
-	_vala_iterable_unref0 (_tmp3_);
+	vala_phi_function_set_original_variable (self, variable);
+	_tmp0_ = g_direct_equal;
+	_tmp1_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
+	_tmp2_ = _tmp1_;
+	vala_phi_function_set_operands (self, (ValaList*) _tmp2_);
+	_vala_iterable_unref0 (_tmp2_);
 	{
 		gint i = 0;
 		i = 0;
 		{
-			gboolean _tmp4_ = FALSE;
-			_tmp4_ = TRUE;
+			gboolean _tmp3_ = FALSE;
+			_tmp3_ = TRUE;
 			while (TRUE) {
-				gint _tmp6_ = 0;
-				gint _tmp7_ = 0;
-				ValaList* _tmp8_ = NULL;
-				if (!_tmp4_) {
-					gint _tmp5_ = 0;
-					_tmp5_ = i;
-					i = _tmp5_ + 1;
+				gint _tmp5_;
+				ValaList* _tmp6_;
+				if (!_tmp3_) {
+					gint _tmp4_;
+					_tmp4_ = i;
+					i = _tmp4_ + 1;
 				}
-				_tmp4_ = FALSE;
-				_tmp6_ = i;
-				_tmp7_ = num_of_ops;
-				if (!(_tmp6_ < _tmp7_)) {
+				_tmp3_ = FALSE;
+				_tmp5_ = i;
+				if (!(_tmp5_ < num_of_ops)) {
 					break;
 				}
-				_tmp8_ = self->priv->_operands;
-				vala_collection_add ((ValaCollection*) _tmp8_, G_TYPE_CHECK_INSTANCE_CAST (NULL, VALA_TYPE_VARIABLE, ValaVariable));
+				_tmp6_ = self->priv->_operands;
+				vala_collection_add ((ValaCollection*) _tmp6_, G_TYPE_CHECK_INSTANCE_CAST (NULL, VALA_TYPE_VARIABLE, ValaVariable));
 			}
 		}
 	}
@@ -170,14 +99,19 @@ ValaPhiFunction* vala_phi_function_construct (GType object_type, ValaVariable* v
 }
 
 
-ValaPhiFunction* vala_phi_function_new (ValaVariable* variable, gint num_of_ops) {
+ValaPhiFunction*
+vala_phi_function_new (ValaVariable* variable,
+                       gint num_of_ops)
+{
 	return vala_phi_function_construct (VALA_TYPE_PHI_FUNCTION, variable, num_of_ops);
 }
 
 
-ValaVariable* vala_phi_function_get_original_variable (ValaPhiFunction* self) {
+ValaVariable*
+vala_phi_function_get_original_variable (ValaPhiFunction* self)
+{
 	ValaVariable* result;
-	ValaVariable* _tmp0_ = NULL;
+	ValaVariable* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_original_variable;
 	result = _tmp0_;
@@ -185,25 +119,30 @@ ValaVariable* vala_phi_function_get_original_variable (ValaPhiFunction* self) {
 }
 
 
-static gpointer _vala_code_node_ref0 (gpointer self) {
+static gpointer
+_vala_code_node_ref0 (gpointer self)
+{
 	return self ? vala_code_node_ref (self) : NULL;
 }
 
 
-static void vala_phi_function_set_original_variable (ValaPhiFunction* self, ValaVariable* value) {
-	ValaVariable* _tmp0_ = NULL;
-	ValaVariable* _tmp1_ = NULL;
+static void
+vala_phi_function_set_original_variable (ValaPhiFunction* self,
+                                         ValaVariable* value)
+{
+	ValaVariable* _tmp0_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
+	_tmp0_ = _vala_code_node_ref0 (value);
 	_vala_code_node_unref0 (self->priv->_original_variable);
-	self->priv->_original_variable = _tmp1_;
+	self->priv->_original_variable = _tmp0_;
 }
 
 
-ValaList* vala_phi_function_get_operands (ValaPhiFunction* self) {
+ValaList*
+vala_phi_function_get_operands (ValaPhiFunction* self)
+{
 	ValaList* result;
-	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_operands;
 	result = _tmp0_;
@@ -211,35 +150,45 @@ ValaList* vala_phi_function_get_operands (ValaPhiFunction* self) {
 }
 
 
-static gpointer _vala_iterable_ref0 (gpointer self) {
+static gpointer
+_vala_iterable_ref0 (gpointer self)
+{
 	return self ? vala_iterable_ref (self) : NULL;
 }
 
 
-static void vala_phi_function_set_operands (ValaPhiFunction* self, ValaList* value) {
-	ValaList* _tmp0_ = NULL;
-	ValaList* _tmp1_ = NULL;
+static void
+vala_phi_function_set_operands (ValaPhiFunction* self,
+                                ValaList* value)
+{
+	ValaList* _tmp0_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
+	_tmp0_ = _vala_iterable_ref0 (value);
 	_vala_iterable_unref0 (self->priv->_operands);
-	self->priv->_operands = _tmp1_;
+	self->priv->_operands = _tmp0_;
 }
 
 
-static void vala_value_phi_function_init (GValue* value) {
+static void
+vala_value_phi_function_init (GValue* value)
+{
 	value->data[0].v_pointer = NULL;
 }
 
 
-static void vala_value_phi_function_free_value (GValue* value) {
+static void
+vala_value_phi_function_free_value (GValue* value)
+{
 	if (value->data[0].v_pointer) {
 		vala_phi_function_unref (value->data[0].v_pointer);
 	}
 }
 
 
-static void vala_value_phi_function_copy_value (const GValue* src_value, GValue* dest_value) {
+static void
+vala_value_phi_function_copy_value (const GValue* src_value,
+                                    GValue* dest_value)
+{
 	if (src_value->data[0].v_pointer) {
 		dest_value->data[0].v_pointer = vala_phi_function_ref (src_value->data[0].v_pointer);
 	} else {
@@ -248,14 +197,21 @@ static void vala_value_phi_function_copy_value (const GValue* src_value, GValue*
 }
 
 
-static gpointer vala_value_phi_function_peek_pointer (const GValue* value) {
+static gpointer
+vala_value_phi_function_peek_pointer (const GValue* value)
+{
 	return value->data[0].v_pointer;
 }
 
 
-static gchar* vala_value_phi_function_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar*
+vala_value_phi_function_collect_value (GValue* value,
+                                       guint n_collect_values,
+                                       GTypeCValue* collect_values,
+                                       guint collect_flags)
+{
 	if (collect_values[0].v_pointer) {
-		ValaPhiFunction* object;
+		ValaPhiFunction * object;
 		object = collect_values[0].v_pointer;
 		if (object->parent_instance.g_class == NULL) {
 			return g_strconcat ("invalid unclassed object pointer for value type `", G_VALUE_TYPE_NAME (value), "'", NULL);
@@ -270,8 +226,13 @@ static gchar* vala_value_phi_function_collect_value (GValue* value, guint n_coll
 }
 
 
-static gchar* vala_value_phi_function_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
-	ValaPhiFunction** object_p;
+static gchar*
+vala_value_phi_function_lcopy_value (const GValue* value,
+                                     guint n_collect_values,
+                                     GTypeCValue* collect_values,
+                                     guint collect_flags)
+{
+	ValaPhiFunction ** object_p;
 	object_p = collect_values[0].v_pointer;
 	if (!object_p) {
 		return g_strdup_printf ("value location for `%s' passed as NULL", G_VALUE_TYPE_NAME (value));
@@ -287,7 +248,13 @@ static gchar* vala_value_phi_function_lcopy_value (const GValue* value, guint n_
 }
 
 
-GParamSpec* vala_param_spec_phi_function (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
+GParamSpec*
+vala_param_spec_phi_function (const gchar* name,
+                              const gchar* nick,
+                              const gchar* blurb,
+                              GType object_type,
+                              GParamFlags flags)
+{
 	ValaParamSpecPhiFunction* spec;
 	g_return_val_if_fail (g_type_is_a (object_type, VALA_TYPE_PHI_FUNCTION), NULL);
 	spec = g_param_spec_internal (G_TYPE_PARAM_OBJECT, name, nick, blurb, flags);
@@ -296,14 +263,19 @@ GParamSpec* vala_param_spec_phi_function (const gchar* name, const gchar* nick, 
 }
 
 
-gpointer vala_value_get_phi_function (const GValue* value) {
+gpointer
+vala_value_get_phi_function (const GValue* value)
+{
 	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_PHI_FUNCTION), NULL);
 	return value->data[0].v_pointer;
 }
 
 
-void vala_value_set_phi_function (GValue* value, gpointer v_object) {
-	ValaPhiFunction* old;
+void
+vala_value_set_phi_function (GValue* value,
+                             gpointer v_object)
+{
+	ValaPhiFunction * old;
 	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_PHI_FUNCTION));
 	old = value->data[0].v_pointer;
 	if (v_object) {
@@ -320,8 +292,11 @@ void vala_value_set_phi_function (GValue* value, gpointer v_object) {
 }
 
 
-void vala_value_take_phi_function (GValue* value, gpointer v_object) {
-	ValaPhiFunction* old;
+void
+vala_value_take_phi_function (GValue* value,
+                              gpointer v_object)
+{
+	ValaPhiFunction * old;
 	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_PHI_FUNCTION));
 	old = value->data[0].v_pointer;
 	if (v_object) {
@@ -337,20 +312,26 @@ void vala_value_take_phi_function (GValue* value, gpointer v_object) {
 }
 
 
-static void vala_phi_function_class_init (ValaPhiFunctionClass * klass) {
+static void
+vala_phi_function_class_init (ValaPhiFunctionClass * klass)
+{
 	vala_phi_function_parent_class = g_type_class_peek_parent (klass);
 	((ValaPhiFunctionClass *) klass)->finalize = vala_phi_function_finalize;
 	g_type_class_add_private (klass, sizeof (ValaPhiFunctionPrivate));
 }
 
 
-static void vala_phi_function_instance_init (ValaPhiFunction * self) {
+static void
+vala_phi_function_instance_init (ValaPhiFunction * self)
+{
 	self->priv = VALA_PHI_FUNCTION_GET_PRIVATE (self);
 	self->ref_count = 1;
 }
 
 
-static void vala_phi_function_finalize (ValaPhiFunction* obj) {
+static void
+vala_phi_function_finalize (ValaPhiFunction * obj)
+{
 	ValaPhiFunction * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_PHI_FUNCTION, ValaPhiFunction);
 	g_signal_handlers_destroy (self);
@@ -359,7 +340,9 @@ static void vala_phi_function_finalize (ValaPhiFunction* obj) {
 }
 
 
-GType vala_phi_function_get_type (void) {
+GType
+vala_phi_function_get_type (void)
+{
 	static volatile gsize vala_phi_function_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_phi_function_type_id__volatile)) {
 		static const GTypeValueTable g_define_type_value_table = { vala_value_phi_function_init, vala_value_phi_function_free_value, vala_value_phi_function_copy_value, vala_value_phi_function_peek_pointer, "p", vala_value_phi_function_collect_value, "p", vala_value_phi_function_lcopy_value };
@@ -373,16 +356,20 @@ GType vala_phi_function_get_type (void) {
 }
 
 
-gpointer vala_phi_function_ref (gpointer instance) {
-	ValaPhiFunction* self;
+gpointer
+vala_phi_function_ref (gpointer instance)
+{
+	ValaPhiFunction * self;
 	self = instance;
 	g_atomic_int_inc (&self->ref_count);
 	return instance;
 }
 
 
-void vala_phi_function_unref (gpointer instance) {
-	ValaPhiFunction* self;
+void
+vala_phi_function_unref (gpointer instance)
+{
+	ValaPhiFunction * self;
 	self = instance;
 	if (g_atomic_int_dec_and_test (&self->ref_count)) {
 		VALA_PHI_FUNCTION_GET_CLASS (self)->finalize (self);

@@ -67,6 +67,7 @@ public class Vala.ArrayType : ReferenceType {
 	private ArrayLengthField length_field;
 	private ArrayResizeMethod resize_method;
 	private ArrayMoveMethod move_method;
+	private ArrayCopyMethod copy_method;
 
 	public ArrayType (DataType element_type, int rank, SourceReference? source_reference) {
 		this.element_type = element_type;
@@ -84,6 +85,8 @@ public class Vala.ArrayType : ReferenceType {
 				return null;
 			}
 			return get_resize_method ();
+		} else if (member_name == "copy") {
+			return get_copy_method ();
 		}
 		return null;
 	}
@@ -145,6 +148,19 @@ public class Vala.ArrayType : ReferenceType {
 		return move_method;
 	}
 
+	private ArrayCopyMethod get_copy_method () {
+		if (copy_method == null) {
+			copy_method = new ArrayCopyMethod (source_reference);
+
+			copy_method.return_type = this.copy ();
+			copy_method.return_type.value_owned = true;
+			copy_method.access = SymbolAccessibility.PUBLIC;
+
+			copy_method.set_attribute_string ("CCode", "cname", "_vala_array_copy");
+		}
+		return copy_method;
+	}
+
 	public override DataType copy () {
 		var result = new ArrayType (element_type.copy (), rank, source_reference);
 		result.value_owned = value_owned;
@@ -196,7 +212,7 @@ public class Vala.ArrayType : ReferenceType {
 		}
 
 		/* temporarily ignore type parameters */
-		if (target_type.type_parameter != null) {
+		if (target_type is GenericType) {
 			return true;
 		}
 

@@ -23,70 +23,20 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
+#include "vala.h"
 #include <valagee.h>
 #include <stdlib.h>
 #include <string.h>
 #include <gobject/gvaluecollector.h>
 
-
-#define VALA_TYPE_SCOPE (vala_scope_get_type ())
-#define VALA_SCOPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SCOPE, ValaScope))
-#define VALA_SCOPE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SCOPE, ValaScopeClass))
-#define VALA_IS_SCOPE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SCOPE))
-#define VALA_IS_SCOPE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SCOPE))
-#define VALA_SCOPE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SCOPE, ValaScopeClass))
-
-typedef struct _ValaScope ValaScope;
-typedef struct _ValaScopeClass ValaScopeClass;
-typedef struct _ValaScopePrivate ValaScopePrivate;
-
-#define VALA_TYPE_CODE_NODE (vala_code_node_get_type ())
-#define VALA_CODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_NODE, ValaCodeNode))
-#define VALA_CODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_NODE, ValaCodeNodeClass))
-#define VALA_IS_CODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CODE_NODE))
-#define VALA_IS_CODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CODE_NODE))
-#define VALA_CODE_NODE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CODE_NODE, ValaCodeNodeClass))
-
-typedef struct _ValaCodeNode ValaCodeNode;
-typedef struct _ValaCodeNodeClass ValaCodeNodeClass;
-
-#define VALA_TYPE_SYMBOL (vala_symbol_get_type ())
-#define VALA_SYMBOL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SYMBOL, ValaSymbol))
-#define VALA_SYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SYMBOL, ValaSymbolClass))
-#define VALA_IS_SYMBOL(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SYMBOL))
-#define VALA_IS_SYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SYMBOL))
-#define VALA_SYMBOL_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SYMBOL, ValaSymbolClass))
-
-typedef struct _ValaSymbol ValaSymbol;
-typedef struct _ValaSymbolClass ValaSymbolClass;
 #define _vala_map_unref0(var) ((var == NULL) ? NULL : (var = (vala_map_unref (var), NULL)))
 #define _vala_iterable_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterable_unref (var), NULL)))
 #define _vala_code_node_unref0(var) ((var == NULL) ? NULL : (var = (vala_code_node_unref (var), NULL)))
-
-#define VALA_TYPE_SOURCE_REFERENCE (vala_source_reference_get_type ())
-#define VALA_SOURCE_REFERENCE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReference))
-#define VALA_SOURCE_REFERENCE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReferenceClass))
-#define VALA_IS_SOURCE_REFERENCE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SOURCE_REFERENCE))
-#define VALA_IS_SOURCE_REFERENCE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SOURCE_REFERENCE))
-#define VALA_SOURCE_REFERENCE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReferenceClass))
-
-typedef struct _ValaSourceReference ValaSourceReference;
-typedef struct _ValaSourceReferenceClass ValaSourceReferenceClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
 typedef struct _ValaParamSpecScope ValaParamSpecScope;
-
-struct _ValaScope {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	ValaScopePrivate * priv;
-};
-
-struct _ValaScopeClass {
-	GTypeClass parent_class;
-	void (*finalize) (ValaScope *self);
-};
 
 struct _ValaScopePrivate {
 	ValaSymbol* _owner;
@@ -102,53 +52,8 @@ struct _ValaParamSpecScope {
 
 static gpointer vala_scope_parent_class = NULL;
 
-gpointer vala_scope_ref (gpointer instance);
-void vala_scope_unref (gpointer instance);
-GParamSpec* vala_param_spec_scope (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_scope (GValue* value, gpointer v_object);
-void vala_value_take_scope (GValue* value, gpointer v_object);
-gpointer vala_value_get_scope (const GValue* value);
-GType vala_scope_get_type (void) G_GNUC_CONST;
-gpointer vala_code_node_ref (gpointer instance);
-void vala_code_node_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_node (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_node (GValue* value, gpointer v_object);
-void vala_value_take_code_node (GValue* value, gpointer v_object);
-gpointer vala_value_get_code_node (const GValue* value);
-GType vala_code_node_get_type (void) G_GNUC_CONST;
-GType vala_symbol_get_type (void) G_GNUC_CONST;
 #define VALA_SCOPE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_SCOPE, ValaScopePrivate))
-enum  {
-	VALA_SCOPE_DUMMY_PROPERTY
-};
-ValaScope* vala_scope_new (ValaSymbol* owner);
-ValaScope* vala_scope_construct (GType object_type, ValaSymbol* owner);
-void vala_scope_set_owner (ValaScope* self, ValaSymbol* value);
-void vala_scope_add (ValaScope* self, const gchar* name, ValaSymbol* sym);
-ValaSymbol* vala_scope_lookup (ValaScope* self, const gchar* name);
-ValaSymbol* vala_scope_get_owner (ValaScope* self);
-void vala_code_node_set_error (ValaCodeNode* self, gboolean value);
-const gchar* vala_symbol_get_name (ValaSymbol* self);
-ValaSymbol* vala_symbol_get_parent_symbol (ValaSymbol* self);
-gpointer vala_source_reference_ref (gpointer instance);
-void vala_source_reference_unref (gpointer instance);
-GParamSpec* vala_param_spec_source_reference (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_source_reference (GValue* value, gpointer v_object);
-void vala_value_take_source_reference (GValue* value, gpointer v_object);
-gpointer vala_value_get_source_reference (const GValue* value);
-GType vala_source_reference_get_type (void) G_GNUC_CONST;
-void vala_report_error (ValaSourceReference* source, const gchar* message);
-ValaSourceReference* vala_code_node_get_source_reference (ValaCodeNode* self);
-gchar* vala_symbol_get_full_name (ValaSymbol* self);
-void vala_report_notice (ValaSourceReference* source, const gchar* message);
-void vala_symbol_set_owner (ValaSymbol* self, ValaScope* value);
-void vala_scope_remove (ValaScope* self, const gchar* name);
-gboolean vala_symbol_get_active (ValaSymbol* self);
-gboolean vala_scope_is_subscope_of (ValaScope* self, ValaScope* scope);
-ValaScope* vala_scope_get_parent_scope (ValaScope* self);
-ValaMap* vala_scope_get_symbol_table (ValaScope* self);
-void vala_scope_set_parent_scope (ValaScope* self, ValaScope* value);
-static void vala_scope_finalize (ValaScope* obj);
+static void vala_scope_finalize (ValaScope * obj);
 
 
 /**
@@ -156,17 +61,20 @@ static void vala_scope_finalize (ValaScope* obj);
  *
  * @return newly created scope
  */
-ValaScope* vala_scope_construct (GType object_type, ValaSymbol* owner) {
+ValaScope*
+vala_scope_construct (GType object_type,
+                      ValaSymbol* owner)
+{
 	ValaScope* self = NULL;
-	ValaSymbol* _tmp0_ = NULL;
 	self = (ValaScope*) g_type_create_instance (object_type);
-	_tmp0_ = owner;
-	vala_scope_set_owner (self, _tmp0_);
+	vala_scope_set_owner (self, owner);
 	return self;
 }
 
 
-ValaScope* vala_scope_new (ValaSymbol* owner) {
+ValaScope*
+vala_scope_new (ValaSymbol* owner)
+{
 	return vala_scope_construct (VALA_TYPE_SCOPE, owner);
 }
 
@@ -178,155 +86,136 @@ ValaScope* vala_scope_new (ValaSymbol* owner) {
  * @param name name for the specified symbol
  * @param sym  a symbol
  */
-void vala_scope_add (ValaScope* self, const gchar* name, ValaSymbol* sym) {
-	const gchar* _tmp0_ = NULL;
-	ValaSymbol* _tmp49_ = NULL;
+void
+vala_scope_add (ValaScope* self,
+                const gchar* name,
+                ValaSymbol* sym)
+{
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (sym != NULL);
-	_tmp0_ = name;
-	if (_tmp0_ != NULL) {
-		ValaMap* _tmp1_ = NULL;
-		ValaMap* _tmp41_ = NULL;
-		const gchar* _tmp42_ = NULL;
-		ValaSymbol* _tmp43_ = NULL;
-		_tmp1_ = self->priv->symbol_table;
-		if (_tmp1_ == NULL) {
-			GHashFunc _tmp2_ = NULL;
-			GEqualFunc _tmp3_ = NULL;
-			GEqualFunc _tmp4_ = NULL;
-			ValaHashMap* _tmp5_ = NULL;
-			_tmp2_ = g_str_hash;
-			_tmp3_ = g_str_equal;
-			_tmp4_ = g_direct_equal;
-			_tmp5_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_, _tmp3_, _tmp4_);
+	if (name != NULL) {
+		ValaMap* _tmp0_;
+		ValaMap* _tmp33_;
+		_tmp0_ = self->priv->symbol_table;
+		if (_tmp0_ == NULL) {
+			GHashFunc _tmp1_;
+			GEqualFunc _tmp2_;
+			GEqualFunc _tmp3_;
+			ValaHashMap* _tmp4_;
+			_tmp1_ = g_str_hash;
+			_tmp2_ = g_str_equal;
+			_tmp3_ = g_direct_equal;
+			_tmp4_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp1_, _tmp2_, _tmp3_);
 			_vala_map_unref0 (self->priv->symbol_table);
-			self->priv->symbol_table = (ValaMap*) _tmp5_;
+			self->priv->symbol_table = (ValaMap*) _tmp4_;
 		} else {
-			const gchar* _tmp6_ = NULL;
-			ValaSymbol* _tmp7_ = NULL;
-			ValaSymbol* _tmp8_ = NULL;
-			gboolean _tmp9_ = FALSE;
-			_tmp6_ = name;
-			_tmp7_ = vala_scope_lookup (self, _tmp6_);
-			_tmp8_ = _tmp7_;
-			_tmp9_ = _tmp8_ != NULL;
-			_vala_code_node_unref0 (_tmp8_);
-			if (_tmp9_) {
-				ValaSymbol* _tmp10_ = NULL;
-				gboolean _tmp11_ = FALSE;
-				ValaSymbol* _tmp12_ = NULL;
-				const gchar* _tmp13_ = NULL;
-				const gchar* _tmp14_ = NULL;
-				const gchar* _tmp33_ = NULL;
-				ValaSymbol* _tmp34_ = NULL;
-				ValaSymbol* _tmp35_ = NULL;
-				ValaSourceReference* _tmp36_ = NULL;
-				ValaSourceReference* _tmp37_ = NULL;
-				const gchar* _tmp38_ = NULL;
-				gchar* _tmp39_ = NULL;
-				gchar* _tmp40_ = NULL;
+			ValaSymbol* _tmp5_;
+			ValaSymbol* _tmp6_;
+			gboolean _tmp7_;
+			_tmp5_ = vala_scope_lookup (self, name);
+			_tmp6_ = _tmp5_;
+			_tmp7_ = _tmp6_ != NULL;
+			_vala_code_node_unref0 (_tmp6_);
+			if (_tmp7_) {
+				ValaSymbol* _tmp8_;
+				gboolean _tmp9_ = FALSE;
+				ValaSymbol* _tmp10_;
+				const gchar* _tmp11_;
+				const gchar* _tmp12_;
+				ValaSymbol* _tmp27_;
+				ValaSymbol* _tmp28_;
+				ValaSourceReference* _tmp29_;
+				ValaSourceReference* _tmp30_;
+				gchar* _tmp31_;
+				gchar* _tmp32_;
+				_tmp8_ = self->priv->_owner;
+				vala_code_node_set_error ((ValaCodeNode*) _tmp8_, TRUE);
 				_tmp10_ = self->priv->_owner;
-				vala_code_node_set_error ((ValaCodeNode*) _tmp10_, TRUE);
-				_tmp12_ = self->priv->_owner;
-				_tmp13_ = vala_symbol_get_name (_tmp12_);
-				_tmp14_ = _tmp13_;
-				if (_tmp14_ == NULL) {
-					ValaSymbol* _tmp15_ = NULL;
-					ValaSymbol* _tmp16_ = NULL;
-					ValaSymbol* _tmp17_ = NULL;
-					_tmp15_ = self->priv->_owner;
-					_tmp16_ = vala_symbol_get_parent_symbol (_tmp15_);
+				_tmp11_ = vala_symbol_get_name (_tmp10_);
+				_tmp12_ = _tmp11_;
+				if (_tmp12_ == NULL) {
+					ValaSymbol* _tmp13_;
+					ValaSymbol* _tmp14_;
+					ValaSymbol* _tmp15_;
+					_tmp13_ = self->priv->_owner;
+					_tmp14_ = vala_symbol_get_parent_symbol (_tmp13_);
+					_tmp15_ = _tmp14_;
+					_tmp9_ = _tmp15_ == NULL;
+				} else {
+					_tmp9_ = FALSE;
+				}
+				if (_tmp9_) {
+					ValaSourceReference* _tmp16_;
+					ValaSourceReference* _tmp17_;
+					gchar* _tmp18_;
+					gchar* _tmp19_;
+					_tmp16_ = vala_code_node_get_source_reference ((ValaCodeNode*) sym);
 					_tmp17_ = _tmp16_;
-					_tmp11_ = _tmp17_ == NULL;
+					_tmp18_ = g_strdup_printf ("The root namespace already contains a definition for `%s'", name);
+					_tmp19_ = _tmp18_;
+					vala_report_error (_tmp17_, _tmp19_);
+					_g_free0 (_tmp19_);
 				} else {
-					_tmp11_ = FALSE;
-				}
-				if (_tmp11_) {
-					ValaSymbol* _tmp18_ = NULL;
-					ValaSourceReference* _tmp19_ = NULL;
-					ValaSourceReference* _tmp20_ = NULL;
-					const gchar* _tmp21_ = NULL;
-					gchar* _tmp22_ = NULL;
-					gchar* _tmp23_ = NULL;
-					_tmp18_ = sym;
-					_tmp19_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp18_);
-					_tmp20_ = _tmp19_;
-					_tmp21_ = name;
-					_tmp22_ = g_strdup_printf ("The root namespace already contains a definition for `%s'", _tmp21_);
-					_tmp23_ = _tmp22_;
-					vala_report_error (_tmp20_, _tmp23_);
-					_g_free0 (_tmp23_);
-				} else {
-					ValaSymbol* _tmp24_ = NULL;
-					ValaSourceReference* _tmp25_ = NULL;
-					ValaSourceReference* _tmp26_ = NULL;
-					ValaSymbol* _tmp27_ = NULL;
-					gchar* _tmp28_ = NULL;
-					gchar* _tmp29_ = NULL;
-					const gchar* _tmp30_ = NULL;
-					gchar* _tmp31_ = NULL;
-					gchar* _tmp32_ = NULL;
-					_tmp24_ = sym;
-					_tmp25_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp24_);
+					ValaSourceReference* _tmp20_;
+					ValaSourceReference* _tmp21_;
+					ValaSymbol* _tmp22_;
+					gchar* _tmp23_;
+					gchar* _tmp24_;
+					gchar* _tmp25_;
+					gchar* _tmp26_;
+					_tmp20_ = vala_code_node_get_source_reference ((ValaCodeNode*) sym);
+					_tmp21_ = _tmp20_;
+					_tmp22_ = self->priv->_owner;
+					_tmp23_ = vala_symbol_get_full_name (_tmp22_);
+					_tmp24_ = _tmp23_;
+					_tmp25_ = g_strdup_printf ("`%s' already contains a definition for `%s'", _tmp24_, name);
 					_tmp26_ = _tmp25_;
-					_tmp27_ = self->priv->_owner;
-					_tmp28_ = vala_symbol_get_full_name (_tmp27_);
-					_tmp29_ = _tmp28_;
-					_tmp30_ = name;
-					_tmp31_ = g_strdup_printf ("`%s' already contains a definition for `%s'", _tmp29_, _tmp30_);
-					_tmp32_ = _tmp31_;
-					vala_report_error (_tmp26_, _tmp32_);
-					_g_free0 (_tmp32_);
-					_g_free0 (_tmp29_);
+					vala_report_error (_tmp21_, _tmp26_);
+					_g_free0 (_tmp26_);
+					_g_free0 (_tmp24_);
 				}
-				_tmp33_ = name;
-				_tmp34_ = vala_scope_lookup (self, _tmp33_);
-				_tmp35_ = _tmp34_;
-				_tmp36_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp35_);
-				_tmp37_ = _tmp36_;
-				_tmp38_ = name;
-				_tmp39_ = g_strdup_printf ("previous definition of `%s' was here", _tmp38_);
-				_tmp40_ = _tmp39_;
-				vala_report_notice (_tmp37_, _tmp40_);
-				_g_free0 (_tmp40_);
-				_vala_code_node_unref0 (_tmp35_);
+				_tmp27_ = vala_scope_lookup (self, name);
+				_tmp28_ = _tmp27_;
+				_tmp29_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp28_);
+				_tmp30_ = _tmp29_;
+				_tmp31_ = g_strdup_printf ("previous definition of `%s' was here", name);
+				_tmp32_ = _tmp31_;
+				vala_report_notice (_tmp30_, _tmp32_);
+				_g_free0 (_tmp32_);
+				_vala_code_node_unref0 (_tmp28_);
 				return;
 			}
 		}
-		_tmp41_ = self->priv->symbol_table;
-		_tmp42_ = name;
-		_tmp43_ = sym;
-		vala_map_set (_tmp41_, (const gchar*) _tmp42_, _tmp43_);
+		_tmp33_ = self->priv->symbol_table;
+		vala_map_set (_tmp33_, (const gchar*) name, sym);
 	} else {
-		ValaList* _tmp44_ = NULL;
-		ValaList* _tmp47_ = NULL;
-		ValaSymbol* _tmp48_ = NULL;
-		_tmp44_ = self->priv->anonymous_members;
-		if (_tmp44_ == NULL) {
-			GEqualFunc _tmp45_ = NULL;
-			ValaArrayList* _tmp46_ = NULL;
-			_tmp45_ = g_direct_equal;
-			_tmp46_ = vala_array_list_new (VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp45_);
+		ValaList* _tmp34_;
+		ValaList* _tmp37_;
+		_tmp34_ = self->priv->anonymous_members;
+		if (_tmp34_ == NULL) {
+			GEqualFunc _tmp35_;
+			ValaArrayList* _tmp36_;
+			_tmp35_ = g_direct_equal;
+			_tmp36_ = vala_array_list_new (VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp35_);
 			_vala_iterable_unref0 (self->priv->anonymous_members);
-			self->priv->anonymous_members = (ValaList*) _tmp46_;
+			self->priv->anonymous_members = (ValaList*) _tmp36_;
 		}
-		_tmp47_ = self->priv->anonymous_members;
-		_tmp48_ = sym;
-		vala_collection_add ((ValaCollection*) _tmp47_, _tmp48_);
+		_tmp37_ = self->priv->anonymous_members;
+		vala_collection_add ((ValaCollection*) _tmp37_, sym);
 	}
-	_tmp49_ = sym;
-	vala_symbol_set_owner (_tmp49_, self);
+	vala_symbol_set_owner (sym, self);
 }
 
 
-void vala_scope_remove (ValaScope* self, const gchar* name) {
-	ValaMap* _tmp0_ = NULL;
-	const gchar* _tmp1_ = NULL;
+void
+vala_scope_remove (ValaScope* self,
+                   const gchar* name)
+{
+	ValaMap* _tmp0_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (name != NULL);
 	_tmp0_ = self->priv->symbol_table;
-	_tmp1_ = name;
-	vala_map_remove (_tmp0_, _tmp1_);
+	vala_map_remove (_tmp0_, name);
 }
 
 
@@ -337,15 +226,17 @@ void vala_scope_remove (ValaScope* self, const gchar* name) {
  * @param name name of the symbol to be returned
  * @return     found symbol or null
  */
-ValaSymbol* vala_scope_lookup (ValaScope* self, const gchar* name) {
+ValaSymbol*
+vala_scope_lookup (ValaScope* self,
+                   const gchar* name)
+{
 	ValaSymbol* result = NULL;
-	ValaMap* _tmp0_ = NULL;
+	ValaMap* _tmp0_;
 	ValaSymbol* sym = NULL;
-	ValaMap* _tmp1_ = NULL;
-	const gchar* _tmp2_ = NULL;
-	gpointer _tmp3_ = NULL;
-	gboolean _tmp4_ = FALSE;
-	ValaSymbol* _tmp5_ = NULL;
+	ValaMap* _tmp1_;
+	gpointer _tmp2_;
+	gboolean _tmp3_ = FALSE;
+	ValaSymbol* _tmp4_;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 	_tmp0_ = self->priv->symbol_table;
@@ -354,22 +245,21 @@ ValaSymbol* vala_scope_lookup (ValaScope* self, const gchar* name) {
 		return result;
 	}
 	_tmp1_ = self->priv->symbol_table;
-	_tmp2_ = name;
-	_tmp3_ = vala_map_get (_tmp1_, _tmp2_);
-	sym = (ValaSymbol*) _tmp3_;
-	_tmp5_ = sym;
-	if (_tmp5_ != NULL) {
-		ValaSymbol* _tmp6_ = NULL;
-		gboolean _tmp7_ = FALSE;
-		gboolean _tmp8_ = FALSE;
-		_tmp6_ = sym;
-		_tmp7_ = vala_symbol_get_active (_tmp6_);
-		_tmp8_ = _tmp7_;
-		_tmp4_ = !_tmp8_;
+	_tmp2_ = vala_map_get (_tmp1_, name);
+	sym = (ValaSymbol*) _tmp2_;
+	_tmp4_ = sym;
+	if (_tmp4_ != NULL) {
+		ValaSymbol* _tmp5_;
+		gboolean _tmp6_;
+		gboolean _tmp7_;
+		_tmp5_ = sym;
+		_tmp6_ = vala_symbol_get_active (_tmp5_);
+		_tmp7_ = _tmp6_;
+		_tmp3_ = !_tmp7_;
 	} else {
-		_tmp4_ = FALSE;
+		_tmp3_ = FALSE;
 	}
-	if (_tmp4_) {
+	if (_tmp3_) {
 		_vala_code_node_unref0 (sym);
 		sym = NULL;
 	}
@@ -385,31 +275,26 @@ ValaSymbol* vala_scope_lookup (ValaScope* self, const gchar* name) {
  * @return      true if this scope is a subscope of the specified
  *              scope, false otherwise
  */
-gboolean vala_scope_is_subscope_of (ValaScope* self, ValaScope* scope) {
+gboolean
+vala_scope_is_subscope_of (ValaScope* self,
+                           ValaScope* scope)
+{
 	gboolean result = FALSE;
-	ValaScope* _tmp0_ = NULL;
-	ValaScope* _tmp1_ = NULL;
-	ValaScope* _tmp2_ = NULL;
+	ValaScope* _tmp0_;
 	g_return_val_if_fail (self != NULL, FALSE);
-	_tmp0_ = scope;
-	if (_tmp0_ == self) {
+	if (scope == self) {
 		result = TRUE;
 		return result;
 	}
-	_tmp1_ = scope;
-	if (_tmp1_ == NULL) {
+	if (scope == NULL) {
 		result = TRUE;
 		return result;
 	}
-	_tmp2_ = self->priv->_parent_scope;
-	if (_tmp2_ != NULL) {
-		ValaScope* _tmp3_ = NULL;
-		ValaScope* _tmp4_ = NULL;
-		gboolean _tmp5_ = FALSE;
-		_tmp3_ = self->priv->_parent_scope;
-		_tmp4_ = scope;
-		_tmp5_ = vala_scope_is_subscope_of (_tmp3_, _tmp4_);
-		result = _tmp5_;
+	_tmp0_ = self->priv->_parent_scope;
+	if (_tmp0_ != NULL) {
+		ValaScope* _tmp1_;
+		_tmp1_ = self->priv->_parent_scope;
+		result = vala_scope_is_subscope_of (_tmp1_, scope);
 		return result;
 	}
 	result = FALSE;
@@ -417,15 +302,19 @@ gboolean vala_scope_is_subscope_of (ValaScope* self, ValaScope* scope) {
 }
 
 
-static gpointer _vala_map_ref0 (gpointer self) {
+static gpointer
+_vala_map_ref0 (gpointer self)
+{
 	return self ? vala_map_ref (self) : NULL;
 }
 
 
-ValaMap* vala_scope_get_symbol_table (ValaScope* self) {
+ValaMap*
+vala_scope_get_symbol_table (ValaScope* self)
+{
 	ValaMap* result = NULL;
-	ValaMap* _tmp0_ = NULL;
-	ValaMap* _tmp1_ = NULL;
+	ValaMap* _tmp0_;
+	ValaMap* _tmp1_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->symbol_table;
 	_tmp1_ = _vala_map_ref0 (_tmp0_);
@@ -434,9 +323,11 @@ ValaMap* vala_scope_get_symbol_table (ValaScope* self) {
 }
 
 
-ValaSymbol* vala_scope_get_owner (ValaScope* self) {
+ValaSymbol*
+vala_scope_get_owner (ValaScope* self)
+{
 	ValaSymbol* result;
-	ValaSymbol* _tmp0_ = NULL;
+	ValaSymbol* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_owner;
 	result = _tmp0_;
@@ -444,17 +335,20 @@ ValaSymbol* vala_scope_get_owner (ValaScope* self) {
 }
 
 
-void vala_scope_set_owner (ValaScope* self, ValaSymbol* value) {
-	ValaSymbol* _tmp0_ = NULL;
+void
+vala_scope_set_owner (ValaScope* self,
+                      ValaSymbol* value)
+{
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	self->priv->_owner = _tmp0_;
+	self->priv->_owner = value;
 }
 
 
-ValaScope* vala_scope_get_parent_scope (ValaScope* self) {
+ValaScope*
+vala_scope_get_parent_scope (ValaScope* self)
+{
 	ValaScope* result;
-	ValaScope* _tmp0_ = NULL;
+	ValaScope* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_parent_scope;
 	result = _tmp0_;
@@ -462,27 +356,35 @@ ValaScope* vala_scope_get_parent_scope (ValaScope* self) {
 }
 
 
-void vala_scope_set_parent_scope (ValaScope* self, ValaScope* value) {
-	ValaScope* _tmp0_ = NULL;
+void
+vala_scope_set_parent_scope (ValaScope* self,
+                             ValaScope* value)
+{
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	self->priv->_parent_scope = _tmp0_;
+	self->priv->_parent_scope = value;
 }
 
 
-static void vala_value_scope_init (GValue* value) {
+static void
+vala_value_scope_init (GValue* value)
+{
 	value->data[0].v_pointer = NULL;
 }
 
 
-static void vala_value_scope_free_value (GValue* value) {
+static void
+vala_value_scope_free_value (GValue* value)
+{
 	if (value->data[0].v_pointer) {
 		vala_scope_unref (value->data[0].v_pointer);
 	}
 }
 
 
-static void vala_value_scope_copy_value (const GValue* src_value, GValue* dest_value) {
+static void
+vala_value_scope_copy_value (const GValue* src_value,
+                             GValue* dest_value)
+{
 	if (src_value->data[0].v_pointer) {
 		dest_value->data[0].v_pointer = vala_scope_ref (src_value->data[0].v_pointer);
 	} else {
@@ -491,14 +393,21 @@ static void vala_value_scope_copy_value (const GValue* src_value, GValue* dest_v
 }
 
 
-static gpointer vala_value_scope_peek_pointer (const GValue* value) {
+static gpointer
+vala_value_scope_peek_pointer (const GValue* value)
+{
 	return value->data[0].v_pointer;
 }
 
 
-static gchar* vala_value_scope_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar*
+vala_value_scope_collect_value (GValue* value,
+                                guint n_collect_values,
+                                GTypeCValue* collect_values,
+                                guint collect_flags)
+{
 	if (collect_values[0].v_pointer) {
-		ValaScope* object;
+		ValaScope * object;
 		object = collect_values[0].v_pointer;
 		if (object->parent_instance.g_class == NULL) {
 			return g_strconcat ("invalid unclassed object pointer for value type `", G_VALUE_TYPE_NAME (value), "'", NULL);
@@ -513,8 +422,13 @@ static gchar* vala_value_scope_collect_value (GValue* value, guint n_collect_val
 }
 
 
-static gchar* vala_value_scope_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
-	ValaScope** object_p;
+static gchar*
+vala_value_scope_lcopy_value (const GValue* value,
+                              guint n_collect_values,
+                              GTypeCValue* collect_values,
+                              guint collect_flags)
+{
+	ValaScope ** object_p;
 	object_p = collect_values[0].v_pointer;
 	if (!object_p) {
 		return g_strdup_printf ("value location for `%s' passed as NULL", G_VALUE_TYPE_NAME (value));
@@ -530,7 +444,13 @@ static gchar* vala_value_scope_lcopy_value (const GValue* value, guint n_collect
 }
 
 
-GParamSpec* vala_param_spec_scope (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
+GParamSpec*
+vala_param_spec_scope (const gchar* name,
+                       const gchar* nick,
+                       const gchar* blurb,
+                       GType object_type,
+                       GParamFlags flags)
+{
 	ValaParamSpecScope* spec;
 	g_return_val_if_fail (g_type_is_a (object_type, VALA_TYPE_SCOPE), NULL);
 	spec = g_param_spec_internal (G_TYPE_PARAM_OBJECT, name, nick, blurb, flags);
@@ -539,14 +459,19 @@ GParamSpec* vala_param_spec_scope (const gchar* name, const gchar* nick, const g
 }
 
 
-gpointer vala_value_get_scope (const GValue* value) {
+gpointer
+vala_value_get_scope (const GValue* value)
+{
 	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_SCOPE), NULL);
 	return value->data[0].v_pointer;
 }
 
 
-void vala_value_set_scope (GValue* value, gpointer v_object) {
-	ValaScope* old;
+void
+vala_value_set_scope (GValue* value,
+                      gpointer v_object)
+{
+	ValaScope * old;
 	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_SCOPE));
 	old = value->data[0].v_pointer;
 	if (v_object) {
@@ -563,8 +488,11 @@ void vala_value_set_scope (GValue* value, gpointer v_object) {
 }
 
 
-void vala_value_take_scope (GValue* value, gpointer v_object) {
-	ValaScope* old;
+void
+vala_value_take_scope (GValue* value,
+                       gpointer v_object)
+{
+	ValaScope * old;
 	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_SCOPE));
 	old = value->data[0].v_pointer;
 	if (v_object) {
@@ -580,20 +508,26 @@ void vala_value_take_scope (GValue* value, gpointer v_object) {
 }
 
 
-static void vala_scope_class_init (ValaScopeClass * klass) {
+static void
+vala_scope_class_init (ValaScopeClass * klass)
+{
 	vala_scope_parent_class = g_type_class_peek_parent (klass);
 	((ValaScopeClass *) klass)->finalize = vala_scope_finalize;
 	g_type_class_add_private (klass, sizeof (ValaScopePrivate));
 }
 
 
-static void vala_scope_instance_init (ValaScope * self) {
+static void
+vala_scope_instance_init (ValaScope * self)
+{
 	self->priv = VALA_SCOPE_GET_PRIVATE (self);
 	self->ref_count = 1;
 }
 
 
-static void vala_scope_finalize (ValaScope* obj) {
+static void
+vala_scope_finalize (ValaScope * obj)
+{
 	ValaScope * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_SCOPE, ValaScope);
 	g_signal_handlers_destroy (self);
@@ -605,7 +539,9 @@ static void vala_scope_finalize (ValaScope* obj) {
 /**
  * Represents a part of the symbol tree.
  */
-GType vala_scope_get_type (void) {
+GType
+vala_scope_get_type (void)
+{
 	static volatile gsize vala_scope_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_scope_type_id__volatile)) {
 		static const GTypeValueTable g_define_type_value_table = { vala_value_scope_init, vala_value_scope_free_value, vala_value_scope_copy_value, vala_value_scope_peek_pointer, "p", vala_value_scope_collect_value, "p", vala_value_scope_lcopy_value };
@@ -619,16 +555,20 @@ GType vala_scope_get_type (void) {
 }
 
 
-gpointer vala_scope_ref (gpointer instance) {
-	ValaScope* self;
+gpointer
+vala_scope_ref (gpointer instance)
+{
+	ValaScope * self;
 	self = instance;
 	g_atomic_int_inc (&self->ref_count);
 	return instance;
 }
 
 
-void vala_scope_unref (gpointer instance) {
-	ValaScope* self;
+void
+vala_scope_unref (gpointer instance)
+{
+	ValaScope * self;
 	self = instance;
 	if (g_atomic_int_dec_and_test (&self->ref_count)) {
 		VALA_SCOPE_GET_CLASS (self)->finalize (self);

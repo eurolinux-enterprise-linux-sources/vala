@@ -96,6 +96,16 @@ public class Vala.InitializerList : Expression {
 		return true;
 	}
 
+	public override bool is_accessible (Symbol sym) {
+		foreach (Expression initializer in initializers) {
+			if (!initializer.is_accessible (sym)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	public override void replace_expression (Expression old_node, Expression new_node) {
 		for (int i = 0; i < initializers.size; i++) {
 			if (initializers[i] == old_node) {
@@ -119,9 +129,18 @@ public class Vala.InitializerList : Expression {
 			/* initializer is used as array initializer */
 			var array_type = (ArrayType) target_type;
 
-			if (!(parent_node is ArrayCreationExpression)
-			      && !(parent_node is Constant)
-			      && !(parent_node is InitializerList)) {
+			bool requires_constants_only = false;
+			unowned CodeNode? node = parent_node;
+			while (node != null) {
+				if (node is Constant) {
+					requires_constants_only = true;
+					break;
+				}
+				node = node.parent_node;
+			}
+
+			if (!(parent_node is ArrayCreationExpression) && !requires_constants_only
+			    && (!(parent_node is InitializerList) || ((InitializerList) parent_node).target_type.data_type is Struct)) {
 				// transform shorthand form
 				//     int[] array = { 42 };
 				// into

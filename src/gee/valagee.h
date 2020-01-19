@@ -140,11 +140,14 @@ struct _ValaCollection {
 
 struct _ValaCollectionClass {
 	ValaIterableClass parent_class;
+	gint (*get_size) (ValaCollection* self);
+	gboolean (*get_is_empty) (ValaCollection* self);
 	gboolean (*contains) (ValaCollection* self, gconstpointer item);
 	gboolean (*add) (ValaCollection* self, gconstpointer item);
 	gboolean (*remove) (ValaCollection* self, gconstpointer item);
 	void (*clear) (ValaCollection* self);
-	gint (*get_size) (ValaCollection* self);
+	gboolean (*add_all) (ValaCollection* self, ValaCollection* collection);
+	gpointer* (*to_array) (ValaCollection* self, int* result_length1);
 };
 
 struct _ValaList {
@@ -158,11 +161,19 @@ struct _ValaListClass {
 	void (*set) (ValaList* self, gint index, gconstpointer item);
 	gint (*index_of) (ValaList* self, gconstpointer item);
 	void (*insert) (ValaList* self, gint index, gconstpointer item);
-	void (*remove_at) (ValaList* self, gint index);
+	gpointer (*remove_at) (ValaList* self, gint index);
+	gpointer (*first) (ValaList* self);
+	gpointer (*last) (ValaList* self);
+	void (*insert_all) (ValaList* self, gint index, ValaCollection* collection);
+	void (*sort) (ValaList* self, GCompareDataFunc compare_func, gpointer compare_func_target, GDestroyNotify compare_func_target_destroy_notify);
 };
 
 struct _ValaArrayList {
 	ValaList parent_instance;
+	gpointer* _items;
+	gint _items_length1;
+	gint __items_size_;
+	gint _size;
 	ValaArrayListPrivate * priv;
 };
 
@@ -179,6 +190,7 @@ struct _ValaMap {
 struct _ValaMapClass {
 	GTypeClass parent_class;
 	void (*finalize) (ValaMap *self);
+	gint (*get_size) (ValaMap* self);
 	ValaSet* (*get_keys) (ValaMap* self);
 	ValaCollection* (*get_values) (ValaMap* self);
 	gboolean (*contains) (ValaMap* self, gconstpointer key);
@@ -187,7 +199,6 @@ struct _ValaMapClass {
 	gboolean (*remove) (ValaMap* self, gconstpointer key);
 	void (*clear) (ValaMap* self);
 	ValaMapIterator* (*map_iterator) (ValaMap* self);
-	gint (*get_size) (ValaMap* self);
 };
 
 struct _ValaHashMap {
@@ -241,89 +252,214 @@ struct _ValaIteratorClass {
 	GTypeClass parent_class;
 	void (*finalize) (ValaIterator *self);
 	gboolean (*next) (ValaIterator* self);
+	gboolean (*has_next) (ValaIterator* self);
 	gpointer (*get) (ValaIterator* self);
+	void (*remove) (ValaIterator* self);
+	gboolean (*get_valid) (ValaIterator* self);
 };
 
 
 gpointer vala_iterable_ref (gpointer instance);
 void vala_iterable_unref (gpointer instance);
-GParamSpec* vala_param_spec_iterable (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_iterable (GValue* value, gpointer v_object);
-void vala_value_take_iterable (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_iterable (const gchar* name,
+                                      const gchar* nick,
+                                      const gchar* blurb,
+                                      GType object_type,
+                                      GParamFlags flags);
+void vala_value_set_iterable (GValue* value,
+                              gpointer v_object);
+void vala_value_take_iterable (GValue* value,
+                               gpointer v_object);
 gpointer vala_value_get_iterable (const GValue* value);
 GType vala_iterable_get_type (void) G_GNUC_CONST;
 gpointer vala_iterator_ref (gpointer instance);
 void vala_iterator_unref (gpointer instance);
-GParamSpec* vala_param_spec_iterator (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_iterator (GValue* value, gpointer v_object);
-void vala_value_take_iterator (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_iterator (const gchar* name,
+                                      const gchar* nick,
+                                      const gchar* blurb,
+                                      GType object_type,
+                                      GParamFlags flags);
+void vala_value_set_iterator (GValue* value,
+                              gpointer v_object);
+void vala_value_take_iterator (GValue* value,
+                               gpointer v_object);
 gpointer vala_value_get_iterator (const GValue* value);
 GType vala_iterator_get_type (void) G_GNUC_CONST;
 GType vala_collection_get_type (void) G_GNUC_CONST;
 GType vala_list_get_type (void) G_GNUC_CONST;
 GType vala_array_list_get_type (void) G_GNUC_CONST;
-ValaArrayList* vala_array_list_new (GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GEqualFunc equal_func);
-ValaArrayList* vala_array_list_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GEqualFunc equal_func);
-void vala_array_list_set_equal_func (ValaArrayList* self, GEqualFunc value);
-gboolean vala_collection_contains (ValaCollection* self, gconstpointer item);
-gboolean vala_collection_add (ValaCollection* self, gconstpointer item);
-gboolean vala_collection_remove (ValaCollection* self, gconstpointer item);
+ValaArrayList* vala_array_list_new (GType g_type,
+                                    GBoxedCopyFunc g_dup_func,
+                                    GDestroyNotify g_destroy_func,
+                                    GEqualFunc equal_func);
+ValaArrayList* vala_array_list_construct (GType object_type,
+                                          GType g_type,
+                                          GBoxedCopyFunc g_dup_func,
+                                          GDestroyNotify g_destroy_func,
+                                          GEqualFunc equal_func);
+void vala_array_list_set_equal_func (ValaArrayList* self,
+                                     GEqualFunc value);
+gboolean vala_collection_contains (ValaCollection* self,
+                                   gconstpointer item);
+gboolean vala_collection_add (ValaCollection* self,
+                              gconstpointer item);
+gboolean vala_collection_remove (ValaCollection* self,
+                                 gconstpointer item);
 void vala_collection_clear (ValaCollection* self);
-ValaCollection* vala_collection_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func);
+gboolean vala_collection_add_all (ValaCollection* self,
+                                  ValaCollection* collection);
+gpointer* vala_collection_to_array (ValaCollection* self,
+                                    int* result_length1);
+ValaCollection* vala_collection_construct (GType object_type,
+                                           GType g_type,
+                                           GBoxedCopyFunc g_dup_func,
+                                           GDestroyNotify g_destroy_func);
 gint vala_collection_get_size (ValaCollection* self);
+gboolean vala_collection_get_is_empty (ValaCollection* self);
 gpointer vala_map_ref (gpointer instance);
 void vala_map_unref (gpointer instance);
-GParamSpec* vala_param_spec_map (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_map (GValue* value, gpointer v_object);
-void vala_value_take_map (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_map (const gchar* name,
+                                 const gchar* nick,
+                                 const gchar* blurb,
+                                 GType object_type,
+                                 GParamFlags flags);
+void vala_value_set_map (GValue* value,
+                         gpointer v_object);
+void vala_value_take_map (GValue* value,
+                          gpointer v_object);
 gpointer vala_value_get_map (const GValue* value);
 GType vala_map_get_type (void) G_GNUC_CONST;
 GType vala_set_get_type (void) G_GNUC_CONST;
 gpointer vala_map_iterator_ref (gpointer instance);
 void vala_map_iterator_unref (gpointer instance);
-GParamSpec* vala_param_spec_map_iterator (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_map_iterator (GValue* value, gpointer v_object);
-void vala_value_take_map_iterator (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_map_iterator (const gchar* name,
+                                          const gchar* nick,
+                                          const gchar* blurb,
+                                          GType object_type,
+                                          GParamFlags flags);
+void vala_value_set_map_iterator (GValue* value,
+                                  gpointer v_object);
+void vala_value_take_map_iterator (GValue* value,
+                                   gpointer v_object);
 gpointer vala_value_get_map_iterator (const GValue* value);
 GType vala_map_iterator_get_type (void) G_GNUC_CONST;
 GType vala_hash_map_get_type (void) G_GNUC_CONST;
-ValaHashMap* vala_hash_map_new (GType k_type, GBoxedCopyFunc k_dup_func, GDestroyNotify k_destroy_func, GType v_type, GBoxedCopyFunc v_dup_func, GDestroyNotify v_destroy_func, GHashFunc key_hash_func, GEqualFunc key_equal_func, GEqualFunc value_equal_func);
-ValaHashMap* vala_hash_map_construct (GType object_type, GType k_type, GBoxedCopyFunc k_dup_func, GDestroyNotify k_destroy_func, GType v_type, GBoxedCopyFunc v_dup_func, GDestroyNotify v_destroy_func, GHashFunc key_hash_func, GEqualFunc key_equal_func, GEqualFunc value_equal_func);
-void vala_hash_map_set_key_hash_func (ValaHashMap* self, GHashFunc value);
-void vala_hash_map_set_key_equal_func (ValaHashMap* self, GEqualFunc value);
-void vala_hash_map_set_value_equal_func (ValaHashMap* self, GEqualFunc value);
+ValaHashMap* vala_hash_map_new (GType k_type,
+                                GBoxedCopyFunc k_dup_func,
+                                GDestroyNotify k_destroy_func,
+                                GType v_type,
+                                GBoxedCopyFunc v_dup_func,
+                                GDestroyNotify v_destroy_func,
+                                GHashFunc key_hash_func,
+                                GEqualFunc key_equal_func,
+                                GEqualFunc value_equal_func);
+ValaHashMap* vala_hash_map_construct (GType object_type,
+                                      GType k_type,
+                                      GBoxedCopyFunc k_dup_func,
+                                      GDestroyNotify k_destroy_func,
+                                      GType v_type,
+                                      GBoxedCopyFunc v_dup_func,
+                                      GDestroyNotify v_destroy_func,
+                                      GHashFunc key_hash_func,
+                                      GEqualFunc key_equal_func,
+                                      GEqualFunc value_equal_func);
+void vala_hash_map_set_key_hash_func (ValaHashMap* self,
+                                      GHashFunc value);
+void vala_hash_map_set_key_equal_func (ValaHashMap* self,
+                                       GEqualFunc value);
+void vala_hash_map_set_value_equal_func (ValaHashMap* self,
+                                         GEqualFunc value);
 GType vala_hash_set_get_type (void) G_GNUC_CONST;
-ValaHashSet* vala_hash_set_new (GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GHashFunc hash_func, GEqualFunc equal_func);
-ValaHashSet* vala_hash_set_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GHashFunc hash_func, GEqualFunc equal_func);
-void vala_hash_set_set_hash_func (ValaHashSet* self, GHashFunc value);
-void vala_hash_set_set_equal_func (ValaHashSet* self, GEqualFunc value);
+ValaHashSet* vala_hash_set_new (GType g_type,
+                                GBoxedCopyFunc g_dup_func,
+                                GDestroyNotify g_destroy_func,
+                                GHashFunc hash_func,
+                                GEqualFunc equal_func);
+ValaHashSet* vala_hash_set_construct (GType object_type,
+                                      GType g_type,
+                                      GBoxedCopyFunc g_dup_func,
+                                      GDestroyNotify g_destroy_func,
+                                      GHashFunc hash_func,
+                                      GEqualFunc equal_func);
+void vala_hash_set_set_hash_func (ValaHashSet* self,
+                                  GHashFunc value);
+void vala_hash_set_set_equal_func (ValaHashSet* self,
+                                   GEqualFunc value);
 GType vala_iterable_get_element_type (ValaIterable* self);
 ValaIterator* vala_iterable_iterator (ValaIterable* self);
-ValaIterable* vala_iterable_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func);
+ValaIterable* vala_iterable_construct (GType object_type,
+                                       GType g_type,
+                                       GBoxedCopyFunc g_dup_func,
+                                       GDestroyNotify g_destroy_func);
 gboolean vala_map_iterator_next (ValaMapIterator* self);
 gpointer vala_map_iterator_get_key (ValaMapIterator* self);
 gpointer vala_map_iterator_get_value (ValaMapIterator* self);
-ValaMapIterator* vala_map_iterator_construct (GType object_type, GType k_type, GBoxedCopyFunc k_dup_func, GDestroyNotify k_destroy_func, GType v_type, GBoxedCopyFunc v_dup_func, GDestroyNotify v_destroy_func);
+ValaMapIterator* vala_map_iterator_construct (GType object_type,
+                                              GType k_type,
+                                              GBoxedCopyFunc k_dup_func,
+                                              GDestroyNotify k_destroy_func,
+                                              GType v_type,
+                                              GBoxedCopyFunc v_dup_func,
+                                              GDestroyNotify v_destroy_func);
 gboolean vala_iterator_next (ValaIterator* self);
+gboolean vala_iterator_has_next (ValaIterator* self);
 gpointer vala_iterator_get (ValaIterator* self);
-ValaIterator* vala_iterator_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func);
-gpointer vala_list_get (ValaList* self, gint index);
-void vala_list_set (ValaList* self, gint index, gconstpointer item);
-gint vala_list_index_of (ValaList* self, gconstpointer item);
-void vala_list_insert (ValaList* self, gint index, gconstpointer item);
-void vala_list_remove_at (ValaList* self, gint index);
-ValaList* vala_list_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func);
+void vala_iterator_remove (ValaIterator* self);
+ValaIterator* vala_iterator_construct (GType object_type,
+                                       GType g_type,
+                                       GBoxedCopyFunc g_dup_func,
+                                       GDestroyNotify g_destroy_func);
+gboolean vala_iterator_get_valid (ValaIterator* self);
+gpointer vala_list_get (ValaList* self,
+                        gint index);
+void vala_list_set (ValaList* self,
+                    gint index,
+                    gconstpointer item);
+gint vala_list_index_of (ValaList* self,
+                         gconstpointer item);
+void vala_list_insert (ValaList* self,
+                       gint index,
+                       gconstpointer item);
+gpointer vala_list_remove_at (ValaList* self,
+                              gint index);
+gpointer vala_list_first (ValaList* self);
+gpointer vala_list_last (ValaList* self);
+void vala_list_insert_all (ValaList* self,
+                           gint index,
+                           ValaCollection* collection);
+void vala_list_sort (ValaList* self,
+                     GCompareDataFunc compare_func,
+                     gpointer compare_func_target,
+                     GDestroyNotify compare_func_target_destroy_notify);
+ValaList* vala_list_construct (GType object_type,
+                               GType g_type,
+                               GBoxedCopyFunc g_dup_func,
+                               GDestroyNotify g_destroy_func);
 ValaSet* vala_map_get_keys (ValaMap* self);
 ValaCollection* vala_map_get_values (ValaMap* self);
-gboolean vala_map_contains (ValaMap* self, gconstpointer key);
-gpointer vala_map_get (ValaMap* self, gconstpointer key);
-void vala_map_set (ValaMap* self, gconstpointer key, gconstpointer value);
-gboolean vala_map_remove (ValaMap* self, gconstpointer key);
+gboolean vala_map_contains (ValaMap* self,
+                            gconstpointer key);
+gpointer vala_map_get (ValaMap* self,
+                       gconstpointer key);
+void vala_map_set (ValaMap* self,
+                   gconstpointer key,
+                   gconstpointer value);
+gboolean vala_map_remove (ValaMap* self,
+                          gconstpointer key);
 void vala_map_clear (ValaMap* self);
 ValaMapIterator* vala_map_map_iterator (ValaMap* self);
-ValaMap* vala_map_construct (GType object_type, GType k_type, GBoxedCopyFunc k_dup_func, GDestroyNotify k_destroy_func, GType v_type, GBoxedCopyFunc v_dup_func, GDestroyNotify v_destroy_func);
+ValaMap* vala_map_construct (GType object_type,
+                             GType k_type,
+                             GBoxedCopyFunc k_dup_func,
+                             GDestroyNotify k_destroy_func,
+                             GType v_type,
+                             GBoxedCopyFunc v_dup_func,
+                             GDestroyNotify v_destroy_func);
 gint vala_map_get_size (ValaMap* self);
-ValaSet* vala_set_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func);
+ValaSet* vala_set_construct (GType object_type,
+                             GType g_type,
+                             GBoxedCopyFunc g_dup_func,
+                             GDestroyNotify g_destroy_func);
 
 
 G_END_DECLS

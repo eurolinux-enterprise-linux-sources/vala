@@ -58,7 +58,7 @@ public class Vala.BinaryExpression : Expression {
 		}
 	}
 	
-	public bool chained;
+	public bool is_chained { get; private set; }
 
 	private Expression _left;
 	private Expression _right;
@@ -76,6 +76,15 @@ public class Vala.BinaryExpression : Expression {
 		operator = op;
 		left = _left;
 		right = _right;
+		is_chained = false;
+		source_reference = source;
+	}
+
+	public BinaryExpression.chained (BinaryOperator op, Expression _left, Expression _right, SourceReference? source = null) {
+		operator = op;
+		left = _left;
+		right = _right;
+		is_chained = true;
 		source_reference = source;
 	}
 
@@ -99,7 +108,7 @@ public class Vala.BinaryExpression : Expression {
 		}
 	}
 
-	public string get_operator_string () {
+	private unowned string get_operator_string () {
 		switch (_operator) {
 		case BinaryOperator.PLUS: return "+";
 		case BinaryOperator.MINUS: return "-";
@@ -139,6 +148,10 @@ public class Vala.BinaryExpression : Expression {
 
 	public override bool is_non_null () {
 		return left.is_non_null () && right.is_non_null ();
+	}
+
+	public override bool is_accessible (Symbol sym) {
+		return left.is_accessible (sym) && right.is_accessible (sym);
 	}
 
 	public override bool check (CodeContext context) {
@@ -206,11 +219,30 @@ public class Vala.BinaryExpression : Expression {
 			}
 
 			DataType local_type = null;
-			if (left.value_type != null) {
+			bool cast_non_null = false;
+			if (left.value_type is NullType && right.value_type != null) {
+				Report.warning (left.source_reference, "left operand is always null");
+				local_type = right.value_type.copy ();
+				local_type.nullable = true;
+				if (!right.value_type.nullable) {
+					cast_non_null = true;
+				}
+			} else if (left.value_type != null) {
 				local_type = left.value_type.copy ();
 				if (right.value_type != null && right.value_type.value_owned) {
 					// value owned if either left or right is owned
 					local_type.value_owned = true;
+				}
+				if (context.experimental_non_null) {
+					if (!local_type.nullable) {
+						Report.warning (left.source_reference, "left operand is never null");
+						if (right.value_type != null && right.value_type.nullable) {
+							local_type.nullable = true;
+							cast_non_null = true;
+						}
+					} else if (right.value_type != null && !right.value_type.nullable) {
+						cast_non_null = true;
+					}
 				}
 			} else if (right.value_type != null) {
 				local_type = right.value_type.copy ();
@@ -242,12 +274,36 @@ public class Vala.BinaryExpression : Expression {
 				return false;
 			}
 
-			var temp_access = SemanticAnalyzer.create_temp_access (local, target_type);
-			temp_access.check (context);
+			var replace_expr = SemanticAnalyzer.create_temp_access (local, target_type);
+			if (cast_non_null && replace_expr.target_type != null) {
+				var cast = new CastExpression.non_null (replace_expr, source_reference);
+				cast.target_type = replace_expr.target_type.copy ();
+				cast.target_type.nullable = false;
+				replace_expr = cast;
+			}
+			replace_expr.check (context);
 
-			parent_node.replace_expression (this, temp_access);
+			parent_node.replace_expression (this, replace_expr);
 
 			return true;
+		}
+
+		// enum-type inference
+		if (target_type != null && target_type.data_type is Enum
+		    && (operator == BinaryOperator.BITWISE_AND || operator == BinaryOperator.BITWISE_OR)) {
+			left.target_type = target_type.copy ();
+			right.target_type = target_type.copy ();
+		}
+		left.check (context);
+		if (left.value_type != null && left.value_type.data_type is Enum
+		    && (operator == BinaryOperator.EQUALITY || operator == BinaryOperator.INEQUALITY)) {
+			right.target_type = left.value_type.copy ();
+		}
+		right.check (context);
+		if (right.value_type != null && right.value_type.data_type is Enum
+		    && (operator == BinaryOperator.EQUALITY || operator == BinaryOperator.INEQUALITY)) {
+			left.target_type = right.value_type.copy ();
+			//TODO bug 666035 -- re-check left how?
 		}
 
 		if (!left.check (context) || !right.check (context)) {
@@ -378,7 +434,7 @@ public class Vala.BinaryExpression : Expression {
 			} else {
 				DataType resulting_type;
 
-				if (chained) {
+				if (is_chained) {
 					var lbe = (BinaryExpression) left;
 					resulting_type = context.analyzer.get_arithmetic_result_type (lbe.right.target_type, right.target_type);
 				} else {
@@ -391,7 +447,7 @@ public class Vala.BinaryExpression : Expression {
 					return false;
 				}
 
-				if (!chained) {
+				if (!is_chained) {
 					left.target_type = resulting_type.copy ();
 				}
 				right.target_type = resulting_type.copy ();

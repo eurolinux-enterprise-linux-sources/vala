@@ -23,35 +23,13 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
+#include "valagee.h"
 #include <gobject/gvaluecollector.h>
 
-
-#define VALA_TYPE_ITERATOR (vala_iterator_get_type ())
-#define VALA_ITERATOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_ITERATOR, ValaIterator))
-#define VALA_ITERATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_ITERATOR, ValaIteratorClass))
-#define VALA_IS_ITERATOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_ITERATOR))
-#define VALA_IS_ITERATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_ITERATOR))
-#define VALA_ITERATOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_ITERATOR, ValaIteratorClass))
-
-typedef struct _ValaIterator ValaIterator;
-typedef struct _ValaIteratorClass ValaIteratorClass;
-typedef struct _ValaIteratorPrivate ValaIteratorPrivate;
 typedef struct _ValaParamSpecIterator ValaParamSpecIterator;
-
-struct _ValaIterator {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	ValaIteratorPrivate * priv;
-};
-
-struct _ValaIteratorClass {
-	GTypeClass parent_class;
-	void (*finalize) (ValaIterator *self);
-	gboolean (*next) (ValaIterator* self);
-	gpointer (*get) (ValaIterator* self);
-};
 
 struct _ValaIteratorPrivate {
 	GType g_type;
@@ -66,23 +44,12 @@ struct _ValaParamSpecIterator {
 
 static gpointer vala_iterator_parent_class = NULL;
 
-gpointer vala_iterator_ref (gpointer instance);
-void vala_iterator_unref (gpointer instance);
-GParamSpec* vala_param_spec_iterator (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_iterator (GValue* value, gpointer v_object);
-void vala_value_take_iterator (GValue* value, gpointer v_object);
-gpointer vala_value_get_iterator (const GValue* value);
-GType vala_iterator_get_type (void) G_GNUC_CONST;
 #define VALA_ITERATOR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_ITERATOR, ValaIteratorPrivate))
-enum  {
-	VALA_ITERATOR_DUMMY_PROPERTY
-};
-gboolean vala_iterator_next (ValaIterator* self);
 static gboolean vala_iterator_real_next (ValaIterator* self);
-gpointer vala_iterator_get (ValaIterator* self);
+static gboolean vala_iterator_real_has_next (ValaIterator* self);
 static gpointer vala_iterator_real_get (ValaIterator* self);
-ValaIterator* vala_iterator_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func);
-static void vala_iterator_finalize (ValaIterator* obj);
+static void vala_iterator_real_remove (ValaIterator* self);
+static void vala_iterator_finalize (ValaIterator * obj);
 
 
 /**
@@ -90,16 +57,42 @@ static void vala_iterator_finalize (ValaIterator* obj);
  *
  * @return true if the iterator has a next element
  */
-static gboolean vala_iterator_real_next (ValaIterator* self) {
+static gboolean
+vala_iterator_real_next (ValaIterator* self)
+{
 	gboolean _tmp0_ = FALSE;
 	g_critical ("Type `%s' does not implement abstract method `vala_iterator_next'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return _tmp0_;
 }
 
 
-gboolean vala_iterator_next (ValaIterator* self) {
+gboolean
+vala_iterator_next (ValaIterator* self)
+{
 	g_return_val_if_fail (self != NULL, FALSE);
 	return VALA_ITERATOR_GET_CLASS (self)->next (self);
+}
+
+
+/**
+ * Checks whether there is a next element in the iteration.
+ *
+ * @return ``true`` if the iterator has a next element
+ */
+static gboolean
+vala_iterator_real_has_next (ValaIterator* self)
+{
+	gboolean _tmp0_ = FALSE;
+	g_critical ("Type `%s' does not implement abstract method `vala_iterator_has_next'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
+	return _tmp0_;
+}
+
+
+gboolean
+vala_iterator_has_next (ValaIterator* self)
+{
+	g_return_val_if_fail (self != NULL, FALSE);
+	return VALA_ITERATOR_GET_CLASS (self)->has_next (self);
 }
 
 
@@ -108,19 +101,49 @@ gboolean vala_iterator_next (ValaIterator* self) {
  *
  * @return the current element in the iteration
  */
-static gpointer vala_iterator_real_get (ValaIterator* self) {
+static gpointer
+vala_iterator_real_get (ValaIterator* self)
+{
 	g_critical ("Type `%s' does not implement abstract method `vala_iterator_get'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return NULL;
 }
 
 
-gpointer vala_iterator_get (ValaIterator* self) {
+gpointer
+vala_iterator_get (ValaIterator* self)
+{
 	g_return_val_if_fail (self != NULL, NULL);
 	return VALA_ITERATOR_GET_CLASS (self)->get (self);
 }
 
 
-ValaIterator* vala_iterator_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func) {
+/**
+ * Removes the current element in the iteration. The cursor is set in an
+ * in-between state. Both {@link get} and {@link remove} will fail until
+ * the next move of the cursor (calling {@link next}).
+ */
+static void
+vala_iterator_real_remove (ValaIterator* self)
+{
+	g_critical ("Type `%s' does not implement abstract method `vala_iterator_remove'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
+	return;
+}
+
+
+void
+vala_iterator_remove (ValaIterator* self)
+{
+	g_return_if_fail (self != NULL);
+	VALA_ITERATOR_GET_CLASS (self)->remove (self);
+}
+
+
+ValaIterator*
+vala_iterator_construct (GType object_type,
+                         GType g_type,
+                         GBoxedCopyFunc g_dup_func,
+                         GDestroyNotify g_destroy_func)
+{
 	ValaIterator* self = NULL;
 	self = (ValaIterator*) g_type_create_instance (object_type);
 	self->priv->g_type = g_type;
@@ -130,19 +153,34 @@ ValaIterator* vala_iterator_construct (GType object_type, GType g_type, GBoxedCo
 }
 
 
-static void vala_value_iterator_init (GValue* value) {
+gboolean
+vala_iterator_get_valid (ValaIterator* self)
+{
+	g_return_val_if_fail (self != NULL, FALSE);
+	return VALA_ITERATOR_GET_CLASS (self)->get_valid (self);
+}
+
+
+static void
+vala_value_iterator_init (GValue* value)
+{
 	value->data[0].v_pointer = NULL;
 }
 
 
-static void vala_value_iterator_free_value (GValue* value) {
+static void
+vala_value_iterator_free_value (GValue* value)
+{
 	if (value->data[0].v_pointer) {
 		vala_iterator_unref (value->data[0].v_pointer);
 	}
 }
 
 
-static void vala_value_iterator_copy_value (const GValue* src_value, GValue* dest_value) {
+static void
+vala_value_iterator_copy_value (const GValue* src_value,
+                                GValue* dest_value)
+{
 	if (src_value->data[0].v_pointer) {
 		dest_value->data[0].v_pointer = vala_iterator_ref (src_value->data[0].v_pointer);
 	} else {
@@ -151,14 +189,21 @@ static void vala_value_iterator_copy_value (const GValue* src_value, GValue* des
 }
 
 
-static gpointer vala_value_iterator_peek_pointer (const GValue* value) {
+static gpointer
+vala_value_iterator_peek_pointer (const GValue* value)
+{
 	return value->data[0].v_pointer;
 }
 
 
-static gchar* vala_value_iterator_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar*
+vala_value_iterator_collect_value (GValue* value,
+                                   guint n_collect_values,
+                                   GTypeCValue* collect_values,
+                                   guint collect_flags)
+{
 	if (collect_values[0].v_pointer) {
-		ValaIterator* object;
+		ValaIterator * object;
 		object = collect_values[0].v_pointer;
 		if (object->parent_instance.g_class == NULL) {
 			return g_strconcat ("invalid unclassed object pointer for value type `", G_VALUE_TYPE_NAME (value), "'", NULL);
@@ -173,8 +218,13 @@ static gchar* vala_value_iterator_collect_value (GValue* value, guint n_collect_
 }
 
 
-static gchar* vala_value_iterator_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
-	ValaIterator** object_p;
+static gchar*
+vala_value_iterator_lcopy_value (const GValue* value,
+                                 guint n_collect_values,
+                                 GTypeCValue* collect_values,
+                                 guint collect_flags)
+{
+	ValaIterator ** object_p;
 	object_p = collect_values[0].v_pointer;
 	if (!object_p) {
 		return g_strdup_printf ("value location for `%s' passed as NULL", G_VALUE_TYPE_NAME (value));
@@ -190,7 +240,13 @@ static gchar* vala_value_iterator_lcopy_value (const GValue* value, guint n_coll
 }
 
 
-GParamSpec* vala_param_spec_iterator (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
+GParamSpec*
+vala_param_spec_iterator (const gchar* name,
+                          const gchar* nick,
+                          const gchar* blurb,
+                          GType object_type,
+                          GParamFlags flags)
+{
 	ValaParamSpecIterator* spec;
 	g_return_val_if_fail (g_type_is_a (object_type, VALA_TYPE_ITERATOR), NULL);
 	spec = g_param_spec_internal (G_TYPE_PARAM_OBJECT, name, nick, blurb, flags);
@@ -199,14 +255,19 @@ GParamSpec* vala_param_spec_iterator (const gchar* name, const gchar* nick, cons
 }
 
 
-gpointer vala_value_get_iterator (const GValue* value) {
+gpointer
+vala_value_get_iterator (const GValue* value)
+{
 	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_ITERATOR), NULL);
 	return value->data[0].v_pointer;
 }
 
 
-void vala_value_set_iterator (GValue* value, gpointer v_object) {
-	ValaIterator* old;
+void
+vala_value_set_iterator (GValue* value,
+                         gpointer v_object)
+{
+	ValaIterator * old;
 	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_ITERATOR));
 	old = value->data[0].v_pointer;
 	if (v_object) {
@@ -223,8 +284,11 @@ void vala_value_set_iterator (GValue* value, gpointer v_object) {
 }
 
 
-void vala_value_take_iterator (GValue* value, gpointer v_object) {
-	ValaIterator* old;
+void
+vala_value_take_iterator (GValue* value,
+                          gpointer v_object)
+{
+	ValaIterator * old;
 	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_ITERATOR));
 	old = value->data[0].v_pointer;
 	if (v_object) {
@@ -240,22 +304,30 @@ void vala_value_take_iterator (GValue* value, gpointer v_object) {
 }
 
 
-static void vala_iterator_class_init (ValaIteratorClass * klass) {
+static void
+vala_iterator_class_init (ValaIteratorClass * klass)
+{
 	vala_iterator_parent_class = g_type_class_peek_parent (klass);
 	((ValaIteratorClass *) klass)->finalize = vala_iterator_finalize;
 	g_type_class_add_private (klass, sizeof (ValaIteratorPrivate));
-	((ValaIteratorClass *) klass)->next = (gboolean (*)(ValaIterator*)) vala_iterator_real_next;
-	((ValaIteratorClass *) klass)->get = (gpointer (*)(ValaIterator*)) vala_iterator_real_get;
+	((ValaIteratorClass *) klass)->next = (gboolean (*) (ValaIterator *)) vala_iterator_real_next;
+	((ValaIteratorClass *) klass)->has_next = (gboolean (*) (ValaIterator *)) vala_iterator_real_has_next;
+	((ValaIteratorClass *) klass)->get = (gpointer (*) (ValaIterator *)) vala_iterator_real_get;
+	((ValaIteratorClass *) klass)->remove = (void (*) (ValaIterator *)) vala_iterator_real_remove;
 }
 
 
-static void vala_iterator_instance_init (ValaIterator * self) {
+static void
+vala_iterator_instance_init (ValaIterator * self)
+{
 	self->priv = VALA_ITERATOR_GET_PRIVATE (self);
 	self->ref_count = 1;
 }
 
 
-static void vala_iterator_finalize (ValaIterator* obj) {
+static void
+vala_iterator_finalize (ValaIterator * obj)
+{
 	ValaIterator * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_ITERATOR, ValaIterator);
 	g_signal_handlers_destroy (self);
@@ -266,7 +338,9 @@ static void vala_iterator_finalize (ValaIterator* obj) {
  * Implemented by classes that support a simple iteration over instances of the
  * collection.
  */
-GType vala_iterator_get_type (void) {
+GType
+vala_iterator_get_type (void)
+{
 	static volatile gsize vala_iterator_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_iterator_type_id__volatile)) {
 		static const GTypeValueTable g_define_type_value_table = { vala_value_iterator_init, vala_value_iterator_free_value, vala_value_iterator_copy_value, vala_value_iterator_peek_pointer, "p", vala_value_iterator_collect_value, "p", vala_value_iterator_lcopy_value };
@@ -280,16 +354,20 @@ GType vala_iterator_get_type (void) {
 }
 
 
-gpointer vala_iterator_ref (gpointer instance) {
-	ValaIterator* self;
+gpointer
+vala_iterator_ref (gpointer instance)
+{
+	ValaIterator * self;
 	self = instance;
 	g_atomic_int_inc (&self->ref_count);
 	return instance;
 }
 
 
-void vala_iterator_unref (gpointer instance) {
-	ValaIterator* self;
+void
+vala_iterator_unref (gpointer instance)
+{
+	ValaIterator * self;
 	self = instance;
 	if (g_atomic_int_dec_and_test (&self->ref_count)) {
 		VALA_ITERATOR_GET_CLASS (self)->finalize (self);

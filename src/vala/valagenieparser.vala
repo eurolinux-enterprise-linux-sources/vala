@@ -86,6 +86,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 	public void parse (CodeContext context) {
 		this.context = context;
 		context.accept (this);
+		this.context = null;
 	}
 
 	public override void visit_source_file (SourceFile source_file) {
@@ -100,9 +101,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 		if (size <= 0) {
 			SourceLocation begin, end;
 			TokenType type = scanner.read_token (out begin, out end);
-			tokens[index].type = type;
-			tokens[index].begin = begin;
-			tokens[index].end = end;
+			tokens[index] = { type, begin, end };
 			size = 1;
 		}
 		return (tokens[index].type != TokenType.EOF);
@@ -120,6 +119,14 @@ public class Vala.Genie.Parser : CodeVisitor {
 
 	inline bool accept (TokenType type) {
 		if (current () == type) {
+			next ();
+			return true;
+		}
+		return false;
+	}
+
+	inline bool accept_separator () {
+		if (current () == TokenType.COMMA || current () == TokenType.EOL) {
 			next ();
 			return true;
 		}
@@ -150,11 +157,10 @@ public class Vala.Genie.Parser : CodeVisitor {
 		return false;
 	}
 
-	string get_error (string msg) {
+	void report_parse_error (ParseError e) {
 		var begin = get_location ();
 		next ();
-		Report.error (get_src (begin), "syntax error, " + msg);
-		return msg;
+		Report.error (get_src (begin), "syntax error, " + e.message);
 	}
 
 	inline bool expect (TokenType type) throws ParseError {
@@ -165,7 +171,17 @@ public class Vala.Genie.Parser : CodeVisitor {
 		TokenType cur = current ();
 		TokenType pre =  tokens[index - 1].type;
 
-		throw new ParseError.SYNTAX (get_error ("expected %s but got %s with previous %s".printf (type.to_string (), cur.to_string (), pre.to_string())));
+		throw new ParseError.SYNTAX ("expected %s but got %s with previous %s", type.to_string (), cur.to_string (), pre.to_string());
+	}
+
+	inline bool expect_separator () throws ParseError {
+		if (accept_separator ()) {
+			return true;
+		}
+
+		TokenType cur = current ();
+
+		throw new ParseError.SYNTAX ("expected line end or comma but got %s", cur.to_string());
 	}
 
 	inline bool expect_terminator () throws ParseError {
@@ -175,7 +191,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 
 		TokenType cur = current ();
 
-		throw new ParseError.SYNTAX (get_error ("expected line end or semicolon but got %s".printf (cur.to_string())));
+		throw new ParseError.SYNTAX ("expected line end or semicolon but got %s", cur.to_string());
 	}
 
 	inline SourceLocation get_location () {
@@ -183,12 +199,14 @@ public class Vala.Genie.Parser : CodeVisitor {
 	}
 	
 	string get_current_string () {
-		return ((string) tokens[index].begin.pos).substring (0, (int) (tokens[index].end.pos - tokens[index].begin.pos));
+		var token = tokens[index];
+		return ((string) token.begin.pos).substring (0, (int) (token.end.pos - token.begin.pos));
 	}
 
 	string get_last_string () {
 		int last_index = (index + BUFFER_SIZE - 1) % BUFFER_SIZE;
-		return ((string) tokens[last_index].begin.pos).substring (0, (int) (tokens[last_index].end.pos - tokens[last_index].begin.pos));
+		var token = tokens[last_index];
+		return ((string) token.begin.pos).substring (0, (int) (token.end.pos - token.begin.pos));
 	}
 
 	SourceReference get_src (SourceLocation begin) {
@@ -198,7 +216,8 @@ public class Vala.Genie.Parser : CodeVisitor {
 	}
 
 	SourceReference get_current_src () {
-		return new SourceReference (scanner.source_file, tokens[index].begin, tokens[index].end);
+		var token = tokens[index];
+		return new SourceReference (scanner.source_file, token.begin, token.end);
 	}
 
 	void rollback (SourceLocation location) {
@@ -318,8 +337,10 @@ public class Vala.Genie.Parser : CodeVisitor {
 			}
 			break;
 		default:
-			throw new ParseError.SYNTAX (get_error ("expected identifier"));
-		}	
+			break;
+		}
+
+		throw new ParseError.SYNTAX ("expected identifier");
 	}
 
 	string parse_identifier () throws ParseError {
@@ -373,11 +394,16 @@ public class Vala.Genie.Parser : CodeVisitor {
 			next ();
 			return new NullLiteral (get_src (begin));
 		default:
-			throw new ParseError.SYNTAX (get_error ("expected literal"));
+			throw new ParseError.SYNTAX ("expected literal");
 		}
 	}
 
 	public void parse_file (SourceFile source_file) {
+		var has_global_context = (context != null);
+		if (!has_global_context) {
+			context = source_file.context;
+		}
+
 		scanner = new Scanner (source_file);
 		scanner.parse_file_comments ();
 		scanner.indent_spaces = 0;
@@ -405,10 +431,13 @@ public class Vala.Genie.Parser : CodeVisitor {
 			parse_using_directives (context.root);
 			parse_declarations (context.root, true);
 		} catch (ParseError e) {
-			// already reported
+			report_parse_error (e);
 		}
 		
 		scanner = null;
+		if (!has_global_context) {
+			context = null;
+		}
 	}
 
 	void skip_symbol_name () throws ParseError {
@@ -1055,7 +1084,7 @@ public class Vala.Genie.Parser : CodeVisitor {
  				// array of arrays: new T[][42]
  				
  				if (size_specified) {
-					throw new ParseError.SYNTAX (get_error ("size of inner arrays must not be specified in array creation expression"));
+					throw new ParseError.SYNTAX ("size of inner arrays must not be specified in array creation expression");
 				}
  				
 				etype = new ArrayType (etype, size_specifier_list.size, etype.source_reference);
@@ -1256,7 +1285,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 					case TokenType.PARAMS:
 					case TokenType.YIELD:
 						var inner = parse_unary_expression ();
-						return new CastExpression (inner, type, get_src (begin), false);
+						return new CastExpression (inner, type, get_src (begin));
 					default:
 						break;
 					}
@@ -1429,7 +1458,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 				case TokenType.AS:
 					next ();
 					var type = parse_type (true, false);
-					left = new CastExpression (left, type, get_src (begin), true);
+					left = new CastExpression.silent (left, type, get_src (begin));
 					break;
 				default:
 					found = false;
@@ -1791,6 +1820,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 					block.add_statement (stmt);
 				}
 			} catch (ParseError e) {
+				report_parse_error (e);
 				if (recover () != RecoveryState.STATEMENT_BEGIN) {
 					// beginning of next declaration or end of file reached
 					// return what we have so far
@@ -1869,7 +1899,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 		case TokenType.DELETE:	return parse_delete_statement ();
 		case TokenType.VAR:
 		case TokenType.CONST:
-			throw new ParseError.SYNTAX (get_error ("embedded statement cannot be declaration "));
+			throw new ParseError.SYNTAX ("embedded statement cannot be declaration ");
 		case TokenType.OP_INC:
 		case TokenType.OP_DEC:
 		case TokenType.SUPER:
@@ -1882,7 +1912,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 			if (is_expression ()) {
 				return parse_expression_statement ();
 			} else {
-				throw new ParseError.SYNTAX (get_error ("embedded statement cannot be declaration"));
+				throw new ParseError.SYNTAX ("embedded statement cannot be declaration");
 			}
 		}
 	}
@@ -2332,10 +2362,10 @@ public class Vala.Genie.Parser : CodeVisitor {
 				next ();
 				return "-" + get_last_string ();
 			default:
-				throw new ParseError.SYNTAX (get_error ("expected number"));
+				throw new ParseError.SYNTAX ("expected number");
 			}
 		default:
-			throw new ParseError.SYNTAX (get_error ("expected literal"));
+			throw new ParseError.SYNTAX ("expected literal");
 		}
 	}
 
@@ -2435,7 +2465,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 		TokenType cur = current ();
 		TokenType pre =  tokens[index-1].type;
 
-		throw new ParseError.SYNTAX (get_error ("expected declaration  but got %s with previous %s".printf (cur.to_string (), pre.to_string())));
+		throw new ParseError.SYNTAX ("expected declaration  but got %s with previous %s", cur.to_string (), pre.to_string());
 	}
 
 	void parse_declarations (Symbol parent, bool root = false) throws ParseError {
@@ -2454,6 +2484,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 					parse_interface_member ((Interface) parent);
 				}
 			} catch (ParseError e) {
+				report_parse_error (e);
 				int r;
 				do {
 					r = recover ();
@@ -2977,13 +3008,13 @@ public class Vala.Genie.Parser : CodeVisitor {
 			if ((method.is_abstract && method.is_virtual)
 				|| (method.is_abstract && method.overrides)
 				|| (method.is_virtual && method.overrides)) {
-				throw new ParseError.SYNTAX (get_error ("only one of `abstract', `virtual', or `override' may be specified"));
+				throw new ParseError.SYNTAX ("only one of `abstract', `virtual', or `override' may be specified");
 			}
 		} else {
 			if (ModifierFlags.ABSTRACT in flags
 				|| ModifierFlags.VIRTUAL in flags
 				|| ModifierFlags.OVERRIDE in flags) {
-				throw new ParseError.SYNTAX (get_error ("the modifiers `abstract', `virtual', and `override' are not valid for static methods"));
+				throw new ParseError.SYNTAX ("the modifiers `abstract', `virtual', and `override' are not valid for static methods");
 			}
 		}
 
@@ -3113,7 +3144,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 
 				if (accept (TokenType.GET)) {
 					if (prop.get_accessor != null) {
-						throw new ParseError.SYNTAX (get_error ("property get accessor already defined"));
+						throw new ParseError.SYNTAX ("property get accessor already defined");
 					}
 					Block block = null;
 					if (accept_block ()) {
@@ -3127,17 +3158,17 @@ public class Vala.Genie.Parser : CodeVisitor {
 					bool _construct = false;
 					if (accept (TokenType.SET)) {
 						if (readonly) {
-							throw new ParseError.SYNTAX (get_error ("set block not allowed for a read only property"));
+							throw new ParseError.SYNTAX ("set block not allowed for a read only property");
 						}
 						_construct = accept (TokenType.CONSTRUCT);
 					} else if (accept (TokenType.CONSTRUCT)) {
 						_construct = true;
 					} else if (!accept (TokenType.EOL)) {
-						throw new ParseError.SYNTAX (get_error ("expected get, set, or construct"));
+						throw new ParseError.SYNTAX ("expected get, set, or construct");
 					}
 
 					if (prop.set_accessor != null) {
-						throw new ParseError.SYNTAX (get_error ("property set accessor already defined"));
+						throw new ParseError.SYNTAX ("property set accessor already defined");
 					}
 
 					Block block = null;
@@ -3231,9 +3262,9 @@ public class Vala.Genie.Parser : CodeVisitor {
 		}
 		
 		if (ModifierFlags.STATIC in flags) {
-			throw new ParseError.SYNTAX (get_error ("`static' modifier not allowed on signals"));
+			throw new ParseError.SYNTAX ("`static' modifier not allowed on signals");
 		} else if (ModifierFlags.CLASS in flags) {
-			throw new ParseError.SYNTAX (get_error ("`class' modifier not allowed on signals"));
+			throw new ParseError.SYNTAX ("`class' modifier not allowed on signals");
 		}
 
 		set_attributes (sig, attrs);
@@ -3450,7 +3481,9 @@ public class Vala.Genie.Parser : CodeVisitor {
 			set_attributes (ev, value_attrs);
 
 			en.add_value (ev);
-			expect (TokenType.EOL);
+			if (expect_separator ()) {
+				accept (TokenType.EOL);
+			}
 		} while (true);
 		
 		expect (TokenType.DEDENT);
@@ -3710,7 +3743,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 		var type_param_list = parse_type_parameter_list ();
 		
 		if (ModifierFlags.NEW in flags) {
-			throw new ParseError.SYNTAX (get_error ("`new' modifier not allowed on delegates"));
+			throw new ParseError.SYNTAX ("`new' modifier not allowed on delegates");
 		}
 
 		var params = new ArrayList<Parameter> ();

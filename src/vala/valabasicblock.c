@@ -23,56 +23,16 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
+#include "vala.h"
 #include <valagee.h>
 #include <gobject/gvaluecollector.h>
 
-
-#define VALA_TYPE_BASIC_BLOCK (vala_basic_block_get_type ())
-#define VALA_BASIC_BLOCK(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_BASIC_BLOCK, ValaBasicBlock))
-#define VALA_BASIC_BLOCK_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_BASIC_BLOCK, ValaBasicBlockClass))
-#define VALA_IS_BASIC_BLOCK(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_BASIC_BLOCK))
-#define VALA_IS_BASIC_BLOCK_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_BASIC_BLOCK))
-#define VALA_BASIC_BLOCK_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_BASIC_BLOCK, ValaBasicBlockClass))
-
-typedef struct _ValaBasicBlock ValaBasicBlock;
-typedef struct _ValaBasicBlockClass ValaBasicBlockClass;
-typedef struct _ValaBasicBlockPrivate ValaBasicBlockPrivate;
-
-#define VALA_TYPE_CODE_NODE (vala_code_node_get_type ())
-#define VALA_CODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_NODE, ValaCodeNode))
-#define VALA_CODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_NODE, ValaCodeNodeClass))
-#define VALA_IS_CODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CODE_NODE))
-#define VALA_IS_CODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CODE_NODE))
-#define VALA_CODE_NODE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CODE_NODE, ValaCodeNodeClass))
-
-typedef struct _ValaCodeNode ValaCodeNode;
-typedef struct _ValaCodeNodeClass ValaCodeNodeClass;
-
-#define VALA_TYPE_PHI_FUNCTION (vala_phi_function_get_type ())
-#define VALA_PHI_FUNCTION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_PHI_FUNCTION, ValaPhiFunction))
-#define VALA_PHI_FUNCTION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_PHI_FUNCTION, ValaPhiFunctionClass))
-#define VALA_IS_PHI_FUNCTION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_PHI_FUNCTION))
-#define VALA_IS_PHI_FUNCTION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_PHI_FUNCTION))
-#define VALA_PHI_FUNCTION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_PHI_FUNCTION, ValaPhiFunctionClass))
-
-typedef struct _ValaPhiFunction ValaPhiFunction;
-typedef struct _ValaPhiFunctionClass ValaPhiFunctionClass;
 #define _vala_iterable_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterable_unref (var), NULL)))
 #define _vala_basic_block_unref0(var) ((var == NULL) ? NULL : (var = (vala_basic_block_unref (var), NULL)))
 typedef struct _ValaParamSpecBasicBlock ValaParamSpecBasicBlock;
-
-struct _ValaBasicBlock {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	ValaBasicBlockPrivate * priv;
-};
-
-struct _ValaBasicBlockClass {
-	GTypeClass parent_class;
-	void (*finalize) (ValaBasicBlock *self);
-};
 
 struct _ValaBasicBlockPrivate {
 	ValaList* nodes;
@@ -93,113 +53,85 @@ struct _ValaParamSpecBasicBlock {
 
 static gpointer vala_basic_block_parent_class = NULL;
 
-gpointer vala_basic_block_ref (gpointer instance);
-void vala_basic_block_unref (gpointer instance);
-GParamSpec* vala_param_spec_basic_block (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_basic_block (GValue* value, gpointer v_object);
-void vala_value_take_basic_block (GValue* value, gpointer v_object);
-gpointer vala_value_get_basic_block (const GValue* value);
-GType vala_basic_block_get_type (void) G_GNUC_CONST;
-gpointer vala_code_node_ref (gpointer instance);
-void vala_code_node_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_node (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_node (GValue* value, gpointer v_object);
-void vala_value_take_code_node (GValue* value, gpointer v_object);
-gpointer vala_value_get_code_node (const GValue* value);
-GType vala_code_node_get_type (void) G_GNUC_CONST;
-gpointer vala_phi_function_ref (gpointer instance);
-void vala_phi_function_unref (gpointer instance);
-GParamSpec* vala_param_spec_phi_function (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_phi_function (GValue* value, gpointer v_object);
-void vala_value_take_phi_function (GValue* value, gpointer v_object);
-gpointer vala_value_get_phi_function (const GValue* value);
-GType vala_phi_function_get_type (void) G_GNUC_CONST;
 #define VALA_BASIC_BLOCK_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_BASIC_BLOCK, ValaBasicBlockPrivate))
-enum  {
-	VALA_BASIC_BLOCK_DUMMY_PROPERTY
-};
-ValaBasicBlock* vala_basic_block_new (void);
-ValaBasicBlock* vala_basic_block_construct (GType object_type);
-ValaBasicBlock* vala_basic_block_new_entry (void);
-ValaBasicBlock* vala_basic_block_construct_entry (GType object_type);
-ValaBasicBlock* vala_basic_block_new_exit (void);
-ValaBasicBlock* vala_basic_block_construct_exit (GType object_type);
-void vala_basic_block_add_node (ValaBasicBlock* self, ValaCodeNode* node);
-ValaList* vala_basic_block_get_nodes (ValaBasicBlock* self);
-void vala_basic_block_connect (ValaBasicBlock* self, ValaBasicBlock* target);
-ValaList* vala_basic_block_get_predecessors (ValaBasicBlock* self);
-ValaList* vala_basic_block_get_successors (ValaBasicBlock* self);
-void vala_basic_block_add_child (ValaBasicBlock* self, ValaBasicBlock* block);
-static void vala_basic_block_set_parent (ValaBasicBlock* self, ValaBasicBlock* value);
-ValaList* vala_basic_block_get_children (ValaBasicBlock* self);
-void vala_basic_block_add_dominator_frontier (ValaBasicBlock* self, ValaBasicBlock* block);
-ValaSet* vala_basic_block_get_dominator_frontier (ValaBasicBlock* self);
-void vala_basic_block_add_phi_function (ValaBasicBlock* self, ValaPhiFunction* phi);
-ValaSet* vala_basic_block_get_phi_functions (ValaBasicBlock* self);
-ValaBasicBlock* vala_basic_block_get_parent (ValaBasicBlock* self);
-gboolean vala_basic_block_get_postorder_visited (ValaBasicBlock* self);
-void vala_basic_block_set_postorder_visited (ValaBasicBlock* self, gboolean value);
-gint vala_basic_block_get_postorder_number (ValaBasicBlock* self);
-void vala_basic_block_set_postorder_number (ValaBasicBlock* self, gint value);
-static void vala_basic_block_finalize (ValaBasicBlock* obj);
+static void vala_basic_block_set_parent (ValaBasicBlock* self,
+                                  ValaBasicBlock* value);
+static void vala_basic_block_finalize (ValaBasicBlock * obj);
 
 
-ValaBasicBlock* vala_basic_block_construct (GType object_type) {
+ValaBasicBlock*
+vala_basic_block_construct (GType object_type)
+{
 	ValaBasicBlock* self = NULL;
 	self = (ValaBasicBlock*) g_type_create_instance (object_type);
 	return self;
 }
 
 
-ValaBasicBlock* vala_basic_block_new (void) {
+ValaBasicBlock*
+vala_basic_block_new (void)
+{
 	return vala_basic_block_construct (VALA_TYPE_BASIC_BLOCK);
 }
 
 
-ValaBasicBlock* vala_basic_block_construct_entry (GType object_type) {
+ValaBasicBlock*
+vala_basic_block_construct_entry (GType object_type)
+{
 	ValaBasicBlock* self = NULL;
 	self = (ValaBasicBlock*) g_type_create_instance (object_type);
 	return self;
 }
 
 
-ValaBasicBlock* vala_basic_block_new_entry (void) {
+ValaBasicBlock*
+vala_basic_block_new_entry (void)
+{
 	return vala_basic_block_construct_entry (VALA_TYPE_BASIC_BLOCK);
 }
 
 
-ValaBasicBlock* vala_basic_block_construct_exit (GType object_type) {
+ValaBasicBlock*
+vala_basic_block_construct_exit (GType object_type)
+{
 	ValaBasicBlock* self = NULL;
 	self = (ValaBasicBlock*) g_type_create_instance (object_type);
 	return self;
 }
 
 
-ValaBasicBlock* vala_basic_block_new_exit (void) {
+ValaBasicBlock*
+vala_basic_block_new_exit (void)
+{
 	return vala_basic_block_construct_exit (VALA_TYPE_BASIC_BLOCK);
 }
 
 
-void vala_basic_block_add_node (ValaBasicBlock* self, ValaCodeNode* node) {
-	ValaList* _tmp0_ = NULL;
-	ValaCodeNode* _tmp1_ = NULL;
+void
+vala_basic_block_add_node (ValaBasicBlock* self,
+                           ValaCodeNode* node)
+{
+	ValaList* _tmp0_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (node != NULL);
 	_tmp0_ = self->priv->nodes;
-	_tmp1_ = node;
-	vala_collection_add ((ValaCollection*) _tmp0_, _tmp1_);
+	vala_collection_add ((ValaCollection*) _tmp0_, node);
 }
 
 
-static gpointer _vala_iterable_ref0 (gpointer self) {
+static gpointer
+_vala_iterable_ref0 (gpointer self)
+{
 	return self ? vala_iterable_ref (self) : NULL;
 }
 
 
-ValaList* vala_basic_block_get_nodes (ValaBasicBlock* self) {
+ValaList*
+vala_basic_block_get_nodes (ValaBasicBlock* self)
+{
 	ValaList* result = NULL;
-	ValaList* _tmp0_ = NULL;
-	ValaList* _tmp1_ = NULL;
+	ValaList* _tmp0_;
+	ValaList* _tmp1_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->nodes;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -208,42 +140,35 @@ ValaList* vala_basic_block_get_nodes (ValaBasicBlock* self) {
 }
 
 
-void vala_basic_block_connect (ValaBasicBlock* self, ValaBasicBlock* target) {
-	ValaList* _tmp0_ = NULL;
-	ValaBasicBlock* _tmp1_ = NULL;
-	gboolean _tmp2_ = FALSE;
-	ValaBasicBlock* _tmp5_ = NULL;
-	ValaList* _tmp6_ = NULL;
-	gboolean _tmp7_ = FALSE;
+void
+vala_basic_block_connect (ValaBasicBlock* self,
+                          ValaBasicBlock* target)
+{
+	ValaList* _tmp0_;
+	ValaList* _tmp2_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (target != NULL);
 	_tmp0_ = self->priv->successors;
-	_tmp1_ = target;
-	_tmp2_ = vala_collection_contains ((ValaCollection*) _tmp0_, _tmp1_);
-	if (!_tmp2_) {
-		ValaList* _tmp3_ = NULL;
-		ValaBasicBlock* _tmp4_ = NULL;
-		_tmp3_ = self->priv->successors;
-		_tmp4_ = target;
-		vala_collection_add ((ValaCollection*) _tmp3_, _tmp4_);
+	if (!vala_collection_contains ((ValaCollection*) _tmp0_, target)) {
+		ValaList* _tmp1_;
+		_tmp1_ = self->priv->successors;
+		vala_collection_add ((ValaCollection*) _tmp1_, target);
 	}
-	_tmp5_ = target;
-	_tmp6_ = _tmp5_->priv->predecessors;
-	_tmp7_ = vala_collection_contains ((ValaCollection*) _tmp6_, self);
-	if (!_tmp7_) {
-		ValaBasicBlock* _tmp8_ = NULL;
-		ValaList* _tmp9_ = NULL;
-		_tmp8_ = target;
-		_tmp9_ = _tmp8_->priv->predecessors;
-		vala_collection_add ((ValaCollection*) _tmp9_, self);
+	_tmp2_ = target->priv->predecessors;
+	if (!vala_collection_contains ((ValaCollection*) _tmp2_, self)) {
+		ValaList* _tmp3_;
+		_tmp3_ = target->priv->predecessors;
+		vala_collection_add ((ValaCollection*) _tmp3_, self);
 	}
 }
 
 
-ValaList* vala_basic_block_get_predecessors (ValaBasicBlock* self) {
+ValaList*
+vala_basic_block_get_predecessors (ValaBasicBlock* self)
+{
 	ValaList* result = NULL;
-	ValaList* _tmp0_ = NULL;
-	ValaList* _tmp1_ = NULL;
+	ValaList* _tmp0_;
+	ValaList* _tmp1_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->predecessors;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -252,10 +177,12 @@ ValaList* vala_basic_block_get_predecessors (ValaBasicBlock* self) {
 }
 
 
-ValaList* vala_basic_block_get_successors (ValaBasicBlock* self) {
+ValaList*
+vala_basic_block_get_successors (ValaBasicBlock* self)
+{
 	ValaList* result = NULL;
-	ValaList* _tmp0_ = NULL;
-	ValaList* _tmp1_ = NULL;
+	ValaList* _tmp0_;
+	ValaList* _tmp1_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->successors;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -264,24 +191,25 @@ ValaList* vala_basic_block_get_successors (ValaBasicBlock* self) {
 }
 
 
-void vala_basic_block_add_child (ValaBasicBlock* self, ValaBasicBlock* block) {
-	ValaList* _tmp0_ = NULL;
-	ValaBasicBlock* _tmp1_ = NULL;
-	ValaBasicBlock* _tmp2_ = NULL;
+void
+vala_basic_block_add_child (ValaBasicBlock* self,
+                            ValaBasicBlock* block)
+{
+	ValaList* _tmp0_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (block != NULL);
 	_tmp0_ = self->priv->children;
-	_tmp1_ = block;
-	vala_collection_add ((ValaCollection*) _tmp0_, _tmp1_);
-	_tmp2_ = block;
-	vala_basic_block_set_parent (_tmp2_, self);
+	vala_collection_add ((ValaCollection*) _tmp0_, block);
+	vala_basic_block_set_parent (block, self);
 }
 
 
-ValaList* vala_basic_block_get_children (ValaBasicBlock* self) {
+ValaList*
+vala_basic_block_get_children (ValaBasicBlock* self)
+{
 	ValaList* result = NULL;
-	ValaList* _tmp0_ = NULL;
-	ValaList* _tmp1_ = NULL;
+	ValaList* _tmp0_;
+	ValaList* _tmp1_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->children;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -290,21 +218,24 @@ ValaList* vala_basic_block_get_children (ValaBasicBlock* self) {
 }
 
 
-void vala_basic_block_add_dominator_frontier (ValaBasicBlock* self, ValaBasicBlock* block) {
-	ValaSet* _tmp0_ = NULL;
-	ValaBasicBlock* _tmp1_ = NULL;
+void
+vala_basic_block_add_dominator_frontier (ValaBasicBlock* self,
+                                         ValaBasicBlock* block)
+{
+	ValaSet* _tmp0_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (block != NULL);
 	_tmp0_ = self->priv->df;
-	_tmp1_ = block;
-	vala_collection_add ((ValaCollection*) _tmp0_, _tmp1_);
+	vala_collection_add ((ValaCollection*) _tmp0_, block);
 }
 
 
-ValaSet* vala_basic_block_get_dominator_frontier (ValaBasicBlock* self) {
+ValaSet*
+vala_basic_block_get_dominator_frontier (ValaBasicBlock* self)
+{
 	ValaSet* result = NULL;
-	ValaSet* _tmp0_ = NULL;
-	ValaSet* _tmp1_ = NULL;
+	ValaSet* _tmp0_;
+	ValaSet* _tmp1_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->df;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -313,21 +244,24 @@ ValaSet* vala_basic_block_get_dominator_frontier (ValaBasicBlock* self) {
 }
 
 
-void vala_basic_block_add_phi_function (ValaBasicBlock* self, ValaPhiFunction* phi) {
-	ValaSet* _tmp0_ = NULL;
-	ValaPhiFunction* _tmp1_ = NULL;
+void
+vala_basic_block_add_phi_function (ValaBasicBlock* self,
+                                   ValaPhiFunction* phi)
+{
+	ValaSet* _tmp0_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (phi != NULL);
 	_tmp0_ = self->priv->phi_functions;
-	_tmp1_ = phi;
-	vala_collection_add ((ValaCollection*) _tmp0_, _tmp1_);
+	vala_collection_add ((ValaCollection*) _tmp0_, phi);
 }
 
 
-ValaSet* vala_basic_block_get_phi_functions (ValaBasicBlock* self) {
+ValaSet*
+vala_basic_block_get_phi_functions (ValaBasicBlock* self)
+{
 	ValaSet* result = NULL;
-	ValaSet* _tmp0_ = NULL;
-	ValaSet* _tmp1_ = NULL;
+	ValaSet* _tmp0_;
+	ValaSet* _tmp1_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->phi_functions;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -336,9 +270,11 @@ ValaSet* vala_basic_block_get_phi_functions (ValaBasicBlock* self) {
 }
 
 
-ValaBasicBlock* vala_basic_block_get_parent (ValaBasicBlock* self) {
+ValaBasicBlock*
+vala_basic_block_get_parent (ValaBasicBlock* self)
+{
 	ValaBasicBlock* result;
-	ValaBasicBlock* _tmp0_ = NULL;
+	ValaBasicBlock* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_parent;
 	result = _tmp0_;
@@ -346,25 +282,30 @@ ValaBasicBlock* vala_basic_block_get_parent (ValaBasicBlock* self) {
 }
 
 
-static gpointer _vala_basic_block_ref0 (gpointer self) {
+static gpointer
+_vala_basic_block_ref0 (gpointer self)
+{
 	return self ? vala_basic_block_ref (self) : NULL;
 }
 
 
-static void vala_basic_block_set_parent (ValaBasicBlock* self, ValaBasicBlock* value) {
-	ValaBasicBlock* _tmp0_ = NULL;
-	ValaBasicBlock* _tmp1_ = NULL;
+static void
+vala_basic_block_set_parent (ValaBasicBlock* self,
+                             ValaBasicBlock* value)
+{
+	ValaBasicBlock* _tmp0_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	_tmp1_ = _vala_basic_block_ref0 (_tmp0_);
+	_tmp0_ = _vala_basic_block_ref0 (value);
 	_vala_basic_block_unref0 (self->priv->_parent);
-	self->priv->_parent = _tmp1_;
+	self->priv->_parent = _tmp0_;
 }
 
 
-gboolean vala_basic_block_get_postorder_visited (ValaBasicBlock* self) {
+gboolean
+vala_basic_block_get_postorder_visited (ValaBasicBlock* self)
+{
 	gboolean result;
-	gboolean _tmp0_ = FALSE;
+	gboolean _tmp0_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_postorder_visited;
 	result = _tmp0_;
@@ -372,17 +313,20 @@ gboolean vala_basic_block_get_postorder_visited (ValaBasicBlock* self) {
 }
 
 
-void vala_basic_block_set_postorder_visited (ValaBasicBlock* self, gboolean value) {
-	gboolean _tmp0_ = FALSE;
+void
+vala_basic_block_set_postorder_visited (ValaBasicBlock* self,
+                                        gboolean value)
+{
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	self->priv->_postorder_visited = _tmp0_;
+	self->priv->_postorder_visited = value;
 }
 
 
-gint vala_basic_block_get_postorder_number (ValaBasicBlock* self) {
+gint
+vala_basic_block_get_postorder_number (ValaBasicBlock* self)
+{
 	gint result;
-	gint _tmp0_ = 0;
+	gint _tmp0_;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->_postorder_number;
 	result = _tmp0_;
@@ -390,27 +334,35 @@ gint vala_basic_block_get_postorder_number (ValaBasicBlock* self) {
 }
 
 
-void vala_basic_block_set_postorder_number (ValaBasicBlock* self, gint value) {
-	gint _tmp0_ = 0;
+void
+vala_basic_block_set_postorder_number (ValaBasicBlock* self,
+                                       gint value)
+{
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	self->priv->_postorder_number = _tmp0_;
+	self->priv->_postorder_number = value;
 }
 
 
-static void vala_value_basic_block_init (GValue* value) {
+static void
+vala_value_basic_block_init (GValue* value)
+{
 	value->data[0].v_pointer = NULL;
 }
 
 
-static void vala_value_basic_block_free_value (GValue* value) {
+static void
+vala_value_basic_block_free_value (GValue* value)
+{
 	if (value->data[0].v_pointer) {
 		vala_basic_block_unref (value->data[0].v_pointer);
 	}
 }
 
 
-static void vala_value_basic_block_copy_value (const GValue* src_value, GValue* dest_value) {
+static void
+vala_value_basic_block_copy_value (const GValue* src_value,
+                                   GValue* dest_value)
+{
 	if (src_value->data[0].v_pointer) {
 		dest_value->data[0].v_pointer = vala_basic_block_ref (src_value->data[0].v_pointer);
 	} else {
@@ -419,14 +371,21 @@ static void vala_value_basic_block_copy_value (const GValue* src_value, GValue* 
 }
 
 
-static gpointer vala_value_basic_block_peek_pointer (const GValue* value) {
+static gpointer
+vala_value_basic_block_peek_pointer (const GValue* value)
+{
 	return value->data[0].v_pointer;
 }
 
 
-static gchar* vala_value_basic_block_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar*
+vala_value_basic_block_collect_value (GValue* value,
+                                      guint n_collect_values,
+                                      GTypeCValue* collect_values,
+                                      guint collect_flags)
+{
 	if (collect_values[0].v_pointer) {
-		ValaBasicBlock* object;
+		ValaBasicBlock * object;
 		object = collect_values[0].v_pointer;
 		if (object->parent_instance.g_class == NULL) {
 			return g_strconcat ("invalid unclassed object pointer for value type `", G_VALUE_TYPE_NAME (value), "'", NULL);
@@ -441,8 +400,13 @@ static gchar* vala_value_basic_block_collect_value (GValue* value, guint n_colle
 }
 
 
-static gchar* vala_value_basic_block_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
-	ValaBasicBlock** object_p;
+static gchar*
+vala_value_basic_block_lcopy_value (const GValue* value,
+                                    guint n_collect_values,
+                                    GTypeCValue* collect_values,
+                                    guint collect_flags)
+{
+	ValaBasicBlock ** object_p;
 	object_p = collect_values[0].v_pointer;
 	if (!object_p) {
 		return g_strdup_printf ("value location for `%s' passed as NULL", G_VALUE_TYPE_NAME (value));
@@ -458,7 +422,13 @@ static gchar* vala_value_basic_block_lcopy_value (const GValue* value, guint n_c
 }
 
 
-GParamSpec* vala_param_spec_basic_block (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
+GParamSpec*
+vala_param_spec_basic_block (const gchar* name,
+                             const gchar* nick,
+                             const gchar* blurb,
+                             GType object_type,
+                             GParamFlags flags)
+{
 	ValaParamSpecBasicBlock* spec;
 	g_return_val_if_fail (g_type_is_a (object_type, VALA_TYPE_BASIC_BLOCK), NULL);
 	spec = g_param_spec_internal (G_TYPE_PARAM_OBJECT, name, nick, blurb, flags);
@@ -467,14 +437,19 @@ GParamSpec* vala_param_spec_basic_block (const gchar* name, const gchar* nick, c
 }
 
 
-gpointer vala_value_get_basic_block (const GValue* value) {
+gpointer
+vala_value_get_basic_block (const GValue* value)
+{
 	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_BASIC_BLOCK), NULL);
 	return value->data[0].v_pointer;
 }
 
 
-void vala_value_set_basic_block (GValue* value, gpointer v_object) {
-	ValaBasicBlock* old;
+void
+vala_value_set_basic_block (GValue* value,
+                            gpointer v_object)
+{
+	ValaBasicBlock * old;
 	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_BASIC_BLOCK));
 	old = value->data[0].v_pointer;
 	if (v_object) {
@@ -491,8 +466,11 @@ void vala_value_set_basic_block (GValue* value, gpointer v_object) {
 }
 
 
-void vala_value_take_basic_block (GValue* value, gpointer v_object) {
-	ValaBasicBlock* old;
+void
+vala_value_take_basic_block (GValue* value,
+                             gpointer v_object)
+{
+	ValaBasicBlock * old;
 	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_BASIC_BLOCK));
 	old = value->data[0].v_pointer;
 	if (v_object) {
@@ -508,28 +486,32 @@ void vala_value_take_basic_block (GValue* value, gpointer v_object) {
 }
 
 
-static void vala_basic_block_class_init (ValaBasicBlockClass * klass) {
+static void
+vala_basic_block_class_init (ValaBasicBlockClass * klass)
+{
 	vala_basic_block_parent_class = g_type_class_peek_parent (klass);
 	((ValaBasicBlockClass *) klass)->finalize = vala_basic_block_finalize;
 	g_type_class_add_private (klass, sizeof (ValaBasicBlockPrivate));
 }
 
 
-static void vala_basic_block_instance_init (ValaBasicBlock * self) {
-	GEqualFunc _tmp0_ = NULL;
-	ValaArrayList* _tmp1_ = NULL;
-	GEqualFunc _tmp2_ = NULL;
-	ValaArrayList* _tmp3_ = NULL;
-	GEqualFunc _tmp4_ = NULL;
-	ValaArrayList* _tmp5_ = NULL;
-	GEqualFunc _tmp6_ = NULL;
-	ValaArrayList* _tmp7_ = NULL;
-	GHashFunc _tmp8_ = NULL;
-	GEqualFunc _tmp9_ = NULL;
-	ValaHashSet* _tmp10_ = NULL;
-	GHashFunc _tmp11_ = NULL;
-	GEqualFunc _tmp12_ = NULL;
-	ValaHashSet* _tmp13_ = NULL;
+static void
+vala_basic_block_instance_init (ValaBasicBlock * self)
+{
+	GEqualFunc _tmp0_;
+	ValaArrayList* _tmp1_;
+	GEqualFunc _tmp2_;
+	ValaArrayList* _tmp3_;
+	GEqualFunc _tmp4_;
+	ValaArrayList* _tmp5_;
+	GEqualFunc _tmp6_;
+	ValaArrayList* _tmp7_;
+	GHashFunc _tmp8_;
+	GEqualFunc _tmp9_;
+	ValaHashSet* _tmp10_;
+	GHashFunc _tmp11_;
+	GEqualFunc _tmp12_;
+	ValaHashSet* _tmp13_;
 	self->priv = VALA_BASIC_BLOCK_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_CODE_NODE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
@@ -555,7 +537,9 @@ static void vala_basic_block_instance_init (ValaBasicBlock * self) {
 }
 
 
-static void vala_basic_block_finalize (ValaBasicBlock* obj) {
+static void
+vala_basic_block_finalize (ValaBasicBlock * obj)
+{
 	ValaBasicBlock * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_BASIC_BLOCK, ValaBasicBlock);
 	g_signal_handlers_destroy (self);
@@ -573,7 +557,9 @@ static void vala_basic_block_finalize (ValaBasicBlock* obj) {
  * Represents a basic block, i.e. a straight-line piece of code without any
  * jumps or jump targets.
  */
-GType vala_basic_block_get_type (void) {
+GType
+vala_basic_block_get_type (void)
+{
 	static volatile gsize vala_basic_block_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_basic_block_type_id__volatile)) {
 		static const GTypeValueTable g_define_type_value_table = { vala_value_basic_block_init, vala_value_basic_block_free_value, vala_value_basic_block_copy_value, vala_value_basic_block_peek_pointer, "p", vala_value_basic_block_collect_value, "p", vala_value_basic_block_lcopy_value };
@@ -587,16 +573,20 @@ GType vala_basic_block_get_type (void) {
 }
 
 
-gpointer vala_basic_block_ref (gpointer instance) {
-	ValaBasicBlock* self;
+gpointer
+vala_basic_block_ref (gpointer instance)
+{
+	ValaBasicBlock * self;
 	self = instance;
 	g_atomic_int_inc (&self->ref_count);
 	return instance;
 }
 
 
-void vala_basic_block_unref (gpointer instance) {
-	ValaBasicBlock* self;
+void
+vala_basic_block_unref (gpointer instance)
+{
+	ValaBasicBlock * self;
 	self = instance;
 	if (g_atomic_int_dec_and_test (&self->ref_count)) {
 		VALA_BASIC_BLOCK_GET_CLASS (self)->finalize (self);

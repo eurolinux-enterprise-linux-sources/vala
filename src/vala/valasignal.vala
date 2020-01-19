@@ -25,7 +25,7 @@ using GLib;
 /**
  * Represents an object signal. Signals enable objects to provide notifications.
  */
-public class Vala.Signal : Symbol, Lockable {
+public class Vala.Signal : Symbol, Lockable, Callable {
 	/**
 	 * The return type of handlers of this signal.
 	 */
@@ -58,6 +58,12 @@ public class Vala.Signal : Symbol, Lockable {
 	 * function in the scope.
 	 * */
 	public Method default_handler { get; private set; }
+
+	/**
+	 * Refers to the public signal emitter method, which is an anonymous
+	 * function in the scope.
+	 * */
+	public Method emitter { get; private set; }
 
 	private bool lock_used = false;
 
@@ -132,8 +138,9 @@ public class Vala.Signal : Symbol, Lockable {
 			// parameter types must refer to the delegate type parameters
 			// instead of to the class type parameters
 			foreach (var param in generated_delegate.get_parameters ()) {
-				if (param.variable_type is GenericType) {
-					param.variable_type.type_parameter = generated_delegate.get_type_parameters ().get (generated_delegate.get_type_parameter_index (param.variable_type.type_parameter.name));
+				var generic_type = param.variable_type as GenericType;
+				if (generic_type != null) {
+					generic_type.type_parameter = generated_delegate.get_type_parameters ().get (generated_delegate.get_type_parameter_index (generic_type.type_parameter.name));
 				}
 			}
 		}
@@ -157,6 +164,9 @@ public class Vala.Signal : Symbol, Lockable {
 			body.accept (visitor);
 		} else if (default_handler != null) {
 			default_handler.accept (visitor);
+		}
+		if (emitter != null) {
+			emitter.accept (visitor);
 		}
 	}
 
@@ -217,6 +227,33 @@ public class Vala.Signal : Symbol, Lockable {
 
 			cl.add_hidden_method (default_handler);
 			default_handler.check (context);
+		}
+
+		if (!external_package && get_attribute ("HasEmitter") != null) {
+			emitter = new Method (name, return_type, source_reference);
+
+			emitter.owner = owner;
+			emitter.access = access;
+
+			var body = new Block (source_reference);
+			var call = new MethodCall (new MemberAccess.simple (name, source_reference), source_reference);
+
+			foreach (Parameter param in parameters) {
+				emitter.add_parameter (param);
+				call.add_argument (new MemberAccess.simple (param.name, source_reference));
+			}
+
+			if (return_type is VoidType) {
+				body.add_statement (new ExpressionStatement (call, source_reference));
+			} else {
+				body.add_statement (new ReturnStatement (call, source_reference));
+			}
+			emitter.body = body;
+
+			var cl = parent_symbol as ObjectTypeSymbol;
+
+			cl.add_hidden_method (emitter);
+			emitter.check (context);
 		}
 
 

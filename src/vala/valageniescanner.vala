@@ -208,8 +208,11 @@ public class Vala.Genie.Scanner {
 						case 'B':
 						case 'f':
 						case 'n':
+						case 'N':
 						case 'r':
+						case 'R':
 						case 't':
+						case 'v':
 						case 'a':
 						case 'A':
 						case 'p':
@@ -227,17 +230,44 @@ public class Vala.Genie.Scanner {
 							current++;
 							token_length_in_chars++;
 							break;
-						case 'x':
-							// hexadecimal escape character
+						case 'u':
+							// u escape character has four hex digits
 							current++;
 							token_length_in_chars++;
-							while (current < end && current[0].isxdigit ()) {
+							int digit_length;
+							for (digit_length = 0; digit_length < 4 && current < end && current[0].isxdigit (); digit_length++) {
 								current++;
 								token_length_in_chars++;
 							}
+							if (digit_length != 4) {
+								Report.error (get_source_reference (token_length_in_chars), "\\u requires four hex digits");
+							}
+							break;
+						case 'x':
+							// hexadecimal escape character requires two hex digits
+							current++;
+							token_length_in_chars++;
+							int digit_length;
+							for (digit_length = 0; digit_length < 2 && current < end && current[0].isxdigit (); digit_length++) {
+								current++;
+								token_length_in_chars++;
+							}
+							if (digit_length != 2) {
+								Report.error (get_source_reference (token_length_in_chars), "\\x requires two hex digits");
+							}
 							break;
 						default:
-							Report.error (get_source_reference (token_length_in_chars), "invalid escape sequence");
+							// back references \1 through \99
+							if (current[0].isdigit ()) {
+								current++;
+								token_length_in_chars++;
+								if (current[0].isdigit ()) {
+									current++;
+									token_length_in_chars++;
+								}
+							} else {
+								Report.error (get_source_reference (token_length_in_chars), "invalid escape sequence");
+							}
 							break;
 						}
 					} else if (current[0] == '\n') {
@@ -404,7 +434,7 @@ public class Vala.Genie.Scanner {
 				break;
 			case 's':
 				if (matches (begin, "self")) return TokenType.THIS;
-				break;	
+				break;
 			case 't':
 				if (matches (begin, "true")) return TokenType.TRUE;
 				break;
@@ -435,7 +465,7 @@ public class Vala.Genie.Scanner {
 					break;
 				case 's':
 					if (matches (begin, "async")) return TokenType.ASYNC;
-					break;	
+					break;
 				}
 				break;
 			case 'b':
@@ -466,7 +496,7 @@ public class Vala.Genie.Scanner {
 				break;
 			case 'o':
 				if (matches (begin, "owned")) return TokenType.OWNED;
-				break;	
+				break;
 			case 'p':
 				if (matches (begin, "print")) return TokenType.PRINT;
 				break;
@@ -652,7 +682,7 @@ public class Vala.Genie.Scanner {
 			switch (begin[0]) {
 			case 'i':
 				if (matches (begin, "implements")) return TokenType.IMPLEMENTS;
-				break;	
+				break;
 			}
 			break;
 		}
@@ -722,16 +752,34 @@ public class Vala.Genie.Scanner {
 						case 'n':
 						case 'r':
 						case 't':
+						case 'v':
 							current++;
 							token_length_in_chars++;
 							break;
-						case 'x':
-							// hexadecimal escape character
+						case 'u':
+							// u escape character has four hex digits
 							current++;
 							token_length_in_chars++;
-							while (current < end && current[0].isxdigit ()) {
+							int digit_length;
+							for (digit_length = 0; digit_length < 4 && current < end && current[0].isxdigit (); digit_length++) {
 								current++;
 								token_length_in_chars++;
+							}
+							if (digit_length != 4) {
+								Report.error (get_source_reference (token_length_in_chars), "\\u requires four hex digits");
+							}
+							break;
+						case 'x':
+							// hexadecimal escape character requires two hex digits
+							current++;
+							token_length_in_chars++;
+							int digit_length;
+							for (digit_length = 0; digit_length < 2 && current < end && current[0].isxdigit (); digit_length++) {
+								current++;
+								token_length_in_chars++;
+							}
+							if (digit_length != 2) {
+								Report.error (get_source_reference (token_length_in_chars), "\\x requires two hex digits");
 							}
 							break;
 						default:
@@ -813,7 +861,7 @@ public class Vala.Genie.Scanner {
 		}
 
 		if ((_indent_spaces == 0 ) || (last_token != TokenType.EOL)) {
-			/* scrub whitespace (excluding newlines) and comments */		
+			/* scrub whitespace (excluding newlines) and comments */
 			space ();
 		}
 		
@@ -841,7 +889,7 @@ public class Vala.Genie.Scanner {
 			last_token = TokenType.EOL;
 
 			return TokenType.EOL;
-		} 
+		}
 
 
 		while (skip_newlines ()) {
@@ -852,7 +900,7 @@ public class Vala.Genie.Scanner {
 			/* if its an empty new line then ignore */
 			if (current_indent_level == -1)  {
 				continue;
-			} 
+			}
 
 			if (current_indent_level > indent_level) {
 				indent_level = current_indent_level;
@@ -1277,16 +1325,34 @@ public class Vala.Genie.Scanner {
 						case 'n':
 						case 'r':
 						case 't':
+						case 'v':
 							current++;
 							token_length_in_chars++;
 							break;
-						case 'x':
-							// hexadecimal escape character
+						case 'u':
+							// u escape character has four hex digits
 							current++;
 							token_length_in_chars++;
-							while (current < end && current[0].isxdigit ()) {
+							int digit_length;
+							for (digit_length = 0; digit_length < 4 && current < end && current[0].isxdigit (); digit_length++) {
 								current++;
 								token_length_in_chars++;
+							}
+							if (digit_length != 4) {
+								Report.error (get_source_reference (token_length_in_chars), "\\u requires four hex digits");
+							}
+							break;
+						case 'x':
+							// hexadecimal escape character requires two hex digits
+							current++;
+							token_length_in_chars++;
+							int digit_length;
+							for (digit_length = 0; digit_length < 2 && current < end && current[0].isxdigit (); digit_length++) {
+								current++;
+								token_length_in_chars++;
+							}
+							if (digit_length != 2) {
+								Report.error (get_source_reference (token_length_in_chars), "\\x requires two hex digits");
 							}
 							break;
 						default:

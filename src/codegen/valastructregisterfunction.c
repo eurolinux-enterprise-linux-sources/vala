@@ -23,74 +23,12 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
+#include "valacodegen.h"
 #include <vala.h>
-#include <stdlib.h>
-#include <string.h>
-#include <valaccode.h>
 
-
-#define VALA_TYPE_TYPEREGISTER_FUNCTION (vala_typeregister_function_get_type ())
-#define VALA_TYPEREGISTER_FUNCTION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TYPEREGISTER_FUNCTION, ValaTypeRegisterFunction))
-#define VALA_TYPEREGISTER_FUNCTION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_TYPEREGISTER_FUNCTION, ValaTypeRegisterFunctionClass))
-#define VALA_IS_TYPEREGISTER_FUNCTION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_TYPEREGISTER_FUNCTION))
-#define VALA_IS_TYPEREGISTER_FUNCTION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_TYPEREGISTER_FUNCTION))
-#define VALA_TYPEREGISTER_FUNCTION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_TYPEREGISTER_FUNCTION, ValaTypeRegisterFunctionClass))
-
-typedef struct _ValaTypeRegisterFunction ValaTypeRegisterFunction;
-typedef struct _ValaTypeRegisterFunctionClass ValaTypeRegisterFunctionClass;
-typedef struct _ValaTypeRegisterFunctionPrivate ValaTypeRegisterFunctionPrivate;
-
-#define VALA_TYPE_STRUCT_REGISTER_FUNCTION (vala_struct_register_function_get_type ())
-#define VALA_STRUCT_REGISTER_FUNCTION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_STRUCT_REGISTER_FUNCTION, ValaStructRegisterFunction))
-#define VALA_STRUCT_REGISTER_FUNCTION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_STRUCT_REGISTER_FUNCTION, ValaStructRegisterFunctionClass))
-#define VALA_IS_STRUCT_REGISTER_FUNCTION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_STRUCT_REGISTER_FUNCTION))
-#define VALA_IS_STRUCT_REGISTER_FUNCTION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_STRUCT_REGISTER_FUNCTION))
-#define VALA_STRUCT_REGISTER_FUNCTION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_STRUCT_REGISTER_FUNCTION, ValaStructRegisterFunctionClass))
-
-typedef struct _ValaStructRegisterFunction ValaStructRegisterFunction;
-typedef struct _ValaStructRegisterFunctionClass ValaStructRegisterFunctionClass;
-typedef struct _ValaStructRegisterFunctionPrivate ValaStructRegisterFunctionPrivate;
-
-struct _ValaTypeRegisterFunction {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	ValaTypeRegisterFunctionPrivate * priv;
-};
-
-struct _ValaTypeRegisterFunctionClass {
-	GTypeClass parent_class;
-	void (*finalize) (ValaTypeRegisterFunction *self);
-	ValaTypeSymbol* (*get_type_declaration) (ValaTypeRegisterFunction* self);
-	gchar* (*get_type_struct_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_base_init_func_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_class_finalize_func_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_base_finalize_func_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_class_init_func_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_instance_struct_size) (ValaTypeRegisterFunction* self);
-	gchar* (*get_instance_init_func_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_parent_type_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_gtype_value_table_init_function_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_gtype_value_table_peek_pointer_function_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_gtype_value_table_free_function_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_gtype_value_table_copy_function_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_gtype_value_table_lcopy_value_function_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_gtype_value_table_collect_value_function_name) (ValaTypeRegisterFunction* self);
-	gchar* (*get_type_flags) (ValaTypeRegisterFunction* self);
-	ValaCCodeFragment* (*get_type_interface_init_declaration) (ValaTypeRegisterFunction* self);
-	void (*get_type_interface_init_statements) (ValaTypeRegisterFunction* self, ValaCCodeBlock* block, gboolean plugin);
-	ValaSymbolAccessibility (*get_accessibility) (ValaTypeRegisterFunction* self);
-};
-
-struct _ValaStructRegisterFunction {
-	ValaTypeRegisterFunction parent_instance;
-	ValaStructRegisterFunctionPrivate * priv;
-};
-
-struct _ValaStructRegisterFunctionClass {
-	ValaTypeRegisterFunctionClass parent_class;
-};
 
 struct _ValaStructRegisterFunctionPrivate {
 	ValaStruct* _struct_reference;
@@ -99,27 +37,10 @@ struct _ValaStructRegisterFunctionPrivate {
 
 static gpointer vala_struct_register_function_parent_class = NULL;
 
-gpointer vala_typeregister_function_ref (gpointer instance);
-void vala_typeregister_function_unref (gpointer instance);
-GParamSpec* vala_param_spec_typeregister_function (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_typeregister_function (GValue* value, gpointer v_object);
-void vala_value_take_typeregister_function (GValue* value, gpointer v_object);
-gpointer vala_value_get_typeregister_function (const GValue* value);
-GType vala_typeregister_function_get_type (void) G_GNUC_CONST;
-GType vala_struct_register_function_get_type (void) G_GNUC_CONST;
 #define VALA_STRUCT_REGISTER_FUNCTION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_STRUCT_REGISTER_FUNCTION, ValaStructRegisterFunctionPrivate))
-enum  {
-	VALA_STRUCT_REGISTER_FUNCTION_DUMMY_PROPERTY
-};
-ValaStructRegisterFunction* vala_struct_register_function_new (ValaStruct* st, ValaCodeContext* context);
-ValaStructRegisterFunction* vala_struct_register_function_construct (GType object_type, ValaStruct* st, ValaCodeContext* context);
-ValaTypeRegisterFunction* vala_typeregister_function_construct (GType object_type);
-void vala_struct_register_function_set_struct_reference (ValaStructRegisterFunction* self, ValaStruct* value);
-void vala_typeregister_function_set_context (ValaTypeRegisterFunction* self, ValaCodeContext* value);
 static ValaTypeSymbol* vala_struct_register_function_real_get_type_declaration (ValaTypeRegisterFunction* base);
-ValaStruct* vala_struct_register_function_get_struct_reference (ValaStructRegisterFunction* self);
 static ValaSymbolAccessibility vala_struct_register_function_real_get_accessibility (ValaTypeRegisterFunction* base);
-static void vala_struct_register_function_finalize (ValaTypeRegisterFunction* obj);
+static void vala_struct_register_function_finalize (ValaTypeRegisterFunction * obj);
 
 
 /**
@@ -128,36 +49,39 @@ static void vala_struct_register_function_finalize (ValaTypeRegisterFunction* ob
  * @param st a struct
  * @return   newly created struct register function
  */
-ValaStructRegisterFunction* vala_struct_register_function_construct (GType object_type, ValaStruct* st, ValaCodeContext* context) {
+ValaStructRegisterFunction*
+vala_struct_register_function_construct (GType object_type,
+                                         ValaStruct* st)
+{
 	ValaStructRegisterFunction* self = NULL;
-	ValaStruct* _tmp0_ = NULL;
-	ValaCodeContext* _tmp1_ = NULL;
 	g_return_val_if_fail (st != NULL, NULL);
-	g_return_val_if_fail (context != NULL, NULL);
 	self = (ValaStructRegisterFunction*) vala_typeregister_function_construct (object_type);
-	_tmp0_ = st;
-	vala_struct_register_function_set_struct_reference (self, _tmp0_);
-	_tmp1_ = context;
-	vala_typeregister_function_set_context ((ValaTypeRegisterFunction*) self, _tmp1_);
+	vala_struct_register_function_set_struct_reference (self, st);
 	return self;
 }
 
 
-ValaStructRegisterFunction* vala_struct_register_function_new (ValaStruct* st, ValaCodeContext* context) {
-	return vala_struct_register_function_construct (VALA_TYPE_STRUCT_REGISTER_FUNCTION, st, context);
+ValaStructRegisterFunction*
+vala_struct_register_function_new (ValaStruct* st)
+{
+	return vala_struct_register_function_construct (VALA_TYPE_STRUCT_REGISTER_FUNCTION, st);
 }
 
 
-static gpointer _vala_code_node_ref0 (gpointer self) {
+static gpointer
+_vala_code_node_ref0 (gpointer self)
+{
 	return self ? vala_code_node_ref (self) : NULL;
 }
 
 
-static ValaTypeSymbol* vala_struct_register_function_real_get_type_declaration (ValaTypeRegisterFunction* base) {
+static ValaTypeSymbol*
+vala_struct_register_function_real_get_type_declaration (ValaTypeRegisterFunction* base)
+{
 	ValaStructRegisterFunction * self;
 	ValaTypeSymbol* result = NULL;
-	ValaStruct* _tmp0_ = NULL;
-	ValaTypeSymbol* _tmp1_ = NULL;
+	ValaStruct* _tmp0_;
+	ValaTypeSymbol* _tmp1_;
 	self = (ValaStructRegisterFunction*) base;
 	_tmp0_ = self->priv->_struct_reference;
 	_tmp1_ = _vala_code_node_ref0 ((ValaTypeSymbol*) _tmp0_);
@@ -166,12 +90,14 @@ static ValaTypeSymbol* vala_struct_register_function_real_get_type_declaration (
 }
 
 
-static ValaSymbolAccessibility vala_struct_register_function_real_get_accessibility (ValaTypeRegisterFunction* base) {
+static ValaSymbolAccessibility
+vala_struct_register_function_real_get_accessibility (ValaTypeRegisterFunction* base)
+{
 	ValaStructRegisterFunction * self;
 	ValaSymbolAccessibility result = 0;
-	ValaStruct* _tmp0_ = NULL;
-	ValaSymbolAccessibility _tmp1_ = 0;
-	ValaSymbolAccessibility _tmp2_ = 0;
+	ValaStruct* _tmp0_;
+	ValaSymbolAccessibility _tmp1_;
+	ValaSymbolAccessibility _tmp2_;
 	self = (ValaStructRegisterFunction*) base;
 	_tmp0_ = self->priv->_struct_reference;
 	_tmp1_ = vala_symbol_get_access ((ValaSymbol*) _tmp0_);
@@ -181,9 +107,11 @@ static ValaSymbolAccessibility vala_struct_register_function_real_get_accessibil
 }
 
 
-ValaStruct* vala_struct_register_function_get_struct_reference (ValaStructRegisterFunction* self) {
+ValaStruct*
+vala_struct_register_function_get_struct_reference (ValaStructRegisterFunction* self)
+{
 	ValaStruct* result;
-	ValaStruct* _tmp0_ = NULL;
+	ValaStruct* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_struct_reference;
 	result = _tmp0_;
@@ -191,29 +119,36 @@ ValaStruct* vala_struct_register_function_get_struct_reference (ValaStructRegist
 }
 
 
-void vala_struct_register_function_set_struct_reference (ValaStructRegisterFunction* self, ValaStruct* value) {
-	ValaStruct* _tmp0_ = NULL;
+void
+vala_struct_register_function_set_struct_reference (ValaStructRegisterFunction* self,
+                                                    ValaStruct* value)
+{
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	self->priv->_struct_reference = _tmp0_;
+	self->priv->_struct_reference = value;
 }
 
 
-static void vala_struct_register_function_class_init (ValaStructRegisterFunctionClass * klass) {
+static void
+vala_struct_register_function_class_init (ValaStructRegisterFunctionClass * klass)
+{
 	vala_struct_register_function_parent_class = g_type_class_peek_parent (klass);
 	((ValaTypeRegisterFunctionClass *) klass)->finalize = vala_struct_register_function_finalize;
 	g_type_class_add_private (klass, sizeof (ValaStructRegisterFunctionPrivate));
-	((ValaTypeRegisterFunctionClass *) klass)->get_type_declaration = (ValaTypeSymbol* (*)(ValaTypeRegisterFunction*)) vala_struct_register_function_real_get_type_declaration;
-	((ValaTypeRegisterFunctionClass *) klass)->get_accessibility = (ValaSymbolAccessibility (*)(ValaTypeRegisterFunction*)) vala_struct_register_function_real_get_accessibility;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_declaration = (ValaTypeSymbol* (*) (ValaTypeRegisterFunction *)) vala_struct_register_function_real_get_type_declaration;
+	((ValaTypeRegisterFunctionClass *) klass)->get_accessibility = (ValaSymbolAccessibility (*) (ValaTypeRegisterFunction *)) vala_struct_register_function_real_get_accessibility;
 }
 
 
-static void vala_struct_register_function_instance_init (ValaStructRegisterFunction * self) {
+static void
+vala_struct_register_function_instance_init (ValaStructRegisterFunction * self)
+{
 	self->priv = VALA_STRUCT_REGISTER_FUNCTION_GET_PRIVATE (self);
 }
 
 
-static void vala_struct_register_function_finalize (ValaTypeRegisterFunction* obj) {
+static void
+vala_struct_register_function_finalize (ValaTypeRegisterFunction * obj)
+{
 	ValaStructRegisterFunction * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_STRUCT_REGISTER_FUNCTION, ValaStructRegisterFunction);
 	VALA_TYPEREGISTER_FUNCTION_CLASS (vala_struct_register_function_parent_class)->finalize (obj);
@@ -223,7 +158,9 @@ static void vala_struct_register_function_finalize (ValaTypeRegisterFunction* ob
 /**
  * C function to register a struct at runtime.
  */
-GType vala_struct_register_function_get_type (void) {
+GType
+vala_struct_register_function_get_type (void)
+{
 	static volatile gsize vala_struct_register_function_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_struct_register_function_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (ValaStructRegisterFunctionClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) vala_struct_register_function_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (ValaStructRegisterFunction), 0, (GInstanceInitFunc) vala_struct_register_function_instance_init, NULL };

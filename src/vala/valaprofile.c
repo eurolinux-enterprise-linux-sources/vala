@@ -23,22 +23,19 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
-
-
-#define VALA_TYPE_PROFILE (vala_profile_get_type ())
-
-typedef enum  {
-	VALA_PROFILE_GOBJECT
-} ValaProfile;
+#include "vala.h"
 
 
 
-GType vala_profile_get_type (void) G_GNUC_CONST;
 
 
-GType vala_profile_get_type (void) {
+
+GType
+vala_profile_get_type (void)
+{
 	static volatile gsize vala_profile_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_profile_type_id__volatile)) {
 		static const GEnumValue values[] = {{VALA_PROFILE_GOBJECT, "VALA_PROFILE_GOBJECT", "gobject"}, {0, NULL, NULL}};

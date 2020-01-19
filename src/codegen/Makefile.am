@@ -12,11 +12,18 @@ AM_CPPFLAGS = \
 
 BUILT_SOURCES = codegen.vala.stamp
 
-lib_LTLIBRARIES = \
-	libvala@PACKAGE_SUFFIX@.la \
+libvalaccodegen_la_LTLIBRARIES = \
+	libvalaccodegen.la \
 	$(NULL)
 
-libvala_la_VALASOURCES = \
+libvalaccodegen_ladir = $(pkglibdir)
+
+libvalaccodegen_la_LDFLAGS = \
+	-avoid-version \
+	$(NULL)
+
+libvalaccodegen_la_VALASOURCES = \
+	valaccode.vala \
 	valaccodearraymodule.vala \
 	valaccodeassignmentmodule.vala \
 	valaccodeattribute.vala \
@@ -47,18 +54,12 @@ libvala_la_VALASOURCES = \
 	valatyperegisterfunction.vala \
 	$(NULL)
 
-libvala@PACKAGE_SUFFIX@_la_SOURCES = \
+libvalaccodegen_la_SOURCES = \
 	codegen.vala.stamp \
-	$(libvala_la_VALASOURCES:.vala=.c) \
+	$(libvalaccodegen_la_VALASOURCES:.vala=.c) \
 	$(NULL)
 
-codegenincludedir = $(includedir)/vala@PACKAGE_SUFFIX@
-
-codegeninclude_HEADERS = \
-	valacodegen.h \
-	$(NULL)
-
-codegen.vapi codegen.vala.stamp: $(libvala_la_VALASOURCES)
+codegen.vapi codegen.vala.stamp: $(libvalaccodegen_la_VALASOURCES)
 	$(VALA_V)$(VALAC) \
 		$(COVERAGE_VALAFLAGS) \
 		$(VALAFLAGS) \
@@ -67,24 +68,23 @@ codegen.vapi codegen.vala.stamp: $(libvala_la_VALASOURCES)
 		--vapidir $(top_srcdir)/gee --pkg gee \
 		--vapidir $(top_srcdir)/ccode --pkg ccode \
 		--vapidir $(top_srcdir)/vala --pkg vala \
+		--use-header \
 		-H valacodegen.h \
 		--library codegen \
 		$^
 	@touch $@
 
-libvala@PACKAGE_SUFFIX@_la_LDFLAGS = -no-undefined
-
-libvala@PACKAGE_SUFFIX@_la_LIBADD = \
+libvalaccodegen_la_LIBADD = \
 	$(COVERAGE_LIBS) \
 	$(GLIB_LIBS) \
-	$(top_builddir)/vala/libvalacore.la \
+	$(top_builddir)/vala/libvala@PACKAGE_SUFFIX@.la \
 	$(top_builddir)/ccode/libvalaccode.la \
 	$(NULL)
 
-EXTRA_DIST = $(libvala_la_VALASOURCES) codegen.vapi codegen.vala.stamp
+EXTRA_DIST = $(libvalaccodegen_la_VALASOURCES) codegen.vapi codegen.vala.stamp valacodegen.h
 
 MAINTAINERCLEANFILES = \
 	codegen.vapi \
 	valacodegen.h \
-	$(libvala_la_VALASOURCES:.vala=.c) \
+	$(libvalaccodegen_la_VALASOURCES:.vala=.c) \
 	$(NULL)

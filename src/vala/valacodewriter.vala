@@ -28,6 +28,8 @@
  * Code visitor generating Vala API file for the public interface.
  */
 public class Vala.CodeWriter : CodeVisitor {
+	static GLib.Regex fix_indent_regex;
+
 	private CodeContext context;
 	
 	FileStream stream;
@@ -67,7 +69,7 @@ public class Vala.CodeWriter : CodeVisitor {
 	 */
 	public void write_file (CodeContext context, string filename) {
 		var file_exists = FileUtils.test (filename, FileTest.EXISTS);
-		var temp_filename = filename + ".valatmp";
+		var temp_filename = "%s.valatmp".printf (filename);
 		this.context = context;
 
 		if (file_exists) {
@@ -212,7 +214,13 @@ public class Vala.CodeWriter : CodeVisitor {
 			}
 
 			if (header_to_override != null) {
-				cheaders = cheaders.replace (header_to_override, override_header).replace (",,", ",");
+				var cheaders_array = cheaders.split (",");
+				for (int i = 0; i < cheaders_array.length; i++) {
+					if (cheaders_array[i] == header_to_override) {
+						cheaders_array[i] = override_header;
+					}
+				}
+				cheaders = string.joinv (",", cheaders_array);
 			}
 		}
 		return cheaders;
@@ -282,7 +290,7 @@ public class Vala.CodeWriter : CodeVisitor {
 	}
 
 	void visit_sorted (List<Symbol> symbols) {
-		if (type != CodeWriterType.EXTERNAL) {
+		if (type != CodeWriterType.EXTERNAL && type != CodeWriterType.VAPIGEN) {
 			// order of virtual methods matters for fast vapis
 			foreach (Symbol sym in symbols) {
 				sym.accept (this);
@@ -554,6 +562,11 @@ public class Vala.CodeWriter : CodeVisitor {
 
 		write_indent ();
 		write_accessibility (c);
+
+		if (c.hides) {
+			write_string ("new ");
+		}
+
 		write_string ("const ");
 
 		write_type (c.type_reference);
@@ -586,6 +599,10 @@ public class Vala.CodeWriter : CodeVisitor {
 
 		write_indent ();
 		write_accessibility (f);
+
+		if (f.hides) {
+			write_string ("new ");
+		}
 
 		if (f.binding == MemberBinding.STATIC) {
 			write_string ("static ");
@@ -762,6 +779,10 @@ public class Vala.CodeWriter : CodeVisitor {
 			}
 			write_string (" ");
 		} else {
+			if (m.hides) {
+				write_string ("new ");
+			}
+
 			if (m.binding == MemberBinding.STATIC) {
 				write_string ("static ");
 			} else if (m.binding == MemberBinding.CLASS) {
@@ -772,10 +793,6 @@ public class Vala.CodeWriter : CodeVisitor {
 				write_string ("virtual ");
 			} else if (m.overrides) {
 				write_string ("override ");
-			}
-
-			if (m.hides) {
-				write_string ("new ");
 			}
 
 			if (m.coroutine) {
@@ -818,6 +835,10 @@ public class Vala.CodeWriter : CodeVisitor {
 
 		write_indent ();
 		write_accessibility (prop);
+
+		if (prop.hides) {
+			write_string ("new ");
+		}
 
 		if (prop.binding == MemberBinding.STATIC) {
 			write_string ("static ");
@@ -880,6 +901,10 @@ public class Vala.CodeWriter : CodeVisitor {
 		
 		write_indent ();
 		write_accessibility (sig);
+
+		if (sig.hides) {
+			write_string ("new ");
+		}
 
 		if (sig.is_virtual) {
 			write_string ("virtual ");
@@ -1493,28 +1518,23 @@ public class Vala.CodeWriter : CodeVisitor {
 	}
 
 	private void write_indent () {
-		int i;
-		
 		if (!bol) {
 			stream.putc ('\n');
 		}
-		
-		for (i = 0; i < indent; i++) {
-			stream.putc ('\t');
-		}
-		
+
+		stream.puts (string.nfill (indent, '\t'));
 		bol = false;
 	}
 
 	private void write_comment (Comment comment) {
-		Regex fix_indent_regex;
 		try {
-			fix_indent_regex = new Regex ("\\n[\\t ]*");
+			if (fix_indent_regex == null)
+				fix_indent_regex = new Regex ("\\n[\\t ]*");
 		} catch (Error e) {
 			assert_not_reached ();
 		}
 
-		string replacement = "\n" + string.nfill (indent, '\t') + " ";
+		string replacement = "\n%s ".printf (string.nfill (indent, '\t'));
 		string fixed_content;
 		try {
 			fixed_content = fix_indent_regex.replace (comment.content, comment.content.length, 0, replacement);
@@ -1560,7 +1580,7 @@ public class Vala.CodeWriter : CodeVisitor {
 	}
 
 	private void write_string (string s) {
-		stream.printf ("%s", s);
+		stream.puts (s);
 		bol = false;
 	}
 	
@@ -1570,7 +1590,7 @@ public class Vala.CodeWriter : CodeVisitor {
 	}
 	
 	void write_code_block (Block? block) {
-		if (block == null || type != CodeWriterType.DUMP) {
+		if (block == null || (type != CodeWriterType.DUMP && type != CodeWriterType.VAPIGEN)) {
 			write_string (";");
 			return;
 		}
@@ -1592,12 +1612,13 @@ public class Vala.CodeWriter : CodeVisitor {
 	private void write_end_block () {
 		indent--;
 		write_indent ();
-		stream.printf ("}");
+		stream.putc ('}');
 	}
 
 	private bool check_accessibility (Symbol sym) {
 		switch (type) {
 		case CodeWriterType.EXTERNAL:
+		case CodeWriterType.VAPIGEN:
 			return sym.access == SymbolAccessibility.PUBLIC ||
 			       sym.access == SymbolAccessibility.PROTECTED;
 
@@ -1651,10 +1672,10 @@ public class Vala.CodeWriter : CodeVisitor {
 				if (key == "cheader_filename" && sym is Namespace) {
 					continue;
 				}
-				keys.insert_sorted (key, (CompareDataFunc) strcmp);
+				keys.insert_sorted (key, (CompareDataFunc<string>) strcmp);
 			}
 			if (need_cheaders && attr.name == "CCode" && !attr.has_argument ("cheader_filename")) {
-				keys.insert_sorted ("cheader_filename", (CompareDataFunc) strcmp);
+				keys.insert_sorted ("cheader_filename", (CompareDataFunc<string>) strcmp);
 			}
 
 			if (attr.name == "CCode" && keys.get_length () == 0) {
@@ -1675,9 +1696,9 @@ public class Vala.CodeWriter : CodeVisitor {
 
 			stream.printf ("[%s", attr.name);
 			if (keys.get_length () > 0) {
-				stream.printf (" (");
+				stream.puts (" (");
 
-				string separator = "";
+				unowned string separator = "";
 				var arg_iter = keys.get_begin_iter ();
 				while (!arg_iter.is_end ()) {
 					unowned string arg_name = arg_iter.get ();
@@ -1690,9 +1711,9 @@ public class Vala.CodeWriter : CodeVisitor {
 					separator = ", ";
 				}
 
-				stream.printf (")");
+				stream.puts (")");
 			}
-			stream.printf ("]");
+			stream.puts ("]");
 			if (node is Parameter || node is PropertyAccessor) {
 				write_string (" ");
 			} else {
@@ -1712,7 +1733,7 @@ public class Vala.CodeWriter : CodeVisitor {
 			write_string ("private ");
 		}
 
-		if (type != CodeWriterType.EXTERNAL && sym.external && !sym.external_package) {
+		if (type != CodeWriterType.EXTERNAL && type != CodeWriterType.VAPIGEN && sym.external && !sym.external_package) {
 			write_string ("extern ");
 		}
 	}
@@ -1748,5 +1769,6 @@ public enum Vala.CodeWriterType {
 	EXTERNAL,
 	INTERNAL,
 	FAST,
-	DUMP
+	DUMP,
+	VAPIGEN
 }

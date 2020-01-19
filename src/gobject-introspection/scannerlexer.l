@@ -44,7 +44,8 @@ char linebuf[2000];
 
 extern int yylex (GIGenerator *igenerator);
 #define YY_DECL int yylex (GIGenerator *igenerator)
-static int yywrap (void);
+#define yywrap() (1)
+#define YY_SKIP_YYWRAP
 static void parse_comment (GIGenerator *igenerator);
 static void process_linemarks (GIGenerator *igenerator, gboolean has_line);
 static int check_identifier (GIGenerator *igenerator, const char *);
@@ -145,7 +146,11 @@ stringtext				([^\\\"])|(\\.)
 "__inline__"                            { return INLINE; }
 "__inline"				{ return INLINE; }
 "__nonnull" 			        { if (!parse_ignored_macro()) REJECT; }
+"_Nonnull"				{ /* Ignore */ }
+"_Nullable"				{ /* Ignore */ }
+"_Null_unspecified"			{ /* Ignore */ }
 "_Noreturn" 			        { /* Ignore */ }
+"__signed"				{ return SIGNED; }
 "__signed__"				{ return SIGNED; }
 "__restrict"				{ return RESTRICT; }
 "__restrict__"				{ return RESTRICT; }
@@ -160,6 +165,7 @@ stringtext				([^\\\"])|(\\.)
 "__stdcall" 			        { /* ignore */ }
 "__w64"					{ /* ignore */ }
 "__int64"				{ return INT; }
+"_Float128"				{ return FLOAT; }
 
 
 [a-zA-Z_][a-zA-Z_0-9]*			{ if (igenerator->macro_scan) return check_identifier(igenerator, yytext); else REJECT; }
@@ -224,12 +230,6 @@ stringtext				([^\\\"])|(\\.)
 .					{ print_error(igenerator); }
 
 %%
-
-static int
-yywrap (void)
-{
-  return 1;
-}
 
 static void parse_gtkdoc (GIGenerator *igenerator, int *c1, int *c2)
 {

@@ -7,6 +7,7 @@ SUBDIRS = \
 	$(NULL)
 
 AM_CPPFLAGS = \
+	$(COVERAGE_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	-I$(top_srcdir)/gee \
 	-I$(top_srcdir)/ccode \
@@ -16,6 +17,9 @@ AM_CPPFLAGS = \
 
 bin_PROGRAMS = \
 	vapigen \
+	$(NULL)
+
+noinst_PROGRAMS = \
 	vapicheck \
 	$(NULL)
 
@@ -42,11 +46,11 @@ vapicheck_SOURCES = \
 
 vapigen.vala.stamp: $(vapigen_VALASOURCES)
 	$(VALA_V)$(VALAC) \
+		$(COVERAGE_VALAFLAGS) \
 		$(VALAFLAGS) \
 		-C \
 		--vapidir $(top_srcdir)/vapi \
 		--vapidir $(top_srcdir)/gee --pkg gee \
-		--vapidir $(top_srcdir)/ccode --pkg ccode \
 		--vapidir $(top_srcdir)/vala --pkg vala \
 		--vapidir $(top_srcdir)/gobject-introspection --pkg gidl \
 		--pkg config \
@@ -55,11 +59,11 @@ vapigen.vala.stamp: $(vapigen_VALASOURCES)
 
 vapicheck.vala.stamp: $(vapicheck_VALASOURCES)
 	$(VALA_V)$(VALAC) \
+		$(COVERAGE_VALAFLAGS) \
 		$(VALAFLAGS) \
 		-C \
 		--vapidir $(top_srcdir)/vapi \
 		--vapidir $(top_srcdir)/gee --pkg gee \
-		--vapidir $(top_srcdir)/ccode --pkg ccode \
 		--vapidir $(top_srcdir)/vala --pkg vala \
 		--vapidir $(top_srcdir)/gobject-introspection --pkg gidl \
 		--pkg config \
@@ -67,14 +71,16 @@ vapicheck.vala.stamp: $(vapicheck_VALASOURCES)
 	@touch $@
 
 vapigen_LDADD = \
+	$(COVERAGE_LIBS) \
 	$(GLIB_LIBS) \
-	$(top_builddir)/codegen/libvala@PACKAGE_SUFFIX@.la \
+	$(top_builddir)/vala/libvala@PACKAGE_SUFFIX@.la \
 	$(top_builddir)/gobject-introspection/libgidl.la \
 	$(NULL)
 
 vapicheck_LDADD = \
+	$(COVERAGE_LIBS) \
 	$(GLIB_LIBS) \
-	$(top_builddir)/codegen/libvala@PACKAGE_SUFFIX@.la \
+	$(top_builddir)/vala/libvala@PACKAGE_SUFFIX@.la \
 	$(top_builddir)/gobject-introspection/libgidl.la \
 	$(NULL)
 
@@ -108,7 +114,6 @@ CLEANFILES = \
 if ENABLE_UNVERSIONED
 install-exec-hook:
 	cd $(DESTDIR)$(bindir) && $(LN_S) -f vapigen@PACKAGE_SUFFIX@$(EXEEXT) vapigen$(EXEEXT)
-	cd $(DESTDIR)$(bindir) && $(LN_S) -f vapicheck@PACKAGE_SUFFIX@$(EXEEXT) vapicheck$(EXEEXT)
 
 install-data-hook:
 	cd $(DESTDIR)$(pkgconfigdir) && $(LN_S) -f vapigen@PACKAGE_SUFFIX@.pc vapigen.pc

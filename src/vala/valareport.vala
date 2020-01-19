@@ -26,69 +26,75 @@ using GLib;
 /**
  * Namespace to centralize reporting warnings and errors.
  */
-public class Vala.Report : Object {
+public class Vala.Report {
+	public enum Colored {
+		AUTO,
+		NEVER,
+		ALWAYS
+	}
+
 	/**
-	 * SGR end tag
+	 * SGR (Select Graphic Rendition) end tag
 	 */
 	private const string ANSI_COLOR_END = "\x1b[0m";
 
 	/**
-	 * SGR start tag for source location
+	 * SGR (Select Graphic Rendition) start tag for source location
 	 */
 	private string locus_color_start = "";
 
 	/**
-	 * SGR end tag for source location
+	 * SGR (Select Graphic Rendition) end tag for source location
 	 */
 	private unowned string locus_color_end = "";
 
 	/**
-	 * SGR start tag for warning titles
+	 * SGR (Select Graphic Rendition) start tag for warning titles
 	 */
 	private string warning_color_start = "";
 
 	/**
-	 * SGR end tag for warning titles
+	 * SGR (Select Graphic Rendition) end tag for warning titles
 	 */
 	private unowned string warning_color_end = "";
 
 	/**
-	 * SGR start tag for error titles
+	 * SGR (Select Graphic Rendition) start tag for error titles
 	 */
 	private string error_color_start = "";
 
 	/**
-	 * SGR end tag for error titles
+	 * SGR (Select Graphic Rendition) end tag for error titles
 	 */
 	private unowned string error_color_end = "";
 
 	/**
-	 * SGR start tag for note titles
+	 * SGR (Select Graphic Rendition) start tag for note titles
 	 */
 	private string note_color_start = "";
 
 	/**
-	 * SGR end tag for note titles
+	 * SGR (Select Graphic Rendition) end tag for note titles
 	 */
 	private unowned string note_color_end = "";
 
 	/**
-	 * SGR start tag for caret line (^^^)
+	 * SGR (Select Graphic Rendition) start tag for caret line (^^^)
 	 */
 	private string caret_color_start = "";
 
 	/**
-	 * SGR end tag for caret line (^^^)
+	 * SGR (Select Graphic Rendition) end tag for caret line (^^^)
 	 */
 	private unowned string caret_color_end = "";
 
 	/**
-	 * SGR start tag for quotes line ('', ``, `')
+	 * SGR (Select Graphic Rendition) start tag for quotes line ('...', `...`, `...')
 	 */
 	private string quote_color_start = "";
 
 	/**
-	 * SGR end tag for quotes line ('', ``, `')
+	 * SGR (Select Graphic Rendition) end tag for quotes line ('...', `...`, `...')
 	 */
 	private unowned string quote_color_end = "";
 
@@ -100,6 +106,7 @@ public class Vala.Report : Object {
 
 	public bool enable_warnings { get; set; default = true; }
 
+	static GLib.Regex val_regex;
 
 	/**
 	 * Set all colors by string
@@ -108,10 +115,10 @@ public class Vala.Report : Object {
 	 *   "error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"
 	 * }}}
 	 */
-	public bool set_colors (string str) {
-		Regex val_regex;
+	public bool set_colors (string str, Report.Colored colored_output = Report.Colored.AUTO) {
 		try {
-			val_regex = new Regex ("^\\s*[0-9]+(;[0-9]*)*\\s*$");
+			if (val_regex == null)
+				val_regex = new Regex ("^\\s*[0-9]+(;[0-9]*)*\\s*$");
 		} catch (RegexError e) {
 			assert_not_reached ();
 		}
@@ -166,7 +173,7 @@ public class Vala.Report : Object {
 			}
 		}
 
-		if (is_atty (stderr.fileno ())) {
+		if (colored_output == Report.Colored.ALWAYS || (colored_output == Report.Colored.AUTO && is_atty (stderr.fileno ()))) {
 			if (error_color != null) {
 				this.error_color_start = "\x1b[0" + error_color + "m";
 				this.error_color_end = ANSI_COLOR_END;

@@ -23,169 +23,14 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
-#include <stdlib.h>
-#include <string.h>
+#include "vala.h"
 #include <valagee.h>
 
-
-#define VALA_TYPE_CODE_NODE (vala_code_node_get_type ())
-#define VALA_CODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_NODE, ValaCodeNode))
-#define VALA_CODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_NODE, ValaCodeNodeClass))
-#define VALA_IS_CODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CODE_NODE))
-#define VALA_IS_CODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CODE_NODE))
-#define VALA_CODE_NODE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CODE_NODE, ValaCodeNodeClass))
-
-typedef struct _ValaCodeNode ValaCodeNode;
-typedef struct _ValaCodeNodeClass ValaCodeNodeClass;
-typedef struct _ValaCodeNodePrivate ValaCodeNodePrivate;
-
-#define VALA_TYPE_CODE_VISITOR (vala_code_visitor_get_type ())
-#define VALA_CODE_VISITOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_VISITOR, ValaCodeVisitor))
-#define VALA_CODE_VISITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_VISITOR, ValaCodeVisitorClass))
-#define VALA_IS_CODE_VISITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CODE_VISITOR))
-#define VALA_IS_CODE_VISITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CODE_VISITOR))
-#define VALA_CODE_VISITOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CODE_VISITOR, ValaCodeVisitorClass))
-
-typedef struct _ValaCodeVisitor ValaCodeVisitor;
-typedef struct _ValaCodeVisitorClass ValaCodeVisitorClass;
-
-#define VALA_TYPE_CODE_CONTEXT (vala_code_context_get_type ())
-#define VALA_CODE_CONTEXT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_CONTEXT, ValaCodeContext))
-#define VALA_CODE_CONTEXT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_CONTEXT, ValaCodeContextClass))
-#define VALA_IS_CODE_CONTEXT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CODE_CONTEXT))
-#define VALA_IS_CODE_CONTEXT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CODE_CONTEXT))
-#define VALA_CODE_CONTEXT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CODE_CONTEXT, ValaCodeContextClass))
-
-typedef struct _ValaCodeContext ValaCodeContext;
-typedef struct _ValaCodeContextClass ValaCodeContextClass;
-
-#define VALA_TYPE_CODE_GENERATOR (vala_code_generator_get_type ())
-#define VALA_CODE_GENERATOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_GENERATOR, ValaCodeGenerator))
-#define VALA_CODE_GENERATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_GENERATOR, ValaCodeGeneratorClass))
-#define VALA_IS_CODE_GENERATOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CODE_GENERATOR))
-#define VALA_IS_CODE_GENERATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CODE_GENERATOR))
-#define VALA_CODE_GENERATOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CODE_GENERATOR, ValaCodeGeneratorClass))
-
-typedef struct _ValaCodeGenerator ValaCodeGenerator;
-typedef struct _ValaCodeGeneratorClass ValaCodeGeneratorClass;
-
-#define VALA_TYPE_DATA_TYPE (vala_data_type_get_type ())
-#define VALA_DATA_TYPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_DATA_TYPE, ValaDataType))
-#define VALA_DATA_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_DATA_TYPE, ValaDataTypeClass))
-#define VALA_IS_DATA_TYPE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_DATA_TYPE))
-#define VALA_IS_DATA_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_DATA_TYPE))
-#define VALA_DATA_TYPE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_DATA_TYPE, ValaDataTypeClass))
-
-typedef struct _ValaDataType ValaDataType;
-typedef struct _ValaDataTypeClass ValaDataTypeClass;
-
-#define VALA_TYPE_EXPRESSION (vala_expression_get_type ())
-#define VALA_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_EXPRESSION, ValaExpression))
-#define VALA_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_EXPRESSION, ValaExpressionClass))
-#define VALA_IS_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_EXPRESSION))
-#define VALA_IS_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_EXPRESSION))
-#define VALA_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_EXPRESSION, ValaExpressionClass))
-
-typedef struct _ValaExpression ValaExpression;
-typedef struct _ValaExpressionClass ValaExpressionClass;
-
-#define VALA_TYPE_SYMBOL (vala_symbol_get_type ())
-#define VALA_SYMBOL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SYMBOL, ValaSymbol))
-#define VALA_SYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SYMBOL, ValaSymbolClass))
-#define VALA_IS_SYMBOL(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SYMBOL))
-#define VALA_IS_SYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SYMBOL))
-#define VALA_SYMBOL_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SYMBOL, ValaSymbolClass))
-
-typedef struct _ValaSymbol ValaSymbol;
-typedef struct _ValaSymbolClass ValaSymbolClass;
-
-#define VALA_TYPE_VARIABLE (vala_variable_get_type ())
-#define VALA_VARIABLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_VARIABLE, ValaVariable))
-#define VALA_VARIABLE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_VARIABLE, ValaVariableClass))
-#define VALA_IS_VARIABLE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_VARIABLE))
-#define VALA_IS_VARIABLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_VARIABLE))
-#define VALA_VARIABLE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_VARIABLE, ValaVariableClass))
-
-typedef struct _ValaVariable ValaVariable;
-typedef struct _ValaVariableClass ValaVariableClass;
-
-#define VALA_TYPE_ATTRIBUTE (vala_attribute_get_type ())
-#define VALA_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_ATTRIBUTE, ValaAttribute))
-#define VALA_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_ATTRIBUTE, ValaAttributeClass))
-#define VALA_IS_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_ATTRIBUTE))
-#define VALA_IS_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_ATTRIBUTE))
-#define VALA_ATTRIBUTE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_ATTRIBUTE, ValaAttributeClass))
-
-typedef struct _ValaAttribute ValaAttribute;
-typedef struct _ValaAttributeClass ValaAttributeClass;
-typedef struct _ValaExpressionPrivate ValaExpressionPrivate;
-
-#define VALA_TYPE_TUPLE (vala_tuple_get_type ())
-#define VALA_TUPLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TUPLE, ValaTuple))
-#define VALA_TUPLE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_TUPLE, ValaTupleClass))
-#define VALA_IS_TUPLE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_TUPLE))
-#define VALA_IS_TUPLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_TUPLE))
-#define VALA_TUPLE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_TUPLE, ValaTupleClass))
-
-typedef struct _ValaTuple ValaTuple;
-typedef struct _ValaTupleClass ValaTupleClass;
-typedef struct _ValaTuplePrivate ValaTuplePrivate;
 #define _vala_iterable_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterable_unref (var), NULL)))
-
-#define VALA_TYPE_SOURCE_REFERENCE (vala_source_reference_get_type ())
-#define VALA_SOURCE_REFERENCE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReference))
-#define VALA_SOURCE_REFERENCE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReferenceClass))
-#define VALA_IS_SOURCE_REFERENCE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SOURCE_REFERENCE))
-#define VALA_IS_SOURCE_REFERENCE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SOURCE_REFERENCE))
-#define VALA_SOURCE_REFERENCE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReferenceClass))
-
-typedef struct _ValaSourceReference ValaSourceReference;
-typedef struct _ValaSourceReferenceClass ValaSourceReferenceClass;
 #define _vala_code_node_unref0(var) ((var == NULL) ? NULL : (var = (vala_code_node_unref (var), NULL)))
-
-struct _ValaCodeNode {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	ValaCodeNodePrivate * priv;
-	GList* attributes;
-};
-
-struct _ValaCodeNodeClass {
-	GTypeClass parent_class;
-	void (*finalize) (ValaCodeNode *self);
-	void (*accept) (ValaCodeNode* self, ValaCodeVisitor* visitor);
-	void (*accept_children) (ValaCodeNode* self, ValaCodeVisitor* visitor);
-	gboolean (*check) (ValaCodeNode* self, ValaCodeContext* context);
-	void (*emit) (ValaCodeNode* self, ValaCodeGenerator* codegen);
-	void (*replace_type) (ValaCodeNode* self, ValaDataType* old_type, ValaDataType* new_type);
-	void (*replace_expression) (ValaCodeNode* self, ValaExpression* old_node, ValaExpression* new_node);
-	gchar* (*to_string) (ValaCodeNode* self);
-	void (*get_defined_variables) (ValaCodeNode* self, ValaCollection* collection);
-	void (*get_used_variables) (ValaCodeNode* self, ValaCollection* collection);
-};
-
-struct _ValaExpression {
-	ValaCodeNode parent_instance;
-	ValaExpressionPrivate * priv;
-};
-
-struct _ValaExpressionClass {
-	ValaCodeNodeClass parent_class;
-	gboolean (*is_constant) (ValaExpression* self);
-	gboolean (*is_pure) (ValaExpression* self);
-	gboolean (*is_non_null) (ValaExpression* self);
-};
-
-struct _ValaTuple {
-	ValaExpression parent_instance;
-	ValaTuplePrivate * priv;
-};
-
-struct _ValaTupleClass {
-	ValaExpressionClass parent_class;
-};
 
 struct _ValaTuplePrivate {
 	ValaList* expression_list;
@@ -194,102 +39,62 @@ struct _ValaTuplePrivate {
 
 static gpointer vala_tuple_parent_class = NULL;
 
-gpointer vala_code_node_ref (gpointer instance);
-void vala_code_node_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_node (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_node (GValue* value, gpointer v_object);
-void vala_value_take_code_node (GValue* value, gpointer v_object);
-gpointer vala_value_get_code_node (const GValue* value);
-GType vala_code_node_get_type (void) G_GNUC_CONST;
-gpointer vala_code_visitor_ref (gpointer instance);
-void vala_code_visitor_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_visitor (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_visitor (GValue* value, gpointer v_object);
-void vala_value_take_code_visitor (GValue* value, gpointer v_object);
-gpointer vala_value_get_code_visitor (const GValue* value);
-GType vala_code_visitor_get_type (void) G_GNUC_CONST;
-gpointer vala_code_context_ref (gpointer instance);
-void vala_code_context_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_context (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_context (GValue* value, gpointer v_object);
-void vala_value_take_code_context (GValue* value, gpointer v_object);
-gpointer vala_value_get_code_context (const GValue* value);
-GType vala_code_context_get_type (void) G_GNUC_CONST;
-GType vala_code_generator_get_type (void) G_GNUC_CONST;
-GType vala_data_type_get_type (void) G_GNUC_CONST;
-GType vala_expression_get_type (void) G_GNUC_CONST;
-GType vala_symbol_get_type (void) G_GNUC_CONST;
-GType vala_variable_get_type (void) G_GNUC_CONST;
-GType vala_attribute_get_type (void) G_GNUC_CONST;
-GType vala_tuple_get_type (void) G_GNUC_CONST;
 #define VALA_TUPLE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_TUPLE, ValaTuplePrivate))
-enum  {
-	VALA_TUPLE_DUMMY_PROPERTY
-};
-gpointer vala_source_reference_ref (gpointer instance);
-void vala_source_reference_unref (gpointer instance);
-GParamSpec* vala_param_spec_source_reference (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_source_reference (GValue* value, gpointer v_object);
-void vala_value_take_source_reference (GValue* value, gpointer v_object);
-gpointer vala_value_get_source_reference (const GValue* value);
-GType vala_source_reference_get_type (void) G_GNUC_CONST;
-ValaTuple* vala_tuple_new (ValaSourceReference* source_reference);
-ValaTuple* vala_tuple_construct (GType object_type, ValaSourceReference* source_reference);
-ValaExpression* vala_expression_construct (GType object_type);
-void vala_code_node_set_source_reference (ValaCodeNode* self, ValaSourceReference* value);
-static void vala_tuple_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor);
-void vala_code_node_accept (ValaCodeNode* self, ValaCodeVisitor* visitor);
-static void vala_tuple_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor);
-void vala_code_visitor_visit_tuple (ValaCodeVisitor* self, ValaTuple* tuple);
-void vala_code_visitor_visit_expression (ValaCodeVisitor* self, ValaExpression* expr);
-void vala_tuple_add_expression (ValaTuple* self, ValaExpression* expr);
-ValaList* vala_tuple_get_expressions (ValaTuple* self);
+static void vala_tuple_real_accept_children (ValaCodeNode* base,
+                                      ValaCodeVisitor* visitor);
+static void vala_tuple_real_accept (ValaCodeNode* base,
+                             ValaCodeVisitor* visitor);
 static gboolean vala_tuple_real_is_pure (ValaExpression* base);
-static void vala_tuple_real_replace_expression (ValaCodeNode* base, ValaExpression* old_node, ValaExpression* new_node);
-static gboolean vala_tuple_real_check (ValaCodeNode* base, ValaCodeContext* context);
-gboolean vala_code_node_get_checked (ValaCodeNode* self);
-gboolean vala_code_node_get_error (ValaCodeNode* self);
-void vala_code_node_set_checked (ValaCodeNode* self, gboolean value);
-void vala_report_error (ValaSourceReference* source, const gchar* message);
-ValaSourceReference* vala_code_node_get_source_reference (ValaCodeNode* self);
-void vala_code_node_set_error (ValaCodeNode* self, gboolean value);
-static void vala_tuple_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen);
-void vala_code_node_emit (ValaCodeNode* self, ValaCodeGenerator* codegen);
-static void vala_tuple_finalize (ValaCodeNode* obj);
+static void vala_tuple_real_replace_expression (ValaCodeNode* base,
+                                         ValaExpression* old_node,
+                                         ValaExpression* new_node);
+static gboolean vala_tuple_real_check (ValaCodeNode* base,
+                                ValaCodeContext* context);
+static void vala_tuple_real_emit (ValaCodeNode* base,
+                           ValaCodeGenerator* codegen);
+static void vala_tuple_finalize (ValaCodeNode * obj);
 
 
-ValaTuple* vala_tuple_construct (GType object_type, ValaSourceReference* source_reference) {
+ValaTuple*
+vala_tuple_construct (GType object_type,
+                      ValaSourceReference* source_reference)
+{
 	ValaTuple* self = NULL;
-	ValaSourceReference* _tmp0_ = NULL;
 	self = (ValaTuple*) vala_expression_construct (object_type);
-	_tmp0_ = source_reference;
-	vala_code_node_set_source_reference ((ValaCodeNode*) self, _tmp0_);
+	vala_code_node_set_source_reference ((ValaCodeNode*) self, source_reference);
 	return self;
 }
 
 
-ValaTuple* vala_tuple_new (ValaSourceReference* source_reference) {
+ValaTuple*
+vala_tuple_new (ValaSourceReference* source_reference)
+{
 	return vala_tuple_construct (VALA_TYPE_TUPLE, source_reference);
 }
 
 
-static gpointer _vala_iterable_ref0 (gpointer self) {
+static gpointer
+_vala_iterable_ref0 (gpointer self)
+{
 	return self ? vala_iterable_ref (self) : NULL;
 }
 
 
-static void vala_tuple_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
+static void
+vala_tuple_real_accept_children (ValaCodeNode* base,
+                                 ValaCodeVisitor* visitor)
+{
 	ValaTuple * self;
 	self = (ValaTuple*) base;
 	g_return_if_fail (visitor != NULL);
 	{
 		ValaList* _expr_list = NULL;
-		ValaList* _tmp0_ = NULL;
-		ValaList* _tmp1_ = NULL;
+		ValaList* _tmp0_;
+		ValaList* _tmp1_;
 		gint _expr_size = 0;
-		ValaList* _tmp2_ = NULL;
-		gint _tmp3_ = 0;
-		gint _tmp4_ = 0;
+		ValaList* _tmp2_;
+		gint _tmp3_;
+		gint _tmp4_;
 		gint _expr_index = 0;
 		_tmp0_ = self->priv->expression_list;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -300,15 +105,14 @@ static void vala_tuple_real_accept_children (ValaCodeNode* base, ValaCodeVisitor
 		_expr_size = _tmp4_;
 		_expr_index = -1;
 		while (TRUE) {
-			gint _tmp5_ = 0;
-			gint _tmp6_ = 0;
-			gint _tmp7_ = 0;
+			gint _tmp5_;
+			gint _tmp6_;
+			gint _tmp7_;
 			ValaExpression* expr = NULL;
-			ValaList* _tmp8_ = NULL;
-			gint _tmp9_ = 0;
-			gpointer _tmp10_ = NULL;
-			ValaExpression* _tmp11_ = NULL;
-			ValaCodeVisitor* _tmp12_ = NULL;
+			ValaList* _tmp8_;
+			gint _tmp9_;
+			gpointer _tmp10_;
+			ValaExpression* _tmp11_;
 			_tmp5_ = _expr_index;
 			_expr_index = _tmp5_ + 1;
 			_tmp6_ = _expr_index;
@@ -321,8 +125,7 @@ static void vala_tuple_real_accept_children (ValaCodeNode* base, ValaCodeVisitor
 			_tmp10_ = vala_list_get (_tmp8_, _tmp9_);
 			expr = (ValaExpression*) _tmp10_;
 			_tmp11_ = expr;
-			_tmp12_ = visitor;
-			vala_code_node_accept ((ValaCodeNode*) _tmp11_, _tmp12_);
+			vala_code_node_accept ((ValaCodeNode*) _tmp11_, visitor);
 			_vala_code_node_unref0 (expr);
 		}
 		_vala_iterable_unref0 (_expr_list);
@@ -330,34 +133,36 @@ static void vala_tuple_real_accept_children (ValaCodeNode* base, ValaCodeVisitor
 }
 
 
-static void vala_tuple_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
+static void
+vala_tuple_real_accept (ValaCodeNode* base,
+                        ValaCodeVisitor* visitor)
+{
 	ValaTuple * self;
-	ValaCodeVisitor* _tmp0_ = NULL;
-	ValaCodeVisitor* _tmp1_ = NULL;
 	self = (ValaTuple*) base;
 	g_return_if_fail (visitor != NULL);
-	_tmp0_ = visitor;
-	vala_code_visitor_visit_tuple (_tmp0_, self);
-	_tmp1_ = visitor;
-	vala_code_visitor_visit_expression (_tmp1_, (ValaExpression*) self);
+	vala_code_visitor_visit_tuple (visitor, self);
+	vala_code_visitor_visit_expression (visitor, (ValaExpression*) self);
 }
 
 
-void vala_tuple_add_expression (ValaTuple* self, ValaExpression* expr) {
-	ValaList* _tmp0_ = NULL;
-	ValaExpression* _tmp1_ = NULL;
+void
+vala_tuple_add_expression (ValaTuple* self,
+                           ValaExpression* expr)
+{
+	ValaList* _tmp0_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (expr != NULL);
 	_tmp0_ = self->priv->expression_list;
-	_tmp1_ = expr;
-	vala_collection_add ((ValaCollection*) _tmp0_, _tmp1_);
+	vala_collection_add ((ValaCollection*) _tmp0_, expr);
 }
 
 
-ValaList* vala_tuple_get_expressions (ValaTuple* self) {
+ValaList*
+vala_tuple_get_expressions (ValaTuple* self)
+{
 	ValaList* result = NULL;
-	ValaList* _tmp0_ = NULL;
-	ValaList* _tmp1_ = NULL;
+	ValaList* _tmp0_;
+	ValaList* _tmp1_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->expression_list;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -366,7 +171,9 @@ ValaList* vala_tuple_get_expressions (ValaTuple* self) {
 }
 
 
-static gboolean vala_tuple_real_is_pure (ValaExpression* base) {
+static gboolean
+vala_tuple_real_is_pure (ValaExpression* base)
+{
 	ValaTuple * self;
 	gboolean result = FALSE;
 	self = (ValaTuple*) base;
@@ -375,7 +182,11 @@ static gboolean vala_tuple_real_is_pure (ValaExpression* base) {
 }
 
 
-static void vala_tuple_real_replace_expression (ValaCodeNode* base, ValaExpression* old_node, ValaExpression* new_node) {
+static void
+vala_tuple_real_replace_expression (ValaCodeNode* base,
+                                    ValaExpression* old_node,
+                                    ValaExpression* new_node)
+{
 	ValaTuple * self;
 	self = (ValaTuple*) base;
 	g_return_if_fail (old_node != NULL);
@@ -387,18 +198,17 @@ static void vala_tuple_real_replace_expression (ValaCodeNode* base, ValaExpressi
 			gboolean _tmp0_ = FALSE;
 			_tmp0_ = TRUE;
 			while (TRUE) {
-				gint _tmp2_ = 0;
-				ValaList* _tmp3_ = NULL;
-				gint _tmp4_ = 0;
-				gint _tmp5_ = 0;
-				ValaList* _tmp6_ = NULL;
-				gint _tmp7_ = 0;
-				gpointer _tmp8_ = NULL;
-				ValaExpression* _tmp9_ = NULL;
-				ValaExpression* _tmp10_ = NULL;
-				gboolean _tmp11_ = FALSE;
+				gint _tmp2_;
+				ValaList* _tmp3_;
+				gint _tmp4_;
+				gint _tmp5_;
+				ValaList* _tmp6_;
+				gint _tmp7_;
+				gpointer _tmp8_;
+				ValaExpression* _tmp9_;
+				gboolean _tmp10_;
 				if (!_tmp0_) {
-					gint _tmp1_ = 0;
+					gint _tmp1_;
 					_tmp1_ = i;
 					i = _tmp1_ + 1;
 				}
@@ -414,17 +224,14 @@ static void vala_tuple_real_replace_expression (ValaCodeNode* base, ValaExpressi
 				_tmp7_ = i;
 				_tmp8_ = vala_list_get (_tmp6_, _tmp7_);
 				_tmp9_ = (ValaExpression*) _tmp8_;
-				_tmp10_ = old_node;
-				_tmp11_ = _tmp9_ == _tmp10_;
+				_tmp10_ = _tmp9_ == old_node;
 				_vala_code_node_unref0 (_tmp9_);
-				if (_tmp11_) {
-					ValaList* _tmp12_ = NULL;
-					gint _tmp13_ = 0;
-					ValaExpression* _tmp14_ = NULL;
-					_tmp12_ = self->priv->expression_list;
-					_tmp13_ = i;
-					_tmp14_ = new_node;
-					vala_list_set (_tmp12_, _tmp13_, _tmp14_);
+				if (_tmp10_) {
+					ValaList* _tmp11_;
+					gint _tmp12_;
+					_tmp11_ = self->priv->expression_list;
+					_tmp12_ = i;
+					vala_list_set (_tmp11_, _tmp12_, new_node);
 				}
 			}
 		}
@@ -432,20 +239,23 @@ static void vala_tuple_real_replace_expression (ValaCodeNode* base, ValaExpressi
 }
 
 
-static gboolean vala_tuple_real_check (ValaCodeNode* base, ValaCodeContext* context) {
+static gboolean
+vala_tuple_real_check (ValaCodeNode* base,
+                       ValaCodeContext* context)
+{
 	ValaTuple * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_ = FALSE;
-	gboolean _tmp1_ = FALSE;
-	ValaSourceReference* _tmp4_ = NULL;
-	ValaSourceReference* _tmp5_ = NULL;
+	gboolean _tmp0_;
+	gboolean _tmp1_;
+	ValaSourceReference* _tmp4_;
+	ValaSourceReference* _tmp5_;
 	self = (ValaTuple*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_ = FALSE;
-		gboolean _tmp3_ = FALSE;
+		gboolean _tmp2_;
+		gboolean _tmp3_;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -461,20 +271,21 @@ static gboolean vala_tuple_real_check (ValaCodeNode* base, ValaCodeContext* cont
 }
 
 
-static void vala_tuple_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
+static void
+vala_tuple_real_emit (ValaCodeNode* base,
+                      ValaCodeGenerator* codegen)
+{
 	ValaTuple * self;
-	ValaCodeGenerator* _tmp13_ = NULL;
-	ValaCodeGenerator* _tmp14_ = NULL;
 	self = (ValaTuple*) base;
 	g_return_if_fail (codegen != NULL);
 	{
 		ValaList* _expr_list = NULL;
-		ValaList* _tmp0_ = NULL;
-		ValaList* _tmp1_ = NULL;
+		ValaList* _tmp0_;
+		ValaList* _tmp1_;
 		gint _expr_size = 0;
-		ValaList* _tmp2_ = NULL;
-		gint _tmp3_ = 0;
-		gint _tmp4_ = 0;
+		ValaList* _tmp2_;
+		gint _tmp3_;
+		gint _tmp4_;
 		gint _expr_index = 0;
 		_tmp0_ = self->priv->expression_list;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -485,15 +296,14 @@ static void vala_tuple_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen
 		_expr_size = _tmp4_;
 		_expr_index = -1;
 		while (TRUE) {
-			gint _tmp5_ = 0;
-			gint _tmp6_ = 0;
-			gint _tmp7_ = 0;
+			gint _tmp5_;
+			gint _tmp6_;
+			gint _tmp7_;
 			ValaExpression* expr = NULL;
-			ValaList* _tmp8_ = NULL;
-			gint _tmp9_ = 0;
-			gpointer _tmp10_ = NULL;
-			ValaExpression* _tmp11_ = NULL;
-			ValaCodeGenerator* _tmp12_ = NULL;
+			ValaList* _tmp8_;
+			gint _tmp9_;
+			gpointer _tmp10_;
+			ValaExpression* _tmp11_;
 			_tmp5_ = _expr_index;
 			_expr_index = _tmp5_ + 1;
 			_tmp6_ = _expr_index;
@@ -506,35 +316,36 @@ static void vala_tuple_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen
 			_tmp10_ = vala_list_get (_tmp8_, _tmp9_);
 			expr = (ValaExpression*) _tmp10_;
 			_tmp11_ = expr;
-			_tmp12_ = codegen;
-			vala_code_node_emit ((ValaCodeNode*) _tmp11_, _tmp12_);
+			vala_code_node_emit ((ValaCodeNode*) _tmp11_, codegen);
 			_vala_code_node_unref0 (expr);
 		}
 		_vala_iterable_unref0 (_expr_list);
 	}
-	_tmp13_ = codegen;
-	vala_code_visitor_visit_tuple ((ValaCodeVisitor*) _tmp13_, self);
-	_tmp14_ = codegen;
-	vala_code_visitor_visit_expression ((ValaCodeVisitor*) _tmp14_, (ValaExpression*) self);
+	vala_code_visitor_visit_tuple ((ValaCodeVisitor*) codegen, self);
+	vala_code_visitor_visit_expression ((ValaCodeVisitor*) codegen, (ValaExpression*) self);
 }
 
 
-static void vala_tuple_class_init (ValaTupleClass * klass) {
+static void
+vala_tuple_class_init (ValaTupleClass * klass)
+{
 	vala_tuple_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_tuple_finalize;
 	g_type_class_add_private (klass, sizeof (ValaTuplePrivate));
-	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_tuple_real_accept_children;
-	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_tuple_real_accept;
-	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_tuple_real_is_pure;
-	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_tuple_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_tuple_real_check;
-	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_tuple_real_emit;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*) (ValaCodeNode *, ValaCodeVisitor*)) vala_tuple_real_accept_children;
+	((ValaCodeNodeClass *) klass)->accept = (void (*) (ValaCodeNode *, ValaCodeVisitor*)) vala_tuple_real_accept;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*) (ValaExpression *)) vala_tuple_real_is_pure;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*) (ValaCodeNode *, ValaExpression*, ValaExpression*)) vala_tuple_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*) (ValaCodeNode *, ValaCodeContext*)) vala_tuple_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*) (ValaCodeNode *, ValaCodeGenerator*)) vala_tuple_real_emit;
 }
 
 
-static void vala_tuple_instance_init (ValaTuple * self) {
-	GEqualFunc _tmp0_ = NULL;
-	ValaArrayList* _tmp1_ = NULL;
+static void
+vala_tuple_instance_init (ValaTuple * self)
+{
+	GEqualFunc _tmp0_;
+	ValaArrayList* _tmp1_;
 	self->priv = VALA_TUPLE_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
@@ -542,7 +353,9 @@ static void vala_tuple_instance_init (ValaTuple * self) {
 }
 
 
-static void vala_tuple_finalize (ValaCodeNode* obj) {
+static void
+vala_tuple_finalize (ValaCodeNode * obj)
+{
 	ValaTuple * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_TUPLE, ValaTuple);
 	_vala_iterable_unref0 (self->priv->expression_list);
@@ -553,7 +366,9 @@ static void vala_tuple_finalize (ValaCodeNode* obj) {
 /**
  * Represents a fixed-length sequence of expressions in the source code.
  */
-GType vala_tuple_get_type (void) {
+GType
+vala_tuple_get_type (void)
+{
 	static volatile gsize vala_tuple_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_tuple_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (ValaTupleClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) vala_tuple_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (ValaTuple), 0, (GInstanceInitFunc) vala_tuple_instance_init, NULL };

@@ -64,10 +64,24 @@ public class Vala.CCodeAttribute : AttributeCache {
 					_type_name = ccode.get_string ("type_cname");
 				}
 				if (_type_name == null) {
-					_type_name = "%sIface".printf (CCodeBaseModule.get_ccode_name (sym));
+					_type_name = "%sIface".printf (get_ccode_name (sym));
 				}
 			}
 			return _type_name;
+		}
+	}
+
+	public string feature_test_macros {
+		get {
+			if (_feature_test_macros == null) {
+				if (ccode != null) {
+					_feature_test_macros = ccode.get_string ("feature_test_macro");
+				}
+				if (_feature_test_macros == null) {
+					_feature_test_macros = "";
+				}
+			}
+			return _feature_test_macros;
 		}
 	}
 
@@ -153,7 +167,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 				} else {
 					var cl = (Class) sym;
 					if (cl.base_class != null) {
-						_ref_function_void = CCodeBaseModule.get_ccode_ref_function_void (cl.base_class);
+						_ref_function_void = get_ccode_ref_function_void (cl.base_class);
 					} else {
 						_ref_function_void = false;
 					}
@@ -199,7 +213,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 					_copy_function = ccode.get_string ("copy_function");
 				}
 				if (_copy_function == null && sym is Struct) {
-					_copy_function = lower_case_prefix + "copy";
+					_copy_function = "%scopy".printf (lower_case_prefix);
 				}
 				copy_function_set = true;
 			}
@@ -214,11 +228,26 @@ public class Vala.CCodeAttribute : AttributeCache {
 					_destroy_function = ccode.get_string ("destroy_function");
 				}
 				if (_destroy_function == null && sym is Struct) {
-					_destroy_function = lower_case_prefix + "destroy";
+					_destroy_function = "%sdestroy".printf (lower_case_prefix);
 				}
 				destroy_function_set = true;
 			}
 			return _destroy_function;
+		}
+	}
+
+	public string dup_function {
+		get {
+			if (!dup_function_set) {
+				if (ccode != null) {
+					_dup_function = ccode.get_string ("dup_function");
+				}
+				if (_dup_function == null && !sym.external_package && sym is Struct) {
+					_dup_function = "%sdup".printf (lower_case_prefix);
+				}
+				dup_function_set = true;
+			}
+			return _dup_function;
 		}
 	}
 
@@ -245,7 +274,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 				} else {
 					var cl = (Class) sym;
 					if (cl.base_class != null) {
-						_free_function_address_of = CCodeBaseModule.get_ccode_free_function_address_of (cl.base_class);
+						_free_function_address_of = get_ccode_free_function_address_of (cl.base_class);
 					} else {
 						_free_function_address_of = false;
 					}
@@ -368,6 +397,20 @@ public class Vala.CCodeAttribute : AttributeCache {
 		}
 	}
 
+	public string default_value_on_error {
+		get {
+			if (_default_value_on_error == null) {
+				if (ccode != null) {
+					_default_value_on_error = ccode.get_string ("default_value_on_error");
+				}
+				if (_default_value_on_error == null) {
+					_default_value_on_error = default_value;
+				}
+			}
+			return _default_value_on_error;
+		}
+	}
+
 	public double pos {
 		get {
 			if (_pos == null) {
@@ -376,12 +419,8 @@ public class Vala.CCodeAttribute : AttributeCache {
 				} else {
 					var param = (Parameter) node;
 					var sym = param.parent_symbol;
-					if (sym is Method) {
-						_pos = ((Method) sym).get_parameters().index_of (param) + 1.0;
-					} else if (sym is Delegate) {
-						_pos = ((Delegate) sym).get_parameters().index_of (param) + 1.0;
-					} else if (sym is Signal) {
-						_pos = ((Signal) sym).get_parameters().index_of (param) + 1.0;
+					if (sym is Callable) {
+						_pos = ((Callable) sym).get_parameters ().index_of (param) + 1.0;
 					} else {
 						_pos = 0.0;
 					}
@@ -412,7 +451,12 @@ public class Vala.CCodeAttribute : AttributeCache {
 					_vfunc_name = ccode.get_string ("vfunc_name");
 				}
 				if (_vfunc_name == null) {
-					_vfunc_name = sym.name;
+					Method m = node as Method;
+					if (m != null && m.signal_reference != null) {
+						_vfunc_name = get_ccode_lower_case_name (m.signal_reference);
+					} else {
+						_vfunc_name = sym.name;
+					}
 				}
 			}
 			return _vfunc_name;
@@ -459,6 +503,21 @@ public class Vala.CCodeAttribute : AttributeCache {
 		}
 	}
 
+	public bool finish_instance {
+		get {
+			if (_finish_instance == null) {
+				Method m = node as Method;
+				bool is_creation_method = m is CreationMethod;
+				if (ccode == null || m == null || m.is_abstract || m.is_virtual) {
+					_finish_instance = !is_creation_method;
+				} else {
+					_finish_instance = ccode.get_bool ("finish_instance", !is_creation_method);
+				}
+			}
+			return _finish_instance;
+		}
+	}
+
 	public string delegate_target_name {
 		get {
 			if (_delegate_target_name == null) {
@@ -477,7 +536,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 		get {
 			if (_array_length == null) {
 				if (node.get_attribute ("NoArrayLength") != null) {
-					// deprecated
+					Report.deprecated (node.source_reference, "[NoArrayLength] is deprecated, use [CCode (array_length = false)] instead.");
 					_array_length = false;
 				} else if (ccode != null && ccode.has_argument ("array_length")) {
 					_array_length = ccode.get_bool ("array_length");
@@ -492,7 +551,10 @@ public class Vala.CCodeAttribute : AttributeCache {
 	public bool array_null_terminated {
 		get {
 			if (_array_null_terminated == null) {
-				if (ccode != null && ccode.has_argument ("array_null_terminated")) {
+				// If arrays claim to have an array-length and also are null-terminated then rely on the given length
+				if (ccode != null && ccode.has_argument ("array_length") && ccode.get_bool ("array_length")) {
+					_array_null_terminated = false;
+				} else if (ccode != null && ccode.has_argument ("array_null_terminated")) {
 					_array_null_terminated = ccode.get_bool ("array_null_terminated");
 				} else {
 					_array_null_terminated = get_default_array_null_terminated ();
@@ -511,6 +573,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 	private string _name;
 	private string _const_name;
 	private string _type_name;
+	private string _feature_test_macros;
 	private string _header_filenames;
 	private string _prefix;
 	private string _lower_case_prefix;
@@ -525,6 +588,8 @@ public class Vala.CCodeAttribute : AttributeCache {
 	private bool copy_function_set;
 	private string? _destroy_function;
 	private bool destroy_function_set;
+	private string? _dup_function;
+	private bool dup_function_set;
 	private string? _free_function;
 	private bool free_function_set;
 	private bool? _free_function_address_of;
@@ -535,11 +600,13 @@ public class Vala.CCodeAttribute : AttributeCache {
 	private string _take_value_function;
 	private string _param_spec_function;
 	private string _default_value;
+	private string _default_value_on_error;
 	private double? _pos;
 	private string _vfunc_name;
 	private string _finish_name;
 	private string _finish_vfunc_name;
 	private string _finish_real_name;
+	private bool? _finish_instance;
 	private string _real_name;
 	private string _delegate_target_name;
 	private string _ctype;
@@ -578,11 +645,11 @@ public class Vala.CCodeAttribute : AttributeCache {
 					// local constant
 					return sym.name;
 				}
-				return "%s%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (sym.parent_symbol).ascii_up (), sym.name);
+				return "%s%s".printf (get_ccode_lower_case_prefix (sym.parent_symbol).ascii_up (), sym.name);
 			} else if (sym is Field) {
 				var cname = sym.name;
 				if (((Field) sym).binding == MemberBinding.STATIC) {
-					cname = "%s%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (sym.parent_symbol), sym.name);
+					cname = "%s%s".printf (get_ccode_lower_case_prefix (sym.parent_symbol), sym.name);
 				}
 				if (cname[0].isdigit ()) {
 					Report.error (node.source_reference, "Field name starts with a digit. Use the `cname' attribute to provide a valid C name if intended");
@@ -598,54 +665,57 @@ public class Vala.CCodeAttribute : AttributeCache {
 					infix = "new";
 				}
 				if (m.name == ".new") {
-					return "%s%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (m.parent_symbol), infix);
+					return "%s%s".printf (get_ccode_lower_case_prefix (m.parent_symbol), infix);
 				} else {
-					return "%s%s_%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (m.parent_symbol), infix, m.name);
+					return "%s%s_%s".printf (get_ccode_lower_case_prefix (m.parent_symbol), infix, m.name);
 				}
 			} else if (sym is DynamicMethod) {
 				return "_dynamic_%s%d".printf (sym.name, dynamic_method_id++);
 			} else if (sym is Method) {
 				var m = (Method) sym;
 				if (m.is_async_callback) {
-					return "%s_co".printf (CCodeBaseModule.get_ccode_real_name ((Method) m.parent_symbol));
+					return "%s_co".printf (get_ccode_real_name ((Method) m.parent_symbol));
+				}
+				if (m.signal_reference != null) {
+					return "%s%s".printf (get_ccode_lower_case_prefix (m.parent_symbol), get_ccode_lower_case_name (m.signal_reference));
 				}
 				if (sym.name == "main" && sym.parent_symbol.name == null) {
 					// avoid conflict with generated main function
 					return "_vala_main";
 				} else if (sym.name.has_prefix ("_")) {
-					return "_%s%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (sym.parent_symbol), sym.name.substring (1));
+					return "_%s%s".printf (get_ccode_lower_case_prefix (sym.parent_symbol), sym.name.substring (1));
 				} else {
-					return "%s%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (sym.parent_symbol), sym.name);
+					return "%s%s".printf (get_ccode_lower_case_prefix (sym.parent_symbol), sym.name);
 				}
 			} else if (sym is PropertyAccessor) {
 				var acc = (PropertyAccessor) sym;
 				var t = (TypeSymbol) acc.prop.parent_symbol;
 
 				if (acc.readable) {
-					return "%sget_%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (t), acc.prop.name);
+					return "%sget_%s".printf (get_ccode_lower_case_prefix (t), acc.prop.name);
 				} else {
-					return "%sset_%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (t), acc.prop.name);
+					return "%sset_%s".printf (get_ccode_lower_case_prefix (t), acc.prop.name);
 				}
 			} else if (sym is Signal) {
-				return Symbol.camel_case_to_lower_case (sym.name);
+				return Symbol.camel_case_to_lower_case (sym.name).replace ("_", "-");;
 			} else if (sym is LocalVariable || sym is Parameter) {
 				return sym.name;
 			} else {
-				return "%s%s".printf (CCodeBaseModule.get_ccode_prefix (sym.parent_symbol), sym.name);
+				return "%s%s".printf (get_ccode_prefix (sym.parent_symbol), sym.name);
 			}
 		} else if (node is ObjectType) {
 			var type = (ObjectType) node;
 
 			string cname;
 			if (!type.value_owned) {
-				cname = CCodeBaseModule.get_ccode_const_name (type.type_symbol);
+				cname = get_ccode_const_name (type.type_symbol);
 			} else {
-				cname = CCodeBaseModule.get_ccode_name (type.type_symbol);
+				cname = get_ccode_name (type.type_symbol);
 			}
 			return "%s*".printf (cname);
 		} else if (node is ArrayType) {
 			var type = (ArrayType) node;
-			var cname = CCodeBaseModule.get_ccode_name (type.element_type);
+			var cname = get_ccode_name (type.element_type);
 			if (type.inline_allocated) {
 				return cname;
 			} else {
@@ -653,7 +723,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 			}
 		} else if (node is DelegateType) {
 			var type = (DelegateType) node;
-			return CCodeBaseModule.get_ccode_name (type.delegate_symbol);
+			return get_ccode_name (type.delegate_symbol);
 		} else if (node is ErrorType) {
 			return "GError*";
 		} else if (node is GenericType) {
@@ -670,21 +740,21 @@ public class Vala.CCodeAttribute : AttributeCache {
 		} else if (node is PointerType) {
 			var type = (PointerType) node;
 			if (type.base_type.data_type != null && type.base_type.data_type.is_reference_type ()) {
-				return CCodeBaseModule.get_ccode_name (type.base_type);
+				return get_ccode_name (type.base_type);
 			} else {
-				return "%s*".printf (CCodeBaseModule.get_ccode_name (type.base_type));
+				return "%s*".printf (get_ccode_name (type.base_type));
 			}
 		} else if (node is VoidType) {
 			return "void";
 		} else if (node is ClassType) {
 			var type = (ClassType) node;
-			return "%sClass*".printf (CCodeBaseModule.get_ccode_name (type.class_symbol));
+			return "%sClass*".printf (get_ccode_name (type.class_symbol));
 		} else if (node is InterfaceType) {
 			var type = (InterfaceType) node;
-			return "%s*".printf (CCodeBaseModule.get_ccode_type_name (type.interface_symbol));
+			return "%s*".printf (get_ccode_type_name (type.interface_symbol));
 		} else if (node is ValueType) {
 			var type = (ValueType) node;
-			var cname = CCodeBaseModule.get_ccode_name (type.type_symbol);
+			var cname = get_ccode_name (type.type_symbol);
 			if (type.nullable) {
 				return "%s*".printf (cname);
 			} else {
@@ -703,7 +773,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 			return "";
 		}
 		if (sym.parent_symbol != null) {
-			var parent_headers = CCodeBaseModule.get_ccode_header_filenames (sym.parent_symbol);
+			var parent_headers = get_ccode_header_filenames (sym.parent_symbol);
 			if (parent_headers.length > 0) {
 				return parent_headers;
 			}
@@ -719,12 +789,12 @@ public class Vala.CCodeAttribute : AttributeCache {
 		if (sym is ObjectTypeSymbol) {
 			return name;
 		} else if (sym is Enum || sym is ErrorDomain) {
-			return "%s_".printf (CCodeBaseModule.get_ccode_upper_case_name (sym));
+			return "%s_".printf (get_ccode_upper_case_name (sym));
 		} else if (sym is Namespace) {
 			if (sym.name != null) {
 				var parent_prefix = "";
 				if (sym.parent_symbol != null) {
-					parent_prefix = CCodeBaseModule.get_ccode_prefix (sym.parent_symbol);
+					parent_prefix = get_ccode_prefix (sym.parent_symbol);
 				}
 				return "%s%s".printf (parent_prefix, sym.name);
 			} else {
@@ -741,13 +811,13 @@ public class Vala.CCodeAttribute : AttributeCache {
 			if (sym.name == null) {
 				return "";
 			} else {
-				return "%s%s_".printf (CCodeBaseModule.get_ccode_lower_case_prefix (sym.parent_symbol), Symbol.camel_case_to_lower_case (sym.name));
+				return "%s%s_".printf (get_ccode_lower_case_prefix (sym.parent_symbol), Symbol.camel_case_to_lower_case (sym.name));
 			}
 		} else if (sym is Method) {
 			// for lambda expressions
 			return "";
 		} else {
-			return "%s_".printf (CCodeBaseModule.get_ccode_lower_case_name (sym));
+			return "%s_".printf (get_ccode_lower_case_name (sym));
 		}
 	}
 
@@ -765,6 +835,8 @@ public class Vala.CCodeAttribute : AttributeCache {
 				csuffix = csuffix.substring (0, csuffix.length - "_class".length) + "class";
 			}
 			return csuffix;
+		} else if (sym is Signal) {
+			return get_ccode_attribute (sym).name.replace ("-", "_");
 		} else if (sym.name != null) {
 			return Symbol.camel_case_to_lower_case (sym.name);
 		}
@@ -775,13 +847,13 @@ public class Vala.CCodeAttribute : AttributeCache {
 		if (sym is Class) {
 			var cl = (Class) sym;
 			if (cl.is_fundamental ()) {
-				return lower_case_prefix + "ref";
+				return "%sref".printf (lower_case_prefix);
 			} else if (cl.base_class != null) {
-				return CCodeBaseModule.get_ccode_ref_function (cl.base_class);
+				return get_ccode_ref_function (cl.base_class);
 			}
 		} else if (sym is Interface) {
 			foreach (var prereq in ((Interface) sym).get_prerequisites ()) {
-				var ref_func = CCodeBaseModule.get_ccode_ref_function ((ObjectTypeSymbol) prereq.data_type);
+				var ref_func = get_ccode_ref_function ((ObjectTypeSymbol) prereq.data_type);
 				if (ref_func != null) {
 					return ref_func;
 				}
@@ -794,13 +866,13 @@ public class Vala.CCodeAttribute : AttributeCache {
 		if (sym is Class) {
 			var cl = (Class) sym;
 			if (cl.is_fundamental ()) {
-				return lower_case_prefix + "unref";
+				return "%sunref".printf (lower_case_prefix);
 			} else if (cl.base_class != null) {
-				return CCodeBaseModule.get_ccode_unref_function (cl.base_class);
+				return get_ccode_unref_function (cl.base_class);
 			}
 		} else if (sym is Interface) {
 			foreach (var prereq in ((Interface) sym).get_prerequisites ()) {
-				string unref_func = CCodeBaseModule.get_ccode_unref_function ((ObjectTypeSymbol) prereq.data_type);
+				string unref_func = get_ccode_unref_function ((ObjectTypeSymbol) prereq.data_type);
 				if (unref_func != null) {
 					return unref_func;
 				}
@@ -811,10 +883,13 @@ public class Vala.CCodeAttribute : AttributeCache {
 
 	private string get_default_ref_sink_function () {
 		if (sym is Class) {
-			return CCodeBaseModule.get_ccode_ref_sink_function (((Class) sym).base_class);
+			unowned Class? base_class = ((Class) sym).base_class;
+			if (base_class != null) {
+				return get_ccode_ref_sink_function (base_class);
+			}
 		} else if (sym is Interface) {
 			foreach (var prereq in ((Interface) sym).get_prerequisites ()) {
-				string ref_sink_func = CCodeBaseModule.get_ccode_ref_sink_function ((ObjectTypeSymbol) prereq.data_type);
+				string ref_sink_func = get_ccode_ref_sink_function ((ObjectTypeSymbol) prereq.data_type);
 				if (ref_sink_func != "") {
 					return ref_sink_func;
 				}
@@ -827,12 +902,12 @@ public class Vala.CCodeAttribute : AttributeCache {
 		if (sym is Class) {
 			var cl = (Class) sym;
 			if (cl.base_class != null) {
-				return CCodeBaseModule.get_ccode_free_function (cl.base_class);
+				return get_ccode_free_function (cl.base_class);
 			}
-			return lower_case_prefix + "free";
+			return "%sfree".printf (lower_case_prefix);
 		} else if (sym is Struct) {
 			if (!sym.external_package) {
-				return lower_case_prefix + "free";
+				return "%sfree".printf (lower_case_prefix);
 			}
 		}
 		return null;
@@ -841,26 +916,26 @@ public class Vala.CCodeAttribute : AttributeCache {
 	private string get_default_type_id () {
 		if (sym != null) {
 			if (sym is Class && !((Class) sym).is_compact || sym is Interface) {
-				return CCodeBaseModule.get_ccode_upper_case_name (sym, "TYPE_");
+				return get_ccode_upper_case_name (sym, "TYPE_");
 			} else if (sym is ErrorType) {
 				return "G_TYPE_ERROR";
 			} else if (sym is Struct) {
 				var st = (Struct) sym;
-				if (!CCodeBaseModule.get_ccode_has_type_id (st)) {
+				if (!get_ccode_has_type_id (st)) {
 					var base_struct = st.base_struct;
 					if (base_struct != null) {
-						return CCodeBaseModule.get_ccode_type_id (base_struct);
+						return get_ccode_type_id (base_struct);
 					}
 					if (!st.is_simple_type ()) {
 						return "G_TYPE_POINTER";
 					}
 				} else {
-					return CCodeBaseModule.get_ccode_upper_case_name (st, "TYPE_");
+					return get_ccode_upper_case_name (st, "TYPE_");
 				}
 			} else if (sym is Enum) {
 				var en = (Enum) sym;
-				if (CCodeBaseModule.get_ccode_has_type_id (en)) {
-					return CCodeBaseModule.get_ccode_upper_case_name (en, "TYPE_");
+				if (get_ccode_has_type_id (en)) {
+					return get_ccode_upper_case_name (en, "TYPE_");
 				} else {
 					return en.is_flags ? "G_TYPE_UINT" : "G_TYPE_INT";
 				}
@@ -878,7 +953,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 		} else {
 			var type = (DataType) node;
 			if (type.data_type != null) {
-				return CCodeBaseModule.get_ccode_type_id (type.data_type);
+				return get_ccode_type_id (type.data_type);
 			}
 		}
 		return "";
@@ -889,9 +964,9 @@ public class Vala.CCodeAttribute : AttributeCache {
 			if (sym is Class) {
 				var cl = (Class) sym;
 				if (cl.base_class != null) {
-					return CCodeBaseModule.get_ccode_marshaller_type_name (cl.base_class);
+					return get_ccode_marshaller_type_name (cl.base_class);
 				} else if (!cl.is_compact) {
-					return CCodeBaseModule.get_ccode_upper_case_name (cl);
+					return get_ccode_upper_case_name (cl);
 				} else if (type_id == "G_TYPE_POINTER") {
 					return "POINTER";
 				} else {
@@ -899,7 +974,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 				}
 			} else if (sym is Enum) {
 				var en = (Enum) sym;
-				if (CCodeBaseModule.get_ccode_has_type_id (en)) {
+				if (get_ccode_has_type_id (en)) {
 					if (en.is_flags) {
 						return "FLAGS";
 					} else {
@@ -914,7 +989,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 				}
 			} else if (sym is Interface) {
 				foreach (var prereq in ((Interface) sym).get_prerequisites ()) {
-					var type_name = CCodeBaseModule.get_ccode_marshaller_type_name (prereq.data_type);
+					var type_name = get_ccode_marshaller_type_name (prereq.data_type);
 					if (type_name != "") {
 						return type_name;
 					}
@@ -924,15 +999,15 @@ public class Vala.CCodeAttribute : AttributeCache {
 				var st = (Struct) sym;
 				var base_st = st.base_struct;
 				while (base_st != null) {
-					if (CCodeBaseModule.get_ccode_has_type_id (base_st)) {
-						return CCodeBaseModule.get_ccode_marshaller_type_name (base_st);
+					if (get_ccode_has_type_id (base_st)) {
+						return get_ccode_marshaller_type_name (base_st);
 					} else {
 						base_st = base_st.base_struct;
 					}
 				}
 				if (st.is_simple_type ()) {
 					Report.error (st.source_reference, "The type `%s` doesn't declare a marshaller type name".printf (st.get_full_name ()));
-				} else if (CCodeBaseModule.get_ccode_has_type_id (st)) {
+				} else if (get_ccode_has_type_id (st)) {
 					return "BOXED";
 				} else {
 					return "POINTER";
@@ -942,12 +1017,14 @@ public class Vala.CCodeAttribute : AttributeCache {
 				if (param.direction != ParameterDirection.IN) {
 					return "POINTER";
 				} else {
-					return CCodeBaseModule.get_ccode_marshaller_type_name (param.variable_type);
+					return get_ccode_marshaller_type_name (param.variable_type);
 				}
 			} else {
 				return "POINTER";
 			}
-		} else if (node is PointerType || ((DataType) node).type_parameter != null) {
+		} else if (node is ValueType && ((ValueType) node).nullable) {
+			return "POINTER";
+		} else if (node is PointerType || node is GenericType) {
 			return "POINTER";
 		} else if (node is ErrorType) {
 			return "POINTER";
@@ -955,12 +1032,16 @@ public class Vala.CCodeAttribute : AttributeCache {
 			if (((ArrayType) node).element_type.data_type.get_full_name () == "string") {
 				return "BOXED,INT";
 			} else {
-				return "POINTER,INT";
+				var ret = "POINTER";
+				for (var i = 0; i < ((ArrayType) node).rank; i++) {
+					ret = "%s,INT".printf (ret);
+				}
+				return ret;
 			}
 		} else if (node is VoidType) {
 			return "VOID";
 		} else {
-			return CCodeBaseModule.get_ccode_marshaller_type_name (((DataType) node).data_type);
+			return get_ccode_marshaller_type_name (((DataType) node).data_type);
 		}
 		return "";
 	}
@@ -969,9 +1050,9 @@ public class Vala.CCodeAttribute : AttributeCache {
 		if (sym is Class) {
 			var cl = (Class) sym;
 			if (cl.is_fundamental ()) {
-				return CCodeBaseModule.get_ccode_lower_case_name (cl, "value_get_");
+				return get_ccode_lower_case_name (cl, "value_get_");
 			} else if (cl.base_class != null) {
-				return CCodeBaseModule.get_ccode_get_value_function (cl.base_class);
+				return get_ccode_get_value_function (cl.base_class);
 			} else if (type_id == "G_TYPE_POINTER") {
 				return "g_value_get_pointer";
 			} else {
@@ -979,7 +1060,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 			}
 		} else if (sym is Enum) {
 			var en = (Enum) sym;
-			if (CCodeBaseModule.get_ccode_has_type_id (en)) {
+			if (get_ccode_has_type_id (en)) {
 				if (en.is_flags) {
 					return "g_value_get_flags";
 				} else {
@@ -994,7 +1075,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 			}
 		} else if (sym is Interface) {
 			foreach (var prereq in ((Interface) sym).get_prerequisites ()) {
-				var type_name = CCodeBaseModule.get_ccode_get_value_function (prereq.data_type);
+				var type_name = get_ccode_get_value_function (prereq.data_type);
 				if (type_name != "") {
 					return type_name;
 				}
@@ -1004,15 +1085,15 @@ public class Vala.CCodeAttribute : AttributeCache {
 			var st = (Struct) sym;
 			var base_st = st.base_struct;
 			while (base_st != null) {
-				if (CCodeBaseModule.get_ccode_has_type_id (base_st)) {
-					return CCodeBaseModule.get_ccode_get_value_function (base_st);
+				if (get_ccode_has_type_id (base_st)) {
+					return get_ccode_get_value_function (base_st);
 				} else {
 					base_st = base_st.base_struct;
 				}
 			}
 			if (st.is_simple_type ()) {
 				Report.error (st.source_reference, "The type `%s` doesn't declare a GValue get function".printf (st.get_full_name ()));
-			} else if (CCodeBaseModule.get_ccode_has_type_id (st)) {
+			} else if (get_ccode_has_type_id (st)) {
 				return "g_value_get_boxed";
 			} else {
 				return "g_value_get_pointer";
@@ -1027,9 +1108,9 @@ public class Vala.CCodeAttribute : AttributeCache {
 		if (sym is Class) {
 			var cl = (Class) sym;
 			if (cl.is_fundamental ()) {
-				return CCodeBaseModule.get_ccode_lower_case_name (cl, "value_set_");
+				return get_ccode_lower_case_name (cl, "value_set_");
 			} else if (cl.base_class != null) {
-				return CCodeBaseModule.get_ccode_set_value_function (cl.base_class);
+				return get_ccode_set_value_function (cl.base_class);
 			} else if (type_id == "G_TYPE_POINTER") {
 				return "g_value_set_pointer";
 			} else {
@@ -1037,7 +1118,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 			}
 		} else if (sym is Enum) {
 			var en = (Enum) sym;
-			if (CCodeBaseModule.get_ccode_has_type_id (en)) {
+			if (get_ccode_has_type_id (en)) {
 				if (en.is_flags) {
 					return "g_value_set_flags";
 				} else {
@@ -1052,7 +1133,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 			}
 		} else if (sym is Interface) {
 			foreach (var prereq in ((Interface) sym).get_prerequisites ()) {
-				var type_name = CCodeBaseModule.get_ccode_set_value_function (prereq.data_type);
+				var type_name = get_ccode_set_value_function (prereq.data_type);
 				if (type_name != "") {
 					return type_name;
 				}
@@ -1062,15 +1143,15 @@ public class Vala.CCodeAttribute : AttributeCache {
 			var st = (Struct) sym;
 			var base_st = st.base_struct;
 			while (base_st != null) {
-				if (CCodeBaseModule.get_ccode_has_type_id (base_st)) {
-					return CCodeBaseModule.get_ccode_set_value_function (base_st);
+				if (get_ccode_has_type_id (base_st)) {
+					return get_ccode_set_value_function (base_st);
 				} else {
 					base_st = base_st.base_struct;
 				}
 			}
 			if (st.is_simple_type ()) {
 				Report.error (st.source_reference, "The type `%s` doesn't declare a GValue set function".printf (st.get_full_name ()));
-			} else if (CCodeBaseModule.get_ccode_has_type_id (st)) {
+			} else if (get_ccode_has_type_id (st)) {
 				return "g_value_set_boxed";
 			} else {
 				return "g_value_set_pointer";
@@ -1085,9 +1166,9 @@ public class Vala.CCodeAttribute : AttributeCache {
 		if (sym is Class) {
 			var cl = (Class) sym;
 			if (cl.is_fundamental ()) {
-				return CCodeBaseModule.get_ccode_lower_case_name (cl, "value_take_");
+				return get_ccode_lower_case_name (cl, "value_take_");
 			} else if (cl.base_class != null) {
-				return CCodeBaseModule.get_ccode_take_value_function (cl.base_class);
+				return get_ccode_take_value_function (cl.base_class);
 			} else if (type_id == "G_TYPE_POINTER") {
 				return "g_value_set_pointer";
 			} else {
@@ -1095,7 +1176,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 			}
 		} else if (sym is Enum) {
 			var en = (Enum) sym;
-			if (CCodeBaseModule.get_ccode_has_type_id (en)) {
+			if (get_ccode_has_type_id (en)) {
 				if (en.is_flags) {
 					return "g_value_take_flags";
 				} else {
@@ -1110,7 +1191,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 			}
 		} else if (sym is Interface) {
 			foreach (var prereq in ((Interface) sym).get_prerequisites ()) {
-				var func = CCodeBaseModule.get_ccode_take_value_function (prereq.data_type);
+				var func = get_ccode_take_value_function (prereq.data_type);
 				if (func != "") {
 					return func;
 				}
@@ -1120,15 +1201,15 @@ public class Vala.CCodeAttribute : AttributeCache {
 			var st = (Struct) sym;
 			var base_st = st.base_struct;
 			while (base_st != null) {
-				if (CCodeBaseModule.get_ccode_has_type_id (base_st)) {
-					return CCodeBaseModule.get_ccode_take_value_function (base_st);
+				if (get_ccode_has_type_id (base_st)) {
+					return get_ccode_take_value_function (base_st);
 				} else {
 					base_st = base_st.base_struct;
 				}
 			}
 			if (st.is_simple_type ()) {
 				Report.error (st.source_reference, "The type `%s` doesn't declare a GValue take function".printf (st.get_full_name ()));
-			} else if (CCodeBaseModule.get_ccode_has_type_id (st)) {
+			} else if (get_ccode_has_type_id (st)) {
 				return "g_value_take_boxed";
 			} else {
 				return "g_value_set_pointer";
@@ -1144,9 +1225,9 @@ public class Vala.CCodeAttribute : AttributeCache {
 			if (sym is Class) {
 				var cl = (Class) sym;
 				if (cl.is_fundamental ()) {
-					return CCodeBaseModule.get_ccode_lower_case_name (cl, "param_spec_");
+					return get_ccode_lower_case_name (cl, "param_spec_");
 				} else if (cl.base_class != null) {
-					return CCodeBaseModule.get_ccode_param_spec_function (cl.base_class);
+					return get_ccode_param_spec_function (cl.base_class);
 				} else if (type_id == "G_TYPE_POINTER") {
 					return "g_param_spec_pointer";
 				} else {
@@ -1154,7 +1235,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 				}
 			} else if (sym is Interface) {
 				foreach (var prereq in ((Interface) sym).get_prerequisites ()) {
-					var func = CCodeBaseModule.get_ccode_param_spec_function (prereq.data_type);
+					var func = get_ccode_param_spec_function (prereq.data_type);
 					if (func != "") {
 						return func;
 					}
@@ -1162,7 +1243,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 				return "g_param_spec_pointer";
 			} else if (sym is Enum) {
 				var e = sym as Enum;
-				if (CCodeBaseModule.get_ccode_has_type_id (e)) {
+				if (get_ccode_has_type_id (e)) {
 					if (e.is_flags) {
 						return "g_param_spec_flags";
 					} else {
@@ -1176,7 +1257,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 					}
 				}
 			} else if (sym is Struct) {
-				var type_id = CCodeBaseModule.get_ccode_type_id (sym);
+				var type_id = get_ccode_type_id (sym);
 				if (type_id == "G_TYPE_INT") {
 					return "g_param_spec_int";
 				} else if (type_id == "G_TYPE_UINT") {
@@ -1208,7 +1289,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 		} else if (node is ArrayType && ((ArrayType)node).element_type.data_type == CodeContext.get().analyzer.string_type.data_type) {
 			return "g_param_spec_boxed";
 		} else if (node is DataType && ((DataType) node).data_type != null) {
-			return CCodeBaseModule.get_ccode_param_spec_function (((DataType) node).data_type);
+			return get_ccode_param_spec_function (((DataType) node).data_type);
 		}
 
 		return "g_param_spec_pointer";
@@ -1222,7 +1303,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 			var base_st = st.base_struct;
 
 			if (base_st != null) {
-				return CCodeBaseModule.get_ccode_default_value (base_st);
+				return get_ccode_default_value (base_st);
 			}
 		}
 		return "";
@@ -1233,7 +1314,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 		if (result.has_suffix ("_async")) {
 			result = result.substring (0, result.length - "_async".length);
 		}
-		return result + "_finish";
+		return "%s_finish".printf (result);
 	}
 
 	private string get_default_real_name () {
@@ -1248,19 +1329,25 @@ public class Vala.CCodeAttribute : AttributeCache {
 			string infix = "construct";
 
 			if (m.name == ".new") {
-				return "%s%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (parent), infix);
+				return "%s%s".printf (get_ccode_lower_case_prefix (parent), infix);
 			} else {
-				return "%s%s_%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (parent), infix, m.name);
+				return "%s%s_%s".printf (get_ccode_lower_case_prefix (parent), infix, m.name);
 			}
 		} else if (sym is Method) {
 			var m = (Method) sym;
 			if (m.base_method != null || m.base_interface_method != null) {
-				if (m.base_interface_type != null) {
-					return "%sreal_%s%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (m.parent_symbol),
-												 CCodeBaseModule.get_ccode_lower_case_prefix (m.base_interface_type.data_type),
-												 m.name);
+				string m_name;
+				if (m.signal_reference != null) {
+					m_name = get_ccode_lower_case_name (m.signal_reference);
 				} else {
-					return "%sreal_%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (m.parent_symbol), m.name);
+					m_name = m.name;
+				}
+				if (m.base_interface_type != null) {
+					return "%sreal_%s%s".printf (get_ccode_lower_case_prefix (m.parent_symbol),
+												 get_ccode_lower_case_prefix (m.base_interface_type.data_type),
+												 m_name);
+				} else {
+					return "%sreal_%s".printf (get_ccode_lower_case_prefix (m.parent_symbol), m_name);
 				}
 			} else {
 				return name;
@@ -1270,9 +1357,9 @@ public class Vala.CCodeAttribute : AttributeCache {
 			var prop = (Property) acc.prop;
 			if (prop.base_property != null || prop.base_interface_property != null) {
 				if (acc.readable) {
-					return "%sreal_get_%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (prop.parent_symbol), prop.name);
+					return "%sreal_get_%s".printf (get_ccode_lower_case_prefix (prop.parent_symbol), prop.name);
 				} else {
-					return "%sreal_set_%s".printf (CCodeBaseModule.get_ccode_lower_case_prefix (prop.parent_symbol), prop.name);
+					return "%sreal_set_%s".printf (get_ccode_lower_case_prefix (prop.parent_symbol), prop.name);
 				}
 			} else {
 				return name;
@@ -1298,7 +1385,7 @@ public class Vala.CCodeAttribute : AttributeCache {
 				ptr = "*";
 			}
 
-			return "const %s%s".printf (CCodeBaseModule.get_ccode_name (t), ptr);
+			return "const %s%s".printf (get_ccode_name (t), ptr);
 		} else {
 			if (node is Class && ((Class) node).is_immutable) {
 				return "const %s".printf (name);
@@ -1312,14 +1399,14 @@ public class Vala.CCodeAttribute : AttributeCache {
 		if (node is Parameter) {
 			var param = (Parameter) node;
 			if (param.base_parameter != null) {
-				return CCodeBaseModule.get_ccode_array_length (param.base_parameter);
+				return get_ccode_array_length (param.base_parameter);
 			}
 		} else if (node is Method) {
 			var method = (Method) node;
 			if (method.base_method != null && method.base_method != method) {
-				return CCodeBaseModule.get_ccode_array_length (method.base_method);
+				return get_ccode_array_length (method.base_method);
 			} else if (method.base_interface_method != null && method.base_interface_method != method) {
-				return CCodeBaseModule.get_ccode_array_length (method.base_interface_method);
+				return get_ccode_array_length (method.base_interface_method);
 			}
 		}
 		return true;
@@ -1329,14 +1416,14 @@ public class Vala.CCodeAttribute : AttributeCache {
 		if (node is Parameter) {
 			var param = (Parameter) node;
 			if (param.base_parameter != null) {
-				return CCodeBaseModule.get_ccode_array_null_terminated (param.base_parameter);
+				return get_ccode_array_null_terminated (param.base_parameter);
 			}
 		} else if (node is Method) {
 			var method = (Method) node;
 			if (method.base_method != null && method.base_method != method) {
-				return CCodeBaseModule.get_ccode_array_null_terminated (method.base_method);
+				return get_ccode_array_null_terminated (method.base_method);
 			} else if (method.base_interface_method != null && method.base_interface_method != method) {
-				return CCodeBaseModule.get_ccode_array_null_terminated (method.base_interface_method);
+				return get_ccode_array_null_terminated (method.base_interface_method);
 			}
 		}
 		return false;

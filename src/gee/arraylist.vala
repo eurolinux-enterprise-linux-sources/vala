@@ -32,18 +32,18 @@ public class Vala.ArrayList<G> : List<G> {
 		get { return _size; }
 	}
 
-	public EqualFunc equal_func {
+	public EqualFunc<G> equal_func {
 		set { _equal_func = value; }
 	}
 
-	private G[] _items = new G[4];
-	private int _size;
-	private EqualFunc _equal_func;
+	internal G[] _items = new G[4];
+	internal int _size;
+	private EqualFunc<G> _equal_func;
 
 	// concurrent modification protection
 	private int _stamp = 0;
 
-	public ArrayList (EqualFunc equal_func = GLib.direct_equal) {
+	public ArrayList (EqualFunc<G> equal_func = GLib.direct_equal) {
 		this.equal_func = equal_func;
 	}
 
@@ -110,14 +110,16 @@ public class Vala.ArrayList<G> : List<G> {
 		return false;
 	}
 
-	public override void remove_at (int index) {
+	public override G remove_at (int index) {
 		assert (index >= 0 && index < _size);
 
+		G item = _items[index];
 		_items[index] = null;
 
 		shift (index + 1, -1);
 
 		_stamp++;
+		return item;
 	}
 
 	public override void clear () {
@@ -162,6 +164,7 @@ public class Vala.ArrayList<G> : List<G> {
 
 		private ArrayList<G> _list;
 		private int _index = -1;
+		protected bool _removed = false;
 
 		// concurrent modification protection
 		public int _stamp = 0;
@@ -174,18 +177,42 @@ public class Vala.ArrayList<G> : List<G> {
 			assert (_stamp == _list._stamp);
 			if (_index < _list._size) {
 				_index++;
+				_removed = false;
 			}
 			return (_index < _list._size);
 		}
 
+		public override bool has_next () {
+			assert (_stamp == _list._stamp);
+			return (_index + 1 < _list._size);
+		}
+
 		public override G? get () {
 			assert (_stamp == _list._stamp);
+			assert (! _removed);
 
 			if (_index < 0 || _index >= _list._size) {
 				return null;
 			}
 
 			return _list.get (_index);
+		}
+
+		public override void remove () {
+			assert (_stamp == _list._stamp);
+			assert (! _removed && _index >= 0);
+			assert (_index < _list._size);
+
+			_list.remove_at (_index);
+			_index--;
+			_removed = true;
+			_stamp = _list._stamp;
+		}
+
+		public override bool valid {
+			get {
+				return _index >= 0 && _index < _list._size && ! _removed;
+			}
 		}
 	}
 }

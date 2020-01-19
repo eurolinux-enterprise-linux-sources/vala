@@ -23,67 +23,14 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
+#include "valaccode.h"
 #include <stdlib.h>
 #include <string.h>
 
-
-#define VALA_TYPE_CCODE_NODE (vala_ccode_node_get_type ())
-#define VALA_CCODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_NODE, ValaCCodeNode))
-#define VALA_CCODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_NODE, ValaCCodeNodeClass))
-#define VALA_IS_CCODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_NODE))
-#define VALA_IS_CCODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_NODE))
-#define VALA_CCODE_NODE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_NODE, ValaCCodeNodeClass))
-
-typedef struct _ValaCCodeNode ValaCCodeNode;
-typedef struct _ValaCCodeNodeClass ValaCCodeNodeClass;
-typedef struct _ValaCCodeNodePrivate ValaCCodeNodePrivate;
-
-#define VALA_TYPE_CCODE_WRITER (vala_ccode_writer_get_type ())
-#define VALA_CCODE_WRITER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_WRITER, ValaCCodeWriter))
-#define VALA_CCODE_WRITER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_WRITER, ValaCCodeWriterClass))
-#define VALA_IS_CCODE_WRITER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_WRITER))
-#define VALA_IS_CCODE_WRITER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_WRITER))
-#define VALA_CCODE_WRITER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_WRITER, ValaCCodeWriterClass))
-
-typedef struct _ValaCCodeWriter ValaCCodeWriter;
-typedef struct _ValaCCodeWriterClass ValaCCodeWriterClass;
-
-#define VALA_TYPE_CCODE_LINE_DIRECTIVE (vala_ccode_line_directive_get_type ())
-#define VALA_CCODE_LINE_DIRECTIVE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_LINE_DIRECTIVE, ValaCCodeLineDirective))
-#define VALA_CCODE_LINE_DIRECTIVE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_LINE_DIRECTIVE, ValaCCodeLineDirectiveClass))
-#define VALA_IS_CCODE_LINE_DIRECTIVE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_LINE_DIRECTIVE))
-#define VALA_IS_CCODE_LINE_DIRECTIVE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_LINE_DIRECTIVE))
-#define VALA_CCODE_LINE_DIRECTIVE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_LINE_DIRECTIVE, ValaCCodeLineDirectiveClass))
-
-typedef struct _ValaCCodeLineDirective ValaCCodeLineDirective;
-typedef struct _ValaCCodeLineDirectiveClass ValaCCodeLineDirectiveClass;
-typedef struct _ValaCCodeLineDirectivePrivate ValaCCodeLineDirectivePrivate;
 #define _g_free0(var) (var = (g_free (var), NULL))
-
-struct _ValaCCodeNode {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	ValaCCodeNodePrivate * priv;
-};
-
-struct _ValaCCodeNodeClass {
-	GTypeClass parent_class;
-	void (*finalize) (ValaCCodeNode *self);
-	void (*write) (ValaCCodeNode* self, ValaCCodeWriter* writer);
-	void (*write_declaration) (ValaCCodeNode* self, ValaCCodeWriter* writer);
-	void (*write_combined) (ValaCCodeNode* self, ValaCCodeWriter* writer);
-};
-
-struct _ValaCCodeLineDirective {
-	ValaCCodeNode parent_instance;
-	ValaCCodeLineDirectivePrivate * priv;
-};
-
-struct _ValaCCodeLineDirectiveClass {
-	ValaCCodeNodeClass parent_class;
-};
 
 struct _ValaCCodeLineDirectivePrivate {
 	gchar* _filename;
@@ -93,94 +40,67 @@ struct _ValaCCodeLineDirectivePrivate {
 
 static gpointer vala_ccode_line_directive_parent_class = NULL;
 
-gpointer vala_ccode_node_ref (gpointer instance);
-void vala_ccode_node_unref (gpointer instance);
-GParamSpec* vala_param_spec_ccode_node (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_ccode_node (GValue* value, gpointer v_object);
-void vala_value_take_ccode_node (GValue* value, gpointer v_object);
-gpointer vala_value_get_ccode_node (const GValue* value);
-GType vala_ccode_node_get_type (void) G_GNUC_CONST;
-gpointer vala_ccode_writer_ref (gpointer instance);
-void vala_ccode_writer_unref (gpointer instance);
-GParamSpec* vala_param_spec_ccode_writer (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_ccode_writer (GValue* value, gpointer v_object);
-void vala_value_take_ccode_writer (GValue* value, gpointer v_object);
-gpointer vala_value_get_ccode_writer (const GValue* value);
-GType vala_ccode_writer_get_type (void) G_GNUC_CONST;
-GType vala_ccode_line_directive_get_type (void) G_GNUC_CONST;
 #define VALA_CCODE_LINE_DIRECTIVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_CCODE_LINE_DIRECTIVE, ValaCCodeLineDirectivePrivate))
-enum  {
-	VALA_CCODE_LINE_DIRECTIVE_DUMMY_PROPERTY
-};
-ValaCCodeLineDirective* vala_ccode_line_directive_new (const gchar* _filename, gint _line);
-ValaCCodeLineDirective* vala_ccode_line_directive_construct (GType object_type, const gchar* _filename, gint _line);
-ValaCCodeNode* vala_ccode_node_construct (GType object_type);
-void vala_ccode_line_directive_set_filename (ValaCCodeLineDirective* self, const gchar* value);
-void vala_ccode_line_directive_set_line_number (ValaCCodeLineDirective* self, gint value);
-static void vala_ccode_line_directive_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer);
-gboolean vala_ccode_writer_get_bol (ValaCCodeWriter* self);
-void vala_ccode_writer_write_newline (ValaCCodeWriter* self);
-void vala_ccode_writer_write_string (ValaCCodeWriter* self, const gchar* s);
-gint vala_ccode_line_directive_get_line_number (ValaCCodeLineDirective* self);
-const gchar* vala_ccode_line_directive_get_filename (ValaCCodeLineDirective* self);
-static void vala_ccode_line_directive_finalize (ValaCCodeNode* obj);
+static void vala_ccode_line_directive_real_write (ValaCCodeNode* base,
+                                           ValaCCodeWriter* writer);
+static void vala_ccode_line_directive_finalize (ValaCCodeNode * obj);
 
 
-ValaCCodeLineDirective* vala_ccode_line_directive_construct (GType object_type, const gchar* _filename, gint _line) {
+ValaCCodeLineDirective*
+vala_ccode_line_directive_construct (GType object_type,
+                                     const gchar* _filename,
+                                     gint _line)
+{
 	ValaCCodeLineDirective* self = NULL;
-	const gchar* _tmp0_ = NULL;
-	gint _tmp1_ = 0;
 	g_return_val_if_fail (_filename != NULL, NULL);
 	self = (ValaCCodeLineDirective*) vala_ccode_node_construct (object_type);
-	_tmp0_ = _filename;
-	vala_ccode_line_directive_set_filename (self, _tmp0_);
-	_tmp1_ = _line;
-	vala_ccode_line_directive_set_line_number (self, _tmp1_);
+	vala_ccode_line_directive_set_filename (self, _filename);
+	vala_ccode_line_directive_set_line_number (self, _line);
 	return self;
 }
 
 
-ValaCCodeLineDirective* vala_ccode_line_directive_new (const gchar* _filename, gint _line) {
+ValaCCodeLineDirective*
+vala_ccode_line_directive_new (const gchar* _filename,
+                               gint _line)
+{
 	return vala_ccode_line_directive_construct (VALA_TYPE_CCODE_LINE_DIRECTIVE, _filename, _line);
 }
 
 
-static void vala_ccode_line_directive_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
+static void
+vala_ccode_line_directive_real_write (ValaCCodeNode* base,
+                                      ValaCCodeWriter* writer)
+{
 	ValaCCodeLineDirective * self;
-	ValaCCodeWriter* _tmp0_ = NULL;
-	gboolean _tmp1_ = FALSE;
-	gboolean _tmp2_ = FALSE;
-	ValaCCodeWriter* _tmp4_ = NULL;
-	gint _tmp5_ = 0;
-	const gchar* _tmp6_ = NULL;
-	gchar* _tmp7_ = NULL;
-	gchar* _tmp8_ = NULL;
-	ValaCCodeWriter* _tmp9_ = NULL;
+	gboolean _tmp0_;
+	gboolean _tmp1_;
+	gint _tmp2_;
+	const gchar* _tmp3_;
+	gchar* _tmp4_;
+	gchar* _tmp5_;
 	self = (ValaCCodeLineDirective*) base;
 	g_return_if_fail (writer != NULL);
-	_tmp0_ = writer;
-	_tmp1_ = vala_ccode_writer_get_bol (_tmp0_);
-	_tmp2_ = _tmp1_;
-	if (!_tmp2_) {
-		ValaCCodeWriter* _tmp3_ = NULL;
-		_tmp3_ = writer;
-		vala_ccode_writer_write_newline (_tmp3_);
+	_tmp0_ = vala_ccode_writer_get_bol (writer);
+	_tmp1_ = _tmp0_;
+	if (!_tmp1_) {
+		vala_ccode_writer_write_newline (writer);
 	}
-	_tmp4_ = writer;
-	_tmp5_ = self->priv->_line_number;
-	_tmp6_ = self->priv->_filename;
-	_tmp7_ = g_strdup_printf ("#line %d \"%s\"", _tmp5_, _tmp6_);
-	_tmp8_ = _tmp7_;
-	vala_ccode_writer_write_string (_tmp4_, _tmp8_);
-	_g_free0 (_tmp8_);
-	_tmp9_ = writer;
-	vala_ccode_writer_write_newline (_tmp9_);
+	_tmp2_ = self->priv->_line_number;
+	_tmp3_ = self->priv->_filename;
+	_tmp4_ = g_strdup_printf ("#line %d \"%s\"", _tmp2_, _tmp3_);
+	_tmp5_ = _tmp4_;
+	vala_ccode_writer_write_string (writer, _tmp5_);
+	_g_free0 (_tmp5_);
+	vala_ccode_writer_write_newline (writer);
 }
 
 
-const gchar* vala_ccode_line_directive_get_filename (ValaCCodeLineDirective* self) {
+const gchar*
+vala_ccode_line_directive_get_filename (ValaCCodeLineDirective* self)
+{
 	const gchar* result;
-	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_filename;
 	result = _tmp0_;
@@ -188,20 +108,23 @@ const gchar* vala_ccode_line_directive_get_filename (ValaCCodeLineDirective* sel
 }
 
 
-void vala_ccode_line_directive_set_filename (ValaCCodeLineDirective* self, const gchar* value) {
-	const gchar* _tmp0_ = NULL;
-	gchar* _tmp1_ = NULL;
+void
+vala_ccode_line_directive_set_filename (ValaCCodeLineDirective* self,
+                                        const gchar* value)
+{
+	gchar* _tmp0_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	_tmp1_ = g_strdup (_tmp0_);
+	_tmp0_ = g_strdup (value);
 	_g_free0 (self->priv->_filename);
-	self->priv->_filename = _tmp1_;
+	self->priv->_filename = _tmp0_;
 }
 
 
-gint vala_ccode_line_directive_get_line_number (ValaCCodeLineDirective* self) {
+gint
+vala_ccode_line_directive_get_line_number (ValaCCodeLineDirective* self)
+{
 	gint result;
-	gint _tmp0_ = 0;
+	gint _tmp0_;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->_line_number;
 	result = _tmp0_;
@@ -209,28 +132,35 @@ gint vala_ccode_line_directive_get_line_number (ValaCCodeLineDirective* self) {
 }
 
 
-void vala_ccode_line_directive_set_line_number (ValaCCodeLineDirective* self, gint value) {
-	gint _tmp0_ = 0;
+void
+vala_ccode_line_directive_set_line_number (ValaCCodeLineDirective* self,
+                                           gint value)
+{
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	self->priv->_line_number = _tmp0_;
+	self->priv->_line_number = value;
 }
 
 
-static void vala_ccode_line_directive_class_init (ValaCCodeLineDirectiveClass * klass) {
+static void
+vala_ccode_line_directive_class_init (ValaCCodeLineDirectiveClass * klass)
+{
 	vala_ccode_line_directive_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_line_directive_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeLineDirectivePrivate));
-	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_line_directive_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*) (ValaCCodeNode *, ValaCCodeWriter*)) vala_ccode_line_directive_real_write;
 }
 
 
-static void vala_ccode_line_directive_instance_init (ValaCCodeLineDirective * self) {
+static void
+vala_ccode_line_directive_instance_init (ValaCCodeLineDirective * self)
+{
 	self->priv = VALA_CCODE_LINE_DIRECTIVE_GET_PRIVATE (self);
 }
 
 
-static void vala_ccode_line_directive_finalize (ValaCCodeNode* obj) {
+static void
+vala_ccode_line_directive_finalize (ValaCCodeNode * obj)
+{
 	ValaCCodeLineDirective * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_CCODE_LINE_DIRECTIVE, ValaCCodeLineDirective);
 	_g_free0 (self->priv->_filename);
@@ -241,7 +171,9 @@ static void vala_ccode_line_directive_finalize (ValaCCodeNode* obj) {
 /**
  * Represents a line directive in the C code.
  */
-GType vala_ccode_line_directive_get_type (void) {
+GType
+vala_ccode_line_directive_get_type (void)
+{
 	static volatile gsize vala_ccode_line_directive_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_ccode_line_directive_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (ValaCCodeLineDirectiveClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) vala_ccode_line_directive_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (ValaCCodeLineDirective), 0, (GInstanceInitFunc) vala_ccode_line_directive_instance_init, NULL };

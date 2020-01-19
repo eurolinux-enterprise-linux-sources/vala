@@ -6,12 +6,12 @@
 
 #include <glib.h>
 #include <vala.h>
-#include <valaccode.h>
-#include <valagee.h>
 #include <stdlib.h>
 #include <string.h>
 #include <float.h>
 #include <math.h>
+#include <valaccode.h>
+#include <valagee.h>
 #include <glib-object.h>
 
 G_BEGIN_DECLS
@@ -126,17 +126,6 @@ typedef struct _ValaCCodeAttribute ValaCCodeAttribute;
 typedef struct _ValaCCodeAttributeClass ValaCCodeAttributeClass;
 typedef struct _ValaCCodeAttributePrivate ValaCCodeAttributePrivate;
 typedef struct _ValaCCodeBaseModuleEmitContextPrivate ValaCCodeBaseModuleEmitContextPrivate;
-
-#define VALA_TYPE_GLIB_VALUE (vala_glib_value_get_type ())
-#define VALA_GLIB_VALUE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_GLIB_VALUE, ValaGLibValue))
-#define VALA_GLIB_VALUE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_GLIB_VALUE, ValaGLibValueClass))
-#define VALA_IS_GLIB_VALUE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_GLIB_VALUE))
-#define VALA_IS_GLIB_VALUE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_GLIB_VALUE))
-#define VALA_GLIB_VALUE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_GLIB_VALUE, ValaGLibValueClass))
-
-typedef struct _ValaGLibValue ValaGLibValue;
-typedef struct _ValaGLibValueClass ValaGLibValueClass;
-typedef struct _ValaGLibValuePrivate ValaGLibValuePrivate;
 
 #define VALA_TYPE_CCODE_COMPILER (vala_ccode_compiler_get_type ())
 #define VALA_CCODE_COMPILER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_COMPILER, ValaCCodeCompiler))
@@ -349,7 +338,6 @@ typedef struct _ValaStructRegisterFunctionPrivate ValaStructRegisterFunctionPriv
 
 struct _ValaCCodeBaseModule {
 	ValaCodeGenerator parent_instance;
-	ValaCCodeBaseModulePrivate * priv;
 	ValaSymbol* root_symbol;
 	ValaCCodeBaseModuleEmitContext* emit_context;
 	ValaCCodeLineDirective* current_line;
@@ -365,10 +353,10 @@ struct _ValaCCodeBaseModule {
 	ValaCCodeStruct* param_spec_struct;
 	ValaCCodeStruct* closure_struct;
 	ValaCCodeEnum* prop_enum;
+	ValaCCodeEnum* signal_enum;
 	ValaSet* user_marshal_set;
 	ValaSet* predefined_marshal_set;
 	gint next_regex_id;
-	gint next_coroutine_state;
 	ValaDataType* void_type;
 	ValaDataType* bool_type;
 	ValaDataType* char_type;
@@ -427,6 +415,7 @@ struct _ValaCCodeBaseModule {
 	gboolean requires_array_length;
 	gboolean requires_clear_mutex;
 	ValaSet* wrappers;
+	ValaCCodeBaseModulePrivate * priv;
 };
 
 struct _ValaCCodeBaseModuleClass {
@@ -448,9 +437,9 @@ struct _ValaCCodeBaseModuleClass {
 	ValaTargetValue* (*get_field_cvalue) (ValaCCodeBaseModule* self, ValaField* field, ValaTargetValue* instance);
 	ValaTargetValue* (*load_variable) (ValaCCodeBaseModule* self, ValaVariable* variable, ValaTargetValue* value);
 	ValaTargetValue* (*load_this_parameter) (ValaCCodeBaseModule* self, ValaTypeSymbol* sym);
-	void (*store_value) (ValaCCodeBaseModule* self, ValaTargetValue* lvalue, ValaTargetValue* value);
+	void (*store_value) (ValaCCodeBaseModule* self, ValaTargetValue* lvalue, ValaTargetValue* value, ValaSourceReference* source_reference);
 	gchar* (*get_delegate_target_cname) (ValaCCodeBaseModule* self, const gchar* delegate_cname);
-	ValaCCodeExpression* (*get_delegate_target_cexpression) (ValaCCodeBaseModule* self, ValaExpression* delegate_expr, ValaCCodeExpression** delegate_target_destroy_notify);
+	ValaCCodeExpression* (*get_delegate_target_cexpression) (ValaCCodeBaseModule* self, ValaExpression* delegate_expr, ValaCCodeExpression* * delegate_target_destroy_notify);
 	ValaCCodeExpression* (*get_delegate_target_cvalue) (ValaCCodeBaseModule* self, ValaTargetValue* value);
 	ValaCCodeExpression* (*get_delegate_target_destroy_notify_cvalue) (ValaCCodeBaseModule* self, ValaTargetValue* value);
 	gchar* (*get_delegate_target_destroy_notify_cname) (ValaCCodeBaseModule* self, const gchar* delegate_cname);
@@ -466,8 +455,9 @@ struct _ValaCCodeBaseModuleClass {
 	gboolean (*is_gobject_property) (ValaCCodeBaseModule* self, ValaProperty* prop);
 	void (*generate_dynamic_method_wrapper) (ValaCCodeBaseModule* self, ValaDynamicMethod* method);
 	gboolean (*method_has_wrapper) (ValaCCodeBaseModule* self, ValaMethod* method);
-	ValaCCodeFunctionCall* (*get_param_spec) (ValaCCodeBaseModule* self, ValaProperty* prop);
-	ValaCCodeFunctionCall* (*get_signal_creation) (ValaCCodeBaseModule* self, ValaSignal* sig, ValaTypeSymbol* type);
+	ValaCCodeExpression* (*get_param_spec_cexpression) (ValaCCodeBaseModule* self, ValaProperty* prop);
+	ValaCCodeExpression* (*get_param_spec) (ValaCCodeBaseModule* self, ValaProperty* prop);
+	ValaCCodeExpression* (*get_signal_creation) (ValaCCodeBaseModule* self, ValaSignal* sig, ValaTypeSymbol* type);
 	void (*register_dbus_info) (ValaCCodeBaseModule* self, ValaCCodeBlock* block, ValaObjectTypeSymbol* bindable);
 	gchar* (*get_dynamic_property_getter_cname) (ValaCCodeBaseModule* self, ValaDynamicProperty* node);
 	gchar* (*get_dynamic_property_setter_cname) (ValaCCodeBaseModule* self, ValaDynamicProperty* node);
@@ -561,7 +551,6 @@ struct _ValaCCodeAttributeClass {
 struct _ValaCCodeBaseModuleEmitContext {
 	GTypeInstance parent_instance;
 	volatile int ref_count;
-	ValaCCodeBaseModuleEmitContextPrivate * priv;
 	ValaSymbol* current_symbol;
 	ValaArrayList* symbol_stack;
 	ValaTryStatement* current_try;
@@ -572,33 +561,16 @@ struct _ValaCCodeBaseModuleEmitContext {
 	gint next_temp_var_id;
 	gboolean current_method_inner_error;
 	gboolean current_method_return;
+	gint next_coroutine_state;
 	ValaMap* variable_name_map;
 	ValaMap* closure_variable_count_map;
 	ValaMap* closure_variable_clash_map;
+	ValaCCodeBaseModuleEmitContextPrivate * priv;
 };
 
 struct _ValaCCodeBaseModuleEmitContextClass {
 	GTypeClass parent_class;
 	void (*finalize) (ValaCCodeBaseModuleEmitContext *self);
-};
-
-struct _ValaGLibValue {
-	ValaTargetValue parent_instance;
-	ValaGLibValuePrivate * priv;
-	ValaCCodeExpression* cvalue;
-	gboolean lvalue;
-	gboolean non_null;
-	gchar* ctype;
-	ValaList* array_length_cvalues;
-	ValaCCodeExpression* array_size_cvalue;
-	gboolean array_null_terminated;
-	ValaCCodeExpression* array_length_cexpr;
-	ValaCCodeExpression* delegate_target_cvalue;
-	ValaCCodeExpression* delegate_target_destroy_notify_cvalue;
-};
-
-struct _ValaGLibValueClass {
-	ValaTargetValueClass parent_class;
 };
 
 struct _ValaCCodeCompiler {
@@ -647,7 +619,7 @@ struct _ValaTypeRegisterFunctionClass {
 	gchar* (*get_gtype_value_table_collect_value_function_name) (ValaTypeRegisterFunction* self);
 	gchar* (*get_type_flags) (ValaTypeRegisterFunction* self);
 	ValaCCodeFragment* (*get_type_interface_init_declaration) (ValaTypeRegisterFunction* self);
-	void (*get_type_interface_init_statements) (ValaTypeRegisterFunction* self, ValaCCodeBlock* block, gboolean plugin);
+	void (*get_type_interface_init_statements) (ValaTypeRegisterFunction* self, ValaCodeContext* context, ValaCCodeBlock* block, gboolean plugin);
 	ValaSymbolAccessibility (*get_accessibility) (ValaTypeRegisterFunction* self);
 };
 
@@ -817,12 +789,81 @@ struct _ValaStructRegisterFunctionClass {
 };
 
 
+gchar* vala_get_ccode_name (ValaCodeNode* node);
+gchar* vala_get_ccode_const_name (ValaCodeNode* node);
+gchar* vala_get_ccode_type_name (ValaInterface* iface);
+gchar* vala_get_ccode_lower_case_name (ValaCodeNode* node,
+                                       const gchar* infix);
+gchar* vala_get_ccode_upper_case_name (ValaSymbol* sym,
+                                       const gchar* infix);
+gchar* vala_get_ccode_header_filenames (ValaSymbol* sym);
+gchar* vala_get_ccode_feature_test_macros (ValaSymbol* sym);
+gchar* vala_get_ccode_prefix (ValaSymbol* sym);
+gchar* vala_get_ccode_lower_case_prefix (ValaSymbol* sym);
+gchar* vala_get_ccode_lower_case_suffix (ValaSymbol* sym);
+gchar* vala_get_ccode_ref_function (ValaTypeSymbol* sym);
+gchar* vala_get_ccode_quark_name (ValaErrorDomain* edomain);
+gboolean vala_is_reference_counting (ValaTypeSymbol* sym);
+gboolean vala_get_ccode_ref_function_void (ValaClass* cl);
+gboolean vala_get_ccode_free_function_address_of (ValaClass* cl);
+gchar* vala_get_ccode_unref_function (ValaObjectTypeSymbol* sym);
+gchar* vala_get_ccode_ref_sink_function (ValaObjectTypeSymbol* sym);
+gchar* vala_get_ccode_copy_function (ValaTypeSymbol* sym);
+gchar* vala_get_ccode_destroy_function (ValaTypeSymbol* sym);
+gchar* vala_get_ccode_dup_function (ValaTypeSymbol* sym);
+gchar* vala_get_ccode_free_function (ValaTypeSymbol* sym);
+gboolean vala_get_ccode_is_gboxed (ValaTypeSymbol* sym);
+gboolean vala_get_ccode_finish_instance (ValaCodeNode* node);
+gchar* vala_get_ccode_type_id (ValaCodeNode* node);
+gchar* vala_get_ccode_marshaller_type_name (ValaCodeNode* node);
+gchar* vala_get_ccode_get_value_function (ValaCodeNode* sym);
+gchar* vala_get_ccode_set_value_function (ValaCodeNode* sym);
+gchar* vala_get_ccode_take_value_function (ValaCodeNode* sym);
+gchar* vala_get_ccode_param_spec_function (ValaCodeNode* sym);
+gchar* vala_get_ccode_type_check_function (ValaTypeSymbol* sym);
+gchar* vala_get_ccode_default_value (ValaTypeSymbol* sym);
+gchar* vala_get_ccode_default_value_on_error (ValaTypeSymbol* sym);
+gboolean vala_get_ccode_has_copy_function (ValaStruct* st);
+gboolean vala_get_ccode_has_destroy_function (ValaStruct* st);
+gdouble vala_get_ccode_instance_pos (ValaCodeNode* node);
+gboolean vala_get_ccode_array_length (ValaCodeNode* node);
+gchar* vala_get_ccode_array_length_type (ValaCodeNode* node);
+gboolean vala_get_ccode_array_null_terminated (ValaCodeNode* node);
+gchar* vala_get_ccode_array_length_name (ValaCodeNode* node);
+gchar* vala_get_ccode_array_length_expr (ValaCodeNode* node);
+gdouble vala_get_ccode_array_length_pos (ValaCodeNode* node);
+gdouble vala_get_ccode_delegate_target_pos (ValaCodeNode* node);
+gdouble vala_get_ccode_destroy_notify_pos (ValaCodeNode* node);
+gboolean vala_get_ccode_delegate_target (ValaCodeNode* node);
+gchar* vala_get_ccode_delegate_target_name (ValaVariable* variable);
+gdouble vala_get_ccode_pos (ValaParameter* param);
+gchar* vala_get_ccode_type (ValaCodeNode* node);
+gboolean vala_get_ccode_simple_generics (ValaMethod* m);
+gchar* vala_get_ccode_real_name (ValaSymbol* sym);
+gchar* vala_get_ccode_constructv_name (ValaCreationMethod* m);
+gchar* vala_get_ccode_vfunc_name (ValaMethod* m);
+gchar* vala_get_ccode_finish_name (ValaMethod* m);
+gchar* vala_get_ccode_finish_vfunc_name (ValaMethod* m);
+gchar* vala_get_ccode_finish_real_name (ValaMethod* m);
+gboolean vala_get_ccode_no_accessor_method (ValaProperty* p);
+gboolean vala_get_ccode_concrete_accessor (ValaProperty* p);
+gboolean vala_get_ccode_has_type_id (ValaTypeSymbol* sym);
+gboolean vala_get_ccode_has_new_function (ValaMethod* m);
+gboolean vala_get_ccode_has_generic_type_parameter (ValaMethod* m);
+gdouble vala_get_ccode_generic_type_pos (ValaMethod* m);
+gchar* vala_get_ccode_sentinel (ValaMethod* m);
 GType vala_ccode_base_module_get_type (void) G_GNUC_CONST;
 gpointer vala_ccode_base_module_emit_context_ref (gpointer instance);
 void vala_ccode_base_module_emit_context_unref (gpointer instance);
-GParamSpec* vala_ccode_base_module_param_spec_emit_context (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_ccode_base_module_value_set_emit_context (GValue* value, gpointer v_object);
-void vala_ccode_base_module_value_take_emit_context (GValue* value, gpointer v_object);
+GParamSpec* vala_ccode_base_module_param_spec_emit_context (const gchar* name,
+                                                            const gchar* nick,
+                                                            const gchar* blurb,
+                                                            GType object_type,
+                                                            GParamFlags flags);
+void vala_ccode_base_module_value_set_emit_context (GValue* value,
+                                                    gpointer v_object);
+void vala_ccode_base_module_value_take_emit_context (GValue* value,
+                                                     gpointer v_object);
 gpointer vala_ccode_base_module_value_get_emit_context (const GValue* value);
 GType vala_ccode_base_module_emit_context_get_type (void) G_GNUC_CONST;
 GType vala_ccode_struct_module_get_type (void) G_GNUC_CONST;
@@ -838,10 +879,12 @@ ValaCCodeAssignmentModule* vala_ccode_assignment_module_new (void);
 ValaCCodeAssignmentModule* vala_ccode_assignment_module_construct (GType object_type);
 GType vala_ccode_attribute_get_type (void) G_GNUC_CONST;
 ValaCCodeAttribute* vala_ccode_attribute_new (ValaCodeNode* node);
-ValaCCodeAttribute* vala_ccode_attribute_construct (GType object_type, ValaCodeNode* node);
+ValaCCodeAttribute* vala_ccode_attribute_construct (GType object_type,
+                                                    ValaCodeNode* node);
 const gchar* vala_ccode_attribute_get_name (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_const_name (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_type_name (ValaCCodeAttribute* self);
+const gchar* vala_ccode_attribute_get_feature_test_macros (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_header_filenames (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_prefix (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_lower_case_prefix (ValaCCodeAttribute* self);
@@ -852,6 +895,7 @@ const gchar* vala_ccode_attribute_get_unref_function (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_ref_sink_function (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_copy_function (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_destroy_function (ValaCCodeAttribute* self);
+const gchar* vala_ccode_attribute_get_dup_function (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_free_function (ValaCCodeAttribute* self);
 gboolean vala_ccode_attribute_get_free_function_address_of (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_ctype (ValaCCodeAttribute* self);
@@ -862,12 +906,14 @@ const gchar* vala_ccode_attribute_get_set_value_function (ValaCCodeAttribute* se
 const gchar* vala_ccode_attribute_get_take_value_function (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_param_spec_function (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_default_value (ValaCCodeAttribute* self);
+const gchar* vala_ccode_attribute_get_default_value_on_error (ValaCCodeAttribute* self);
 gdouble vala_ccode_attribute_get_pos (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_real_name (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_vfunc_name (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_finish_name (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_finish_vfunc_name (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_finish_real_name (ValaCCodeAttribute* self);
+gboolean vala_ccode_attribute_get_finish_instance (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_delegate_target_name (ValaCCodeAttribute* self);
 gboolean vala_ccode_attribute_get_array_length (ValaCCodeAttribute* self);
 gboolean vala_ccode_attribute_get_array_null_terminated (ValaCCodeAttribute* self);
@@ -880,215 +926,385 @@ extern gint vala_ccode_base_module_ccode_attribute_cache_index;
 gboolean vala_ccode_base_module_is_in_coroutine (ValaCCodeBaseModule* self);
 gboolean vala_ccode_base_module_is_in_constructor (ValaCCodeBaseModule* self);
 gboolean vala_ccode_base_module_is_in_destructor (ValaCCodeBaseModule* self);
-ValaBlock* vala_ccode_base_module_next_closure_block (ValaCCodeBaseModule* self, ValaSymbol* sym);
+ValaBlock* vala_ccode_base_module_next_closure_block (ValaCCodeBaseModule* self,
+                                                      ValaSymbol* sym);
 ValaCCodeBaseModule* vala_ccode_base_module_construct (GType object_type);
-void vala_ccode_base_module_push_context (ValaCCodeBaseModule* self, ValaCCodeBaseModuleEmitContext* emit_context);
+void vala_ccode_base_module_push_context (ValaCCodeBaseModule* self,
+                                          ValaCCodeBaseModuleEmitContext* emit_context);
 void vala_ccode_base_module_pop_context (ValaCCodeBaseModule* self);
-void vala_ccode_base_module_push_line (ValaCCodeBaseModule* self, ValaSourceReference* source_reference);
+void vala_ccode_base_module_push_line (ValaCCodeBaseModule* self,
+                                       ValaSourceReference* source_reference);
 void vala_ccode_base_module_pop_line (ValaCCodeBaseModule* self);
-void vala_ccode_base_module_push_function (ValaCCodeBaseModule* self, ValaCCodeFunction* func);
+void vala_ccode_base_module_push_function (ValaCCodeBaseModule* self,
+                                           ValaCCodeFunction* func);
 void vala_ccode_base_module_pop_function (ValaCCodeBaseModule* self);
-gboolean vala_ccode_base_module_add_symbol_declaration (ValaCCodeBaseModule* self, ValaCCodeFile* decl_space, ValaSymbol* sym, const gchar* name);
-ValaCCodeIdentifier* vala_ccode_base_module_get_value_setter_function (ValaCCodeBaseModule* self, ValaDataType* type_reference);
-ValaCCodeIdentifier* vala_ccode_base_module_get_value_taker_function (ValaCCodeBaseModule* self, ValaDataType* type_reference);
+gboolean vala_ccode_base_module_add_symbol_declaration (ValaCCodeBaseModule* self,
+                                                        ValaCCodeFile* decl_space,
+                                                        ValaSymbol* sym,
+                                                        const gchar* name);
+ValaCCodeIdentifier* vala_ccode_base_module_get_value_setter_function (ValaCCodeBaseModule* self,
+                                                                       ValaDataType* type_reference);
+ValaCCodeIdentifier* vala_ccode_base_module_get_value_taker_function (ValaCCodeBaseModule* self,
+                                                                      ValaDataType* type_reference);
 void vala_ccode_base_module_append_vala_array_free (ValaCCodeBaseModule* self);
 void vala_ccode_base_module_append_vala_array_move (ValaCCodeBaseModule* self);
 void vala_ccode_base_module_append_vala_array_length (ValaCCodeBaseModule* self);
-void vala_ccode_base_module_append_vala_clear_mutex (ValaCCodeBaseModule* self, const gchar* typename, const gchar* funcprefix);
-gboolean vala_ccode_base_module_generate_enum_declaration (ValaCCodeBaseModule* self, ValaEnum* en, ValaCCodeFile* decl_space);
-void vala_ccode_base_module_visit_member (ValaCCodeBaseModule* self, ValaSymbol* m);
-void vala_ccode_base_module_generate_constant_declaration (ValaCCodeBaseModule* self, ValaConstant* c, ValaCCodeFile* decl_space, gboolean definition);
-void vala_ccode_base_module_generate_field_declaration (ValaCCodeBaseModule* self, ValaField* f, ValaCCodeFile* decl_space);
-gboolean vala_ccode_base_module_is_constant_ccode_expression (ValaCCodeBaseModule* self, ValaCCodeExpression* cexpr);
-gboolean vala_ccode_base_module_is_pure_ccode_expression (ValaCCodeBaseModule* self, ValaCCodeExpression* cexpr);
-void vala_ccode_base_module_generate_type_declaration (ValaCCodeBaseModule* self, ValaDataType* type, ValaCCodeFile* decl_space);
-void vala_ccode_base_module_generate_class_struct_declaration (ValaCCodeBaseModule* self, ValaClass* cl, ValaCCodeFile* decl_space);
-void vala_ccode_base_module_generate_struct_declaration (ValaCCodeBaseModule* self, ValaStruct* st, ValaCCodeFile* decl_space);
-void vala_ccode_base_module_generate_delegate_declaration (ValaCCodeBaseModule* self, ValaDelegate* d, ValaCCodeFile* decl_space);
-void vala_ccode_base_module_generate_cparameters (ValaCCodeBaseModule* self, ValaMethod* m, ValaCCodeFile* decl_space, ValaMap* cparam_map, ValaCCodeFunction* func, ValaCCodeFunctionDeclarator* vdeclarator, ValaMap* carg_map, ValaCCodeFunctionCall* vcall, gint direction);
-void vala_ccode_base_module_generate_property_accessor_declaration (ValaCCodeBaseModule* self, ValaPropertyAccessor* acc, ValaCCodeFile* decl_space);
-gint vala_ccode_base_module_get_block_id (ValaCCodeBaseModule* self, ValaBlock* b);
-gboolean vala_ccode_base_module_no_implicit_copy (ValaCCodeBaseModule* self, ValaDataType* type);
-ValaCCodeExpression* vala_ccode_base_module_get_local_cexpression (ValaCCodeBaseModule* self, ValaLocalVariable* local);
-ValaCCodeExpression* vala_ccode_base_module_get_variable_cexpression (ValaCCodeBaseModule* self, const gchar* name);
+void vala_ccode_base_module_append_vala_clear_mutex (ValaCCodeBaseModule* self,
+                                                     const gchar* typename,
+                                                     const gchar* funcprefix);
+gboolean vala_ccode_base_module_generate_enum_declaration (ValaCCodeBaseModule* self,
+                                                           ValaEnum* en,
+                                                           ValaCCodeFile* decl_space);
+void vala_ccode_base_module_visit_member (ValaCCodeBaseModule* self,
+                                          ValaSymbol* m);
+void vala_ccode_base_module_generate_constant_declaration (ValaCCodeBaseModule* self,
+                                                           ValaConstant* c,
+                                                           ValaCCodeFile* decl_space,
+                                                           gboolean definition);
+void vala_ccode_base_module_generate_field_declaration (ValaCCodeBaseModule* self,
+                                                        ValaField* f,
+                                                        ValaCCodeFile* decl_space);
+gboolean vala_ccode_base_module_is_constant_ccode_expression (ValaCCodeBaseModule* self,
+                                                              ValaCCodeExpression* cexpr);
+gboolean vala_ccode_base_module_is_pure_ccode_expression (ValaCCodeBaseModule* self,
+                                                          ValaCCodeExpression* cexpr);
+void vala_ccode_base_module_generate_type_declaration (ValaCCodeBaseModule* self,
+                                                       ValaDataType* type,
+                                                       ValaCCodeFile* decl_space);
+void vala_ccode_base_module_generate_class_struct_declaration (ValaCCodeBaseModule* self,
+                                                               ValaClass* cl,
+                                                               ValaCCodeFile* decl_space);
+void vala_ccode_base_module_generate_struct_declaration (ValaCCodeBaseModule* self,
+                                                         ValaStruct* st,
+                                                         ValaCCodeFile* decl_space);
+void vala_ccode_base_module_generate_delegate_declaration (ValaCCodeBaseModule* self,
+                                                           ValaDelegate* d,
+                                                           ValaCCodeFile* decl_space);
+void vala_ccode_base_module_generate_cparameters (ValaCCodeBaseModule* self,
+                                                  ValaMethod* m,
+                                                  ValaCCodeFile* decl_space,
+                                                  ValaMap* cparam_map,
+                                                  ValaCCodeFunction* func,
+                                                  ValaCCodeFunctionDeclarator* vdeclarator,
+                                                  ValaMap* carg_map,
+                                                  ValaCCodeFunctionCall* vcall,
+                                                  gint direction);
+void vala_ccode_base_module_generate_property_accessor_declaration (ValaCCodeBaseModule* self,
+                                                                    ValaPropertyAccessor* acc,
+                                                                    ValaCCodeFile* decl_space);
+gint vala_ccode_base_module_get_block_id (ValaCCodeBaseModule* self,
+                                          ValaBlock* b);
+gboolean vala_ccode_base_module_no_implicit_copy (ValaCCodeBaseModule* self,
+                                                  ValaDataType* type);
+ValaCCodeExpression* vala_ccode_base_module_get_local_cexpression (ValaCCodeBaseModule* self,
+                                                                   ValaLocalVariable* local);
+ValaCCodeExpression* vala_ccode_base_module_get_variable_cexpression (ValaCCodeBaseModule* self,
+                                                                      const gchar* name);
 ValaCCodeExpression* vala_ccode_base_module_get_this_cexpression (ValaCCodeBaseModule* self);
-gchar* vala_ccode_base_module_get_local_cname (ValaCCodeBaseModule* self, ValaLocalVariable* local);
-gchar* vala_ccode_base_module_get_variable_cname (ValaCCodeBaseModule* self, const gchar* name);
-ValaCCodeExpression* vala_ccode_base_module_get_result_cexpression (ValaCCodeBaseModule* self, const gchar* cname);
-gboolean vala_ccode_base_module_is_simple_struct_creation (ValaCCodeBaseModule* self, ValaVariable* variable, ValaExpression* expr);
-ValaTargetValue* vala_ccode_base_module_create_temp_value (ValaCCodeBaseModule* self, ValaDataType* type, gboolean init, ValaCodeNode* node_reference, gboolean* value_owned);
-ValaTargetValue* vala_ccode_base_module_load_temp_value (ValaCCodeBaseModule* self, ValaTargetValue* lvalue);
-ValaTargetValue* vala_ccode_base_module_store_temp_value (ValaCCodeBaseModule* self, ValaTargetValue* initializer, ValaCodeNode* node_reference, gboolean* value_owned);
-ValaLocalVariable* vala_ccode_base_module_get_temp_variable (ValaCCodeBaseModule* self, ValaDataType* type, gboolean value_owned, ValaCodeNode* node_reference, gboolean init);
-ValaCCodeExpression* vala_ccode_base_module_get_type_id_expression (ValaCCodeBaseModule* self, ValaDataType* type, gboolean is_chainup);
-ValaCCodeExpression* vala_ccode_base_module_get_dup_func_expression (ValaCCodeBaseModule* self, ValaDataType* type, ValaSourceReference* source_reference, gboolean is_chainup);
-gchar* vala_ccode_base_module_generate_dup_func_wrapper (ValaCCodeBaseModule* self, ValaDataType* type);
-gchar* vala_ccode_base_module_generate_free_function_address_of_wrapper (ValaCCodeBaseModule* self, ValaDataType* type);
-gchar* vala_ccode_base_module_generate_free_func_wrapper (ValaCCodeBaseModule* self, ValaDataType* type);
-ValaCCodeExpression* vala_ccode_base_module_get_destroy0_func_expression (ValaCCodeBaseModule* self, ValaDataType* type, gboolean is_chainup);
-ValaCCodeExpression* vala_ccode_base_module_get_destroy_func_expression (ValaCCodeBaseModule* self, ValaDataType* type, gboolean is_chainup);
-gchar* vala_ccode_base_module_append_struct_array_free (ValaCCodeBaseModule* self, ValaStruct* st);
-ValaCCodeExpression* vala_ccode_base_module_destroy_local (ValaCCodeBaseModule* self, ValaLocalVariable* local);
-ValaCCodeExpression* vala_ccode_base_module_destroy_parameter (ValaCCodeBaseModule* self, ValaParameter* param);
-ValaCCodeExpression* vala_ccode_base_module_destroy_field (ValaCCodeBaseModule* self, ValaField* field, ValaTargetValue* instance);
-ValaCCodeExpression* vala_ccode_base_module_destroy_value (ValaCCodeBaseModule* self, ValaTargetValue* value, gboolean is_macro_definition);
-void vala_ccode_base_module_emit_temp_var (ValaCCodeBaseModule* self, ValaLocalVariable* local);
-void vala_ccode_base_module_append_scope_free (ValaCCodeBaseModule* self, ValaSymbol* sym, ValaCodeNode* stop_at);
-void vala_ccode_base_module_append_local_free (ValaCCodeBaseModule* self, ValaSymbol* sym, gboolean stop_at_loop, ValaCodeNode* stop_at);
-gboolean vala_ccode_base_module_variable_accessible_in_finally (ValaCCodeBaseModule* self, ValaLocalVariable* local);
-void vala_ccode_base_module_return_out_parameter (ValaCCodeBaseModule* self, ValaParameter* param);
-gchar* vala_ccode_base_module_get_symbol_lock_name (ValaCCodeBaseModule* self, const gchar* symname);
-ValaTargetValue* vala_ccode_base_module_get_local_cvalue (ValaCCodeBaseModule* self, ValaLocalVariable* local);
-ValaTargetValue* vala_ccode_base_module_get_parameter_cvalue (ValaCCodeBaseModule* self, ValaParameter* param);
-ValaTargetValue* vala_ccode_base_module_get_field_cvalue (ValaCCodeBaseModule* self, ValaField* field, ValaTargetValue* instance);
-ValaTargetValue* vala_ccode_base_module_load_variable (ValaCCodeBaseModule* self, ValaVariable* variable, ValaTargetValue* value);
-ValaTargetValue* vala_ccode_base_module_load_this_parameter (ValaCCodeBaseModule* self, ValaTypeSymbol* sym);
-void vala_ccode_base_module_store_value (ValaCCodeBaseModule* self, ValaTargetValue* lvalue, ValaTargetValue* value);
-gchar* vala_ccode_base_module_get_delegate_target_cname (ValaCCodeBaseModule* self, const gchar* delegate_cname);
-ValaCCodeExpression* vala_ccode_base_module_get_delegate_target_cexpression (ValaCCodeBaseModule* self, ValaExpression* delegate_expr, ValaCCodeExpression** delegate_target_destroy_notify);
-ValaCCodeExpression* vala_ccode_base_module_get_delegate_target_cvalue (ValaCCodeBaseModule* self, ValaTargetValue* value);
-ValaCCodeExpression* vala_ccode_base_module_get_delegate_target_destroy_notify_cvalue (ValaCCodeBaseModule* self, ValaTargetValue* value);
-gchar* vala_ccode_base_module_get_delegate_target_destroy_notify_cname (ValaCCodeBaseModule* self, const gchar* delegate_cname);
-gboolean vala_ccode_base_module_requires_copy (ValaCCodeBaseModule* self, ValaDataType* type);
-gboolean vala_ccode_base_module_requires_destroy (ValaCCodeBaseModule* self, ValaDataType* type);
-ValaTargetValue* vala_ccode_base_module_copy_value (ValaCCodeBaseModule* self, ValaTargetValue* value, ValaCodeNode* node);
-void vala_ccode_base_module_check_type (ValaCCodeBaseModule* self, ValaDataType* type);
-void vala_ccode_base_module_generate_class_declaration (ValaCCodeBaseModule* self, ValaClass* cl, ValaCCodeFile* decl_space);
-void vala_ccode_base_module_generate_interface_declaration (ValaCCodeBaseModule* self, ValaInterface* iface, ValaCCodeFile* decl_space);
-void vala_ccode_base_module_generate_method_declaration (ValaCCodeBaseModule* self, ValaMethod* m, ValaCCodeFile* decl_space);
-void vala_ccode_base_module_generate_error_domain_declaration (ValaCCodeBaseModule* self, ValaErrorDomain* edomain, ValaCCodeFile* decl_space);
-void vala_ccode_base_module_add_generic_type_arguments (ValaCCodeBaseModule* self, ValaMap* arg_map, ValaList* type_args, ValaCodeNode* expr, gboolean is_chainup, ValaList* type_parameters);
-ValaCCodeExpression* vala_ccode_base_module_handle_struct_argument (ValaCCodeBaseModule* self, ValaParameter* param, ValaExpression* arg, ValaCCodeExpression* cexpr);
-ValaCCodeExpression* vala_ccode_base_module_try_cast_value_to_type (ValaCCodeBaseModule* self, ValaCCodeExpression* ccodeexpr, ValaDataType* from, ValaDataType* to, ValaExpression* expr);
-ValaTargetValue* vala_ccode_base_module_try_cast_variant_to_type (ValaCCodeBaseModule* self, ValaTargetValue* value, ValaDataType* to, ValaCodeNode* node);
-ValaCCodeExpression* vala_ccode_base_module_deserialize_expression (ValaCCodeBaseModule* self, ValaDataType* type, ValaCCodeExpression* variant_expr, ValaCCodeExpression* expr, ValaCCodeExpression* error_expr, gboolean* may_fail);
-ValaCCodeExpression* vala_ccode_base_module_serialize_expression (ValaCCodeBaseModule* self, ValaDataType* type, ValaCCodeExpression* expr);
-ValaCCodeExpression* vala_ccode_base_module_convert_from_generic_pointer (ValaCCodeBaseModule* self, ValaCCodeExpression* cexpr, ValaDataType* actual_type);
-ValaCCodeExpression* vala_ccode_base_module_convert_to_generic_pointer (ValaCCodeBaseModule* self, ValaCCodeExpression* cexpr, ValaDataType* actual_type);
-ValaTargetValue* vala_ccode_base_module_transform_value (ValaCCodeBaseModule* self, ValaTargetValue* value, ValaDataType* target_type, ValaCodeNode* node);
-ValaCCodeExpression* vala_ccode_base_module_get_implicit_cast_expression (ValaCCodeBaseModule* self, ValaCCodeExpression* source_cexpr, ValaDataType* expression_type, ValaDataType* target_type, ValaCodeNode* node);
-void vala_ccode_base_module_store_property (ValaCCodeBaseModule* self, ValaProperty* prop, ValaExpression* instance, ValaTargetValue* value);
-gboolean vala_ccode_base_module_add_wrapper (ValaCCodeBaseModule* self, const gchar* wrapper_name);
-gboolean vala_ccode_base_module_add_generated_external_symbol (ValaCCodeBaseModule* self, ValaSymbol* external_symbol);
+gchar* vala_ccode_base_module_get_local_cname (ValaCCodeBaseModule* self,
+                                               ValaLocalVariable* local);
+gchar* vala_ccode_base_module_get_variable_cname (ValaCCodeBaseModule* self,
+                                                  const gchar* name);
+ValaCCodeExpression* vala_ccode_base_module_get_result_cexpression (ValaCCodeBaseModule* self,
+                                                                    const gchar* cname);
+gboolean vala_ccode_base_module_is_simple_struct_creation (ValaCCodeBaseModule* self,
+                                                           ValaVariable* variable,
+                                                           ValaExpression* expr);
+ValaTargetValue* vala_ccode_base_module_create_temp_value (ValaCCodeBaseModule* self,
+                                                           ValaDataType* type,
+                                                           gboolean init,
+                                                           ValaCodeNode* node_reference,
+                                                           gboolean* value_owned);
+ValaTargetValue* vala_ccode_base_module_load_temp_value (ValaCCodeBaseModule* self,
+                                                         ValaTargetValue* lvalue);
+ValaTargetValue* vala_ccode_base_module_store_temp_value (ValaCCodeBaseModule* self,
+                                                          ValaTargetValue* initializer,
+                                                          ValaCodeNode* node_reference,
+                                                          gboolean* value_owned);
+ValaLocalVariable* vala_ccode_base_module_get_temp_variable (ValaCCodeBaseModule* self,
+                                                             ValaDataType* type,
+                                                             gboolean value_owned,
+                                                             ValaCodeNode* node_reference,
+                                                             gboolean init);
+ValaCCodeExpression* vala_ccode_base_module_get_type_id_expression (ValaCCodeBaseModule* self,
+                                                                    ValaDataType* type,
+                                                                    gboolean is_chainup);
+ValaCCodeExpression* vala_ccode_base_module_get_dup_func_expression (ValaCCodeBaseModule* self,
+                                                                     ValaDataType* type,
+                                                                     ValaSourceReference* source_reference,
+                                                                     gboolean is_chainup);
+gchar* vala_ccode_base_module_generate_dup_func_wrapper (ValaCCodeBaseModule* self,
+                                                         ValaDataType* type);
+gchar* vala_ccode_base_module_generate_free_function_address_of_wrapper (ValaCCodeBaseModule* self,
+                                                                         ValaDataType* type);
+gchar* vala_ccode_base_module_generate_free_func_wrapper (ValaCCodeBaseModule* self,
+                                                          ValaDataType* type);
+ValaCCodeExpression* vala_ccode_base_module_get_destroy0_func_expression (ValaCCodeBaseModule* self,
+                                                                          ValaDataType* type,
+                                                                          gboolean is_chainup);
+ValaCCodeExpression* vala_ccode_base_module_get_destroy_func_expression (ValaCCodeBaseModule* self,
+                                                                         ValaDataType* type,
+                                                                         gboolean is_chainup);
+gchar* vala_ccode_base_module_append_struct_array_free (ValaCCodeBaseModule* self,
+                                                        ValaStruct* st);
+ValaCCodeExpression* vala_ccode_base_module_destroy_local (ValaCCodeBaseModule* self,
+                                                           ValaLocalVariable* local);
+ValaCCodeExpression* vala_ccode_base_module_destroy_parameter (ValaCCodeBaseModule* self,
+                                                               ValaParameter* param);
+ValaCCodeExpression* vala_ccode_base_module_destroy_field (ValaCCodeBaseModule* self,
+                                                           ValaField* field,
+                                                           ValaTargetValue* instance);
+ValaCCodeExpression* vala_ccode_base_module_destroy_value (ValaCCodeBaseModule* self,
+                                                           ValaTargetValue* value,
+                                                           gboolean is_macro_definition);
+void vala_ccode_base_module_emit_temp_var (ValaCCodeBaseModule* self,
+                                           ValaLocalVariable* local,
+                                           gboolean on_error);
+void vala_ccode_base_module_append_scope_free (ValaCCodeBaseModule* self,
+                                               ValaSymbol* sym,
+                                               ValaCodeNode* stop_at);
+void vala_ccode_base_module_append_local_free (ValaCCodeBaseModule* self,
+                                               ValaSymbol* sym,
+                                               gboolean stop_at_loop,
+                                               ValaCodeNode* stop_at);
+gboolean vala_ccode_base_module_variable_accessible_in_finally (ValaCCodeBaseModule* self,
+                                                                ValaLocalVariable* local);
+void vala_ccode_base_module_return_out_parameter (ValaCCodeBaseModule* self,
+                                                  ValaParameter* param);
+gchar* vala_ccode_base_module_get_symbol_lock_name (ValaCCodeBaseModule* self,
+                                                    const gchar* symname);
+ValaTargetValue* vala_ccode_base_module_get_local_cvalue (ValaCCodeBaseModule* self,
+                                                          ValaLocalVariable* local);
+ValaTargetValue* vala_ccode_base_module_get_parameter_cvalue (ValaCCodeBaseModule* self,
+                                                              ValaParameter* param);
+ValaTargetValue* vala_ccode_base_module_get_field_cvalue (ValaCCodeBaseModule* self,
+                                                          ValaField* field,
+                                                          ValaTargetValue* instance);
+ValaTargetValue* vala_ccode_base_module_load_variable (ValaCCodeBaseModule* self,
+                                                       ValaVariable* variable,
+                                                       ValaTargetValue* value);
+ValaTargetValue* vala_ccode_base_module_load_this_parameter (ValaCCodeBaseModule* self,
+                                                             ValaTypeSymbol* sym);
+void vala_ccode_base_module_store_value (ValaCCodeBaseModule* self,
+                                         ValaTargetValue* lvalue,
+                                         ValaTargetValue* value,
+                                         ValaSourceReference* source_reference);
+gchar* vala_ccode_base_module_get_delegate_target_cname (ValaCCodeBaseModule* self,
+                                                         const gchar* delegate_cname);
+ValaCCodeExpression* vala_ccode_base_module_get_delegate_target_cexpression (ValaCCodeBaseModule* self,
+                                                                             ValaExpression* delegate_expr,
+                                                                             ValaCCodeExpression* * delegate_target_destroy_notify);
+ValaCCodeExpression* vala_ccode_base_module_get_delegate_target_cvalue (ValaCCodeBaseModule* self,
+                                                                        ValaTargetValue* value);
+ValaCCodeExpression* vala_ccode_base_module_get_delegate_target_destroy_notify_cvalue (ValaCCodeBaseModule* self,
+                                                                                       ValaTargetValue* value);
+gchar* vala_ccode_base_module_get_delegate_target_destroy_notify_cname (ValaCCodeBaseModule* self,
+                                                                        const gchar* delegate_cname);
+gboolean vala_ccode_base_module_requires_copy (ValaCCodeBaseModule* self,
+                                               ValaDataType* type);
+gboolean vala_ccode_base_module_requires_destroy (ValaCCodeBaseModule* self,
+                                                  ValaDataType* type);
+ValaTargetValue* vala_ccode_base_module_copy_value (ValaCCodeBaseModule* self,
+                                                    ValaTargetValue* value,
+                                                    ValaCodeNode* node);
+void vala_ccode_base_module_check_type (ValaCCodeBaseModule* self,
+                                        ValaDataType* type);
+void vala_ccode_base_module_check_type_arguments (ValaCCodeBaseModule* self,
+                                                  ValaMemberAccess* access);
+void vala_ccode_base_module_generate_class_declaration (ValaCCodeBaseModule* self,
+                                                        ValaClass* cl,
+                                                        ValaCCodeFile* decl_space);
+void vala_ccode_base_module_generate_interface_declaration (ValaCCodeBaseModule* self,
+                                                            ValaInterface* iface,
+                                                            ValaCCodeFile* decl_space);
+void vala_ccode_base_module_generate_method_declaration (ValaCCodeBaseModule* self,
+                                                         ValaMethod* m,
+                                                         ValaCCodeFile* decl_space);
+void vala_ccode_base_module_generate_error_domain_declaration (ValaCCodeBaseModule* self,
+                                                               ValaErrorDomain* edomain,
+                                                               ValaCCodeFile* decl_space);
+void vala_ccode_base_module_add_generic_type_arguments (ValaCCodeBaseModule* self,
+                                                        ValaMap* arg_map,
+                                                        ValaList* type_args,
+                                                        ValaCodeNode* expr,
+                                                        gboolean is_chainup,
+                                                        ValaList* type_parameters);
+ValaCCodeExpression* vala_ccode_base_module_handle_struct_argument (ValaCCodeBaseModule* self,
+                                                                    ValaParameter* param,
+                                                                    ValaExpression* arg,
+                                                                    ValaCCodeExpression* cexpr);
+ValaCCodeExpression* vala_ccode_base_module_try_cast_value_to_type (ValaCCodeBaseModule* self,
+                                                                    ValaCCodeExpression* ccodeexpr,
+                                                                    ValaDataType* from,
+                                                                    ValaDataType* to,
+                                                                    ValaExpression* expr);
+ValaTargetValue* vala_ccode_base_module_try_cast_variant_to_type (ValaCCodeBaseModule* self,
+                                                                  ValaTargetValue* value,
+                                                                  ValaDataType* to,
+                                                                  ValaCodeNode* node);
+ValaCCodeExpression* vala_ccode_base_module_deserialize_expression (ValaCCodeBaseModule* self,
+                                                                    ValaDataType* type,
+                                                                    ValaCCodeExpression* variant_expr,
+                                                                    ValaCCodeExpression* expr,
+                                                                    ValaCCodeExpression* error_expr,
+                                                                    gboolean* may_fail);
+ValaCCodeExpression* vala_ccode_base_module_serialize_expression (ValaCCodeBaseModule* self,
+                                                                  ValaDataType* type,
+                                                                  ValaCCodeExpression* expr);
+ValaCCodeExpression* vala_ccode_base_module_convert_from_generic_pointer (ValaCCodeBaseModule* self,
+                                                                          ValaCCodeExpression* cexpr,
+                                                                          ValaDataType* actual_type);
+ValaCCodeExpression* vala_ccode_base_module_convert_to_generic_pointer (ValaCCodeBaseModule* self,
+                                                                        ValaCCodeExpression* cexpr,
+                                                                        ValaDataType* actual_type);
+ValaTargetValue* vala_ccode_base_module_transform_value (ValaCCodeBaseModule* self,
+                                                         ValaTargetValue* value,
+                                                         ValaDataType* target_type,
+                                                         ValaCodeNode* node);
+ValaCCodeExpression* vala_ccode_base_module_get_implicit_cast_expression (ValaCCodeBaseModule* self,
+                                                                          ValaCCodeExpression* source_cexpr,
+                                                                          ValaDataType* expression_type,
+                                                                          ValaDataType* target_type,
+                                                                          ValaCodeNode* node);
+void vala_ccode_base_module_store_property (ValaCCodeBaseModule* self,
+                                            ValaProperty* prop,
+                                            ValaExpression* instance,
+                                            ValaTargetValue* value);
+gboolean vala_ccode_base_module_add_wrapper (ValaCCodeBaseModule* self,
+                                             const gchar* wrapper_name);
+gboolean vala_ccode_base_module_add_generated_external_symbol (ValaCCodeBaseModule* self,
+                                                               ValaSymbol* external_symbol);
 ValaDataType* vala_ccode_base_module_get_data_type_for_symbol (ValaTypeSymbol* sym);
-ValaCCodeExpression* vala_ccode_base_module_default_value_for_type (ValaCCodeBaseModule* self, ValaDataType* type, gboolean initializer_expression);
-void vala_ccode_base_module_create_type_check_statement (ValaCCodeBaseModule* self, ValaCodeNode* method_node, ValaDataType* ret_type, ValaTypeSymbol* t, gboolean non_null, const gchar* var_name);
-gint vala_ccode_base_module_get_param_pos (ValaCCodeBaseModule* self, gdouble param_pos, gboolean ellipsis);
-ValaCCodeExpression* vala_ccode_base_module_get_ccodenode (ValaCCodeBaseModule* self, ValaExpression* node);
-gboolean vala_ccode_base_module_is_lvalue_access_allowed (ValaCCodeBaseModule* self, ValaDataType* type);
-ValaCCodeAttribute* vala_ccode_base_module_get_ccode_attribute (ValaCodeNode* node);
-gchar* vala_ccode_base_module_get_ccode_name (ValaCodeNode* node);
-gchar* vala_ccode_base_module_get_ccode_const_name (ValaCodeNode* node);
-gchar* vala_ccode_base_module_get_ccode_type_name (ValaInterface* iface);
-gchar* vala_ccode_base_module_get_ccode_lower_case_name (ValaCodeNode* node, const gchar* infix);
-gchar* vala_ccode_base_module_get_ccode_upper_case_name (ValaSymbol* sym, const gchar* infix);
-gchar* vala_ccode_base_module_get_ccode_header_filenames (ValaSymbol* sym);
-gchar* vala_ccode_base_module_get_ccode_prefix (ValaSymbol* sym);
-gchar* vala_ccode_base_module_get_ccode_lower_case_prefix (ValaSymbol* sym);
-gchar* vala_ccode_base_module_get_ccode_lower_case_suffix (ValaSymbol* sym);
-gchar* vala_ccode_base_module_get_ccode_ref_function (ValaTypeSymbol* sym);
-gchar* vala_ccode_base_module_get_quark_name (ValaErrorDomain* edomain);
-gboolean vala_ccode_base_module_is_reference_counting (ValaTypeSymbol* sym);
-gboolean vala_ccode_base_module_get_ccode_ref_function_void (ValaClass* cl);
-gboolean vala_ccode_base_module_get_ccode_free_function_address_of (ValaClass* cl);
-gchar* vala_ccode_base_module_get_ccode_unref_function (ValaObjectTypeSymbol* sym);
-gchar* vala_ccode_base_module_get_ccode_ref_sink_function (ValaObjectTypeSymbol* sym);
-gchar* vala_ccode_base_module_get_ccode_copy_function (ValaTypeSymbol* sym);
-gchar* vala_ccode_base_module_get_ccode_destroy_function (ValaTypeSymbol* sym);
-gchar* vala_ccode_base_module_get_ccode_dup_function (ValaTypeSymbol* sym);
-gchar* vala_ccode_base_module_get_ccode_free_function (ValaTypeSymbol* sym);
-gboolean vala_ccode_base_module_get_ccode_is_gboxed (ValaTypeSymbol* sym);
-gchar* vala_ccode_base_module_get_ccode_type_id (ValaCodeNode* node);
-gchar* vala_ccode_base_module_get_ccode_marshaller_type_name (ValaCodeNode* node);
-gchar* vala_ccode_base_module_get_ccode_get_value_function (ValaCodeNode* sym);
-gchar* vala_ccode_base_module_get_ccode_set_value_function (ValaCodeNode* sym);
-gchar* vala_ccode_base_module_get_ccode_take_value_function (ValaCodeNode* sym);
-gchar* vala_ccode_base_module_get_ccode_param_spec_function (ValaCodeNode* sym);
-gchar* vala_ccode_base_module_get_ccode_type_check_function (ValaTypeSymbol* sym);
-gchar* vala_ccode_base_module_get_ccode_default_value (ValaTypeSymbol* sym);
-gboolean vala_ccode_base_module_get_ccode_has_copy_function (ValaStruct* st);
-gboolean vala_ccode_base_module_get_ccode_has_destroy_function (ValaStruct* st);
-gdouble vala_ccode_base_module_get_ccode_instance_pos (ValaCodeNode* node);
-gboolean vala_ccode_base_module_get_ccode_array_length (ValaCodeNode* node);
-gchar* vala_ccode_base_module_get_ccode_array_length_type (ValaCodeNode* node);
-gboolean vala_ccode_base_module_get_ccode_array_null_terminated (ValaCodeNode* node);
-gchar* vala_ccode_base_module_get_ccode_array_length_name (ValaCodeNode* node);
-gchar* vala_ccode_base_module_get_ccode_array_length_expr (ValaCodeNode* node);
-gdouble vala_ccode_base_module_get_ccode_array_length_pos (ValaCodeNode* node);
-gdouble vala_ccode_base_module_get_ccode_delegate_target_pos (ValaCodeNode* node);
-gdouble vala_ccode_base_module_get_ccode_destroy_notify_pos (ValaCodeNode* node);
-gboolean vala_ccode_base_module_get_ccode_delegate_target (ValaCodeNode* node);
-gchar* vala_ccode_base_module_get_ccode_delegate_target_name (ValaVariable* variable);
-gdouble vala_ccode_base_module_get_ccode_pos (ValaParameter* param);
-gchar* vala_ccode_base_module_get_ccode_type (ValaCodeNode* node);
-gboolean vala_ccode_base_module_get_ccode_simple_generics (ValaMethod* m);
-gchar* vala_ccode_base_module_get_ccode_real_name (ValaSymbol* sym);
-gchar* vala_ccode_base_module_get_ccode_constructv_name (ValaCreationMethod* m);
-gchar* vala_ccode_base_module_get_ccode_vfunc_name (ValaMethod* m);
-gchar* vala_ccode_base_module_get_ccode_finish_name (ValaMethod* m);
-gchar* vala_ccode_base_module_get_ccode_finish_vfunc_name (ValaMethod* m);
-gchar* vala_ccode_base_module_get_ccode_finish_real_name (ValaMethod* m);
-gboolean vala_ccode_base_module_get_ccode_no_accessor_method (ValaProperty* p);
-gboolean vala_ccode_base_module_get_ccode_concrete_accessor (ValaProperty* p);
-gboolean vala_ccode_base_module_get_ccode_has_type_id (ValaTypeSymbol* sym);
-gboolean vala_ccode_base_module_get_ccode_has_new_function (ValaMethod* m);
-gboolean vala_ccode_base_module_get_ccode_has_generic_type_parameter (ValaMethod* m);
-gdouble vala_ccode_base_module_get_ccode_generic_type_pos (ValaMethod* m);
-gchar* vala_ccode_base_module_get_ccode_sentinel (ValaMethod* m);
-gboolean vala_ccode_base_module_get_ccode_notify (ValaProperty* prop);
-gchar* vala_ccode_base_module_get_ccode_nick (ValaProperty* prop);
-gchar* vala_ccode_base_module_get_ccode_blurb (ValaProperty* prop);
-ValaCCodeDeclaratorSuffix* vala_ccode_base_module_get_ccode_declarator_suffix (ValaCCodeBaseModule* self, ValaDataType* type);
-ValaCCodeConstant* vala_ccode_base_module_get_signal_canonical_constant (ValaCCodeBaseModule* self, ValaSignal* sig, const gchar* detail);
+ValaCCodeExpression* vala_ccode_base_module_default_value_for_type (ValaCCodeBaseModule* self,
+                                                                    ValaDataType* type,
+                                                                    gboolean initializer_expression,
+                                                                    gboolean on_error);
+void vala_ccode_base_module_create_type_check_statement (ValaCCodeBaseModule* self,
+                                                         ValaCodeNode* method_node,
+                                                         ValaDataType* ret_type,
+                                                         ValaTypeSymbol* t,
+                                                         gboolean non_null,
+                                                         const gchar* var_name);
+gint vala_ccode_base_module_get_param_pos (ValaCCodeBaseModule* self,
+                                           gdouble param_pos,
+                                           gboolean ellipsis);
+ValaCCodeExpression* vala_ccode_base_module_get_ccodenode (ValaCCodeBaseModule* self,
+                                                           ValaExpression* node);
+gboolean vala_ccode_base_module_is_lvalue_access_allowed (ValaCCodeBaseModule* self,
+                                                          ValaDataType* type);
+ValaCCodeDeclaratorSuffix* vala_ccode_base_module_get_ccode_declarator_suffix (ValaCCodeBaseModule* self,
+                                                                               ValaDataType* type);
+ValaCCodeConstant* vala_ccode_base_module_get_signal_canonical_constant (ValaCCodeBaseModule* self,
+                                                                         ValaSignal* sig,
+                                                                         const gchar* detail);
 ValaCCodeConstant* vala_ccode_base_module_get_enum_value_canonical_cconstant (ValaEnumValue* ev);
-gboolean vala_ccode_base_module_get_signal_has_emitter (ValaCCodeBaseModule* self, ValaSignal* sig);
-ValaCCodeConstant* vala_ccode_base_module_get_property_canonical_cconstant (ValaCCodeBaseModule* self, ValaProperty* prop);
-void vala_ccode_base_module_create_postcondition_statement (ValaCCodeBaseModule* self, ValaExpression* postcondition);
-gboolean vala_ccode_base_module_is_gobject_property (ValaCCodeBaseModule* self, ValaProperty* prop);
+gboolean vala_ccode_base_module_get_signal_has_emitter (ValaCCodeBaseModule* self,
+                                                        ValaSignal* sig);
+ValaCCodeConstant* vala_ccode_base_module_get_property_canonical_cconstant (ValaCCodeBaseModule* self,
+                                                                            ValaProperty* prop);
+void vala_ccode_base_module_create_postcondition_statement (ValaCCodeBaseModule* self,
+                                                            ValaExpression* postcondition);
+gboolean vala_ccode_base_module_is_gobject_property (ValaCCodeBaseModule* self,
+                                                     ValaProperty* prop);
 ValaDataType* vala_ccode_base_module_get_this_type (ValaCCodeBaseModule* self);
-ValaCCodeFunctionCall* vala_ccode_base_module_generate_instance_cast (ValaCCodeBaseModule* self, ValaCCodeExpression* expr, ValaTypeSymbol* type);
-void vala_ccode_base_module_return_default_value (ValaCCodeBaseModule* self, ValaDataType* return_type);
-void vala_ccode_base_module_generate_dynamic_method_wrapper (ValaCCodeBaseModule* self, ValaDynamicMethod* method);
-gboolean vala_ccode_base_module_method_has_wrapper (ValaCCodeBaseModule* self, ValaMethod* method);
-ValaCCodeFunctionCall* vala_ccode_base_module_get_param_spec (ValaCCodeBaseModule* self, ValaProperty* prop);
-ValaCCodeFunctionCall* vala_ccode_base_module_get_signal_creation (ValaCCodeBaseModule* self, ValaSignal* sig, ValaTypeSymbol* type);
-void vala_ccode_base_module_register_dbus_info (ValaCCodeBaseModule* self, ValaCCodeBlock* block, ValaObjectTypeSymbol* bindable);
-gchar* vala_ccode_base_module_get_dynamic_property_getter_cname (ValaCCodeBaseModule* self, ValaDynamicProperty* node);
-gchar* vala_ccode_base_module_get_dynamic_property_setter_cname (ValaCCodeBaseModule* self, ValaDynamicProperty* node);
-gchar* vala_ccode_base_module_get_dynamic_signal_cname (ValaCCodeBaseModule* self, ValaDynamicSignal* node);
-gchar* vala_ccode_base_module_get_dynamic_signal_connect_wrapper_name (ValaCCodeBaseModule* self, ValaDynamicSignal* node);
-gchar* vala_ccode_base_module_get_dynamic_signal_connect_after_wrapper_name (ValaCCodeBaseModule* self, ValaDynamicSignal* node);
-gchar* vala_ccode_base_module_get_dynamic_signal_disconnect_wrapper_name (ValaCCodeBaseModule* self, ValaDynamicSignal* node);
-gchar* vala_ccode_base_module_get_array_length_cname (ValaCCodeBaseModule* self, const gchar* array_cname, gint dim);
-gchar* vala_ccode_base_module_get_parameter_array_length_cname (ValaCCodeBaseModule* self, ValaParameter* param, gint dim);
-ValaCCodeExpression* vala_ccode_base_module_get_array_length_cexpression (ValaCCodeBaseModule* self, ValaExpression* array_expr, gint dim);
-ValaCCodeExpression* vala_ccode_base_module_get_array_length_cvalue (ValaCCodeBaseModule* self, ValaTargetValue* value, gint dim);
-gchar* vala_ccode_base_module_get_array_size_cname (ValaCCodeBaseModule* self, const gchar* array_cname);
-void vala_ccode_base_module_add_simple_check (ValaCCodeBaseModule* self, ValaCodeNode* node, gboolean always_fails);
-gchar* vala_ccode_base_module_generate_ready_function (ValaCCodeBaseModule* self, ValaMethod* m);
-ValaCCodeExpression* vala_ccode_base_module_get_cvalue (ValaCCodeBaseModule* self, ValaExpression* expr);
-ValaCCodeExpression* vala_ccode_base_module_get_cvalue_ (ValaCCodeBaseModule* self, ValaTargetValue* value);
-void vala_ccode_base_module_set_cvalue (ValaCCodeBaseModule* self, ValaExpression* expr, ValaCCodeExpression* cvalue);
-ValaCCodeExpression* vala_ccode_base_module_get_array_size_cvalue (ValaCCodeBaseModule* self, ValaTargetValue* value);
-void vala_ccode_base_module_set_array_size_cvalue (ValaCCodeBaseModule* self, ValaTargetValue* value, ValaCCodeExpression* cvalue);
-ValaCCodeExpression* vala_ccode_base_module_get_delegate_target (ValaCCodeBaseModule* self, ValaExpression* expr);
-void vala_ccode_base_module_set_delegate_target (ValaCCodeBaseModule* self, ValaExpression* expr, ValaCCodeExpression* delegate_target);
-ValaCCodeExpression* vala_ccode_base_module_get_delegate_target_destroy_notify (ValaCCodeBaseModule* self, ValaExpression* expr);
-void vala_ccode_base_module_set_delegate_target_destroy_notify (ValaCCodeBaseModule* self, ValaExpression* expr, ValaCCodeExpression* destroy_notify);
-void vala_ccode_base_module_append_array_length (ValaCCodeBaseModule* self, ValaExpression* expr, ValaCCodeExpression* size);
-ValaList* vala_ccode_base_module_get_array_lengths (ValaCCodeBaseModule* self, ValaExpression* expr);
-gboolean vala_ccode_base_module_get_lvalue (ValaCCodeBaseModule* self, ValaTargetValue* value);
-gboolean vala_ccode_base_module_get_non_null (ValaCCodeBaseModule* self, ValaTargetValue* value);
-gchar* vala_ccode_base_module_get_ctype (ValaCCodeBaseModule* self, ValaTargetValue* value);
-gboolean vala_ccode_base_module_get_array_null_terminated (ValaCCodeBaseModule* self, ValaTargetValue* value);
-ValaCCodeExpression* vala_ccode_base_module_get_array_length_cexpr (ValaCCodeBaseModule* self, ValaTargetValue* value);
+ValaCCodeFunctionCall* vala_ccode_base_module_generate_instance_cast (ValaCCodeBaseModule* self,
+                                                                      ValaCCodeExpression* expr,
+                                                                      ValaTypeSymbol* type);
+void vala_ccode_base_module_return_default_value (ValaCCodeBaseModule* self,
+                                                  ValaDataType* return_type,
+                                                  gboolean on_error);
+void vala_ccode_base_module_generate_dynamic_method_wrapper (ValaCCodeBaseModule* self,
+                                                             ValaDynamicMethod* method);
+gboolean vala_ccode_base_module_method_has_wrapper (ValaCCodeBaseModule* self,
+                                                    ValaMethod* method);
+ValaCCodeExpression* vala_ccode_base_module_get_param_spec_cexpression (ValaCCodeBaseModule* self,
+                                                                        ValaProperty* prop);
+ValaCCodeExpression* vala_ccode_base_module_get_param_spec (ValaCCodeBaseModule* self,
+                                                            ValaProperty* prop);
+ValaCCodeExpression* vala_ccode_base_module_get_signal_creation (ValaCCodeBaseModule* self,
+                                                                 ValaSignal* sig,
+                                                                 ValaTypeSymbol* type);
+void vala_ccode_base_module_register_dbus_info (ValaCCodeBaseModule* self,
+                                                ValaCCodeBlock* block,
+                                                ValaObjectTypeSymbol* bindable);
+gchar* vala_ccode_base_module_get_dynamic_property_getter_cname (ValaCCodeBaseModule* self,
+                                                                 ValaDynamicProperty* node);
+gchar* vala_ccode_base_module_get_dynamic_property_setter_cname (ValaCCodeBaseModule* self,
+                                                                 ValaDynamicProperty* node);
+gchar* vala_ccode_base_module_get_dynamic_signal_cname (ValaCCodeBaseModule* self,
+                                                        ValaDynamicSignal* node);
+gchar* vala_ccode_base_module_get_dynamic_signal_connect_wrapper_name (ValaCCodeBaseModule* self,
+                                                                       ValaDynamicSignal* node);
+gchar* vala_ccode_base_module_get_dynamic_signal_connect_after_wrapper_name (ValaCCodeBaseModule* self,
+                                                                             ValaDynamicSignal* node);
+gchar* vala_ccode_base_module_get_dynamic_signal_disconnect_wrapper_name (ValaCCodeBaseModule* self,
+                                                                          ValaDynamicSignal* node);
+gchar* vala_ccode_base_module_get_array_length_cname (ValaCCodeBaseModule* self,
+                                                      const gchar* array_cname,
+                                                      gint dim);
+gchar* vala_ccode_base_module_get_parameter_array_length_cname (ValaCCodeBaseModule* self,
+                                                                ValaParameter* param,
+                                                                gint dim);
+ValaCCodeExpression* vala_ccode_base_module_get_array_length_cexpression (ValaCCodeBaseModule* self,
+                                                                          ValaExpression* array_expr,
+                                                                          gint dim);
+ValaCCodeExpression* vala_ccode_base_module_get_array_length_cvalue (ValaCCodeBaseModule* self,
+                                                                     ValaTargetValue* value,
+                                                                     gint dim);
+gchar* vala_ccode_base_module_get_array_size_cname (ValaCCodeBaseModule* self,
+                                                    const gchar* array_cname);
+void vala_ccode_base_module_add_simple_check (ValaCCodeBaseModule* self,
+                                              ValaCodeNode* node,
+                                              gboolean always_fails);
+gchar* vala_ccode_base_module_generate_ready_function (ValaCCodeBaseModule* self,
+                                                       ValaMethod* m);
+ValaCCodeExpression* vala_ccode_base_module_get_cvalue (ValaCCodeBaseModule* self,
+                                                        ValaExpression* expr);
+ValaCCodeExpression* vala_ccode_base_module_get_cvalue_ (ValaCCodeBaseModule* self,
+                                                         ValaTargetValue* value);
+void vala_ccode_base_module_set_cvalue (ValaCCodeBaseModule* self,
+                                        ValaExpression* expr,
+                                        ValaCCodeExpression* cvalue);
+ValaCCodeExpression* vala_ccode_base_module_get_array_size_cvalue (ValaCCodeBaseModule* self,
+                                                                   ValaTargetValue* value);
+void vala_ccode_base_module_set_array_size_cvalue (ValaCCodeBaseModule* self,
+                                                   ValaTargetValue* value,
+                                                   ValaCCodeExpression* cvalue);
+ValaCCodeExpression* vala_ccode_base_module_get_delegate_target (ValaCCodeBaseModule* self,
+                                                                 ValaExpression* expr);
+void vala_ccode_base_module_set_delegate_target (ValaCCodeBaseModule* self,
+                                                 ValaExpression* expr,
+                                                 ValaCCodeExpression* delegate_target);
+ValaCCodeExpression* vala_ccode_base_module_get_delegate_target_destroy_notify (ValaCCodeBaseModule* self,
+                                                                                ValaExpression* expr);
+void vala_ccode_base_module_set_delegate_target_destroy_notify (ValaCCodeBaseModule* self,
+                                                                ValaExpression* expr,
+                                                                ValaCCodeExpression* destroy_notify);
+void vala_ccode_base_module_append_array_length (ValaCCodeBaseModule* self,
+                                                 ValaExpression* expr,
+                                                 ValaCCodeExpression* size);
+ValaList* vala_ccode_base_module_get_array_lengths (ValaCCodeBaseModule* self,
+                                                    ValaExpression* expr);
+gboolean vala_ccode_base_module_get_lvalue (ValaCCodeBaseModule* self,
+                                            ValaTargetValue* value);
+gboolean vala_ccode_base_module_get_non_null (ValaCCodeBaseModule* self,
+                                              ValaTargetValue* value);
+gchar* vala_ccode_base_module_get_ctype (ValaCCodeBaseModule* self,
+                                         ValaTargetValue* value);
+gboolean vala_ccode_base_module_get_array_null_terminated (ValaCCodeBaseModule* self,
+                                                           ValaTargetValue* value);
+ValaCCodeExpression* vala_ccode_base_module_get_array_length_cexpr (ValaCCodeBaseModule* self,
+                                                                    ValaTargetValue* value);
 ValaCodeContext* vala_ccode_base_module_get_context (ValaCCodeBaseModule* self);
-void vala_ccode_base_module_set_context (ValaCCodeBaseModule* self, ValaCodeContext* value);
+void vala_ccode_base_module_set_context (ValaCCodeBaseModule* self,
+                                         ValaCodeContext* value);
 ValaSymbol* vala_ccode_base_module_get_current_symbol (ValaCCodeBaseModule* self);
 ValaTryStatement* vala_ccode_base_module_get_current_try (ValaCCodeBaseModule* self);
-void vala_ccode_base_module_set_current_try (ValaCCodeBaseModule* self, ValaTryStatement* value);
+void vala_ccode_base_module_set_current_try (ValaCCodeBaseModule* self,
+                                             ValaTryStatement* value);
 ValaCatchClause* vala_ccode_base_module_get_current_catch (ValaCCodeBaseModule* self);
-void vala_ccode_base_module_set_current_catch (ValaCCodeBaseModule* self, ValaCatchClause* value);
+void vala_ccode_base_module_set_current_catch (ValaCCodeBaseModule* self,
+                                               ValaCatchClause* value);
 ValaTypeSymbol* vala_ccode_base_module_get_current_type_symbol (ValaCCodeBaseModule* self);
 ValaClass* vala_ccode_base_module_get_current_class (ValaCCodeBaseModule* self);
 ValaMethod* vala_ccode_base_module_get_current_method (ValaCCodeBaseModule* self);
@@ -1100,68 +1316,108 @@ ValaBlock* vala_ccode_base_module_get_current_closure_block (ValaCCodeBaseModule
 ValaCCodeFunction* vala_ccode_base_module_get_ccode (ValaCCodeBaseModule* self);
 ValaArrayList* vala_ccode_base_module_get_temp_ref_values (ValaCCodeBaseModule* self);
 gint vala_ccode_base_module_get_next_temp_var_id (ValaCCodeBaseModule* self);
-void vala_ccode_base_module_set_next_temp_var_id (ValaCCodeBaseModule* self, gint value);
+void vala_ccode_base_module_set_next_temp_var_id (ValaCCodeBaseModule* self,
+                                                  gint value);
 gboolean vala_ccode_base_module_get_in_creation_method (ValaCCodeBaseModule* self);
 gboolean vala_ccode_base_module_get_current_method_inner_error (ValaCCodeBaseModule* self);
-void vala_ccode_base_module_set_current_method_inner_error (ValaCCodeBaseModule* self, gboolean value);
+void vala_ccode_base_module_set_current_method_inner_error (ValaCCodeBaseModule* self,
+                                                            gboolean value);
 gboolean vala_ccode_base_module_get_current_method_return (ValaCCodeBaseModule* self);
-void vala_ccode_base_module_set_current_method_return (ValaCCodeBaseModule* self, gboolean value);
+void vala_ccode_base_module_set_current_method_return (ValaCCodeBaseModule* self,
+                                                       gboolean value);
 ValaMap* vala_ccode_base_module_get_variable_name_map (ValaCCodeBaseModule* self);
 ValaCCodeBaseModuleEmitContext* vala_ccode_base_module_emit_context_new (ValaSymbol* symbol);
-ValaCCodeBaseModuleEmitContext* vala_ccode_base_module_emit_context_construct (GType object_type, ValaSymbol* symbol);
-void vala_ccode_base_module_emit_context_push_symbol (ValaCCodeBaseModuleEmitContext* self, ValaSymbol* symbol);
+ValaCCodeBaseModuleEmitContext* vala_ccode_base_module_emit_context_construct (GType object_type,
+                                                                               ValaSymbol* symbol);
+void vala_ccode_base_module_emit_context_push_symbol (ValaCCodeBaseModuleEmitContext* self,
+                                                      ValaSymbol* symbol);
 void vala_ccode_base_module_emit_context_pop_symbol (ValaCCodeBaseModuleEmitContext* self);
-GType vala_glib_value_get_type (void) G_GNUC_CONST;
-ValaGLibValue* vala_glib_value_new (ValaDataType* value_type, ValaCCodeExpression* cvalue, gboolean lvalue);
-ValaGLibValue* vala_glib_value_construct (GType object_type, ValaDataType* value_type, ValaCCodeExpression* cvalue, gboolean lvalue);
-void vala_glib_value_append_array_length_cvalue (ValaGLibValue* self, ValaCCodeExpression* length_cvalue);
-ValaGLibValue* vala_glib_value_copy (ValaGLibValue* self);
 gpointer vala_ccode_compiler_ref (gpointer instance);
 void vala_ccode_compiler_unref (gpointer instance);
-GParamSpec* vala_param_spec_ccode_compiler (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_ccode_compiler (GValue* value, gpointer v_object);
-void vala_value_take_ccode_compiler (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_ccode_compiler (const gchar* name,
+                                            const gchar* nick,
+                                            const gchar* blurb,
+                                            GType object_type,
+                                            GParamFlags flags);
+void vala_value_set_ccode_compiler (GValue* value,
+                                    gpointer v_object);
+void vala_value_take_ccode_compiler (GValue* value,
+                                     gpointer v_object);
 gpointer vala_value_get_ccode_compiler (const GValue* value);
 GType vala_ccode_compiler_get_type (void) G_GNUC_CONST;
 ValaCCodeCompiler* vala_ccode_compiler_new (void);
 ValaCCodeCompiler* vala_ccode_compiler_construct (GType object_type);
-void vala_ccode_compiler_compile (ValaCCodeCompiler* self, ValaCodeContext* context, const gchar* cc_command, gchar** cc_options, int cc_options_length1, const gchar* pkg_config_command);
+void vala_ccode_compiler_compile (ValaCCodeCompiler* self,
+                                  ValaCodeContext* context,
+                                  const gchar* cc_command,
+                                  gchar** cc_options,
+                                  int cc_options_length1);
 ValaCCodeControlFlowModule* vala_ccode_control_flow_module_construct (GType object_type);
 GType vala_ccode_delegate_module_get_type (void) G_GNUC_CONST;
-gchar* vala_ccode_delegate_module_generate_delegate_wrapper (ValaCCodeDelegateModule* self, ValaMethod* m, ValaDelegateType* dt, ValaCodeNode* node);
+gchar* vala_ccode_delegate_module_generate_delegate_wrapper (ValaCCodeDelegateModule* self,
+                                                             ValaMethod* m,
+                                                             ValaDelegateType* dt,
+                                                             ValaCodeNode* node);
 ValaCCodeDelegateModule* vala_ccode_delegate_module_new (void);
 ValaCCodeDelegateModule* vala_ccode_delegate_module_construct (GType object_type);
 ValaCCodeMemberAccessModule* vala_ccode_member_access_module_construct (GType object_type);
 ValaCCodeMethodCallModule* vala_ccode_method_call_module_new (void);
 ValaCCodeMethodCallModule* vala_ccode_method_call_module_construct (GType object_type);
-void vala_ccode_method_module_generate_method_result_declaration (ValaCCodeMethodModule* self, ValaMethod* m, ValaCCodeFile* decl_space, ValaCCodeFunction* cfunc, ValaMap* cparam_map, ValaMap* carg_map);
+void vala_ccode_method_module_generate_method_result_declaration (ValaCCodeMethodModule* self,
+                                                                  ValaMethod* m,
+                                                                  ValaCCodeFile* decl_space,
+                                                                  ValaCCodeFunction* cfunc,
+                                                                  ValaMap* cparam_map,
+                                                                  ValaMap* carg_map);
 void vala_ccode_method_module_complete_async (ValaCCodeMethodModule* self);
-ValaCCodeParameter* vala_ccode_method_module_generate_parameter (ValaCCodeMethodModule* self, ValaParameter* param, ValaCCodeFile* decl_space, ValaMap* cparam_map, ValaMap* carg_map);
-void vala_ccode_method_module_generate_vfunc (ValaCCodeMethodModule* self, ValaMethod* m, ValaDataType* return_type, ValaMap* cparam_map, ValaMap* carg_map, const gchar* suffix, gint direction);
+ValaCCodeParameter* vala_ccode_method_module_generate_parameter (ValaCCodeMethodModule* self,
+                                                                 ValaParameter* param,
+                                                                 ValaCCodeFile* decl_space,
+                                                                 ValaMap* cparam_map,
+                                                                 ValaMap* carg_map);
+void vala_ccode_method_module_generate_vfunc (ValaCCodeMethodModule* self,
+                                              ValaMethod* m,
+                                              ValaDataType* return_type,
+                                              ValaMap* cparam_map,
+                                              ValaMap* carg_map,
+                                              const gchar* suffix,
+                                              gint direction);
 ValaCCodeMethodModule* vala_ccode_method_module_construct (GType object_type);
 ValaCCodeStructModule* vala_ccode_struct_module_construct (GType object_type);
 gpointer vala_typeregister_function_ref (gpointer instance);
 void vala_typeregister_function_unref (gpointer instance);
-GParamSpec* vala_param_spec_typeregister_function (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_typeregister_function (GValue* value, gpointer v_object);
-void vala_value_take_typeregister_function (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_typeregister_function (const gchar* name,
+                                                   const gchar* nick,
+                                                   const gchar* blurb,
+                                                   GType object_type,
+                                                   GParamFlags flags);
+void vala_value_set_typeregister_function (GValue* value,
+                                           gpointer v_object);
+void vala_value_take_typeregister_function (GValue* value,
+                                            gpointer v_object);
 gpointer vala_value_get_typeregister_function (const GValue* value);
 GType vala_typeregister_function_get_type (void) G_GNUC_CONST;
 GType vala_class_register_function_get_type (void) G_GNUC_CONST;
-ValaClassRegisterFunction* vala_class_register_function_new (ValaClass* cl, ValaCodeContext* context);
-ValaClassRegisterFunction* vala_class_register_function_construct (GType object_type, ValaClass* cl, ValaCodeContext* context);
+ValaClassRegisterFunction* vala_class_register_function_new (ValaClass* cl);
+ValaClassRegisterFunction* vala_class_register_function_construct (GType object_type,
+                                                                   ValaClass* cl);
 ValaClass* vala_class_register_function_get_class_reference (ValaClassRegisterFunction* self);
-void vala_class_register_function_set_class_reference (ValaClassRegisterFunction* self, ValaClass* value);
+void vala_class_register_function_set_class_reference (ValaClassRegisterFunction* self,
+                                                       ValaClass* value);
 GType vala_ctype_get_type (void) G_GNUC_CONST;
 ValaCType* vala_ctype_new (const gchar* ctype_name);
-ValaCType* vala_ctype_construct (GType object_type, const gchar* ctype_name);
+ValaCType* vala_ctype_construct (GType object_type,
+                                 const gchar* ctype_name);
 const gchar* vala_ctype_get_ctype_name (ValaCType* self);
-void vala_ctype_set_ctype_name (ValaCType* self, const gchar* value);
+void vala_ctype_set_ctype_name (ValaCType* self,
+                                const gchar* value);
 GType vala_enum_register_function_get_type (void) G_GNUC_CONST;
-ValaEnumRegisterFunction* vala_enum_register_function_new (ValaEnum* en, ValaCodeContext* context);
-ValaEnumRegisterFunction* vala_enum_register_function_construct (GType object_type, ValaEnum* en, ValaCodeContext* context);
+ValaEnumRegisterFunction* vala_enum_register_function_new (ValaEnum* en);
+ValaEnumRegisterFunction* vala_enum_register_function_construct (GType object_type,
+                                                                 ValaEnum* en);
 ValaEnum* vala_enum_register_function_get_enum_reference (ValaEnumRegisterFunction* self);
-void vala_enum_register_function_set_enum_reference (ValaEnumRegisterFunction* self, ValaEnum* value);
+void vala_enum_register_function_set_enum_reference (ValaEnumRegisterFunction* self,
+                                                     ValaEnum* value);
 GType vala_gerror_module_get_type (void) G_GNUC_CONST;
 GType vala_gtype_module_get_type (void) G_GNUC_CONST;
 GType vala_gobject_module_get_type (void) G_GNUC_CONST;
@@ -1174,7 +1430,8 @@ ValaGAsyncModule* vala_gasync_module_construct (GType object_type);
 GType vala_gvariant_module_get_type (void) G_GNUC_CONST;
 GType vala_gd_bus_module_get_type (void) G_GNUC_CONST;
 GType vala_gd_bus_client_module_get_type (void) G_GNUC_CONST;
-ValaCCodeConstant* vala_gd_bus_client_module_get_dbus_timeout (ValaGDBusClientModule* self, ValaSymbol* symbol);
+ValaCCodeConstant* vala_gd_bus_client_module_get_dbus_timeout (ValaGDBusClientModule* self,
+                                                               ValaSymbol* symbol);
 ValaGDBusClientModule* vala_gd_bus_client_module_new (void);
 ValaGDBusClientModule* vala_gd_bus_client_module_construct (GType object_type);
 gchar* vala_gd_bus_module_get_dbus_name (ValaTypeSymbol* symbol);
@@ -1183,38 +1440,76 @@ gint vala_gd_bus_module_get_dbus_timeout_for_member (ValaSymbol* symbol);
 gboolean vala_gd_bus_module_is_dbus_visible (ValaCodeNode* node);
 gboolean vala_gd_bus_module_is_dbus_no_reply (ValaMethod* m);
 gchar* vala_gd_bus_module_dbus_result_name (ValaMethod* m);
-gboolean vala_gd_bus_module_dbus_method_uses_file_descriptor (ValaGDBusModule* self, ValaMethod* method);
-void vala_gd_bus_module_send_dbus_value (ValaGDBusModule* self, ValaDataType* type, ValaCCodeExpression* builder_expr, ValaCCodeExpression* expr, ValaSymbol* sym);
-void vala_gd_bus_module_receive_dbus_value (ValaGDBusModule* self, ValaDataType* type, ValaCCodeExpression* message_expr, ValaCCodeExpression* iter_expr, ValaCCodeExpression* target_expr, ValaSymbol* sym, ValaCCodeExpression* error_expr, gboolean* may_fail);
-ValaCCodeExpression* vala_gd_bus_module_get_interface_info (ValaGDBusModule* self, ValaObjectTypeSymbol* sym);
+gboolean vala_gd_bus_module_dbus_method_uses_file_descriptor (ValaGDBusModule* self,
+                                                              ValaMethod* method);
+void vala_gd_bus_module_send_dbus_value (ValaGDBusModule* self,
+                                         ValaDataType* type,
+                                         ValaCCodeExpression* builder_expr,
+                                         ValaCCodeExpression* expr,
+                                         ValaSymbol* sym);
+void vala_gd_bus_module_receive_dbus_value (ValaGDBusModule* self,
+                                            ValaDataType* type,
+                                            ValaCCodeExpression* message_expr,
+                                            ValaCCodeExpression* iter_expr,
+                                            ValaCCodeExpression* target_expr,
+                                            ValaSymbol* sym,
+                                            ValaCCodeExpression* error_expr,
+                                            gboolean* may_fail);
+ValaCCodeExpression* vala_gd_bus_module_get_interface_info (ValaGDBusModule* self,
+                                                            ValaObjectTypeSymbol* sym);
 ValaGDBusModule* vala_gd_bus_module_new (void);
 ValaGDBusModule* vala_gd_bus_module_construct (GType object_type);
 GType vala_gd_bus_server_module_get_type (void) G_GNUC_CONST;
 ValaGDBusServerModule* vala_gd_bus_server_module_new (void);
 ValaGDBusServerModule* vala_gd_bus_server_module_construct (GType object_type);
-void vala_gerror_module_return_with_exception (ValaGErrorModule* self, ValaCCodeExpression* error_expr);
+void vala_gerror_module_return_with_exception (ValaGErrorModule* self,
+                                               ValaCCodeExpression* error_expr);
 ValaGErrorModule* vala_gerror_module_new (void);
 ValaGErrorModule* vala_gerror_module_construct (GType object_type);
 GType vala_gir_writer_get_type (void) G_GNUC_CONST;
-gchar* vala_gir_writer_get_interface_comment (ValaGIRWriter* self, ValaInterface* iface);
-gchar* vala_gir_writer_get_struct_comment (ValaGIRWriter* self, ValaStruct* st);
-gchar* vala_gir_writer_get_enum_comment (ValaGIRWriter* self, ValaEnum* en);
-gchar* vala_gir_writer_get_class_comment (ValaGIRWriter* self, ValaClass* c);
-gchar* vala_gir_writer_get_error_code_comment (ValaGIRWriter* self, ValaErrorCode* ecode);
-gchar* vala_gir_writer_get_enum_value_comment (ValaGIRWriter* self, ValaEnumValue* ev);
-gchar* vala_gir_writer_get_constant_comment (ValaGIRWriter* self, ValaConstant* c);
-gchar* vala_gir_writer_get_error_domain_comment (ValaGIRWriter* self, ValaErrorDomain* edomain);
-gchar* vala_gir_writer_get_field_comment (ValaGIRWriter* self, ValaField* f);
-gchar* vala_gir_writer_get_delegate_comment (ValaGIRWriter* self, ValaDelegate* cb);
-gchar* vala_gir_writer_get_method_comment (ValaGIRWriter* self, ValaMethod* m);
-gchar* vala_gir_writer_get_property_comment (ValaGIRWriter* self, ValaProperty* prop);
-gchar* vala_gir_writer_get_delegate_return_comment (ValaGIRWriter* self, ValaDelegate* cb);
-gchar* vala_gir_writer_get_signal_return_comment (ValaGIRWriter* self, ValaSignal* sig);
-gchar* vala_gir_writer_get_method_return_comment (ValaGIRWriter* self, ValaMethod* m);
-gchar* vala_gir_writer_get_signal_comment (ValaGIRWriter* self, ValaSignal* sig);
-gchar* vala_gir_writer_get_parameter_comment (ValaGIRWriter* self, ValaParameter* param);
+gchar* vala_gir_writer_get_interface_comment (ValaGIRWriter* self,
+                                              ValaInterface* iface);
+gchar* vala_gir_writer_get_struct_comment (ValaGIRWriter* self,
+                                           ValaStruct* st);
+gchar* vala_gir_writer_get_enum_comment (ValaGIRWriter* self,
+                                         ValaEnum* en);
+gchar* vala_gir_writer_get_class_comment (ValaGIRWriter* self,
+                                          ValaClass* c);
+gchar* vala_gir_writer_get_error_code_comment (ValaGIRWriter* self,
+                                               ValaErrorCode* ecode);
+gchar* vala_gir_writer_get_enum_value_comment (ValaGIRWriter* self,
+                                               ValaEnumValue* ev);
+gchar* vala_gir_writer_get_constant_comment (ValaGIRWriter* self,
+                                             ValaConstant* c);
+gchar* vala_gir_writer_get_error_domain_comment (ValaGIRWriter* self,
+                                                 ValaErrorDomain* edomain);
+gchar* vala_gir_writer_get_field_comment (ValaGIRWriter* self,
+                                          ValaField* f);
+gchar* vala_gir_writer_get_delegate_comment (ValaGIRWriter* self,
+                                             ValaDelegate* cb);
+gchar* vala_gir_writer_get_method_comment (ValaGIRWriter* self,
+                                           ValaMethod* m);
+gchar* vala_gir_writer_get_property_comment (ValaGIRWriter* self,
+                                             ValaProperty* prop);
+gchar* vala_gir_writer_get_delegate_return_comment (ValaGIRWriter* self,
+                                                    ValaDelegate* cb);
+gchar* vala_gir_writer_get_signal_return_comment (ValaGIRWriter* self,
+                                                  ValaSignal* sig);
+gchar* vala_gir_writer_get_method_return_comment (ValaGIRWriter* self,
+                                                  ValaMethod* m);
+gchar* vala_gir_writer_get_signal_comment (ValaGIRWriter* self,
+                                           ValaSignal* sig);
+gchar* vala_gir_writer_get_parameter_comment (ValaGIRWriter* self,
+                                              ValaParameter* param);
 void vala_gir_writer_write_includes (ValaGIRWriter* self);
-void vala_gir_writer_write_file (ValaGIRWriter* self, ValaCodeContext* context, const gchar* directory, const gchar* gir_filename, const gchar* gir_namespace, const gchar* gir_version, const gchar* package, const gchar* gir_shared_library);
+void vala_gir_writer_write_file (ValaGIRWriter* self,
+                                 ValaCodeContext* context,
+                                 const gchar* directory,
+                                 const gchar* gir_filename,
+                                 const gchar* gir_namespace,
+                                 const gchar* gir_version,
+                                 const gchar* package,
+                                 const gchar* gir_shared_library);
 ValaGIRWriter* vala_gir_writer_new (void);
 ValaGIRWriter* vala_gir_writer_construct (GType object_type);
 ValaGObjectModule* vala_gobject_module_new (void);
@@ -1223,32 +1518,59 @@ ValaGtkModule* vala_gtk_module_new (void);
 ValaGtkModule* vala_gtk_module_construct (GType object_type);
 ValaGSignalModule* vala_gsignal_module_new (void);
 ValaGSignalModule* vala_gsignal_module_construct (GType object_type);
-void vala_gtype_module_generate_virtual_method_declaration (ValaGTypeModule* self, ValaMethod* m, ValaCCodeFile* decl_space, ValaCCodeStruct* type_struct);
-void vala_gtype_module_generate_class_init (ValaGTypeModule* self, ValaClass* cl);
-void vala_gtype_module_end_instance_init (ValaGTypeModule* self, ValaClass* cl);
+void vala_gtype_module_generate_virtual_method_declaration (ValaGTypeModule* self,
+                                                            ValaMethod* m,
+                                                            ValaCCodeFile* decl_space,
+                                                            ValaCCodeStruct* type_struct);
+void vala_gtype_module_generate_class_init (ValaGTypeModule* self,
+                                            ValaClass* cl);
+void vala_gtype_module_end_instance_init (ValaGTypeModule* self,
+                                          ValaClass* cl);
 ValaGTypeModule* vala_gtype_module_new (void);
 ValaGTypeModule* vala_gtype_module_construct (GType object_type);
 gchar* vala_gvariant_module_get_dbus_signature (ValaSymbol* symbol);
-gchar* vala_gvariant_module_get_type_signature (ValaDataType* datatype, ValaSymbol* symbol);
-ValaCCodeFunction* vala_gvariant_module_generate_enum_from_string_function_declaration (ValaGVariantModule* self, ValaEnum* en);
-ValaCCodeFunction* vala_gvariant_module_generate_enum_from_string_function (ValaGVariantModule* self, ValaEnum* en);
-void vala_gvariant_module_read_expression (ValaGVariantModule* self, ValaDataType* type, ValaCCodeExpression* iter_expr, ValaCCodeExpression* target_expr, ValaSymbol* sym, ValaCCodeExpression* error_expr, gboolean* may_fail);
-ValaCCodeFunction* vala_gvariant_module_generate_enum_to_string_function_declaration (ValaGVariantModule* self, ValaEnum* en);
-ValaCCodeFunction* vala_gvariant_module_generate_enum_to_string_function (ValaGVariantModule* self, ValaEnum* en);
-void vala_gvariant_module_write_expression (ValaGVariantModule* self, ValaDataType* type, ValaCCodeExpression* builder_expr, ValaCCodeExpression* expr, ValaSymbol* sym);
+gchar* vala_gvariant_module_get_type_signature (ValaDataType* datatype,
+                                                ValaSymbol* symbol);
+ValaCCodeFunction* vala_gvariant_module_generate_enum_from_string_function_declaration (ValaGVariantModule* self,
+                                                                                        ValaEnum* en);
+ValaCCodeFunction* vala_gvariant_module_generate_enum_from_string_function (ValaGVariantModule* self,
+                                                                            ValaEnum* en);
+void vala_gvariant_module_read_expression (ValaGVariantModule* self,
+                                           ValaDataType* type,
+                                           ValaCCodeExpression* iter_expr,
+                                           ValaCCodeExpression* target_expr,
+                                           ValaSymbol* sym,
+                                           ValaCCodeExpression* error_expr,
+                                           gboolean* may_fail);
+ValaCCodeFunction* vala_gvariant_module_generate_enum_to_string_function_declaration (ValaGVariantModule* self,
+                                                                                      ValaEnum* en);
+ValaCCodeFunction* vala_gvariant_module_generate_enum_to_string_function (ValaGVariantModule* self,
+                                                                          ValaEnum* en);
+void vala_gvariant_module_write_expression (ValaGVariantModule* self,
+                                            ValaDataType* type,
+                                            ValaCCodeExpression* builder_expr,
+                                            ValaCCodeExpression* expr,
+                                            ValaSymbol* sym);
 ValaGVariantModule* vala_gvariant_module_new (void);
 ValaGVariantModule* vala_gvariant_module_construct (GType object_type);
 GType vala_interface_register_function_get_type (void) G_GNUC_CONST;
-ValaInterfaceRegisterFunction* vala_interface_register_function_new (ValaInterface* iface, ValaCodeContext* context);
-ValaInterfaceRegisterFunction* vala_interface_register_function_construct (GType object_type, ValaInterface* iface, ValaCodeContext* context);
+ValaInterfaceRegisterFunction* vala_interface_register_function_new (ValaInterface* iface);
+ValaInterfaceRegisterFunction* vala_interface_register_function_construct (GType object_type,
+                                                                           ValaInterface* iface);
 ValaInterface* vala_interface_register_function_get_interface_reference (ValaInterfaceRegisterFunction* self);
-void vala_interface_register_function_set_interface_reference (ValaInterfaceRegisterFunction* self, ValaInterface* value);
+void vala_interface_register_function_set_interface_reference (ValaInterfaceRegisterFunction* self,
+                                                               ValaInterface* value);
 GType vala_struct_register_function_get_type (void) G_GNUC_CONST;
-ValaStructRegisterFunction* vala_struct_register_function_new (ValaStruct* st, ValaCodeContext* context);
-ValaStructRegisterFunction* vala_struct_register_function_construct (GType object_type, ValaStruct* st, ValaCodeContext* context);
+ValaStructRegisterFunction* vala_struct_register_function_new (ValaStruct* st);
+ValaStructRegisterFunction* vala_struct_register_function_construct (GType object_type,
+                                                                     ValaStruct* st);
 ValaStruct* vala_struct_register_function_get_struct_reference (ValaStructRegisterFunction* self);
-void vala_struct_register_function_set_struct_reference (ValaStructRegisterFunction* self, ValaStruct* value);
-void vala_typeregister_function_init_from_type (ValaTypeRegisterFunction* self, gboolean plugin, gboolean declaration_only);
+void vala_struct_register_function_set_struct_reference (ValaStructRegisterFunction* self,
+                                                         ValaStruct* value);
+void vala_typeregister_function_init_from_type (ValaTypeRegisterFunction* self,
+                                                ValaCodeContext* context,
+                                                gboolean plugin,
+                                                gboolean declaration_only);
 ValaTypeSymbol* vala_typeregister_function_get_type_declaration (ValaTypeRegisterFunction* self);
 gchar* vala_typeregister_function_get_type_struct_name (ValaTypeRegisterFunction* self);
 gchar* vala_typeregister_function_get_base_init_func_name (ValaTypeRegisterFunction* self);
@@ -1266,14 +1588,15 @@ gchar* vala_typeregister_function_get_gtype_value_table_lcopy_value_function_nam
 gchar* vala_typeregister_function_get_gtype_value_table_collect_value_function_name (ValaTypeRegisterFunction* self);
 gchar* vala_typeregister_function_get_type_flags (ValaTypeRegisterFunction* self);
 ValaCCodeFragment* vala_typeregister_function_get_type_interface_init_declaration (ValaTypeRegisterFunction* self);
-void vala_typeregister_function_get_type_interface_init_statements (ValaTypeRegisterFunction* self, ValaCCodeBlock* block, gboolean plugin);
+void vala_typeregister_function_get_type_interface_init_statements (ValaTypeRegisterFunction* self,
+                                                                    ValaCodeContext* context,
+                                                                    ValaCCodeBlock* block,
+                                                                    gboolean plugin);
 ValaCCodeFragment* vala_typeregister_function_get_source_declaration (ValaTypeRegisterFunction* self);
 ValaCCodeFragment* vala_typeregister_function_get_declaration (ValaTypeRegisterFunction* self);
 ValaCCodeFragment* vala_typeregister_function_get_definition (ValaTypeRegisterFunction* self);
 ValaSymbolAccessibility vala_typeregister_function_get_accessibility (ValaTypeRegisterFunction* self);
 ValaTypeRegisterFunction* vala_typeregister_function_construct (GType object_type);
-ValaCodeContext* vala_typeregister_function_get_context (ValaTypeRegisterFunction* self);
-void vala_typeregister_function_set_context (ValaTypeRegisterFunction* self, ValaCodeContext* value);
 
 
 G_END_DECLS

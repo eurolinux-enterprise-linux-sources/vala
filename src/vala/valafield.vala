@@ -85,14 +85,6 @@ public class Vala.Field : Variable, Lockable {
 		}
 	}
 
-	public string? get_ctype () {
-		return get_attribute_string ("CCode", "type");
-	}
-
-	public void set_ctype (string ctype) {
-		set_attribute_string ("CCode", "type", ctype);
-	}
-
 	public override bool check (CodeContext context) {
 		if (checked) {
 			return !error;
@@ -157,6 +149,14 @@ public class Vala.Field : Variable, Lockable {
 				error = true;
 				Report.error (source_reference, "Non-constant field initializers not supported in this context");
 				return false;
+			}
+
+			if (parent_symbol is Namespace && initializer.is_constant () && initializer.is_non_null ()) {
+				if (variable_type.is_disposable () && variable_type.value_owned) {
+					error = true;
+					Report.error (source_reference, "Owned namespace fields can only be initialized in a function or method");
+					return false;
+				}
 			}
 
 			if (binding == MemberBinding.STATIC && parent_symbol is Class && ((Class)parent_symbol).is_compact && !initializer.is_constant ()) {

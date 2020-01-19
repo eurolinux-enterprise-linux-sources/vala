@@ -1,19 +1,21 @@
-%global api_ver 0.34
+%global api_ver 0.40
 %global priority 90
 
 Name:           vala
-Version:        0.34.6
+Version:        0.40.8
 Release:        1%{?dist}
 Summary:        A modern programming language for GNOME
 
 # Most files are LGPLv2.1+, curses.vapi is 2-clause BSD
 License:        LGPLv2+ and BSD
 URL:            https://wiki.gnome.org/Projects/Vala
-Source0:        https://download.gnome.org/sources/vala/0.34/vala-%{version}.tar.xz
+Source0:        https://download.gnome.org/sources/vala/0.40/vala-%{version}.tar.xz
 
 BuildRequires:  flex
 BuildRequires:  bison
 BuildRequires:  glib2-devel
+BuildRequires:  gobject-introspection-devel
+BuildRequires:  graphviz-devel
 BuildRequires:  libxslt
 # only if Vala source files are patched
 # BuildRequires:  vala
@@ -22,7 +24,7 @@ BuildRequires:  libxslt
 # BuildRequires:  dbus-x11
 
 # alternatives
-%global vala_binaries vala valac vala-gen-introspect vapicheck vapigen
+%global vala_binaries vala valac vala-gen-introspect vapigen
 %global vala_manpages valac vala-gen-introspect vapigen
 Requires(posttrans):   %{_sbindir}/alternatives
 Requires(preun):       %{_sbindir}/alternatives
@@ -88,8 +90,29 @@ applications and libraries written in C.
 This package contains documentation in a devhelp HTML book.
 
 
+%package -n     valadoc
+Summary:        Vala documentation generator
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description -n valadoc
+Valadoc is a documentation generator for generating API documentation from Vala
+source code.
+
+
+%package -n     valadoc-devel
+Summary:        Development files for valadoc
+Requires:       valadoc%{?_isa} = %{version}-%{release}
+
+%description -n valadoc-devel
+Valadoc is a documentation generator for generating API documentation from Vala
+source code.
+
+The valadoc-devel package contains libraries and header files for
+developing applications that use valadoc.
+
+
 %prep
-%setup -q
+%autosetup -p1
 
 
 %build
@@ -121,8 +144,13 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 # make check
 
 
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+
+%post -n valadoc -p /sbin/ldconfig
+%postun -n valadoc -p /sbin/ldconfig
+
 %posttrans
-/sbin/ldconfig
 for f in %{vala_binaries};
 do
     %{_sbindir}/alternatives --install %{_bindir}/$f \
@@ -135,7 +163,6 @@ do
 done
 
 %preun
-/sbin/ldconfig
 for f in %{vala_binaries};
 do
     %{_sbindir}/alternatives --remove $f \
@@ -150,16 +177,13 @@ done
 
 %files
 %license COPYING
-%doc AUTHORS MAINTAINERS NEWS README THANKS
 %ghost %{_bindir}/vala
 %ghost %{_bindir}/valac
 %ghost %{_bindir}/vala-gen-introspect
-%ghost %{_bindir}/vapicheck
 %ghost %{_bindir}/vapigen
 %{_bindir}/vala-%{api_ver}
 %{_bindir}/valac-%{api_ver}
 %{_bindir}/vala-gen-introspect-%{api_ver}
-%{_bindir}/vapicheck-%{api_ver}
 %{_bindir}/vapigen-%{api_ver}
 %{_libdir}/pkgconfig/vapigen*.pc
 %{_libdir}/vala-%{api_ver}/
@@ -183,8 +207,30 @@ done
 %files doc
 %doc %{_datadir}/devhelp/books/vala-%{api_ver}
 
+%files -n valadoc
+%{_bindir}/valadoc
+%{_bindir}/valadoc-%{api_ver}
+%{_libdir}/libvaladoc-%{api_ver}.so.0*
+%{_libdir}/valadoc/
+%{_datadir}/valadoc/
+%{_mandir}/man1/valadoc-%{api_ver}.1*
+%{_mandir}/man1/valadoc.1*
+
+%files -n valadoc-devel
+%{_includedir}/valadoc-%{api_ver}/
+%{_libdir}/libvaladoc-%{api_ver}.so
+%{_libdir}/pkgconfig/valadoc-%{api_ver}.pc
+
 
 %changelog
+* Wed Aug 01 2018 Kalev Lember <klember@redhat.com> - 0.40.8-1
+- Update to 0.40.8
+- Resolves: #1569794
+
+* Mon May 21 2018 Kalev Lember <klember@redhat.com> - 0.40.6-1
+- Update to 0.40.6
+- Resolves: #1569794
+
 * Tue Mar 07 2017 Kalev Lember <klember@redhat.com> - 0.34.6-1
 - Update to 0.34.6
 - Resolves: #1387052

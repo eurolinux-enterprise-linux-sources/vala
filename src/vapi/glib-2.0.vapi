@@ -64,7 +64,7 @@ public struct bool {
 
 [SimpleType]
 [GIR (name = "gint8")]
-[CCode (cname = "gchar", cprefix = "g_ascii_", cheader_filename = "glib.h", type_id = "G_TYPE_CHAR", marshaller_type_name = "CHAR", get_value_function = "g_value_get_char", set_value_function = "g_value_set_char", default_value = "\'\\0\'", type_signature = "y")]
+[CCode (cname = "gchar", cprefix = "g_ascii_", cheader_filename = "glib.h", type_id = "G_TYPE_CHAR", marshaller_type_name = "CHAR", get_value_function = "g_value_get_schar", set_value_function = "g_value_set_schar", default_value = "\'\\0\'", type_signature = "y")]
 [IntegerType (rank = 2, min = 0, max = 127)]
 public struct char {
 	[CCode (cname = "g_strdup_printf", instance_pos = -1)]
@@ -111,7 +111,7 @@ public struct uchar {
 
 [SimpleType]
 [GIR (name = "gint")]
-[CCode (cname = "gint", cheader_filename = "glib.h", type_id = "G_TYPE_INT", marshaller_type_name = "INT", get_value_function = "g_value_get_int", set_value_function = "g_value_set_int", default_value = "0", type_signature = "i")]
+[CCode (cname = "gint", cheader_filename = "glib.h", type_id = "G_TYPE_INT", marshaller_type_name = "INT", get_value_function = "g_value_get_int", set_value_function = "g_value_set_int", default_value = "0", default_value_on_error = "-1", type_signature = "i")]
 [IntegerType (rank = 6)]
 public struct int {
 	[CCode (cname = "G_MININT")]
@@ -131,6 +131,8 @@ public struct int {
 
 	[CCode (cname = "GINT_TO_POINTER")]
 	public void* to_pointer ();
+	[CCode (cname = "GPOINTER_TO_INT")]
+	public static int from_pointer (void* p);
 
 	[CCode (cname = "abs", cheader_filename = "stdlib.h")]
 	public int abs ();
@@ -171,6 +173,8 @@ public struct uint {
 
 	[CCode (cname = "GUINT_TO_POINTER")]
 	public void* to_pointer ();
+	[CCode (cname = "GPOINTER_TO_UINT")]
+	public static uint from_pointer (void* p);
 
 	[CCode (cname = "GUINT_TO_BE")]
 	public uint to_big_endian ();
@@ -185,7 +189,7 @@ public struct uint {
 
 [SimpleType]
 [GIR (name = "gshort")]
-[CCode (cname = "gshort", cheader_filename = "glib.h", has_type_id = false, default_value = "0", type_signature = "n")]
+[CCode (cname = "gshort", cheader_filename = "glib.h", type_id = "G_TYPE_INT", marshaller_type_name = "INT", get_value_function = "g_value_get_int", set_value_function = "g_value_set_int", default_value = "0", default_value_on_error = "-1", type_signature = "n")]
 [IntegerType (rank = 4, min = -32768, max = 32767)]
 public struct short {
 	[CCode (cname = "G_MINSHORT")]
@@ -208,7 +212,7 @@ public struct short {
 
 [SimpleType]
 [GIR (name = "gushort")]
-[CCode (cname = "gushort", cheader_filename = "glib.h", has_type_id = false, default_value = "0U", type_signature = "q")]
+[CCode (cname = "gushort", cheader_filename = "glib.h", type_id = "G_TYPE_UINT", marshaller_type_name = "UINT", get_value_function = "g_value_get_uint", set_value_function = "g_value_set_uint", default_value = "0U", type_signature = "q")]
 [IntegerType (rank = 5, min = 0, max = 65535)]
 public struct ushort {
 	[CCode (cname = "0U")]
@@ -229,7 +233,7 @@ public struct ushort {
 
 [SimpleType]
 [GIR (name = "glong")]
-[CCode (cname = "glong", cheader_filename = "glib.h", type_id = "G_TYPE_LONG", marshaller_type_name = "LONG", get_value_function = "g_value_get_long", set_value_function = "g_value_set_long", default_value = "0L")]
+[CCode (cname = "glong", cheader_filename = "glib.h", type_id = "G_TYPE_LONG", marshaller_type_name = "LONG", get_value_function = "g_value_get_long", set_value_function = "g_value_set_long", default_value = "0L", default_value_on_error = "-1L")]
 [IntegerType (rank = 8)]
 public struct long {
 	[CCode (cname = "G_MINLONG")]
@@ -317,6 +321,8 @@ public struct size_t {
 
 	[CCode (cname = "GSIZE_TO_POINTER")]
 	public void* to_pointer ();
+	[CCode (cname = "GPOINTER_TO_SIZE")]
+	public static size_t from_pointer (void* p);
 
 	[CCode (cname = "MIN")]
 	public static size_t min (size_t a, size_t b);
@@ -328,7 +334,7 @@ public struct size_t {
 
 [SimpleType]
 [GIR (name = "glong")]
-[CCode (cname = "gssize", cheader_filename = "glib.h", type_id = "G_TYPE_LONG", marshaller_type_name = "LONG", get_value_function = "g_value_get_long", set_value_function = "g_value_set_long", default_value = "0L")]
+[CCode (cname = "gssize", cheader_filename = "glib.h", type_id = "G_TYPE_LONG", marshaller_type_name = "LONG", get_value_function = "g_value_get_long", set_value_function = "g_value_set_long", default_value = "0L", default_value_on_error = "-1L")]
 [IntegerType (rank = 8)]
 public struct ssize_t {
 	[Version (since = "2.14")]
@@ -375,6 +381,8 @@ public struct uintptr {
 
 	[CCode (cname = "GSIZE_TO_POINTER")]
 	public void* to_pointer ();
+	[CCode (cname = "GPOINTER_TO_SIZE")]
+	public static uintptr from_pointer (void* p);
 
 	[CCode (cname = "MIN")]
 	public static uintptr min (uintptr a, uintptr b);
@@ -412,7 +420,7 @@ public struct intptr {
 
 [SimpleType]
 [GIR (name = "gint8")]
-[CCode (cname = "gint8", cheader_filename = "glib.h", type_id = "G_TYPE_CHAR", marshaller_type_name = "CHAR", get_value_function = "g_value_get_char", set_value_function = "g_value_set_char", default_value = "0", type_signature = "y")]
+[CCode (cname = "gint8", cheader_filename = "glib.h", type_id = "G_TYPE_CHAR", marshaller_type_name = "CHAR", get_value_function = "g_value_get_char", set_value_function = "g_value_set_char", default_value = "0", default_value_on_error = "-1", type_signature = "y")]
 [IntegerType (rank = 1, min = -128, max = 127)]
 public struct int8 {
 	[Version (since = "2.4")]
@@ -457,7 +465,7 @@ public struct uint8 {
 
 [SimpleType]
 [GIR (name = "gint16")]
-[CCode (cname = "gint16", cheader_filename = "glib.h", default_value = "0", type_signature = "n", has_type_id = false)]
+[CCode (cname = "gint16", cheader_filename = "glib.h", type_id = "G_TYPE_INT", marshaller_type_name = "INT", get_value_function = "g_value_get_int", set_value_function = "g_value_set_int", default_value = "0", default_value_on_error = "-1", type_signature = "n")]
 [IntegerType (rank = 4, min = -32768, max = 32767)]
 public struct int16 {
 	[Version (since = "2.4")]
@@ -496,7 +504,7 @@ public struct int16 {
 
 [SimpleType]
 [GIR (name = "guint16")]
-[CCode (cname = "guint16", cheader_filename = "glib.h", default_value = "0U", type_signature = "q", has_type_id = false)]
+[CCode (cname = "guint16", cheader_filename = "glib.h", type_id = "G_TYPE_UINT", marshaller_type_name = "UINT", get_value_function = "g_value_get_uint", set_value_function = "g_value_set_uint", default_value = "0U", type_signature = "q")]
 [IntegerType (rank = 5, min = 0, max = 65535)]
 public struct uint16 {
 	[CCode (cname = "0U")]
@@ -545,7 +553,7 @@ public struct uint16 {
 
 [SimpleType]
 [GIR (name = "gint32")]
-[CCode (cname = "gint32", cheader_filename = "glib.h", type_id = "G_TYPE_INT", marshaller_type_name = "INT", get_value_function = "g_value_get_int", set_value_function = "g_value_set_int", default_value = "0", type_signature = "i")]
+[CCode (cname = "gint32", cheader_filename = "glib.h", type_id = "G_TYPE_INT", marshaller_type_name = "INT", get_value_function = "g_value_get_int", set_value_function = "g_value_set_int", default_value = "0", default_value_on_error = "-1", type_signature = "i")]
 [IntegerType (rank = 6)]
 public struct int32 {
 	[Version (since = "2.4")]
@@ -633,7 +641,7 @@ public struct uint32 {
 
 [SimpleType]
 [GIR (name = "gint64")]
-[CCode (cname = "gint64", cheader_filename = "glib.h", type_id = "G_TYPE_INT64", marshaller_type_name = "INT64", get_value_function = "g_value_get_int64", set_value_function = "g_value_set_int64", default_value = "0LL", type_signature = "x")]
+[CCode (cname = "gint64", cheader_filename = "glib.h", type_id = "G_TYPE_INT64", marshaller_type_name = "INT64", get_value_function = "g_value_get_int64", set_value_function = "g_value_set_int64", default_value = "0LL", default_value_on_error = "-1LL", type_signature = "x")]
 [IntegerType (rank = 10)]
 public struct int64 {
 	[CCode (cname = "G_MININT64")]
@@ -681,15 +689,21 @@ public struct int64 {
 	}
 
 	[Version (since = "2.12")]
-	public static bool try_parse (string str, out int64 result = null) {
+	public static bool try_parse (string str, out int64 result = null, out unowned string unparsed = null) {
 		char* endptr;
 		result = ascii_strtoll (str, out endptr, 0);
 		if (endptr == (char*) str + str.length) {
+			unparsed = "";
 			return true;
 		} else {
+			unparsed = (string) endptr;
 			return false;
 		}
 	}
+
+	[CCode (cname = "g_ascii_string_to_signed")]
+	[Version (since = "2.54")]
+	public static bool from_string (string str, [CCode (pos = 5.1)] out int64 out_num = null, uint @base = 10U, int64 min = int64.MIN, int64 max = int64.MAX) throws GLib.NumberParserError;
 }
 
 [SimpleType]
@@ -733,20 +747,26 @@ public struct uint64 {
 	public static uint64 parse (string str) {
 		return ascii_strtoull (str, null, 0);
 	}
-	public static bool try_parse (string str, out uint64 result = null) {
+	public static bool try_parse (string str, out uint64 result = null, out unowned string unparsed = null) {
 		char* endptr;
 		result = ascii_strtoull (str, out endptr, 0);
 		if (endptr == (char*) str + str.length) {
+			unparsed = "";
 			return true;
 		} else {
+			unparsed = (string) endptr;
 			return false;
 		}
 	}
+
+	[CCode (cname = "g_ascii_string_to_unsigned")]
+	[Version (since = "2.54")]
+	public static bool from_string (string str, [CCode (pos = 5.1)] out uint64 out_num = null, uint @base = 10U, uint64 min = uint64.MIN, uint64 max = uint64.MAX) throws GLib.NumberParserError;
 }
 
 [SimpleType]
 [GIR (name = "gfloat")]
-[CCode (cname = "gfloat", cheader_filename = "glib.h,float.h,math.h", type_id = "G_TYPE_FLOAT", marshaller_type_name = "FLOAT", get_value_function = "g_value_get_float", set_value_function = "g_value_set_float", default_value = "0.0F")]
+[CCode (cname = "gfloat", cheader_filename = "glib.h,float.h,math.h", type_id = "G_TYPE_FLOAT", marshaller_type_name = "FLOAT", get_value_function = "g_value_get_float", set_value_function = "g_value_set_float", default_value = "0.0F", default_value_on_error = "-1.0F")]
 [FloatingType (rank = 1)]
 public struct float {
 	[CCode (cname = "FLT_ROUNDS")]
@@ -804,7 +824,7 @@ public struct float {
 
 [SimpleType]
 [GIR (name = "gdouble")]
-[CCode (cname = "gdouble", cheader_filename = "glib.h,float.h,math.h", type_id = "G_TYPE_DOUBLE", marshaller_type_name = "DOUBLE", get_value_function = "g_value_get_double", set_value_function = "g_value_set_double", default_value = "0.0", type_signature = "d")]
+[CCode (cname = "gdouble", cheader_filename = "glib.h,float.h,math.h", type_id = "G_TYPE_DOUBLE", marshaller_type_name = "DOUBLE", get_value_function = "g_value_get_double", set_value_function = "g_value_set_double", default_value = "0.0", default_value_on_error = "-1.0", type_signature = "d")]
 [FloatingType (rank = 2)]
 public struct double {
 	[CCode (cname = "DBL_MANT_DIG")]
@@ -869,12 +889,14 @@ public struct double {
 	public static double parse (string str) {
 		return ascii_strtod (str, null);
 	}
-	public static bool try_parse (string str, out double result = null) {
+	public static bool try_parse (string str, out double result = null, out unowned string unparsed = null) {
 		char* endptr;
 		result = ascii_strtod (str, out endptr);
 		if (endptr == (char*) str + str.length) {
+			unparsed = "";
 			return true;
 		} else {
+			unparsed = (string) endptr;
 			return false;
 		}
 	}
@@ -895,7 +917,7 @@ public struct va_list {
 	public va_list ();
 	[CCode (cname = "va_copy")]
 	public va_list.copy (va_list src);
-	[CCode (generic_type_pos = 1.1)]
+	[CCode (generic_type_pos = 1.1, simple_generics = true)]
 	public unowned G arg<G> ();
 }
 
@@ -937,7 +959,7 @@ public struct unichar {
 
 	public int to_utf8 (string? outbuf);
 
-	public string? to_string () {
+	public string to_string () {
 		string str = (string) new char[7];
 		this.to_utf8 (str);
 		return str;
@@ -959,6 +981,22 @@ public struct unichar {
 
 	[CCode (cname = "G_UNICHAR_MAX_DECOMPOSITION_LENGTH")]
 	public const int MAX_DECOMPOSITION_LENGTH;
+
+	[CCode (cname = "G_GUINT32_FORMAT")]
+	public const string FORMAT;
+	[CCode (cname = "G_GINT32_MODIFIER")]
+	public const string FORMAT_MODIFIER;
+}
+
+[SimpleType]
+[GIR (name = "guint16")]
+[CCode (cname = "gunichar2", cheader_filename = "glib.h", default_value = "0U", type_signature = "q", has_type_id = false)]
+[IntegerType (rank = 5)]
+public struct unichar2 {
+	[CCode (cname = "G_GUINT16_FORMAT")]
+	public const string FORMAT;
+	[CCode (cname = "G_GINT16_MODIFIER")]
+	public const string FORMAT_MODIFIER;
 }
 
 [Compact]
@@ -1035,7 +1073,7 @@ public class string {
 	[CCode (cname = "g_strdup_vprintf")]
 	public string vprintf (va_list args);
 	[CCode (cname = "sscanf", cheader_filename = "stdio.h"), ScanfFormat]
-	public int scanf (...);
+	public int scanf (string format, ...);
 	[CCode (cname = "g_strconcat")]
 	public string concat (string string2, ...);
 	[CCode (cname = "g_strescape")]
@@ -1054,7 +1092,7 @@ public class string {
 		if (separator == null) {
 			separator = "";
 		}
-		if (str_array != null || str_array.length > 0 || (str_array.length == -1 && str_array[0] != null)) {
+		if (str_array != null && (str_array.length > 0 || (str_array.length == -1 && str_array[0] != null))) {
 			int i;
 			size_t len = 1;
 			for (i = 0 ; (str_array.length != -1 && i < str_array.length) || (str_array.length == -1 && str_array[i] != null) ; i++) {
@@ -1166,6 +1204,9 @@ public class string {
 	public string reverse (ssize_t len = -1);
 	[CCode (cname = "g_utf8_validate")]
 	public bool validate (ssize_t max_len = -1, out char* end = null);
+	[Version (since = "2.52")]
+	[CCode (cname = "g_utf8_make_valid")]
+	public string make_valid (ssize_t len = -1);
 	[CCode (cname = "g_utf8_normalize")]
 	public string normalize (ssize_t len = -1, GLib.NormalizeMode mode = GLib.NormalizeMode.DEFAULT);
 
@@ -1378,6 +1419,9 @@ public class string {
 	}
 
 	public string replace (string old, string replacement) {
+		if (*((char*) this) == '\0' || *((char*) old) == '\0' || old == replacement)
+			return this;
+
 		try {
 			var regex = new GLib.Regex (GLib.Regex.escape_string (old));
 			return regex.replace_literal (this, -1, 0, replacement);
@@ -1411,6 +1455,52 @@ public class string {
 
 	public unowned string to_string () {
 		return this;
+	}
+
+	[CCode (cname = "g_utf8_to_utf16")]
+	public string16 to_utf16 (long len = -1, out long items_read = null, out long items_written = null) throws GLib.ConvertError;
+	[CCode (cname = "g_utf8_to_ucs4")]
+	public string32 to_utf32 (long len = -1, out long items_read = null, out long items_written = null) throws GLib.ConvertError;
+	[CCode (cname = "g_utf8_to_ucs4_fast")]
+	public string32 to_utf32_fast (long len = -1, out long items_written = null);
+
+}
+
+[Compact]
+[Immutable]
+[GIR (name = "gunichar")]
+[CCode (cname = "gunichar", const_cname = "const gunichar", free_function = "g_free", cheader_filename = "glib.h")]
+public class string32 {
+	[CCode (cname = "g_ucs4_to_utf16")]
+	public string16 to_utf16 (long len = -1, out long items_read = null, out long items_written = null) throws GLib.ConvertError;
+	[CCode (cname = "g_ucs4_to_utf8")]
+	public string to_utf8 (long len = -1, out long items_read = null, out long items_written = null) throws GLib.ConvertError;
+
+	public string? to_string () {
+		try {
+			return this.to_utf8 ();
+		} catch (GLib.ConvertError e) {
+			return null;
+		}
+	}
+}
+
+[Compact]
+[Immutable]
+[GIR (name = "guint16")]
+[CCode (cname = "gunichar2", const_cname = "const gunichar2", free_function = "g_free", cheader_filename = "glib.h")]
+public class string16 {
+	[CCode (cname = "g_utf16_to_ucs4")]
+	public string32 to_utf32 (long len = -1, out long items_read = null, out long items_written = null) throws GLib.ConvertError;
+	[CCode (cname = "g_utf16_to_utf8")]
+	public string to_utf8 (long len = -1, out long items_read = null, out long items_written = null) throws GLib.ConvertError;
+
+	public string? to_string () {
+		try {
+			return this.to_utf8 ();
+		} catch (GLib.ConvertError e) {
+			return null;
+		}
 	}
 }
 
@@ -1483,9 +1573,13 @@ namespace GLib {
 		public static float log10f (float x);
 		public static double modf (double x, out double iptr);
 		public static float modff (float x, out float iptr);
+		[CCode (feature_test_macro = "_GNU_SOURCE")]
 		public static double exp10 (double x);
+		[CCode (feature_test_macro = "_GNU_SOURCE")]
 		public static float exp10f (float x);
+		[CCode (feature_test_macro = "_GNU_SOURCE")]
 		public static double pow10 (double x);
+		[CCode (feature_test_macro = "_GNU_SOURCE")]
 		public static float pow10f (float x);
 		public static double expm1 (double x);
 		public static float expm1f (float x);
@@ -1665,8 +1759,7 @@ namespace GLib {
 		public bool wait (Cond cond, Mutex mutex);
 		public bool prepare (out int priority);
 		public int query (int max_priority, out int timeout_, PollFD[] fds);
-		[CCode (array_length = false)]
-		public int check (int max_priority, PollFD[] fds, int n_fds);
+		public bool check (int max_priority, PollFD[] fds);
 		public void dispatch ();
 		public void set_poll_func (PollFunc func);
 		public PollFunc get_poll_func ();
@@ -1759,7 +1852,7 @@ namespace GLib {
 		protected Source ();
 		[Version (since = "2.12")]
 		public void set_funcs (SourceFuncs funcs);
-		public uint attach (MainContext? context);
+		public uint attach (MainContext? context = null);
 		public void destroy ();
 		[Version (since = "2.12")]
 		public bool is_destroyed ();
@@ -1849,7 +1942,8 @@ namespace GLib {
 	public delegate bool SourceFunc ();
 
 	public errordomain ThreadError {
-		AGAIN
+		AGAIN;
+		public static GLib.Quark quark ();
 	}
 
 	/* Thread support */
@@ -1937,7 +2031,7 @@ namespace GLib {
 		public void reader_unlock ();
 	}
 
-	[Version (deprecated_since = "glib-2.32", replacement = "Mutex")]
+	[Version (deprecated_since = "2.32", replacement = "Mutex")]
 	[CCode (destroy_function = "g_static_mutex_free", default_value = "G_STATIC_MUTEX_INIT")]
 	public struct StaticMutex {
 		public StaticMutex ();
@@ -1947,7 +2041,7 @@ namespace GLib {
 		public void lock_full ();
 	}
 
-	[Version (deprecated_since = "glib-2.32", replacement = "RecMutex")]
+	[Version (deprecated_since = "2.32", replacement = "RecMutex")]
 	[CCode (destroy_function = "g_static_rec_mutex_free", default_value = "G_STATIC_REC_MUTEX_INIT")]
 	public struct StaticRecMutex {
 		public StaticRecMutex ();
@@ -1957,7 +2051,7 @@ namespace GLib {
 		public void lock_full ();
 	}
 
-	[Version (deprecated_since = "glib-2.32", replacement = "RWLock")]
+	[Version (deprecated_since = "2.32", replacement = "RWLock")]
 	[CCode (destroy_function = "g_static_rw_lock_free", default_value = "G_STATIC_RW_LOCK_INIT")]
 	public struct StaticRWLock {
 		public StaticRWLock ();
@@ -1979,7 +2073,7 @@ namespace GLib {
 	}
 
 	[CCode (destroy_function = "g_static_private_free", default_value = "G_STATIC_PRIVATE_INIT")]
-	[Version (deprecated_since = "glib-2.32")]
+	[Version (deprecated_since = "2.32")]
 	public struct StaticPrivate {
 		public StaticPrivate ();
 		public void* get ();
@@ -2246,7 +2340,8 @@ namespace GLib {
 		NXIO,
 		OVERFLOW,
 		PIPE,
-		FAILED
+		FAILED;
+		public static GLib.Quark quark ();
 	}
 
 	[Flags]
@@ -2284,8 +2379,21 @@ namespace GLib {
 	public class Error {
 		[PrintfFormat]
 		public Error (Quark domain, int code, string format, ...);
+		public Error.literal (Quark domain, int code, string message);
+		[PrintfFormat]
+		public Error.valist (Quark domain, int code, string format, va_list args);
 		public Error copy ();
 		public bool matches (Quark domain, int code);
+		[CCode (cname = "g_prefix_error")]
+		public static void prefix (out Error? dest, string format, ...);
+		[CCode (cname = "g_propagate_error")]
+		public static void propagate (out Error? dest, owned Error src);
+		[CCode (cname = "g_propagate_prefixed_error")]
+		public static void propagate_prefixed (out Error? dest, owned Error src, string format, ...);
+		[CCode (cname = "g_set_error")]
+		public static void @set (out Error? dest, Quark domain, int code, string format, ...);
+		[CCode (cname = "g_set_error_literal")]
+		public static void set_literal (out Error? dest, Quark domain, int code, string message);
 
 		public Quark domain;
 		public int code;
@@ -2481,6 +2589,8 @@ namespace GLib {
 	/* Character Set Conversions */
 
 	public static string convert (string str, ssize_t len, string to_codeset, string from_codeset, out size_t bytes_read = null, out size_t bytes_written = null) throws ConvertError;
+	public static string convert_with_fallback (string str, ssize_t len, string to_codeset, string from_codeset, string? fallback = null, out size_t bytes_read = null, out size_t bytes_written = null) throws ConvertError;
+	public static string convert_with_iconv (string str, ssize_t len, IConv converter, out size_t bytes_read = null, out size_t bytes_written = null) throws ConvertError;
 	public static bool get_charset (out unowned string charset);
 	public static bool get_filename_charsets ([CCode (array_length = false, array_null_terminated = true)] out unowned string[] charsets);
 
@@ -2488,7 +2598,7 @@ namespace GLib {
 	public struct IConv {
 		public static IConv open (string to_codeset, string from_codeset);
 		[CCode (cname = "g_iconv")]
-		public uint iconv (out string inbuf, out uint inbytes_left, out string outbuf, out uint outbytes_left);
+		public size_t iconv ([CCode (array_length = false)] ref char[] inbuf, ref size_t inbytes_left, [CCode (array_length = false)] ref char[] outbuf, ref size_t outbytes_left);
 		public int close ();
 	}
 
@@ -2509,7 +2619,8 @@ namespace GLib {
 		FAILED,
 		PARTIAL_INPUT,
 		BAD_URI,
-		NOT_ABSOLUTE_PATH
+		NOT_ABSOLUTE_PATH;
+		public static GLib.Quark quark ();
 	}
 
 	/* Base64 Encoding */
@@ -2532,6 +2643,9 @@ namespace GLib {
 		MD5,
 		SHA1,
 		SHA256,
+		[Version (since = "2.52")]
+		SHA384,
+		[Version (since = "2.36")]
 		SHA512;
 
 		public ssize_t get_length ();
@@ -2670,6 +2784,8 @@ namespace GLib {
 	[CCode (type_id = "G_TYPE_DATE")]
 	public struct Date {
 		public void clear (uint n_dates = 1);
+		[Version (since = "2.56")]
+		public Date copy ();
 		public void set_day (DateDay day);
 		public void set_month (DateMonth month);
 		public void set_year (DateYear year);
@@ -2789,6 +2905,8 @@ namespace GLib {
 		public DateTime.now (TimeZone tz);
 		public DateTime.now_local ();
 		public DateTime.now_utc ();
+		[Version (since = "2.56")]
+		public DateTime.from_iso8601 (string text, TimeZone default_tz);
 		public DateTime.from_unix_local (int64 t);
 		public DateTime.from_unix_utc (int64 t);
 		public DateTime.from_timeval_local (TimeVal tv);
@@ -2886,6 +3004,13 @@ namespace GLib {
 		[CCode (cname = "g_random_double")]
 		public static double next_double ();
 		public static double double_range (double begin, double end);
+	}
+
+	namespace Uuid {
+		[Version (since = "2.52")]
+		public static bool string_is_valid (string str);
+		[Version (since = "2.52")]
+		public static string string_random ();
 	}
 
 	/* Miscellaneous Utility Functions */
@@ -3000,6 +3125,9 @@ namespace GLib {
 		public static string get_dirname (string file_name);
 		[CCode (cname = "g_build_filename")]
 		public static string build_filename (string first_element, ...);
+		[Version (since = "2.56")]
+		[CCode (cname = "g_build_filename_valist")]
+		public static string build_filename_valist (string first_element, va_list args);
 		[CCode (cname = "g_build_path")]
 		public static string build_path (string separator, string first_element, ...);
 
@@ -3078,7 +3206,7 @@ namespace GLib {
 		public TokenValue cur_value ();
 		public uint set_scope (uint scope_id);
 		public void scope_add_symbol (uint scope_id, string symbol, void* value);
-		public void scope_foreach_symbol (uint scope_id, HFunc func);
+		public void scope_foreach_symbol (uint scope_id, HFunc<string, void*> func);
 		public void* scope_lookup_symbol (uint scope_id, string symbol);
 		public void scope_remove_symbol (uint scope_id, string symbol);
 		public void* lookup_symbol (string symbol);
@@ -3256,7 +3384,8 @@ namespace GLib {
 		INVAL,
 		ISDIR,
 		LIBBAD,
-		FAILED
+		FAILED;
+		public static GLib.Quark quark ();
 	}
 
 	[CCode (cprefix = "G_SPAWN_", has_type_id = false)]
@@ -3374,7 +3503,8 @@ namespace GLib {
 		IO,
 		PERM,
 		NOSYS,
-		FAILED
+		FAILED;
+		public static GLib.Quark quark ();
 	}
 
 	[CCode (has_type_id = false)]
@@ -3514,6 +3644,9 @@ namespace GLib {
 
 	[CCode (cname = "struct stat", cheader_filename = "sys/stat.h,glib/gstdio.h")]
 	public struct Stat {
+		public time_t st_atime;
+		public time_t st_mtime;
+		public time_t st_ctime;
 		[CCode (cname = "g_stat", instance_pos = -1)]
 		public Stat (string filename);
 		[Version (since = "2.6")]
@@ -3595,7 +3728,8 @@ namespace GLib {
 	public errordomain ShellError {
 		BAD_QUOTING,
 		EMPTY_STRING,
-		FAILED
+		FAILED;
+		public static GLib.Quark quark ();
 	}
 
 	namespace Shell {
@@ -3609,7 +3743,8 @@ namespace GLib {
 	public errordomain OptionError {
 		UNKNOWN_OPTION,
 		BAD_VALUE,
-		FAILED
+		FAILED;
+		public static GLib.Quark quark ();
 	}
 
 	[Compact]
@@ -3638,7 +3773,7 @@ namespace GLib {
 		public bool get_ignore_unknown_options ();
 		[Version (since = "2.14")]
 		public string get_help (bool main_help, OptionGroup? group);
-		public void add_main_entries ([CCode (array_length = false)] OptionEntry[] entries, string? translation_domain);
+		public void add_main_entries ([CCode (array_length = false, array_null_terminated = true)] OptionEntry[] entries, string? translation_domain);
 		public void add_group (owned OptionGroup group);
 		public void set_main_group (owned OptionGroup group);
 		public unowned OptionGroup get_main_group ();
@@ -3649,6 +3784,8 @@ namespace GLib {
 	}
 
 	public delegate unowned string TranslateFunc (string str);
+
+	public const string OPTION_REMAINING;
 
 	[CCode (has_type_id = false)]
 	public enum OptionArg {
@@ -3666,6 +3803,8 @@ namespace GLib {
 	[Flags]
 	[CCode (cprefix = "G_OPTION_FLAG_", has_type_id = false)]
 	public enum OptionFlags {
+		[Version (since = "2.42")]
+		NONE,
 		HIDDEN,
 		IN_MAIN,
 		REVERSE,
@@ -3697,7 +3836,7 @@ namespace GLib {
 #endif
 	public class OptionGroup {
 		public OptionGroup (string name, string description, string help_description, void* user_data = null, DestroyNotify? destroy = null);
-		public void add_entries ([CCode (array_length = false)] OptionEntry[] entries);
+		public void add_entries ([CCode (array_length = false, array_null_terminated = true)] OptionEntry[] entries);
 		public void set_parse_hooks (OptionParseFunc? pre_parse_func, OptionParseFunc? post_parse_hook);
 		public void set_error_hook (OptionErrorFunc? error_func);
 		public void set_translate_func (owned TranslateFunc? func);
@@ -3708,6 +3847,8 @@ namespace GLib {
 	public delegate bool OptionParseFunc (OptionContext context, OptionGroup group, void* data) throws OptionError;
 	[CCode (has_target = false)]
 	public delegate void OptionErrorFunc (OptionContext context, OptionGroup group, void* data, ref Error error);
+	[CCode (has_target = false)]
+	public delegate bool OptionArgFunc (string option_name, string val, void* data) throws OptionError;
 
 	/* Perl-compatible regular expressions */
 
@@ -3769,7 +3910,8 @@ namespace GLib {
 		NOT_SUPPORTED_IN_CLASS,
 		TOO_MANY_FORWARD_REFERENCES,
 		NAME_TOO_LONG,
-		CHARACTER_VALUE_TOO_LARGE
+		CHARACTER_VALUE_TOO_LARGE;
+		public static GLib.Quark quark ();
 	}
 
 	[Version (since = "2.14")]
@@ -3883,7 +4025,8 @@ namespace GLib {
 		UNKNOWN_ELEMENT,
 		UNKNOWN_ATTRIBUTE,
 		INVALID_CONTENT,
-		MISSING_ATTRIBUTE
+		MISSING_ATTRIBUTE;
+		public static GLib.Quark quark ();
 	}
 
 	[CCode (cprefix = "G_MARKUP_", has_type_id = false)]
@@ -3894,12 +4037,8 @@ namespace GLib {
 	}
 
 	[Compact]
-#if GLIB_2_36
 	[Version (since = "2.36")]
 	[CCode (ref_function = "g_markup_parse_context_ref", unref_function = "g_markup_parse_context_unref", type_id = "G_TYPE_MARKUP_PARSE_CONTEXT")]
-#else
-	[CCode (free_function = "g_markup_parse_context_free")]
-#endif
 	public class MarkupParseContext {
 		public MarkupParseContext (MarkupParser parser, MarkupParseFlags _flags, void* user_data, DestroyNotify? user_data_dnotify);
 		public bool parse (string text, ssize_t text_len) throws MarkupError;
@@ -3970,7 +4109,8 @@ namespace GLib {
 		NOT_FOUND,
 		KEY_NOT_FOUND,
 		GROUP_NOT_FOUND,
-		INVALID_VALUE
+		INVALID_VALUE;
+		public static GLib.Quark quark ();
 	}
 
 	[Compact]
@@ -3998,6 +4138,8 @@ namespace GLib {
 		public string get_value (string group_name, string key) throws KeyFileError;
 		public string get_string (string group_name, string key) throws KeyFileError;
 		public string get_locale_string (string group_name, string key, string? locale = null) throws KeyFileError;
+		[Version (since = "2.56")]
+		public string? get_locale_for_key (string group_name, string key, string? locale = null);
 		public bool get_boolean (string group_name, string key) throws KeyFileError;
 		public int get_integer (string group_name, string key) throws KeyFileError;
 		[Version (since = "2.26")]
@@ -4006,7 +4148,7 @@ namespace GLib {
 		public uint64 get_uint64 (string group_name, string key) throws KeyFileError;
 		[Version (since = "2.12")]
 		public double get_double (string group_name, string key) throws KeyFileError;
-		[CCode (array_length_type = "gsize")]
+		[CCode (array_length = true, array_length_type = "gsize", array_null_terminated = true)]
 		public string[] get_string_list (string group_name, string key) throws KeyFileError;
 		[CCode (array_length_type = "gsize")]
 		public string[] get_locale_string_list (string group_name, string key, string? locale = null) throws KeyFileError;
@@ -4138,7 +4280,8 @@ namespace GLib {
 		READ,
 		UNKNOWN_ENCODING,
 		WRITE,
-		FILE_NOT_FOUND
+		FILE_NOT_FOUND;
+		public static GLib.Quark quark ();
 	}
 
 	/* Testing */
@@ -4167,9 +4310,9 @@ namespace GLib {
 		[Version (since = "2.16")]
 		public static int run ();
 		[Version (since = "2.16")]
-		public static void add_func (string testpath, TestFunc test_funcvoid);
+		public static void add_func (string testpath, [CCode (scope = "async")] owned TestFunc test_funcvoid);
 		[Version (since = "2.16")]
-		public static void add_data_func (string testpath, [CCode (delegate_target_pos = 1.9)] TestDataFunc test_funcvoid);
+		public static void add_data_func (string testpath, [CCode (delegate_target_pos = 1.9, scope = "async")] owned TestDataFunc test_funcvoid);
 		[Version (since = "2.34")]
 		public static void add_data_func_full (string testpath, [CCode (delegate_target_pos = 1.9)] owned TestDataFunc test_func);
 		[Version (since = "2.34")]
@@ -4824,6 +4967,10 @@ namespace GLib {
 		[CCode (cname = "g_ptr_array_new_full", simple_generics = true)]
 		public GenericArray (uint reserved_size = 0);
 		public void add (owned G data);
+		[Version (since = "2.54")]
+		public bool find (G needle, out uint index = null);
+		[Version (since = "2.54")]
+		public bool find_with_equal_func (G needle, GLib.EqualFunc<G>? equal_func, out uint index = null);
 		public void foreach (GLib.Func<G> func);
 		[CCode (cname = "g_ptr_array_index")]
 		public unowned G get (uint index);
@@ -4872,7 +5019,7 @@ namespace GLib {
 		public Bytes ([CCode (array_length_type = "gsize")] uint8[] data);
 		public Bytes.take ([CCode (array_length_type = "gsize")] owned uint8[] data);
 		public Bytes.static ([CCode (array_length_type = "gsize")] uint8[] data);
-		public Bytes.with_free_func ([CCode (array_length_type = "gsize")] owned uint8[] data, GLib.DestroyNotify? free_func = GLib.g_free);
+		public Bytes.with_free_func ([CCode (array_length_type = "gsize")] owned uint8[] data, GLib.DestroyNotify? free_func, void* user_data);
 		public Bytes.from_bytes (GLib.Bytes bytes, size_t offset, size_t length);
 
 		[CCode (cname = "g_bytes_new_with_free_func", simple_generics = true)]
@@ -4893,9 +5040,8 @@ namespace GLib {
 		}
 
 		[CCode (cname = "_vala_g_bytes_slice")]
-		public GLib.Bytes slice (int start, int end) {
-			unowned uint8[] data = this.get_data ();
-			return new GLib.Bytes (data[start:end]);
+		public GLib.Bytes slice (size_t start, size_t end) {
+			return new GLib.Bytes.from_bytes (this, start, end - start);
 		}
 
 		public int length {
@@ -5024,7 +5170,7 @@ namespace GLib {
 		public Datalist ();
 		public void clear ();
 		[Version (since = "2.34")]
-		public G id_dup_data (Quark key_id, DuplicateFunc dup_func);
+		public G id_dup_data (Quark key_id, DuplicateFunc<G> dup_func);
 		public unowned G id_get_data (Quark key_id);
 		public void id_set_data (Quark key_id, owned G data);
 		public void id_set_data_full (Quark key_id, owned G data, DestroyNotify? destroy_func);
@@ -5032,7 +5178,7 @@ namespace GLib {
 		public G id_remove_no_notify (Quark key_id);
 		[Version (since = "2.34")]
 		public bool id_replace_data (Quark key_id, G oldval, owned G newval, GLib.DestroyNotify? destroy, out GLib.DestroyNotify? old_destroy);
-		public void @foreach (DataForeachFunc func);
+		public void @foreach (DataForeachFunc<G> func);
 		public unowned G get_data (string key);
 		public void set_data_full (string key, owned G data, DestroyNotify? destry_func);
 		public G remove_no_notify (string key);
@@ -5114,36 +5260,36 @@ namespace GLib {
 
 	[Version (since = "2.4")]
 	[CCode (cname = "_", cheader_filename = "glib.h,glib/gi18n-lib.h")]
-	public static unowned string _ (string str);
+	public static unowned string _ ([FormatArg] string str);
 	[Version (since = "2.4")]
 	[CCode (cname = "Q_", cheader_filename = "glib.h,glib/gi18n-lib.h")]
-	public static unowned string Q_ (string str);
+	public static unowned string Q_ ([FormatArg] string str);
 	[Version (since = "2.4")]
 	[CCode (cname = "N_", cheader_filename = "glib.h,glib/gi18n-lib.h")]
-	public static unowned string N_ (string str);
+	public static unowned string N_ ([FormatArg] string str);
 	[Version (since = "2.16")]
 	[CCode (cname = "C_", cheader_filename = "glib.h,glib/gi18n-lib.h")]
-	public static unowned string C_ (string context, string str);
+	public static unowned string C_ (string context, [FormatArg] string str);
 	[Version (since = "2.18")]
 	[CCode (cname = "NC_", cheader_filename = "glib.h,glib/gi18n-lib.h")]
-	public static unowned string NC_ (string context, string str);
+	public static unowned string NC_ (string context, [FormatArg] string str);
 	[CCode (cname = "ngettext", cheader_filename = "glib.h,glib/gi18n-lib.h")]
-	public static unowned string ngettext (string msgid, string msgid_plural, ulong n);
+	public static unowned string ngettext (string msgid, [FormatArg] string msgid_plural, ulong n);
 	[Version (since = "2.18")]
 	[CCode (cname = "g_dgettext", cheader_filename = "glib/gi18n-lib.h")]
-	public static unowned string dgettext (string? domain, string msgid);
+	public static unowned string dgettext (string? domain, [FormatArg] string msgid);
 	[Version (since = "2.26")]
 	[CCode (cname = "g_dcgettext", cheader_filename = "glib/gi18n-lib.h")]
-	public static unowned string dcgettext (string? domain, string msgid, int category);
+	public static unowned string dcgettext (string? domain, [FormatArg] string msgid, int category);
 	[Version (since = "2.18")]
 	[CCode (cname = "g_dngettext", cheader_filename = "glib/gi18n-lib.h")]
-	public static unowned string dngettext (string? domain, string msgid, string msgid_plural, ulong n);
+	public static unowned string dngettext (string? domain, string msgid, [FormatArg] string msgid_plural, ulong n);
 	[Version (since = "2.16")]
 	[CCode (cname = "g_dpgettext", cheader_filename = "glib/gi18n-lib.h")]
-	public static unowned string dpgettext (string? domain, string msgctxid, size_t msgidoffset);
+	public static unowned string dpgettext (string? domain, [FormatArg] string msgctxid, size_t msgidoffset);
 	[Version (since = "2.18")]
 	[CCode (cname = "g_dpgettext2", cheader_filename = "glib/gi18n-lib.h")]
-	public static unowned string dpgettext2 (string? domain, string context, string msgid);
+	public static unowned string dpgettext2 (string? domain, string context, [FormatArg] string msgid);
 
 	[CCode (cname = "int", cprefix = "LC_", cheader_filename = "locale.h", has_type_id = false)]
 	public enum LocaleCategory {
@@ -5205,6 +5351,14 @@ namespace GLib {
 		[CCode (cname = "GLIB_CHECK_VERSION")]
 		public static bool CHECK (uint required_major, uint required_minor = 0, uint required_micro = 0);
 
+		[CCode (cname = "G_ENCODE_VERSION")]
+		public static uint encode (uint major, uint minor);
+
+		public const uint CUR_STABLE;
+		public const uint PREV_STABLE;
+		public const uint MIN_REQUIRED;
+		public const uint MAX_ALLOWED;
+
 		public const uint @2_26;
 		public const uint @2_28;
 		public const uint @2_30;
@@ -5218,6 +5372,9 @@ namespace GLib {
 		public const uint @2_46;
 		public const uint @2_48;
 		public const uint @2_50;
+		public const uint @2_52;
+		public const uint @2_54;
+		public const uint @2_56;
 
 		[CCode (cname = "glib_binary_age")]
 		public const uint binary_age;
@@ -5499,7 +5656,7 @@ namespace GLib {
 		[Version (since = "2.38")]
 		public Variant.printf (string format_string, ...);
 		[Version (since = "2.38")]
-		public Variant.take_string (string str);
+		public Variant.take_string (owned string str);
 
 		[Version (since = "2.40")]
 		public static void parse_error_print_context (GLib.VariantParseError error, string source_str);
@@ -5524,7 +5681,8 @@ namespace GLib {
 		UNEXPECTED_TOKEN,
 		UNKNOWN_KEYWORD,
 		UNTERMINATED_STRING_CONSTANT,
-		VALUE_EXPECTED
+		VALUE_EXPECTED;
+		public static GLib.Quark quark ();
 	}
 
 	[Compact]
@@ -5592,6 +5750,13 @@ namespace GLib {
 		_qsort_with_data<T*> (elems, size, (a, b) => {
 				return compare_func (*a, *b);
 			});
+	}
+
+	[Version (since = "2.54")]
+	public errordomain NumberParserError {
+		INVALID,
+		OUT_OF_BOUNDS;
+		public static GLib.Quark quark ();
 	}
 
 	/* Unix-specific functions. All of these have to include glib-unix.h. */
@@ -5769,7 +5934,13 @@ namespace GLib {
 		MARCHEN,                /* Marc */
 		NEWA,                   /* Newa */
 		OSAGE,                  /* Osge */
-		TANGUT;                 /* Tang */
+		TANGUT,                 /* Tang */
+
+		/* Unicode 10.0 additions */
+		MASARAM_GONDI,          /* Gonm */
+		NUSHU,                  /* Nshu */
+		SOYOMBO,                /* Soyo */
+		ZANABAZAR_SQUARE;       /* Zanb */
 
 		[CCode (cname = "g_unicode_script_to_iso15924")]
 		public uint32 to_iso15924 ();

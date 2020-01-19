@@ -32,15 +32,15 @@ public class Vala.HashMap<K,V> : Map<K,V> {
 		get { return _nnodes; }
 	}
 
-	public HashFunc key_hash_func {
+	public HashFunc<K> key_hash_func {
 		set { _key_hash_func = value; }
 	}
 
-	public EqualFunc key_equal_func {
+	public EqualFunc<K> key_equal_func {
 		set { _key_equal_func = value; }
 	}
 
-	public EqualFunc value_equal_func {
+	public EqualFunc<V> value_equal_func {
 		set { _value_equal_func = value; }
 	}
 
@@ -51,14 +51,14 @@ public class Vala.HashMap<K,V> : Map<K,V> {
 	// concurrent modification protection
 	private int _stamp = 0;
 
-	private HashFunc _key_hash_func;
-	private EqualFunc _key_equal_func;
-	private EqualFunc _value_equal_func;
+	private HashFunc<K> _key_hash_func;
+	private EqualFunc<K> _key_equal_func;
+	private EqualFunc<V> _value_equal_func;
 
 	private const int MIN_SIZE = 11;
 	private const int MAX_SIZE = 13845163;
 
-	public HashMap (HashFunc key_hash_func = GLib.direct_hash, EqualFunc key_equal_func = GLib.direct_equal, EqualFunc value_equal_func = GLib.direct_equal) {
+	public HashMap (HashFunc<K> key_hash_func = GLib.direct_hash, EqualFunc<K> key_equal_func = GLib.direct_equal, EqualFunc<V> value_equal_func = GLib.direct_equal) {
 		this.key_hash_func = key_hash_func;
 		this.key_equal_func = key_equal_func;
 		this.value_equal_func = value_equal_func;
@@ -282,6 +282,7 @@ public class Vala.HashMap<K,V> : Map<K,V> {
 		private HashMap<K,V> _map;
 		private int _index = -1;
 		private weak Node<K,V> _node;
+		private weak Node<K,V> _next;
 
 		// concurrent modification protection
 		private int _stamp;
@@ -291,20 +292,44 @@ public class Vala.HashMap<K,V> : Map<K,V> {
 		}
 
 		public override bool next () {
-			if (_node != null) {
-				_node = _node.next;
+			assert (_stamp == _map._stamp);
+			if (!has_next ()) {
+				return false;
 			}
-			while (_node == null && _index + 1 < _map._array_size) {
-				_index++;
-				_node = _map._nodes[_index];
-			}
+			_node = _next;
+			_next = null;
 			return (_node != null);
+		}
+
+		public override bool has_next () {
+			assert (_stamp == _map._stamp);
+			if (_next == null) {
+				_next = _node;
+				if (_next != null) {
+					_next = _next.next;
+				}
+				while (_next == null && _index + 1 < _map._array_size) {
+					_index++;
+					_next = _map._nodes[_index];
+				}
+			}
+			return (_next != null);
 		}
 
 		public override K? get () {
 			assert (_stamp == _map._stamp);
 			assert (_node != null);
 			return _node.key;
+		}
+
+		public override void remove () {
+			assert_not_reached ();
+		}
+
+		public override bool valid {
+			get {
+				return _node != null;
+			}
 		}
 	}
 
@@ -365,6 +390,7 @@ public class Vala.HashMap<K,V> : Map<K,V> {
 		private HashMap<V,K> _map;
 		private int _index = -1;
 		private weak Node<K,V> _node;
+		private weak Node<K,V> _next;
 
 		// concurrent modification protection
 		private int _stamp;
@@ -374,20 +400,44 @@ public class Vala.HashMap<K,V> : Map<K,V> {
 		}
 
 		public override bool next () {
-			if (_node != null) {
-				_node = _node.next;
+			assert (_stamp == _map._stamp);
+			if (!has_next ()) {
+				return false;
 			}
-			while (_node == null && _index + 1 < _map._array_size) {
-				_index++;
-				_node = _map._nodes[_index];
-			}
+			_node = _next;
+			_next = null;
 			return (_node != null);
+		}
+
+		public override bool has_next () {
+			assert (_stamp == _map._stamp);
+			if (_next == null) {
+				_next = _node;
+				if (_next != null) {
+					_next = _next.next;
+				}
+				while (_next == null && _index + 1 < _map._array_size) {
+					_index++;
+					_next = _map._nodes[_index];
+				}
+			}
+			return (_next != null);
 		}
 
 		public override V? get () {
 			assert (_stamp == _map._stamp);
 			assert (_node != null);
 			return _node.value;
+		}
+
+		public override void remove () {
+			assert_not_reached ();
+		}
+
+		public override bool valid {
+			get {
+				return _node != null;
+			}
 		}
 	}
 }

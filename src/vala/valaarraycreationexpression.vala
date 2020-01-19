@@ -113,6 +113,20 @@ public class Vala.ArrayCreationExpression : Expression {
 		return false;
 	}
 
+	public override bool is_accessible (Symbol sym) {
+		foreach (Expression e in sizes) {
+			if (!e.is_accessible (sym)) {
+				return false;
+			}
+		}
+
+		if (initializer_list != null) {
+			return initializer_list.is_accessible (sym);
+		}
+
+		return true;
+	}
+
 	public override void replace_expression (Expression old_node, Expression new_node) {
 		for (int i = 0; i < sizes.size; i++) {
 			if (sizes[i] == old_node) {
@@ -197,6 +211,12 @@ public class Vala.ArrayCreationExpression : Expression {
 			var ret = create_sizes_from_initializer_list (context, initlist, rank, calc_sizes);
 			if (ret == -1) {
 				error = true;
+			}
+
+			if (calc_sizes.size != rank) {
+				error = true;
+				var actual_type = new ArrayType (element_type, calc_sizes.size, source_reference);
+				Report.error (initlist.source_reference, "Expected initializer for `%s' but got `%s'".printf (target_type.to_string (), actual_type.to_string ()));
 			}
 		}
 

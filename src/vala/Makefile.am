@@ -12,12 +12,13 @@ AM_CPPFLAGS = \
 
 BUILT_SOURCES = vala.vala.stamp
 
-noinst_LTLIBRARIES = \
-	libvalacore.la \
+lib_LTLIBRARIES = \
+	libvala@PACKAGE_SUFFIX@.la \
 	$(NULL)
 
-libvalacore_la_VALASOURCES = \
+libvala_la_VALASOURCES = \
 	valaaddressofexpression.vala \
+	valaarraycopymethod.vala \
 	valaarraycreationexpression.vala \
 	valaarraylengthfield.vala \
 	valaarraymovemethod.vala \
@@ -32,6 +33,8 @@ libvalacore_la_VALASOURCES = \
 	valabooleanliteral.vala \
 	valabooleantype.vala \
 	valabreakstatement.vala \
+	valacallable.vala \
+	valacallabletype.vala \
 	valacastexpression.vala \
 	valacatchclause.vala \
 	valacharacterliteral.vala \
@@ -166,9 +169,9 @@ libvalacore_la_VALASOURCES = \
 	valayieldstatement.vala \
 	$(NULL)
 
-libvalacore_la_SOURCES = \
+libvala@PACKAGE_SUFFIX@_la_SOURCES = \
 	vala.vala.stamp \
-	$(libvalacore_la_VALASOURCES:.vala=.c) \
+	$(libvala_la_VALASOURCES:.vala=.c) \
 	$(NULL)
 
 valaincludedir = $(includedir)/vala@PACKAGE_SUFFIX@
@@ -177,7 +180,7 @@ valainclude_HEADERS = \
 	vala.h \
 	$(NULL)
 
-vala.vapi vala.vala.stamp: $(libvalacore_la_VALASOURCES)
+vala.vapi vala.vala.stamp: $(libvala_la_VALASOURCES)
 	$(VALA_V)$(VALAC) \
 		$(COVERAGE_VALAFLAGS) \
 		$(VALAFLAGS) \
@@ -185,22 +188,33 @@ vala.vapi vala.vala.stamp: $(libvalacore_la_VALASOURCES)
 		--vapidir $(top_srcdir)/vapi --pkg gmodule-2.0 --pkg gobject-2.0 \
 		--vapidir $(top_srcdir)/gee --pkg gee \
 		--pkg config \
+		--use-header \
 		-H vala.h \
 		--library vala \
 		$^
 	@touch $@
 
-libvalacore_la_LIBADD = \
+libvala@PACKAGE_SUFFIX@_la_LDFLAGS = \
+	-no-undefined \
+	$(NULL)
+
+libvala@PACKAGE_SUFFIX@_la_LIBADD = \
 	$(COVERAGE_LIBS) \
 	$(GLIB_LIBS) \
 	$(GMODULE_LIBS) \
 	$(top_builddir)/gee/libgee.la \
 	$(NULL)
 
-EXTRA_DIST = $(libvalacore_la_VALASOURCES) vala.vapi vala.vala.stamp
+vapidir = $(datadir)/vala/vapi
+dist_vapi_DATA = libvala@PACKAGE_SUFFIX@.vapi
+
+libvala@PACKAGE_SUFFIX@.vapi: $(top_srcdir)/gee/gee.vapi $(top_srcdir)/vala/vala.vapi
+	cat $^ > $@
+
+EXTRA_DIST = $(libvala_la_VALASOURCES) vala.vapi vala.vala.stamp vala.h
 
 MAINTAINERCLEANFILES = \
 	vala.vapi \
 	vala.h \
-	$(libvalacore_la_VALASOURCES:.vala=.c) \
+	$(libvala_la_VALASOURCES:.vala=.c) \
 	$(NULL)

@@ -25,11 +25,33 @@ topbuilddir=$builddir/..
 srcdir=$PWD/`dirname $0`
 topsrcdir=$srcdir/..
 vapidir=$topsrcdir/vapi
-
-export G_DEBUG=fatal_warnings
+run_prefix=""
 
 VALAC=$topbuilddir/compiler/valac$EXEEXT
-VALAFLAGS="--vapidir $vapidir --disable-warnings --main main --save-temps -X -g -X -O0 -X -pipe -X -lm -X -Werror=return-type -X -Werror=init-self -X -Werror=implicit -X -Werror=sequence-point -X -Werror=return-type -X -Werror=uninitialized -X -Werror=pointer-arith -X -Werror=int-to-pointer-cast -X -Werror=pointer-to-int-cast"
+VALAFLAGS="$VALAFLAGS \
+	--vapidir $vapidir \
+	--disable-warnings \
+	--main main \
+	--save-temps \
+	-X -g \
+	-X -O0 \
+	-X -pipe \
+	-X -lm \
+	-X -DGETTEXT_PACKAGE=\"valac\" \
+	-X -Werror=return-type \
+	-X -Werror=init-self \
+	-X -Werror=implicit \
+	-X -Werror=sequence-point \
+	-X -Werror=return-type \
+	-X -Werror=uninitialized \
+	-X -Werror=pointer-arith \
+	-X -Werror=int-to-pointer-cast \
+	-X -Werror=pointer-to-int-cast \
+	-X -Wformat \
+	-X -Werror=format-security \
+	-X -Werror=format-nonliteral \
+	-X -Werror=redundant-decls \
+	-X -Werror=int-conversion"
 VAPIGEN=$topbuilddir/vapigen/vapigen$EXEEXT
 VAPIGENFLAGS="--vapidir $vapidir"
 
@@ -51,8 +73,7 @@ function testheader() {
 		ns=${ns//-/_}
 		SOURCEFILE=$ns.vala
 	elif [ "$1" = "D-Bus" ]; then
-		echo 'eval `dbus-launch --sh-syntax`' >> prepare
-		echo 'trap "kill $DBUS_SESSION_BUS_PID" INT TERM EXIT' >> prepare
+		run_prefix="dbus-run-session -- $run_prefix"
 	elif [ "$1" = "GIR" ]; then
 		GIRTEST=1
 	fi
@@ -99,7 +120,8 @@ EOF
 function sourceend() {
 	if [ -n "$testpath" ]; then
 		if [ $INVALIDCODE -eq 1 ]; then
-			echo "! $VALAC --vapidir $vapidir -C $SOURCEFILE" > check
+			PACKAGEFLAGS=$([ -z "$PACKAGES" ] || echo $PACKAGES | xargs -n 1 echo -n " --pkg")
+			echo "! $VALAC $VALAFLAGS $PACKAGEFLAGS -C $SOURCEFILE" > check
 		elif [ $GIRTEST -eq 1 ]; then
 			if [ $PART -eq 1 ]; then
 				echo "  </namespace>" >> $SOURCEFILE
@@ -149,7 +171,7 @@ for testfile in "$@"; do
 		cat "$srcdir/$testfile" >> $SOURCEFILE
 		echo "}" >> $SOURCEFILE
 
-		echo "./test$EXEEXT /$testpath" > check
+		echo "G_DEBUG=fatal-warnings ./test$EXEEXT /$testpath" > check
 		;;
 	*.test)
 		PART=0
@@ -192,7 +214,7 @@ for testfile in "$@"; do
 	cat << EOF >> checkall
 echo -n -e "  /$testpath: \033[72G"
 ((all++))
-if bash $ns.check &>log; then
+if $run_prefix bash $ns.check &>log; then
 	echo -e "\033[0;32mOK\033[m"
 else
 	((fail++))

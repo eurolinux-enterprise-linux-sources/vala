@@ -163,7 +163,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 
 		// declare proxy_get_type function
 		var proxy_get_type = new CCodeFunction (get_type_name, "GType");
-		proxy_get_type.attributes = "G_GNUC_CONST";
+		proxy_get_type.modifiers = CCodeModifiers.CONST;
 		decl_space.add_function_declaration (proxy_get_type);
 
 		if (in_plugin) {
@@ -407,7 +407,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 
 		if (bus_get_proxy_async || conn_get_proxy_async) {
 			if (expr.is_yield_expression) {
-				int state = next_coroutine_state++;
+				int state = emit_context.next_coroutine_state++;
 
 				ccode.add_assignment (new CCodeMemberAccess.pointer (new CCodeIdentifier ("_data_"), "_state_"), new CCodeConstant (state.to_string ()));
 				ccode.add_expression (ccall);
@@ -436,7 +436,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 	}
 
 	string generate_dbus_signal_handler (Signal sig, ObjectTypeSymbol sym) {
-		string wrapper_name = "_dbus_handle_%s_%s".printf (get_ccode_lower_case_name (sym), get_ccode_name (sig));
+		string wrapper_name = "_dbus_handle_%s_%s".printf (get_ccode_lower_case_name (sym), get_ccode_lower_case_name (sig));
 
 		var function = new CCodeFunction (wrapper_name);
 		function.modifiers = CCodeModifiers.STATIC;
@@ -563,6 +563,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 		bool uses_fd = dbus_method_uses_file_descriptor (m);
 		if (uses_fd) {
 			cfile.add_include ("gio/gunixfdlist.h");
+			ccode.add_declaration ("GUnixFDList*", new CCodeVariableDeclarator ("_fd_list"));
 		}
 
 		bool has_error_argument = (m.get_error_types ().size > 0);
@@ -703,13 +704,15 @@ public class Vala.GDBusClientModule : GDBusModule {
 				ccall.add_argument (new CCodeConstant ("NULL"));
 				ccall.add_argument (cancellable);
 
+				CCodeFunctionCall res_wrapper = null;
+
 				// use wrapper as source_object wouldn't be correct otherwise
 				ccall.add_argument (new CCodeIdentifier (generate_async_callback_wrapper ()));
-				var res_wrapper = new CCodeFunctionCall (new CCodeIdentifier ("g_simple_async_result_new"));
+				res_wrapper = new CCodeFunctionCall (new CCodeIdentifier ("g_task_new"));
 				res_wrapper.add_argument (new CCodeCastExpression (new CCodeIdentifier ("self"), "GObject *"));
+				res_wrapper.add_argument (new CCodeConstant ("NULL"));
 				res_wrapper.add_argument (new CCodeIdentifier ("_callback_"));
 				res_wrapper.add_argument (new CCodeIdentifier ("_user_data_"));
-				res_wrapper.add_argument (new CCodeConstant ("NULL"));
 				ccall.add_argument (res_wrapper);
 
 				ccode.add_expression (ccall);
@@ -725,12 +728,21 @@ public class Vala.GDBusClientModule : GDBusModule {
 			ccall.add_argument (connection);
 
 			// unwrap async result
-			var inner_res = new CCodeFunctionCall (new CCodeIdentifier ("g_simple_async_result_get_op_res_gpointer"));
-			inner_res.add_argument (new CCodeCastExpression (new CCodeIdentifier ("_res_"), "GSimpleAsyncResult *"));
-			ccall.add_argument (inner_res);
+			ccode.add_declaration ("GAsyncResult", new CCodeVariableDeclarator ("*_inner_res"));
 
+			var inner_res = new CCodeFunctionCall (new CCodeIdentifier ("g_task_propagate_pointer"));
+			inner_res.add_argument (new CCodeCastExpression (new CCodeIdentifier ("_res_"), "GTask *"));
+			inner_res.add_argument (new CCodeConstant ("NULL"));
+			ccode.add_assignment (new CCodeIdentifier ("_inner_res"), inner_res);
+
+			ccall.add_argument (new CCodeIdentifier ("_inner_res"));
 			ccall.add_argument (error_argument);
 			ccode.add_assignment (new CCodeIdentifier ("_reply_message"), ccall);
+
+			// _inner_res is guaranteed to be non-NULL, so just unref it
+			var unref_inner_res = new CCodeFunctionCall (new CCodeIdentifier ("g_object_unref"));
+			unref_inner_res.add_argument (new CCodeIdentifier ("_inner_res"));
+			ccode.add_expression (unref_inner_res);
 		}
 
 		if (call_type == CallType.SYNC || call_type == CallType.FINISH) {
@@ -758,7 +770,6 @@ public class Vala.GDBusClientModule : GDBusModule {
 
 			if (uses_fd) {
 				ccode.add_declaration ("gint", new CCodeVariableDeclarator.zero ("_fd_index", new CCodeConstant ("0")));
-				ccode.add_declaration ("GUnixFDList*", new CCodeVariableDeclarator ("_fd_list"));
 				ccode.add_declaration ("gint", new CCodeVariableDeclarator ("_fd"));
 			}
 
@@ -793,7 +804,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 							}
 						}
 
-						var target = new CCodeIdentifier ("_vala_" + param.name);
+						var target = new CCodeIdentifier ("_vala_%s".printf (param.name));
 						bool may_fail;
 
 						receive_dbus_value (param.variable_type, new CCodeIdentifier ("_reply_message"), new CCodeIdentifier ("_reply_iter"), target, param, error_argument, out may_fail);
@@ -1034,26 +1045,33 @@ public class Vala.GDBusClientModule : GDBusModule {
 		} else {
 			ccode.add_declaration (get_ccode_name (prop.get_accessor.value_type), new CCodeVariableDeclarator ("_result"));
 
-			if (array_type != null) {
-				for (int dim = 1; dim <= array_type.rank; dim++) {
-					ccode.add_declaration ("int", new CCodeVariableDeclarator ("_result_length%d".printf (dim), new CCodeConstant ("0")));
+			if (get_dbus_signature (prop) != null) {
+				// raw GVariant
+				ccode.add_assignment (new CCodeIdentifier ("_result"), new CCodeIdentifier("_inner_reply"));
+			} else {
+				if (array_type != null) {
+					for (int dim = 1; dim <= array_type.rank; dim++) {
+						ccode.add_declaration ("int", new CCodeVariableDeclarator ("_result_length%d".printf (dim), new CCodeConstant ("0")));
+					}
 				}
-			}
 
-			var result = deserialize_expression (prop.get_accessor.value_type, new CCodeIdentifier ("_inner_reply"), new CCodeIdentifier ("_result"));
-			ccode.add_assignment (new CCodeIdentifier ("_result"), result);
+				var result = deserialize_expression (prop.get_accessor.value_type, new CCodeIdentifier ("_inner_reply"), new CCodeIdentifier ("_result"));
+				ccode.add_assignment (new CCodeIdentifier ("_result"), result);
 
-			if (array_type != null) {
-				for (int dim = 1; dim <= array_type.rank; dim++) {
-					// TODO check that parameter is not NULL (out parameters are optional)
-					ccode.add_assignment (new CCodeUnaryExpression (CCodeUnaryOperator.POINTER_INDIRECTION, new CCodeIdentifier ("result_length%d".printf (dim))), new CCodeIdentifier ("_result_length%d".printf (dim)));
+				if (array_type != null) {
+					for (int dim = 1; dim <= array_type.rank; dim++) {
+						// TODO check that parameter is not NULL (out parameters are optional)
+						ccode.add_assignment (new CCodeUnaryExpression (CCodeUnaryOperator.POINTER_INDIRECTION, new CCodeIdentifier ("result_length%d".printf (dim))), new CCodeIdentifier ("_result_length%d".printf (dim)));
+					}
 				}
 			}
 		}
 
-		unref_reply = new CCodeFunctionCall (new CCodeIdentifier ("g_variant_unref"));
-		unref_reply.add_argument (new CCodeIdentifier ("_inner_reply"));
-		ccode.add_expression (unref_reply);
+		if (prop.property_type.is_real_non_null_struct_type () || get_dbus_signature (prop) == null) {
+			unref_reply = new CCodeFunctionCall (new CCodeIdentifier ("g_variant_unref"));
+			unref_reply.add_argument (new CCodeIdentifier ("_inner_reply"));
+			ccode.add_expression (unref_reply);
+		}
 
 		if (prop.property_type.is_real_non_null_struct_type ()) {
 			ccode.add_return ();

@@ -23,67 +23,30 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
+#include "valaccode.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <glib/gstdio.h>
 #include <version.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <utime.h>
 #include <gobject/gvaluecollector.h>
 
-
-#define VALA_TYPE_CCODE_WRITER (vala_ccode_writer_get_type ())
-#define VALA_CCODE_WRITER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_WRITER, ValaCCodeWriter))
-#define VALA_CCODE_WRITER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_WRITER, ValaCCodeWriterClass))
-#define VALA_IS_CCODE_WRITER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_WRITER))
-#define VALA_IS_CCODE_WRITER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_WRITER))
-#define VALA_CCODE_WRITER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_WRITER, ValaCCodeWriterClass))
-
-typedef struct _ValaCCodeWriter ValaCCodeWriter;
-typedef struct _ValaCCodeWriterClass ValaCCodeWriterClass;
-typedef struct _ValaCCodeWriterPrivate ValaCCodeWriterPrivate;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _fclose0(var) ((var == NULL) ? NULL : (var = (fclose (var), NULL)))
 #define _g_mapped_file_unref0(var) ((var == NULL) ? NULL : (var = (g_mapped_file_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
-
-#define VALA_TYPE_CCODE_NODE (vala_ccode_node_get_type ())
-#define VALA_CCODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_NODE, ValaCCodeNode))
-#define VALA_CCODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_NODE, ValaCCodeNodeClass))
-#define VALA_IS_CCODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_NODE))
-#define VALA_IS_CCODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_NODE))
-#define VALA_CCODE_NODE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_NODE, ValaCCodeNodeClass))
-
-typedef struct _ValaCCodeNode ValaCCodeNode;
-typedef struct _ValaCCodeNodeClass ValaCCodeNodeClass;
-
-#define VALA_TYPE_CCODE_LINE_DIRECTIVE (vala_ccode_line_directive_get_type ())
-#define VALA_CCODE_LINE_DIRECTIVE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_LINE_DIRECTIVE, ValaCCodeLineDirective))
-#define VALA_CCODE_LINE_DIRECTIVE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_LINE_DIRECTIVE, ValaCCodeLineDirectiveClass))
-#define VALA_IS_CCODE_LINE_DIRECTIVE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_LINE_DIRECTIVE))
-#define VALA_IS_CCODE_LINE_DIRECTIVE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_LINE_DIRECTIVE))
-#define VALA_CCODE_LINE_DIRECTIVE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_LINE_DIRECTIVE, ValaCCodeLineDirectiveClass))
-
-typedef struct _ValaCCodeLineDirective ValaCCodeLineDirective;
-typedef struct _ValaCCodeLineDirectiveClass ValaCCodeLineDirectiveClass;
 #define _g_regex_unref0(var) ((var == NULL) ? NULL : (var = (g_regex_unref (var), NULL)))
 typedef struct _ValaParamSpecCCodeWriter ValaParamSpecCCodeWriter;
 #define _vala_assert(expr, msg) if G_LIKELY (expr) ; else g_assertion_message_expr (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
 #define _vala_return_if_fail(expr, msg) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return; }
 #define _vala_return_val_if_fail(expr, msg, val) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return val; }
 #define _vala_warn_if_fail(expr, msg) if G_LIKELY (expr) ; else g_warn_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
-
-struct _ValaCCodeWriter {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	ValaCCodeWriterPrivate * priv;
-};
-
-struct _ValaCCodeWriterClass {
-	GTypeClass parent_class;
-	void (*finalize) (ValaCCodeWriter *self);
-};
 
 struct _ValaCCodeWriterPrivate {
 	gchar* _filename;
@@ -104,66 +67,41 @@ struct _ValaParamSpecCCodeWriter {
 
 
 static gpointer vala_ccode_writer_parent_class = NULL;
+static GRegex* vala_ccode_writer_fix_indent_regex;
+static GRegex* vala_ccode_writer_fix_indent_regex = NULL;
 
-gpointer vala_ccode_writer_ref (gpointer instance);
-void vala_ccode_writer_unref (gpointer instance);
-GParamSpec* vala_param_spec_ccode_writer (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_ccode_writer (GValue* value, gpointer v_object);
-void vala_value_take_ccode_writer (GValue* value, gpointer v_object);
-gpointer vala_value_get_ccode_writer (const GValue* value);
-GType vala_ccode_writer_get_type (void) G_GNUC_CONST;
 #define VALA_CCODE_WRITER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_CCODE_WRITER, ValaCCodeWriterPrivate))
-enum  {
-	VALA_CCODE_WRITER_DUMMY_PROPERTY
-};
-ValaCCodeWriter* vala_ccode_writer_new (const gchar* filename, const gchar* source_filename);
-ValaCCodeWriter* vala_ccode_writer_construct (GType object_type, const gchar* filename, const gchar* source_filename);
-void vala_ccode_writer_set_filename (ValaCCodeWriter* self, const gchar* value);
-gboolean vala_ccode_writer_open (ValaCCodeWriter* self, gboolean write_version);
-const gchar* vala_ccode_writer_get_filename (ValaCCodeWriter* self);
-void vala_ccode_writer_write_string (ValaCCodeWriter* self, const gchar* s);
-void vala_ccode_writer_write_newline (ValaCCodeWriter* self);
-void vala_ccode_writer_close (ValaCCodeWriter* self);
-gpointer vala_ccode_node_ref (gpointer instance);
-void vala_ccode_node_unref (gpointer instance);
-GParamSpec* vala_param_spec_ccode_node (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_ccode_node (GValue* value, gpointer v_object);
-void vala_value_take_ccode_node (GValue* value, gpointer v_object);
-gpointer vala_value_get_ccode_node (const GValue* value);
-GType vala_ccode_node_get_type (void) G_GNUC_CONST;
-GType vala_ccode_line_directive_get_type (void) G_GNUC_CONST;
-void vala_ccode_writer_write_indent (ValaCCodeWriter* self, ValaCCodeLineDirective* line);
-gboolean vala_ccode_writer_get_line_directives (ValaCCodeWriter* self);
-void vala_ccode_node_write (ValaCCodeNode* self, ValaCCodeWriter* writer);
-gboolean vala_ccode_writer_get_bol (ValaCCodeWriter* self);
-void vala_ccode_writer_write_begin_block (ValaCCodeWriter* self);
-void vala_ccode_writer_write_end_block (ValaCCodeWriter* self);
-void vala_ccode_writer_write_comment (ValaCCodeWriter* self, const gchar* text);
-void vala_ccode_writer_set_line_directives (ValaCCodeWriter* self, gboolean value);
-static void vala_ccode_writer_finalize (ValaCCodeWriter* obj);
-static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
-static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
+static void vala_ccode_writer_finalize (ValaCCodeWriter * obj);
+static void _vala_array_destroy (gpointer array,
+                          gint array_length,
+                          GDestroyNotify destroy_func);
+static void _vala_array_free (gpointer array,
+                       gint array_length,
+                       GDestroyNotify destroy_func);
 static gint _vala_array_length (gpointer array);
 
 
-ValaCCodeWriter* vala_ccode_writer_construct (GType object_type, const gchar* filename, const gchar* source_filename) {
+ValaCCodeWriter*
+vala_ccode_writer_construct (GType object_type,
+                             const gchar* filename,
+                             const gchar* source_filename)
+{
 	ValaCCodeWriter* self = NULL;
-	const gchar* _tmp0_ = NULL;
-	const gchar* _tmp1_ = NULL;
-	gchar* _tmp2_ = NULL;
+	gchar* _tmp0_;
 	g_return_val_if_fail (filename != NULL, NULL);
 	self = (ValaCCodeWriter*) g_type_create_instance (object_type);
-	_tmp0_ = filename;
-	vala_ccode_writer_set_filename (self, _tmp0_);
-	_tmp1_ = source_filename;
-	_tmp2_ = g_strdup (_tmp1_);
+	vala_ccode_writer_set_filename (self, filename);
+	_tmp0_ = g_strdup (source_filename);
 	_g_free0 (self->priv->source_filename);
-	self->priv->source_filename = _tmp2_;
+	self->priv->source_filename = _tmp0_;
 	return self;
 }
 
 
-ValaCCodeWriter* vala_ccode_writer_new (const gchar* filename, const gchar* source_filename) {
+ValaCCodeWriter*
+vala_ccode_writer_new (const gchar* filename,
+                       const gchar* source_filename)
+{
 	return vala_ccode_writer_construct (VALA_TYPE_CCODE_WRITER, filename, source_filename);
 }
 
@@ -174,112 +112,111 @@ ValaCCodeWriter* vala_ccode_writer_new (const gchar* filename, const gchar* sour
  * @return true if the file has been opened successfully,
  *         false otherwise
  */
-gboolean vala_ccode_writer_open (ValaCCodeWriter* self, gboolean write_version) {
+gboolean
+vala_ccode_writer_open (ValaCCodeWriter* self,
+                        gboolean write_version)
+{
 	gboolean result = FALSE;
-	const gchar* _tmp0_ = NULL;
-	gboolean _tmp1_ = FALSE;
-	gboolean _tmp2_ = FALSE;
-	FILE* _tmp12_ = NULL;
-	gchar* _tmp13_ = NULL;
-	gboolean _tmp14_ = FALSE;
+	const gchar* _tmp0_;
+	gboolean _tmp1_;
+	FILE* _tmp11_;
+	gchar* _tmp12_ = NULL;
 	gchar* opening = NULL;
-	gchar* _tmp23_ = NULL;
-	const gchar* _tmp24_ = NULL;
-	const gchar* _tmp25_ = NULL;
+	gchar* _tmp21_;
+	const gchar* _tmp22_;
+	const gchar* _tmp23_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_filename;
-	_tmp1_ = g_file_test (_tmp0_, G_FILE_TEST_EXISTS);
-	self->priv->file_exists = _tmp1_;
-	_tmp2_ = self->priv->file_exists;
-	if (_tmp2_) {
-		const gchar* _tmp3_ = NULL;
-		gchar* _tmp4_ = NULL;
-		const gchar* _tmp5_ = NULL;
-		FILE* _tmp6_ = NULL;
-		_tmp3_ = self->priv->_filename;
-		_tmp4_ = g_strdup_printf ("%s.valatmp", _tmp3_);
+	self->priv->file_exists = g_file_test (_tmp0_, G_FILE_TEST_EXISTS);
+	_tmp1_ = self->priv->file_exists;
+	if (_tmp1_) {
+		const gchar* _tmp2_;
+		gchar* _tmp3_;
+		const gchar* _tmp4_;
+		FILE* _tmp5_;
+		_tmp2_ = self->priv->_filename;
+		_tmp3_ = g_strdup_printf ("%s.valatmp", _tmp2_);
 		_g_free0 (self->priv->temp_filename);
-		self->priv->temp_filename = _tmp4_;
-		_tmp5_ = self->priv->temp_filename;
-		_tmp6_ = g_fopen (_tmp5_, "w");
+		self->priv->temp_filename = _tmp3_;
+		_tmp4_ = self->priv->temp_filename;
+		_tmp5_ = g_fopen (_tmp4_, "w");
 		_fclose0 (self->priv->stream);
-		self->priv->stream = _tmp6_;
+		self->priv->stream = _tmp5_;
 	} else {
 		gchar* dirname = NULL;
-		const gchar* _tmp7_ = NULL;
-		gchar* _tmp8_ = NULL;
-		const gchar* _tmp9_ = NULL;
-		const gchar* _tmp10_ = NULL;
-		FILE* _tmp11_ = NULL;
-		_tmp7_ = self->priv->_filename;
-		_tmp8_ = g_path_get_dirname (_tmp7_);
-		dirname = _tmp8_;
-		_tmp9_ = dirname;
-		g_mkdir_with_parents (_tmp9_, 0755);
-		_tmp10_ = self->priv->_filename;
-		_tmp11_ = g_fopen (_tmp10_, "w");
+		const gchar* _tmp6_;
+		gchar* _tmp7_;
+		const gchar* _tmp8_;
+		const gchar* _tmp9_;
+		FILE* _tmp10_;
+		_tmp6_ = self->priv->_filename;
+		_tmp7_ = g_path_get_dirname (_tmp6_);
+		dirname = _tmp7_;
+		_tmp8_ = dirname;
+		g_mkdir_with_parents (_tmp8_, 0755);
+		_tmp9_ = self->priv->_filename;
+		_tmp10_ = g_fopen (_tmp9_, "w");
 		_fclose0 (self->priv->stream);
-		self->priv->stream = _tmp11_;
+		self->priv->stream = _tmp10_;
 		_g_free0 (dirname);
 	}
-	_tmp12_ = self->priv->stream;
-	if (_tmp12_ == NULL) {
+	_tmp11_ = self->priv->stream;
+	if (_tmp11_ == NULL) {
 		result = FALSE;
 		return result;
 	}
-	_tmp14_ = write_version;
-	if (_tmp14_) {
-		const gchar* _tmp15_ = NULL;
-		gchar* _tmp16_ = NULL;
-		gchar* _tmp17_ = NULL;
-		gchar* _tmp18_ = NULL;
-		_tmp15_ = self->priv->_filename;
-		_tmp16_ = g_path_get_basename (_tmp15_);
-		_tmp17_ = _tmp16_;
-		_tmp18_ = g_strdup_printf ("/* %s generated by valac %s, the Vala compiler", _tmp17_, BUILD_VERSION);
-		_g_free0 (_tmp13_);
-		_tmp13_ = _tmp18_;
-		_g_free0 (_tmp17_);
+	if (write_version) {
+		const gchar* _tmp13_;
+		gchar* _tmp14_;
+		gchar* _tmp15_;
+		gchar* _tmp16_;
+		_tmp13_ = self->priv->_filename;
+		_tmp14_ = g_path_get_basename (_tmp13_);
+		_tmp15_ = _tmp14_;
+		_tmp16_ = g_strdup_printf ("/* %s generated by valac %s, the Vala compiler", _tmp15_, BUILD_VERSION);
+		_g_free0 (_tmp12_);
+		_tmp12_ = _tmp16_;
+		_g_free0 (_tmp15_);
 	} else {
-		const gchar* _tmp19_ = NULL;
-		gchar* _tmp20_ = NULL;
-		gchar* _tmp21_ = NULL;
-		gchar* _tmp22_ = NULL;
-		_tmp19_ = self->priv->_filename;
-		_tmp20_ = g_path_get_basename (_tmp19_);
-		_tmp21_ = _tmp20_;
-		_tmp22_ = g_strdup_printf ("/* %s generated by valac, the Vala compiler", _tmp21_);
-		_g_free0 (_tmp13_);
-		_tmp13_ = _tmp22_;
-		_g_free0 (_tmp21_);
+		const gchar* _tmp17_;
+		gchar* _tmp18_;
+		gchar* _tmp19_;
+		gchar* _tmp20_;
+		_tmp17_ = self->priv->_filename;
+		_tmp18_ = g_path_get_basename (_tmp17_);
+		_tmp19_ = _tmp18_;
+		_tmp20_ = g_strdup_printf ("/* %s generated by valac, the Vala compiler", _tmp19_);
+		_g_free0 (_tmp12_);
+		_tmp12_ = _tmp20_;
+		_g_free0 (_tmp19_);
 	}
-	_tmp23_ = g_strdup (_tmp13_);
-	opening = _tmp23_;
-	_tmp24_ = opening;
-	vala_ccode_writer_write_string (self, _tmp24_);
-	_tmp25_ = self->priv->source_filename;
-	if (_tmp25_ != NULL) {
-		const gchar* _tmp26_ = NULL;
-		gchar* _tmp27_ = NULL;
-		gchar* _tmp28_ = NULL;
-		gchar* _tmp29_ = NULL;
-		gchar* _tmp30_ = NULL;
+	_tmp21_ = g_strdup (_tmp12_);
+	opening = _tmp21_;
+	_tmp22_ = opening;
+	vala_ccode_writer_write_string (self, _tmp22_);
+	_tmp23_ = self->priv->source_filename;
+	if (_tmp23_ != NULL) {
+		const gchar* _tmp24_;
+		gchar* _tmp25_;
+		gchar* _tmp26_;
+		gchar* _tmp27_;
+		gchar* _tmp28_;
 		vala_ccode_writer_write_newline (self);
-		_tmp26_ = self->priv->source_filename;
-		_tmp27_ = g_path_get_basename (_tmp26_);
+		_tmp24_ = self->priv->source_filename;
+		_tmp25_ = g_path_get_basename (_tmp24_);
+		_tmp26_ = _tmp25_;
+		_tmp27_ = g_strdup_printf (" * generated from %s", _tmp26_);
 		_tmp28_ = _tmp27_;
-		_tmp29_ = g_strdup_printf (" * generated from %s", _tmp28_);
-		_tmp30_ = _tmp29_;
-		vala_ccode_writer_write_string (self, _tmp30_);
-		_g_free0 (_tmp30_);
+		vala_ccode_writer_write_string (self, _tmp28_);
 		_g_free0 (_tmp28_);
+		_g_free0 (_tmp26_);
 	}
 	vala_ccode_writer_write_string (self, ", do not modify */");
 	vala_ccode_writer_write_newline (self);
 	vala_ccode_writer_write_newline (self);
 	result = TRUE;
 	_g_free0 (opening);
-	_g_free0 (_tmp13_);
+	_g_free0 (_tmp12_);
 	return result;
 }
 
@@ -287,8 +224,10 @@ gboolean vala_ccode_writer_open (ValaCCodeWriter* self, gboolean write_version) 
 /**
  * Closes the file.
  */
-void vala_ccode_writer_close (ValaCCodeWriter* self) {
-	gboolean _tmp0_ = FALSE;
+void
+vala_ccode_writer_close (ValaCCodeWriter* self)
+{
+	gboolean _tmp0_;
 	GError * _inner_error_ = NULL;
 	g_return_if_fail (self != NULL);
 	_fclose0 (self->priv->stream);
@@ -296,21 +235,19 @@ void vala_ccode_writer_close (ValaCCodeWriter* self) {
 	_tmp0_ = self->priv->file_exists;
 	if (_tmp0_) {
 		gboolean changed = FALSE;
-		gboolean _tmp16_ = FALSE;
+		gboolean _tmp13_;
 		changed = TRUE;
 		{
 			GMappedFile* old_file = NULL;
-			const gchar* _tmp1_ = NULL;
-			GMappedFile* _tmp2_ = NULL;
+			const gchar* _tmp1_;
+			GMappedFile* _tmp2_;
 			GMappedFile* new_file = NULL;
-			const gchar* _tmp3_ = NULL;
-			GMappedFile* _tmp4_ = NULL;
+			const gchar* _tmp3_;
+			GMappedFile* _tmp4_;
 			gsize len = 0UL;
-			GMappedFile* _tmp5_ = NULL;
-			gsize _tmp6_ = 0UL;
-			gsize _tmp7_ = 0UL;
-			GMappedFile* _tmp8_ = NULL;
-			gsize _tmp9_ = 0UL;
+			GMappedFile* _tmp5_;
+			gsize _tmp6_;
+			GMappedFile* _tmp7_;
 			_tmp1_ = self->priv->_filename;
 			_tmp2_ = g_mapped_file_new (_tmp1_, FALSE, &_inner_error_);
 			old_file = _tmp2_;
@@ -336,25 +273,21 @@ void vala_ccode_writer_close (ValaCCodeWriter* self) {
 				return;
 			}
 			_tmp5_ = old_file;
-			_tmp6_ = g_mapped_file_get_length (_tmp5_);
-			len = _tmp6_;
-			_tmp7_ = len;
-			_tmp8_ = new_file;
-			_tmp9_ = g_mapped_file_get_length (_tmp8_);
-			if (_tmp7_ == _tmp9_) {
-				GMappedFile* _tmp10_ = NULL;
-				gchar* _tmp11_ = NULL;
-				GMappedFile* _tmp12_ = NULL;
-				gchar* _tmp13_ = NULL;
-				gsize _tmp14_ = 0UL;
-				gint _tmp15_ = 0;
-				_tmp10_ = old_file;
+			len = g_mapped_file_get_length (_tmp5_);
+			_tmp6_ = len;
+			_tmp7_ = new_file;
+			if (_tmp6_ == g_mapped_file_get_length (_tmp7_)) {
+				GMappedFile* _tmp8_;
+				gchar* _tmp9_;
+				GMappedFile* _tmp10_;
+				gchar* _tmp11_;
+				gsize _tmp12_;
+				_tmp8_ = old_file;
+				_tmp9_ = g_mapped_file_get_contents (_tmp8_);
+				_tmp10_ = new_file;
 				_tmp11_ = g_mapped_file_get_contents (_tmp10_);
-				_tmp12_ = new_file;
-				_tmp13_ = g_mapped_file_get_contents (_tmp12_);
-				_tmp14_ = len;
-				_tmp15_ = memcmp (_tmp11_, _tmp13_, _tmp14_);
-				if (_tmp15_ == 0) {
+				_tmp12_ = len;
+				if (memcmp (_tmp9_, _tmp11_, _tmp12_) == 0) {
 					changed = FALSE;
 				}
 			}
@@ -379,17 +312,57 @@ void vala_ccode_writer_close (ValaCCodeWriter* self) {
 			g_clear_error (&_inner_error_);
 			return;
 		}
-		_tmp16_ = changed;
-		if (_tmp16_) {
-			const gchar* _tmp17_ = NULL;
-			const gchar* _tmp18_ = NULL;
-			_tmp17_ = self->priv->temp_filename;
-			_tmp18_ = self->priv->_filename;
-			g_rename (_tmp17_, _tmp18_);
+		_tmp13_ = changed;
+		if (_tmp13_) {
+			const gchar* _tmp14_;
+			const gchar* _tmp15_;
+			_tmp14_ = self->priv->temp_filename;
+			_tmp15_ = self->priv->_filename;
+			g_rename (_tmp14_, _tmp15_);
 		} else {
-			const gchar* _tmp19_ = NULL;
-			_tmp19_ = self->priv->temp_filename;
-			g_unlink (_tmp19_);
+			const gchar* _tmp16_;
+			const gchar* _tmp17_;
+			_tmp16_ = self->priv->temp_filename;
+			g_unlink (_tmp16_);
+			_tmp17_ = self->priv->source_filename;
+			if (_tmp17_ != NULL) {
+				struct stat stats = {0};
+				const gchar* _tmp18_;
+				struct stat target_stats = {0};
+				const gchar* _tmp19_;
+				struct stat _tmp20_;
+				time_t _tmp21_;
+				struct stat _tmp22_;
+				time_t _tmp23_;
+				_tmp18_ = self->priv->source_filename;
+				g_stat (_tmp18_, &stats);
+				_tmp19_ = self->priv->_filename;
+				g_stat (_tmp19_, &target_stats);
+				_tmp20_ = stats;
+				_tmp21_ = _tmp20_.st_mtime;
+				_tmp22_ = target_stats;
+				_tmp23_ = _tmp22_.st_mtime;
+				if (_tmp21_ >= _tmp23_) {
+					struct utimbuf timebuf = {0};
+					struct stat _tmp24_;
+					time_t _tmp25_;
+					struct stat _tmp26_;
+					time_t _tmp27_;
+					struct utimbuf _tmp28_ = {0};
+					const gchar* _tmp29_;
+					struct utimbuf _tmp30_;
+					_tmp24_ = stats;
+					_tmp25_ = _tmp24_.st_atime;
+					_tmp26_ = stats;
+					_tmp27_ = _tmp26_.st_mtime;
+					_tmp28_.actime = _tmp25_ + 1;
+					_tmp28_.modtime = _tmp27_ + 1;
+					timebuf = _tmp28_;
+					_tmp29_ = self->priv->_filename;
+					_tmp30_ = timebuf;
+					g_utime (_tmp29_, &_tmp30_);
+				}
+			}
 		}
 	}
 }
@@ -398,76 +371,76 @@ void vala_ccode_writer_close (ValaCCodeWriter* self) {
 /**
  * Writes tabs according to the current indent level.
  */
-void vala_ccode_writer_write_indent (ValaCCodeWriter* self, ValaCCodeLineDirective* line) {
-	gboolean _tmp0_ = FALSE;
-	gboolean _tmp10_ = FALSE;
-	gboolean _tmp11_ = FALSE;
+void
+vala_ccode_writer_write_indent (ValaCCodeWriter* self,
+                                ValaCCodeLineDirective* line)
+{
+	gboolean _tmp0_;
+	gboolean _tmp8_;
+	FILE* _tmp9_;
+	gint _tmp10_;
+	gchar* _tmp11_;
+	gchar* _tmp12_;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = self->priv->_line_directives;
 	if (_tmp0_) {
-		ValaCCodeLineDirective* _tmp1_ = NULL;
-		_tmp1_ = line;
-		if (_tmp1_ != NULL) {
-			ValaCCodeLineDirective* _tmp2_ = NULL;
-			_tmp2_ = line;
-			vala_ccode_node_write ((ValaCCodeNode*) _tmp2_, self);
+		if (line != NULL) {
+			vala_ccode_node_write ((ValaCCodeNode*) line, self);
 			self->priv->using_line_directive = TRUE;
 		} else {
-			gboolean _tmp3_ = FALSE;
-			_tmp3_ = self->priv->using_line_directive;
-			if (_tmp3_) {
-				gint _tmp4_ = 0;
-				const gchar* _tmp5_ = NULL;
-				gchar* _tmp6_ = NULL;
-				gchar* _tmp7_ = NULL;
-				gchar* _tmp8_ = NULL;
-				gchar* _tmp9_ = NULL;
-				_tmp4_ = self->priv->current_line_number;
-				_tmp5_ = self->priv->_filename;
-				_tmp6_ = g_path_get_basename (_tmp5_);
+			gboolean _tmp1_;
+			_tmp1_ = self->priv->using_line_directive;
+			if (_tmp1_) {
+				gint _tmp2_;
+				const gchar* _tmp3_;
+				gchar* _tmp4_;
+				gchar* _tmp5_;
+				gchar* _tmp6_;
+				gchar* _tmp7_;
+				_tmp2_ = self->priv->current_line_number;
+				_tmp3_ = self->priv->_filename;
+				_tmp4_ = g_path_get_basename (_tmp3_);
+				_tmp5_ = _tmp4_;
+				_tmp6_ = g_strdup_printf ("#line %d \"%s\"", _tmp2_ + 1, _tmp5_);
 				_tmp7_ = _tmp6_;
-				_tmp8_ = g_strdup_printf ("#line %d \"%s\"", _tmp4_ + 1, _tmp7_);
-				_tmp9_ = _tmp8_;
-				vala_ccode_writer_write_string (self, _tmp9_);
-				_g_free0 (_tmp9_);
+				vala_ccode_writer_write_string (self, _tmp7_);
 				_g_free0 (_tmp7_);
+				_g_free0 (_tmp5_);
 				vala_ccode_writer_write_newline (self);
 				self->priv->using_line_directive = FALSE;
 			}
 		}
 	}
-	_tmp10_ = vala_ccode_writer_get_bol (self);
-	_tmp11_ = _tmp10_;
-	if (!_tmp11_) {
+	_tmp8_ = self->priv->_bol;
+	if (!_tmp8_) {
 		vala_ccode_writer_write_newline (self);
 	}
-	{
-		gint i = 0;
-		i = 0;
-		{
-			gboolean _tmp12_ = FALSE;
-			_tmp12_ = TRUE;
-			while (TRUE) {
-				gint _tmp14_ = 0;
-				gint _tmp15_ = 0;
-				FILE* _tmp16_ = NULL;
-				if (!_tmp12_) {
-					gint _tmp13_ = 0;
-					_tmp13_ = i;
-					i = _tmp13_ + 1;
-				}
-				_tmp12_ = FALSE;
-				_tmp14_ = i;
-				_tmp15_ = self->priv->indent;
-				if (!(_tmp14_ < _tmp15_)) {
-					break;
-				}
-				_tmp16_ = self->priv->stream;
-				fputc ('\t', _tmp16_);
-			}
-		}
-	}
+	_tmp9_ = self->priv->stream;
+	_tmp10_ = self->priv->indent;
+	_tmp11_ = g_strnfill ((gsize) _tmp10_, '\t');
+	_tmp12_ = _tmp11_;
+	fputs (_tmp12_, _tmp9_);
+	_g_free0 (_tmp12_);
 	self->priv->_bol = FALSE;
+}
+
+
+/**
+ * Writes n spaces.
+ */
+void
+vala_ccode_writer_write_nspaces (ValaCCodeWriter* self,
+                                 guint n)
+{
+	FILE* _tmp0_;
+	gchar* _tmp1_;
+	gchar* _tmp2_;
+	g_return_if_fail (self != NULL);
+	_tmp0_ = self->priv->stream;
+	_tmp1_ = g_strnfill ((gsize) n, ' ');
+	_tmp2_ = _tmp1_;
+	fputs (_tmp2_, _tmp0_);
+	_g_free0 (_tmp2_);
 }
 
 
@@ -476,14 +449,15 @@ void vala_ccode_writer_write_indent (ValaCCodeWriter* self, ValaCCodeLineDirecti
  *
  * @param s a string
  */
-void vala_ccode_writer_write_string (ValaCCodeWriter* self, const gchar* s) {
-	FILE* _tmp0_ = NULL;
-	const gchar* _tmp1_ = NULL;
+void
+vala_ccode_writer_write_string (ValaCCodeWriter* self,
+                                const gchar* s)
+{
+	FILE* _tmp0_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (s != NULL);
 	_tmp0_ = self->priv->stream;
-	_tmp1_ = s;
-	fputs (_tmp1_, _tmp0_);
+	fputs (s, _tmp0_);
 	self->priv->_bol = FALSE;
 }
 
@@ -491,9 +465,11 @@ void vala_ccode_writer_write_string (ValaCCodeWriter* self, const gchar* s) {
 /**
  * Writes a newline.
  */
-void vala_ccode_writer_write_newline (ValaCCodeWriter* self) {
-	FILE* _tmp0_ = NULL;
-	gint _tmp1_ = 0;
+void
+vala_ccode_writer_write_newline (ValaCCodeWriter* self)
+{
+	FILE* _tmp0_;
+	gint _tmp1_;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = self->priv->stream;
 	fputc ('\n', _tmp0_);
@@ -506,36 +482,38 @@ void vala_ccode_writer_write_newline (ValaCCodeWriter* self) {
 /**
  * Opens a new block, increasing the indent level.
  */
-void vala_ccode_writer_write_begin_block (ValaCCodeWriter* self) {
-	gboolean _tmp0_ = FALSE;
-	gboolean _tmp1_ = FALSE;
-	FILE* _tmp3_ = NULL;
-	gint _tmp4_ = 0;
+void
+vala_ccode_writer_write_begin_block (ValaCCodeWriter* self)
+{
+	gboolean _tmp0_;
+	FILE* _tmp2_;
+	gint _tmp3_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = vala_ccode_writer_get_bol (self);
-	_tmp1_ = _tmp0_;
-	if (!_tmp1_) {
-		FILE* _tmp2_ = NULL;
-		_tmp2_ = self->priv->stream;
-		fputc (' ', _tmp2_);
+	_tmp0_ = self->priv->_bol;
+	if (!_tmp0_) {
+		FILE* _tmp1_;
+		_tmp1_ = self->priv->stream;
+		fputc (' ', _tmp1_);
 	} else {
 		vala_ccode_writer_write_indent (self, NULL);
 	}
-	_tmp3_ = self->priv->stream;
-	fputc ('{', _tmp3_);
+	_tmp2_ = self->priv->stream;
+	fputc ('{', _tmp2_);
 	vala_ccode_writer_write_newline (self);
-	_tmp4_ = self->priv->indent;
-	self->priv->indent = _tmp4_ + 1;
+	_tmp3_ = self->priv->indent;
+	self->priv->indent = _tmp3_ + 1;
 }
 
 
 /**
  * Closes the current block, decreasing the indent level.
  */
-void vala_ccode_writer_write_end_block (ValaCCodeWriter* self) {
-	gint _tmp0_ = 0;
-	gint _tmp1_ = 0;
-	FILE* _tmp2_ = NULL;
+void
+vala_ccode_writer_write_end_block (ValaCCodeWriter* self)
+{
+	gint _tmp0_;
+	gint _tmp1_;
+	FILE* _tmp2_;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = self->priv->indent;
 	_vala_assert (_tmp0_ > 0, "indent > 0");
@@ -552,168 +530,151 @@ void vala_ccode_writer_write_end_block (ValaCCodeWriter* self) {
  *
  * @param text the comment text
  */
-void vala_ccode_writer_write_comment (ValaCCodeWriter* self, const gchar* text) {
+void
+vala_ccode_writer_write_comment (ValaCCodeWriter* self,
+                                 const gchar* text)
+{
 	GError * _inner_error_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (text != NULL);
 	{
-		FILE* _tmp0_ = NULL;
+		FILE* _tmp0_;
 		gboolean first = FALSE;
-		GRegex* regex = NULL;
-		GRegex* _tmp1_ = NULL;
-		gchar** lines = NULL;
-		const gchar* _tmp2_ = NULL;
-		gchar** _tmp3_ = NULL;
-		gchar** _tmp4_ = NULL;
-		gint lines_length1 = 0;
-		gint _lines_size_ = 0;
-		gchar** _tmp5_ = NULL;
-		gint _tmp5__length1 = 0;
-		FILE* _tmp30_ = NULL;
+		GRegex* _tmp1_;
+		gchar** _tmp5_;
+		gchar** _tmp6_;
+		FILE* _tmp27_;
 		vala_ccode_writer_write_indent (self, NULL);
 		_tmp0_ = self->priv->stream;
 		fputs ("/*", _tmp0_);
 		first = TRUE;
-		_tmp1_ = g_regex_new ("^\t+", 0, 0, &_inner_error_);
-		regex = _tmp1_;
-		if (G_UNLIKELY (_inner_error_ != NULL)) {
-			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch1_g_regex_error;
+		_tmp1_ = vala_ccode_writer_fix_indent_regex;
+		if (_tmp1_ == NULL) {
+			GRegex* _tmp2_ = NULL;
+			GRegex* _tmp3_;
+			GRegex* _tmp4_;
+			_tmp3_ = g_regex_new ("^\t+", 0, 0, &_inner_error_);
+			_tmp2_ = _tmp3_;
+			if (G_UNLIKELY (_inner_error_ != NULL)) {
+				if (_inner_error_->domain == G_REGEX_ERROR) {
+					goto __catch1_g_regex_error;
+				}
+				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return;
 			}
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return;
+			_tmp4_ = _tmp2_;
+			_tmp2_ = NULL;
+			_g_regex_unref0 (vala_ccode_writer_fix_indent_regex);
+			vala_ccode_writer_fix_indent_regex = _tmp4_;
+			_g_regex_unref0 (_tmp2_);
 		}
-		_tmp2_ = text;
-		_tmp4_ = _tmp3_ = g_strsplit (_tmp2_, "\n", 0);
-		lines = _tmp4_;
-		lines_length1 = _vala_array_length (_tmp3_);
-		_lines_size_ = lines_length1;
-		_tmp5_ = lines;
-		_tmp5__length1 = lines_length1;
+		_tmp6_ = _tmp5_ = g_strsplit (text, "\n", 0);
 		{
 			gchar** line_collection = NULL;
 			gint line_collection_length1 = 0;
 			gint _line_collection_size_ = 0;
 			gint line_it = 0;
-			line_collection = _tmp5_;
-			line_collection_length1 = _tmp5__length1;
-			for (line_it = 0; line_it < _tmp5__length1; line_it = line_it + 1) {
-				gchar* _tmp6_ = NULL;
-				gchar* line = NULL;
-				_tmp6_ = g_strdup (line_collection[line_it]);
-				line = _tmp6_;
+			line_collection = _tmp6_;
+			line_collection_length1 = _vala_array_length (_tmp5_);
+			for (line_it = 0; line_it < _vala_array_length (_tmp5_); line_it = line_it + 1) {
+				const gchar* line = NULL;
+				line = line_collection[line_it];
 				{
-					gboolean _tmp7_ = FALSE;
+					gboolean _tmp7_;
 					gchar* _tmp8_ = NULL;
-					GRegex* _tmp9_ = NULL;
-					const gchar* _tmp10_ = NULL;
-					gchar* _tmp11_ = NULL;
+					GRegex* _tmp9_;
+					const gchar* _tmp10_;
+					gchar* _tmp11_;
 					gchar** lineparts = NULL;
-					gchar* _tmp12_ = NULL;
-					gchar* _tmp13_ = NULL;
-					gchar** _tmp14_ = NULL;
-					gchar** _tmp15_ = NULL;
-					gchar** _tmp16_ = NULL;
-					gint _tmp16__length1 = 0;
-					gint lineparts_length1 = 0;
-					gint _lineparts_size_ = 0;
+					gchar** _tmp12_;
+					gchar** _tmp13_;
+					gint lineparts_length1;
+					gint _lineparts_size_;
 					_tmp7_ = first;
 					if (!_tmp7_) {
 						vala_ccode_writer_write_indent (self, NULL);
 					} else {
 						first = FALSE;
 					}
-					_tmp9_ = regex;
+					_tmp9_ = vala_ccode_writer_fix_indent_regex;
 					_tmp10_ = line;
 					_tmp11_ = g_regex_replace_literal (_tmp9_, _tmp10_, (gssize) -1, 0, "", 0, &_inner_error_);
 					_tmp8_ = _tmp11_;
 					if (G_UNLIKELY (_inner_error_ != NULL)) {
-						_g_free0 (line);
-						lines = (_vala_array_free (lines, lines_length1, (GDestroyNotify) g_free), NULL);
-						_g_regex_unref0 (regex);
+						line_collection = (_vala_array_free (line_collection, line_collection_length1, (GDestroyNotify) g_free), NULL);
 						if (_inner_error_->domain == G_REGEX_ERROR) {
 							goto __catch1_g_regex_error;
 						}
-						_g_free0 (line);
-						lines = (_vala_array_free (lines, lines_length1, (GDestroyNotify) g_free), NULL);
-						_g_regex_unref0 (regex);
+						line_collection = (_vala_array_free (line_collection, line_collection_length1, (GDestroyNotify) g_free), NULL);
 						g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 						g_clear_error (&_inner_error_);
 						return;
 					}
-					_tmp12_ = _tmp8_;
-					_tmp8_ = NULL;
-					_tmp13_ = _tmp12_;
-					_tmp15_ = _tmp14_ = g_strsplit (_tmp13_, "*/", 0);
-					_tmp16_ = _tmp15_;
-					_tmp16__length1 = _vala_array_length (_tmp14_);
-					_g_free0 (_tmp13_);
-					lineparts = _tmp16_;
-					lineparts_length1 = _tmp16__length1;
+					_tmp13_ = _tmp12_ = g_strsplit (_tmp8_, "*/", 0);
+					lineparts = _tmp13_;
+					lineparts_length1 = _vala_array_length (_tmp12_);
 					_lineparts_size_ = lineparts_length1;
 					{
 						gint i = 0;
 						i = 0;
 						{
-							gboolean _tmp17_ = FALSE;
-							_tmp17_ = TRUE;
+							gboolean _tmp14_ = FALSE;
+							_tmp14_ = TRUE;
 							while (TRUE) {
-								gchar** _tmp19_ = NULL;
-								gint _tmp19__length1 = 0;
-								gint _tmp20_ = 0;
-								const gchar* _tmp21_ = NULL;
-								FILE* _tmp22_ = NULL;
-								gchar** _tmp23_ = NULL;
-								gint _tmp23__length1 = 0;
-								gint _tmp24_ = 0;
-								const gchar* _tmp25_ = NULL;
-								gchar** _tmp26_ = NULL;
-								gint _tmp26__length1 = 0;
-								gint _tmp27_ = 0;
-								const gchar* _tmp28_ = NULL;
-								if (!_tmp17_) {
-									gint _tmp18_ = 0;
-									_tmp18_ = i;
-									i = _tmp18_ + 1;
+								gchar** _tmp16_;
+								gint _tmp16__length1;
+								gint _tmp17_;
+								const gchar* _tmp18_;
+								FILE* _tmp19_;
+								gchar** _tmp20_;
+								gint _tmp20__length1;
+								gint _tmp21_;
+								const gchar* _tmp22_;
+								gchar** _tmp23_;
+								gint _tmp23__length1;
+								gint _tmp24_;
+								const gchar* _tmp25_;
+								if (!_tmp14_) {
+									gint _tmp15_;
+									_tmp15_ = i;
+									i = _tmp15_ + 1;
 								}
-								_tmp17_ = FALSE;
-								_tmp19_ = lineparts;
-								_tmp19__length1 = lineparts_length1;
-								_tmp20_ = i;
-								_tmp21_ = _tmp19_[_tmp20_];
-								if (!(_tmp21_ != NULL)) {
+								_tmp14_ = FALSE;
+								_tmp16_ = lineparts;
+								_tmp16__length1 = lineparts_length1;
+								_tmp17_ = i;
+								_tmp18_ = _tmp16_[_tmp17_];
+								if (!(_tmp18_ != NULL)) {
 									break;
 								}
-								_tmp22_ = self->priv->stream;
+								_tmp19_ = self->priv->stream;
+								_tmp20_ = lineparts;
+								_tmp20__length1 = lineparts_length1;
+								_tmp21_ = i;
+								_tmp22_ = _tmp20_[_tmp21_];
+								fputs (_tmp22_, _tmp19_);
 								_tmp23_ = lineparts;
 								_tmp23__length1 = lineparts_length1;
 								_tmp24_ = i;
-								_tmp25_ = _tmp23_[_tmp24_];
-								fputs (_tmp25_, _tmp22_);
-								_tmp26_ = lineparts;
-								_tmp26__length1 = lineparts_length1;
-								_tmp27_ = i;
-								_tmp28_ = _tmp26_[_tmp27_ + 1];
-								if (_tmp28_ != NULL) {
-									FILE* _tmp29_ = NULL;
-									_tmp29_ = self->priv->stream;
-									fputs ("* /", _tmp29_);
+								_tmp25_ = _tmp23_[_tmp24_ + 1];
+								if (_tmp25_ != NULL) {
+									FILE* _tmp26_;
+									_tmp26_ = self->priv->stream;
+									fputs ("* /", _tmp26_);
 								}
 							}
 						}
 					}
 					lineparts = (_vala_array_free (lineparts, lineparts_length1, (GDestroyNotify) g_free), NULL);
 					_g_free0 (_tmp8_);
-					_g_free0 (line);
 				}
 			}
+			line_collection = (_vala_array_free (line_collection, line_collection_length1, (GDestroyNotify) g_free), NULL);
 		}
-		_tmp30_ = self->priv->stream;
-		fputs ("*/", _tmp30_);
+		_tmp27_ = self->priv->stream;
+		fputs ("*/", _tmp27_);
 		vala_ccode_writer_write_newline (self);
-		lines = (_vala_array_free (lines, lines_length1, (GDestroyNotify) g_free), NULL);
-		_g_regex_unref0 (regex);
 	}
 	goto __finally1;
 	__catch1_g_regex_error:
@@ -732,9 +693,11 @@ void vala_ccode_writer_write_comment (ValaCCodeWriter* self, const gchar* text) 
 }
 
 
-const gchar* vala_ccode_writer_get_filename (ValaCCodeWriter* self) {
+const gchar*
+vala_ccode_writer_get_filename (ValaCCodeWriter* self)
+{
 	const gchar* result;
-	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_filename;
 	result = _tmp0_;
@@ -742,20 +705,23 @@ const gchar* vala_ccode_writer_get_filename (ValaCCodeWriter* self) {
 }
 
 
-void vala_ccode_writer_set_filename (ValaCCodeWriter* self, const gchar* value) {
-	const gchar* _tmp0_ = NULL;
-	gchar* _tmp1_ = NULL;
+void
+vala_ccode_writer_set_filename (ValaCCodeWriter* self,
+                                const gchar* value)
+{
+	gchar* _tmp0_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	_tmp1_ = g_strdup (_tmp0_);
+	_tmp0_ = g_strdup (value);
 	_g_free0 (self->priv->_filename);
-	self->priv->_filename = _tmp1_;
+	self->priv->_filename = _tmp0_;
 }
 
 
-gboolean vala_ccode_writer_get_line_directives (ValaCCodeWriter* self) {
+gboolean
+vala_ccode_writer_get_line_directives (ValaCCodeWriter* self)
+{
 	gboolean result;
-	gboolean _tmp0_ = FALSE;
+	gboolean _tmp0_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_line_directives;
 	result = _tmp0_;
@@ -763,17 +729,20 @@ gboolean vala_ccode_writer_get_line_directives (ValaCCodeWriter* self) {
 }
 
 
-void vala_ccode_writer_set_line_directives (ValaCCodeWriter* self, gboolean value) {
-	gboolean _tmp0_ = FALSE;
+void
+vala_ccode_writer_set_line_directives (ValaCCodeWriter* self,
+                                       gboolean value)
+{
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	self->priv->_line_directives = _tmp0_;
+	self->priv->_line_directives = value;
 }
 
 
-gboolean vala_ccode_writer_get_bol (ValaCCodeWriter* self) {
+gboolean
+vala_ccode_writer_get_bol (ValaCCodeWriter* self)
+{
 	gboolean result;
-	gboolean _tmp0_ = FALSE;
+	gboolean _tmp0_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_bol;
 	result = _tmp0_;
@@ -781,19 +750,26 @@ gboolean vala_ccode_writer_get_bol (ValaCCodeWriter* self) {
 }
 
 
-static void vala_value_ccode_writer_init (GValue* value) {
+static void
+vala_value_ccode_writer_init (GValue* value)
+{
 	value->data[0].v_pointer = NULL;
 }
 
 
-static void vala_value_ccode_writer_free_value (GValue* value) {
+static void
+vala_value_ccode_writer_free_value (GValue* value)
+{
 	if (value->data[0].v_pointer) {
 		vala_ccode_writer_unref (value->data[0].v_pointer);
 	}
 }
 
 
-static void vala_value_ccode_writer_copy_value (const GValue* src_value, GValue* dest_value) {
+static void
+vala_value_ccode_writer_copy_value (const GValue* src_value,
+                                    GValue* dest_value)
+{
 	if (src_value->data[0].v_pointer) {
 		dest_value->data[0].v_pointer = vala_ccode_writer_ref (src_value->data[0].v_pointer);
 	} else {
@@ -802,14 +778,21 @@ static void vala_value_ccode_writer_copy_value (const GValue* src_value, GValue*
 }
 
 
-static gpointer vala_value_ccode_writer_peek_pointer (const GValue* value) {
+static gpointer
+vala_value_ccode_writer_peek_pointer (const GValue* value)
+{
 	return value->data[0].v_pointer;
 }
 
 
-static gchar* vala_value_ccode_writer_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar*
+vala_value_ccode_writer_collect_value (GValue* value,
+                                       guint n_collect_values,
+                                       GTypeCValue* collect_values,
+                                       guint collect_flags)
+{
 	if (collect_values[0].v_pointer) {
-		ValaCCodeWriter* object;
+		ValaCCodeWriter * object;
 		object = collect_values[0].v_pointer;
 		if (object->parent_instance.g_class == NULL) {
 			return g_strconcat ("invalid unclassed object pointer for value type `", G_VALUE_TYPE_NAME (value), "'", NULL);
@@ -824,8 +807,13 @@ static gchar* vala_value_ccode_writer_collect_value (GValue* value, guint n_coll
 }
 
 
-static gchar* vala_value_ccode_writer_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
-	ValaCCodeWriter** object_p;
+static gchar*
+vala_value_ccode_writer_lcopy_value (const GValue* value,
+                                     guint n_collect_values,
+                                     GTypeCValue* collect_values,
+                                     guint collect_flags)
+{
+	ValaCCodeWriter ** object_p;
 	object_p = collect_values[0].v_pointer;
 	if (!object_p) {
 		return g_strdup_printf ("value location for `%s' passed as NULL", G_VALUE_TYPE_NAME (value));
@@ -841,7 +829,13 @@ static gchar* vala_value_ccode_writer_lcopy_value (const GValue* value, guint n_
 }
 
 
-GParamSpec* vala_param_spec_ccode_writer (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
+GParamSpec*
+vala_param_spec_ccode_writer (const gchar* name,
+                              const gchar* nick,
+                              const gchar* blurb,
+                              GType object_type,
+                              GParamFlags flags)
+{
 	ValaParamSpecCCodeWriter* spec;
 	g_return_val_if_fail (g_type_is_a (object_type, VALA_TYPE_CCODE_WRITER), NULL);
 	spec = g_param_spec_internal (G_TYPE_PARAM_OBJECT, name, nick, blurb, flags);
@@ -850,14 +844,19 @@ GParamSpec* vala_param_spec_ccode_writer (const gchar* name, const gchar* nick, 
 }
 
 
-gpointer vala_value_get_ccode_writer (const GValue* value) {
+gpointer
+vala_value_get_ccode_writer (const GValue* value)
+{
 	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_CCODE_WRITER), NULL);
 	return value->data[0].v_pointer;
 }
 
 
-void vala_value_set_ccode_writer (GValue* value, gpointer v_object) {
-	ValaCCodeWriter* old;
+void
+vala_value_set_ccode_writer (GValue* value,
+                             gpointer v_object)
+{
+	ValaCCodeWriter * old;
 	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_CCODE_WRITER));
 	old = value->data[0].v_pointer;
 	if (v_object) {
@@ -874,8 +873,11 @@ void vala_value_set_ccode_writer (GValue* value, gpointer v_object) {
 }
 
 
-void vala_value_take_ccode_writer (GValue* value, gpointer v_object) {
-	ValaCCodeWriter* old;
+void
+vala_value_take_ccode_writer (GValue* value,
+                              gpointer v_object)
+{
+	ValaCCodeWriter * old;
 	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_CCODE_WRITER));
 	old = value->data[0].v_pointer;
 	if (v_object) {
@@ -891,14 +893,18 @@ void vala_value_take_ccode_writer (GValue* value, gpointer v_object) {
 }
 
 
-static void vala_ccode_writer_class_init (ValaCCodeWriterClass * klass) {
+static void
+vala_ccode_writer_class_init (ValaCCodeWriterClass * klass)
+{
 	vala_ccode_writer_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeWriterClass *) klass)->finalize = vala_ccode_writer_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeWriterPrivate));
 }
 
 
-static void vala_ccode_writer_instance_init (ValaCCodeWriter * self) {
+static void
+vala_ccode_writer_instance_init (ValaCCodeWriter * self)
+{
 	self->priv = VALA_CCODE_WRITER_GET_PRIVATE (self);
 	self->priv->current_line_number = 1;
 	self->priv->_bol = TRUE;
@@ -906,7 +912,9 @@ static void vala_ccode_writer_instance_init (ValaCCodeWriter * self) {
 }
 
 
-static void vala_ccode_writer_finalize (ValaCCodeWriter* obj) {
+static void
+vala_ccode_writer_finalize (ValaCCodeWriter * obj)
+{
 	ValaCCodeWriter * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_CCODE_WRITER, ValaCCodeWriter);
 	g_signal_handlers_destroy (self);
@@ -920,7 +928,9 @@ static void vala_ccode_writer_finalize (ValaCCodeWriter* obj) {
 /**
  * Represents a writer to write C source files.
  */
-GType vala_ccode_writer_get_type (void) {
+GType
+vala_ccode_writer_get_type (void)
+{
 	static volatile gsize vala_ccode_writer_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_ccode_writer_type_id__volatile)) {
 		static const GTypeValueTable g_define_type_value_table = { vala_value_ccode_writer_init, vala_value_ccode_writer_free_value, vala_value_ccode_writer_copy_value, vala_value_ccode_writer_peek_pointer, "p", vala_value_ccode_writer_collect_value, "p", vala_value_ccode_writer_lcopy_value };
@@ -934,16 +944,20 @@ GType vala_ccode_writer_get_type (void) {
 }
 
 
-gpointer vala_ccode_writer_ref (gpointer instance) {
-	ValaCCodeWriter* self;
+gpointer
+vala_ccode_writer_ref (gpointer instance)
+{
+	ValaCCodeWriter * self;
 	self = instance;
 	g_atomic_int_inc (&self->ref_count);
 	return instance;
 }
 
 
-void vala_ccode_writer_unref (gpointer instance) {
-	ValaCCodeWriter* self;
+void
+vala_ccode_writer_unref (gpointer instance)
+{
+	ValaCCodeWriter * self;
 	self = instance;
 	if (g_atomic_int_dec_and_test (&self->ref_count)) {
 		VALA_CCODE_WRITER_GET_CLASS (self)->finalize (self);
@@ -952,7 +966,11 @@ void vala_ccode_writer_unref (gpointer instance) {
 }
 
 
-static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func) {
+static void
+_vala_array_destroy (gpointer array,
+                     gint array_length,
+                     GDestroyNotify destroy_func)
+{
 	if ((array != NULL) && (destroy_func != NULL)) {
 		int i;
 		for (i = 0; i < array_length; i = i + 1) {
@@ -964,13 +982,19 @@ static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNoti
 }
 
 
-static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
+static void
+_vala_array_free (gpointer array,
+                  gint array_length,
+                  GDestroyNotify destroy_func)
+{
 	_vala_array_destroy (array, array_length, destroy_func);
 	g_free (array);
 }
 
 
-static gint _vala_array_length (gpointer array) {
+static gint
+_vala_array_length (gpointer array)
+{
 	int length;
 	length = 0;
 	if (array) {

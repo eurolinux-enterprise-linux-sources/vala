@@ -25,7 +25,7 @@ using GLib;
 /**
  * Simple reader for a subset of XML.
  */
-public class Vala.MarkupReader : Object {
+public class Vala.MarkupReader {
 	public string filename { get; private set; }
 
 	public string name { get; private set; }
@@ -59,6 +59,18 @@ public class Vala.MarkupReader : Object {
 		} catch (FileError e) {
 			Report.error (null, "Unable to map file `%s': %s".printf (filename, e.message));
 		}
+	}
+
+	public MarkupReader.from_string (string filename, string content) {
+		this.filename = filename;
+
+		begin = content;
+		end = begin + content.length;
+
+		current = begin;
+
+		line = 1;
+		column = 1;
 	}
 
 	public string? get_attribute (string attr) {
@@ -107,6 +119,9 @@ public class Vala.MarkupReader : Object {
 			token_end = SourceLocation (begin, line, column);
 			return MarkupTokenType.END_ELEMENT;
 		}
+
+		content = null;
+		name = null;
 
 		space ();
 
@@ -242,6 +257,11 @@ public class Vala.MarkupReader : Object {
 					content.append (((string) text_begin).substring (0, (int) (current - text_begin)));
 					content.append_c ('>');
 					current += 4;
+					text_begin = current;
+				} else if (((string) next_pos).has_prefix ("percnt;")) {
+					content.append (((string) text_begin).substring (0, (int) (current - text_begin)));
+					content.append_c ('%');
+					current += 8;
 					text_begin = current;
 				} else {
 					current += u.to_utf8 (null);

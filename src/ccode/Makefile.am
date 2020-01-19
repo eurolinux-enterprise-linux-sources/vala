@@ -5,6 +5,7 @@ NULL =
 AM_CPPFLAGS = \
 	$(COVERAGE_CFLAGS) \
 	-I$(top_srcdir)/gee \
+	-I$(top_srcdir)/vala \
 	$(GLIB_CFLAGS) \
 	$(NULL)
 
@@ -34,12 +35,14 @@ libvalaccode_la_VALASOURCES = \
 	valaccodeenumvalue.vala \
 	valaccodeexpression.vala \
 	valaccodeexpressionstatement.vala \
+	valaccodefeaturetestmacro.vala \
 	valaccodefile.vala \
 	valaccodeforstatement.vala \
 	valaccodefragment.vala \
 	valaccodefunction.vala \
 	valaccodefunctioncall.vala \
 	valaccodefunctiondeclarator.vala \
+	valaccodeggnucsection.vala \
 	valaccodegotostatement.vala \
 	valaccodeidentifier.vala \
 	valaccodeifstatement.vala \
@@ -74,12 +77,6 @@ libvalaccode_la_SOURCES = \
 	$(libvalaccode_la_VALASOURCES:.vala=.c) \
 	$(NULL)
 
-ccodeincludedir = $(includedir)/vala@PACKAGE_SUFFIX@
-
-ccodeinclude_HEADERS = \
-	valaccode.h \
-	$(NULL)
-
 ccode.vapi ccode.vala.stamp: $(libvalaccode_la_VALASOURCES)
 	$(VALA_V)$(VALAC) \
 		$(COVERAGE_VALAFLAGS) \
@@ -87,7 +84,9 @@ ccode.vapi ccode.vala.stamp: $(libvalaccode_la_VALASOURCES)
 		-C \
 		--vapidir $(top_srcdir)/vapi --pkg gobject-2.0 \
 		--vapidir $(top_srcdir)/gee --pkg gee \
+		--vapidir $(top_srcdir)/vala --pkg vala \
 		--pkg config \
+		--use-header \
 		-H valaccode.h \
 		--library ccode \
 		$^
@@ -96,9 +95,10 @@ ccode.vapi ccode.vala.stamp: $(libvalaccode_la_VALASOURCES)
 libvalaccode_la_LIBADD = \
 	$(COVERAGE_LIBS) \
 	$(GLIB_LIBS) \
+	$(top_builddir)/vala/libvala@PACKAGE_SUFFIX@.la \
 	$(NULL)
 
-EXTRA_DIST = $(libvalaccode_la_VALASOURCES) ccode.vapi ccode.vala.stamp
+EXTRA_DIST = $(libvalaccode_la_VALASOURCES) ccode.vapi ccode.vala.stamp valaccode.h
 
 MAINTAINERCLEANFILES = \
 	ccode.vapi \

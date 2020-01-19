@@ -112,7 +112,7 @@ namespace Atk {
 		[NoAccessorMethod]
 		public Atk.Object accessible_parent { owned get; set; }
 		[NoAccessorMethod]
-		public int accessible_role { get; set; }
+		public Atk.Role accessible_role { get; set; }
 		[NoAccessorMethod]
 		[Version (deprecated = true)]
 		public string accessible_table_caption { owned get; set; }
@@ -135,11 +135,11 @@ namespace Atk {
 		[NoAccessorMethod]
 		[Version (deprecated = true)]
 		public double accessible_value { get; set; }
-		public virtual signal void active_descendant_changed (void* child);
-		public virtual signal void children_changed (uint change_index, void* changed_child);
+		public virtual signal void active_descendant_changed (Atk.Object child);
+		public virtual signal void children_changed (uint change_index, Atk.Object changed_child);
 		[Version (deprecated = true, deprecated_since = "2.9.4")]
 		public virtual signal void focus_event (bool focus_in);
-		public virtual signal void property_change (void* values);
+		public virtual signal void property_change (Atk.PropertyValues values);
 		public virtual signal void state_change (string name, bool state_set);
 		public virtual signal void visible_data_changed ();
 	}
@@ -393,9 +393,9 @@ namespace Atk {
 		public abstract void get_image_size (out int width, out int height);
 		public abstract bool set_image_description (string description);
 	}
-	[CCode (cheader_filename = "atk/atk.h")]
+	[CCode (cheader_filename = "atk/atk.h", type_id = "atk_implementor_get_type ()")]
 	public interface Implementor : GLib.Object {
-		public abstract unowned Atk.Object ref_accessible ();
+		public abstract Atk.Object ref_accessible ();
 	}
 	[CCode (cheader_filename = "atk/atk.h", type_id = "atk_selection_get_type ()")]
 	public interface Selection : GLib.Object {
@@ -660,11 +660,15 @@ namespace Atk {
 		DESCRIBED_BY,
 		DESCRIPTION_FOR,
 		NODE_PARENT_OF,
+		DETAILS,
+		DETAILS_FOR,
+		ERROR_MESSAGE,
+		ERROR_FOR,
 		LAST_DEFINED;
 		[CCode (cheader_filename = "atk/atk.h")]
 		public static Atk.RelationType for_name (string name);
 		[CCode (cheader_filename = "atk/atk.h")]
-		public static unowned string get_name (Atk.RelationType type);
+		public unowned string get_name ();
 		[CCode (cheader_filename = "atk/atk.h")]
 		public static Atk.RelationType register (string name);
 	}
@@ -795,13 +799,14 @@ namespace Atk {
 		MATH_ROOT,
 		SUBSCRIPT,
 		SUPERSCRIPT,
+		FOOTNOTE,
 		LAST_DEFINED;
 		[CCode (cheader_filename = "atk/atk.h")]
 		public static Atk.Role for_name (string name);
 		[CCode (cheader_filename = "atk/atk.h")]
-		public static unowned string get_localized_name (Atk.Role role);
+		public unowned string get_localized_name ();
 		[CCode (cheader_filename = "atk/atk.h")]
-		public static unowned string get_name (Atk.Role role);
+		public unowned string get_name ();
 		[CCode (cheader_filename = "atk/atk.h")]
 		[Version (deprecated = true)]
 		public static Atk.Role register (string name);
@@ -855,7 +860,7 @@ namespace Atk {
 		[CCode (cheader_filename = "atk/atk.h")]
 		public static Atk.StateType for_name (string name);
 		[CCode (cheader_filename = "atk/atk.h")]
-		public static unowned string get_name (Atk.StateType type);
+		public unowned string get_name ();
 		[CCode (cheader_filename = "atk/atk.h")]
 		public static Atk.StateType register (string name);
 	}
@@ -893,9 +898,9 @@ namespace Atk {
 		[CCode (cheader_filename = "atk/atk.h")]
 		public static Atk.TextAttribute for_name (string name);
 		[CCode (cheader_filename = "atk/atk.h")]
-		public static unowned string get_name (Atk.TextAttribute attr);
+		public unowned string get_name ();
 		[CCode (cheader_filename = "atk/atk.h")]
-		public static unowned string? get_value (Atk.TextAttribute attr, int index_);
+		public unowned string? get_value (int index_);
 		[CCode (cheader_filename = "atk/atk.h")]
 		public static Atk.TextAttribute register (string name);
 	}
@@ -943,9 +948,9 @@ namespace Atk {
 		BEST,
 		LAST_DEFINED;
 		[CCode (cheader_filename = "atk/atk.h")]
-		public static unowned string get_localized_name (Atk.ValueType value_type);
+		public unowned string get_localized_name ();
 		[CCode (cheader_filename = "atk/atk.h")]
-		public static unowned string get_name (Atk.ValueType value_type);
+		public unowned string get_name ();
 	}
 	[CCode (cheader_filename = "atk/atk.h", has_target = false)]
 	public delegate void EventListener (Atk.Object obj);

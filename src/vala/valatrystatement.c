@@ -23,188 +23,14 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
-#include <stdlib.h>
-#include <string.h>
+#include "vala.h"
 #include <valagee.h>
 
-
-#define VALA_TYPE_CODE_NODE (vala_code_node_get_type ())
-#define VALA_CODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_NODE, ValaCodeNode))
-#define VALA_CODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_NODE, ValaCodeNodeClass))
-#define VALA_IS_CODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CODE_NODE))
-#define VALA_IS_CODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CODE_NODE))
-#define VALA_CODE_NODE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CODE_NODE, ValaCodeNodeClass))
-
-typedef struct _ValaCodeNode ValaCodeNode;
-typedef struct _ValaCodeNodeClass ValaCodeNodeClass;
-typedef struct _ValaCodeNodePrivate ValaCodeNodePrivate;
-
-#define VALA_TYPE_CODE_VISITOR (vala_code_visitor_get_type ())
-#define VALA_CODE_VISITOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_VISITOR, ValaCodeVisitor))
-#define VALA_CODE_VISITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_VISITOR, ValaCodeVisitorClass))
-#define VALA_IS_CODE_VISITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CODE_VISITOR))
-#define VALA_IS_CODE_VISITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CODE_VISITOR))
-#define VALA_CODE_VISITOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CODE_VISITOR, ValaCodeVisitorClass))
-
-typedef struct _ValaCodeVisitor ValaCodeVisitor;
-typedef struct _ValaCodeVisitorClass ValaCodeVisitorClass;
-
-#define VALA_TYPE_CODE_CONTEXT (vala_code_context_get_type ())
-#define VALA_CODE_CONTEXT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_CONTEXT, ValaCodeContext))
-#define VALA_CODE_CONTEXT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_CONTEXT, ValaCodeContextClass))
-#define VALA_IS_CODE_CONTEXT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CODE_CONTEXT))
-#define VALA_IS_CODE_CONTEXT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CODE_CONTEXT))
-#define VALA_CODE_CONTEXT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CODE_CONTEXT, ValaCodeContextClass))
-
-typedef struct _ValaCodeContext ValaCodeContext;
-typedef struct _ValaCodeContextClass ValaCodeContextClass;
-
-#define VALA_TYPE_CODE_GENERATOR (vala_code_generator_get_type ())
-#define VALA_CODE_GENERATOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_GENERATOR, ValaCodeGenerator))
-#define VALA_CODE_GENERATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_GENERATOR, ValaCodeGeneratorClass))
-#define VALA_IS_CODE_GENERATOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CODE_GENERATOR))
-#define VALA_IS_CODE_GENERATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CODE_GENERATOR))
-#define VALA_CODE_GENERATOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CODE_GENERATOR, ValaCodeGeneratorClass))
-
-typedef struct _ValaCodeGenerator ValaCodeGenerator;
-typedef struct _ValaCodeGeneratorClass ValaCodeGeneratorClass;
-
-#define VALA_TYPE_DATA_TYPE (vala_data_type_get_type ())
-#define VALA_DATA_TYPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_DATA_TYPE, ValaDataType))
-#define VALA_DATA_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_DATA_TYPE, ValaDataTypeClass))
-#define VALA_IS_DATA_TYPE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_DATA_TYPE))
-#define VALA_IS_DATA_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_DATA_TYPE))
-#define VALA_DATA_TYPE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_DATA_TYPE, ValaDataTypeClass))
-
-typedef struct _ValaDataType ValaDataType;
-typedef struct _ValaDataTypeClass ValaDataTypeClass;
-
-#define VALA_TYPE_EXPRESSION (vala_expression_get_type ())
-#define VALA_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_EXPRESSION, ValaExpression))
-#define VALA_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_EXPRESSION, ValaExpressionClass))
-#define VALA_IS_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_EXPRESSION))
-#define VALA_IS_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_EXPRESSION))
-#define VALA_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_EXPRESSION, ValaExpressionClass))
-
-typedef struct _ValaExpression ValaExpression;
-typedef struct _ValaExpressionClass ValaExpressionClass;
-
-#define VALA_TYPE_SYMBOL (vala_symbol_get_type ())
-#define VALA_SYMBOL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SYMBOL, ValaSymbol))
-#define VALA_SYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SYMBOL, ValaSymbolClass))
-#define VALA_IS_SYMBOL(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SYMBOL))
-#define VALA_IS_SYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SYMBOL))
-#define VALA_SYMBOL_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SYMBOL, ValaSymbolClass))
-
-typedef struct _ValaSymbol ValaSymbol;
-typedef struct _ValaSymbolClass ValaSymbolClass;
-
-#define VALA_TYPE_VARIABLE (vala_variable_get_type ())
-#define VALA_VARIABLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_VARIABLE, ValaVariable))
-#define VALA_VARIABLE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_VARIABLE, ValaVariableClass))
-#define VALA_IS_VARIABLE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_VARIABLE))
-#define VALA_IS_VARIABLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_VARIABLE))
-#define VALA_VARIABLE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_VARIABLE, ValaVariableClass))
-
-typedef struct _ValaVariable ValaVariable;
-typedef struct _ValaVariableClass ValaVariableClass;
-
-#define VALA_TYPE_ATTRIBUTE (vala_attribute_get_type ())
-#define VALA_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_ATTRIBUTE, ValaAttribute))
-#define VALA_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_ATTRIBUTE, ValaAttributeClass))
-#define VALA_IS_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_ATTRIBUTE))
-#define VALA_IS_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_ATTRIBUTE))
-#define VALA_ATTRIBUTE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_ATTRIBUTE, ValaAttributeClass))
-
-typedef struct _ValaAttribute ValaAttribute;
-typedef struct _ValaAttributeClass ValaAttributeClass;
-
-#define VALA_TYPE_STATEMENT (vala_statement_get_type ())
-#define VALA_STATEMENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_STATEMENT, ValaStatement))
-#define VALA_IS_STATEMENT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_STATEMENT))
-#define VALA_STATEMENT_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), VALA_TYPE_STATEMENT, ValaStatementIface))
-
-typedef struct _ValaStatement ValaStatement;
-typedef struct _ValaStatementIface ValaStatementIface;
-
-#define VALA_TYPE_TRY_STATEMENT (vala_try_statement_get_type ())
-#define VALA_TRY_STATEMENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TRY_STATEMENT, ValaTryStatement))
-#define VALA_TRY_STATEMENT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_TRY_STATEMENT, ValaTryStatementClass))
-#define VALA_IS_TRY_STATEMENT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_TRY_STATEMENT))
-#define VALA_IS_TRY_STATEMENT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_TRY_STATEMENT))
-#define VALA_TRY_STATEMENT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_TRY_STATEMENT, ValaTryStatementClass))
-
-typedef struct _ValaTryStatement ValaTryStatement;
-typedef struct _ValaTryStatementClass ValaTryStatementClass;
-typedef struct _ValaTryStatementPrivate ValaTryStatementPrivate;
-
-#define VALA_TYPE_BLOCK (vala_block_get_type ())
-#define VALA_BLOCK(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_BLOCK, ValaBlock))
-#define VALA_BLOCK_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_BLOCK, ValaBlockClass))
-#define VALA_IS_BLOCK(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_BLOCK))
-#define VALA_IS_BLOCK_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_BLOCK))
-#define VALA_BLOCK_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_BLOCK, ValaBlockClass))
-
-typedef struct _ValaBlock ValaBlock;
-typedef struct _ValaBlockClass ValaBlockClass;
-
-#define VALA_TYPE_CATCH_CLAUSE (vala_catch_clause_get_type ())
-#define VALA_CATCH_CLAUSE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CATCH_CLAUSE, ValaCatchClause))
-#define VALA_CATCH_CLAUSE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CATCH_CLAUSE, ValaCatchClauseClass))
-#define VALA_IS_CATCH_CLAUSE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CATCH_CLAUSE))
-#define VALA_IS_CATCH_CLAUSE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CATCH_CLAUSE))
-#define VALA_CATCH_CLAUSE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CATCH_CLAUSE, ValaCatchClauseClass))
-
-typedef struct _ValaCatchClause ValaCatchClause;
-typedef struct _ValaCatchClauseClass ValaCatchClauseClass;
 #define _vala_code_node_unref0(var) ((var == NULL) ? NULL : (var = (vala_code_node_unref (var), NULL)))
 #define _vala_iterable_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterable_unref (var), NULL)))
-
-#define VALA_TYPE_SOURCE_REFERENCE (vala_source_reference_get_type ())
-#define VALA_SOURCE_REFERENCE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReference))
-#define VALA_SOURCE_REFERENCE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReferenceClass))
-#define VALA_IS_SOURCE_REFERENCE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SOURCE_REFERENCE))
-#define VALA_IS_SOURCE_REFERENCE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SOURCE_REFERENCE))
-#define VALA_SOURCE_REFERENCE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReferenceClass))
-
-typedef struct _ValaSourceReference ValaSourceReference;
-typedef struct _ValaSourceReferenceClass ValaSourceReferenceClass;
-
-struct _ValaCodeNode {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	ValaCodeNodePrivate * priv;
-	GList* attributes;
-};
-
-struct _ValaCodeNodeClass {
-	GTypeClass parent_class;
-	void (*finalize) (ValaCodeNode *self);
-	void (*accept) (ValaCodeNode* self, ValaCodeVisitor* visitor);
-	void (*accept_children) (ValaCodeNode* self, ValaCodeVisitor* visitor);
-	gboolean (*check) (ValaCodeNode* self, ValaCodeContext* context);
-	void (*emit) (ValaCodeNode* self, ValaCodeGenerator* codegen);
-	void (*replace_type) (ValaCodeNode* self, ValaDataType* old_type, ValaDataType* new_type);
-	void (*replace_expression) (ValaCodeNode* self, ValaExpression* old_node, ValaExpression* new_node);
-	gchar* (*to_string) (ValaCodeNode* self);
-	void (*get_defined_variables) (ValaCodeNode* self, ValaCollection* collection);
-	void (*get_used_variables) (ValaCodeNode* self, ValaCollection* collection);
-};
-
-struct _ValaStatementIface {
-	GTypeInterface parent_iface;
-};
-
-struct _ValaTryStatement {
-	ValaCodeNode parent_instance;
-	ValaTryStatementPrivate * priv;
-};
-
-struct _ValaTryStatementClass {
-	ValaCodeNodeClass parent_class;
-};
 
 struct _ValaTryStatementPrivate {
 	gboolean _after_try_block_reachable;
@@ -215,79 +41,18 @@ struct _ValaTryStatementPrivate {
 
 
 static gpointer vala_try_statement_parent_class = NULL;
-static ValaStatementIface* vala_try_statement_vala_statement_parent_iface = NULL;
+static ValaStatementIface * vala_try_statement_vala_statement_parent_iface = NULL;
 
-gpointer vala_code_node_ref (gpointer instance);
-void vala_code_node_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_node (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_node (GValue* value, gpointer v_object);
-void vala_value_take_code_node (GValue* value, gpointer v_object);
-gpointer vala_value_get_code_node (const GValue* value);
-GType vala_code_node_get_type (void) G_GNUC_CONST;
-gpointer vala_code_visitor_ref (gpointer instance);
-void vala_code_visitor_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_visitor (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_visitor (GValue* value, gpointer v_object);
-void vala_value_take_code_visitor (GValue* value, gpointer v_object);
-gpointer vala_value_get_code_visitor (const GValue* value);
-GType vala_code_visitor_get_type (void) G_GNUC_CONST;
-gpointer vala_code_context_ref (gpointer instance);
-void vala_code_context_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_context (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_context (GValue* value, gpointer v_object);
-void vala_value_take_code_context (GValue* value, gpointer v_object);
-gpointer vala_value_get_code_context (const GValue* value);
-GType vala_code_context_get_type (void) G_GNUC_CONST;
-GType vala_code_generator_get_type (void) G_GNUC_CONST;
-GType vala_data_type_get_type (void) G_GNUC_CONST;
-GType vala_expression_get_type (void) G_GNUC_CONST;
-GType vala_symbol_get_type (void) G_GNUC_CONST;
-GType vala_variable_get_type (void) G_GNUC_CONST;
-GType vala_attribute_get_type (void) G_GNUC_CONST;
-GType vala_statement_get_type (void) G_GNUC_CONST;
-GType vala_try_statement_get_type (void) G_GNUC_CONST;
-GType vala_block_get_type (void) G_GNUC_CONST;
-GType vala_catch_clause_get_type (void) G_GNUC_CONST;
 #define VALA_TRY_STATEMENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_TRY_STATEMENT, ValaTryStatementPrivate))
-enum  {
-	VALA_TRY_STATEMENT_DUMMY_PROPERTY
-};
-gpointer vala_source_reference_ref (gpointer instance);
-void vala_source_reference_unref (gpointer instance);
-GParamSpec* vala_param_spec_source_reference (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_source_reference (GValue* value, gpointer v_object);
-void vala_value_take_source_reference (GValue* value, gpointer v_object);
-gpointer vala_value_get_source_reference (const GValue* value);
-GType vala_source_reference_get_type (void) G_GNUC_CONST;
-ValaTryStatement* vala_try_statement_new (ValaBlock* body, ValaBlock* finally_body, ValaSourceReference* source_reference);
-ValaTryStatement* vala_try_statement_construct (GType object_type, ValaBlock* body, ValaBlock* finally_body, ValaSourceReference* source_reference);
-ValaCodeNode* vala_code_node_construct (GType object_type);
-void vala_try_statement_set_body (ValaTryStatement* self, ValaBlock* value);
-void vala_try_statement_set_finally_body (ValaTryStatement* self, ValaBlock* value);
-void vala_code_node_set_source_reference (ValaCodeNode* self, ValaSourceReference* value);
-void vala_try_statement_add_catch_clause (ValaTryStatement* self, ValaCatchClause* clause);
-void vala_code_node_set_parent_node (ValaCodeNode* self, ValaCodeNode* value);
-ValaList* vala_try_statement_get_catch_clauses (ValaTryStatement* self);
-static void vala_try_statement_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor);
-void vala_code_visitor_visit_try_statement (ValaCodeVisitor* self, ValaTryStatement* stmt);
-static void vala_try_statement_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor);
-ValaBlock* vala_try_statement_get_body (ValaTryStatement* self);
-void vala_code_node_accept (ValaCodeNode* self, ValaCodeVisitor* visitor);
-ValaBlock* vala_try_statement_get_finally_body (ValaTryStatement* self);
-static gboolean vala_try_statement_real_check (ValaCodeNode* base, ValaCodeContext* context);
-gboolean vala_code_node_get_checked (ValaCodeNode* self);
-gboolean vala_code_node_get_error (ValaCodeNode* self);
-void vala_code_node_set_checked (ValaCodeNode* self, gboolean value);
-gboolean vala_code_node_check (ValaCodeNode* self, ValaCodeContext* context);
-ValaList* vala_code_node_get_error_types (ValaCodeNode* self);
-ValaDataType* vala_catch_clause_get_error_type (ValaCatchClause* self);
-gboolean vala_data_type_compatible (ValaDataType* self, ValaDataType* target_type);
-ValaBlock* vala_catch_clause_get_body (ValaCatchClause* self);
-void vala_code_node_add_error_types (ValaCodeNode* self, ValaList* error_types);
-static void vala_try_statement_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen);
-gboolean vala_try_statement_get_after_try_block_reachable (ValaTryStatement* self);
-void vala_try_statement_set_after_try_block_reachable (ValaTryStatement* self, gboolean value);
-static void vala_try_statement_finalize (ValaCodeNode* obj);
+static void vala_try_statement_real_accept (ValaCodeNode* base,
+                                     ValaCodeVisitor* visitor);
+static void vala_try_statement_real_accept_children (ValaCodeNode* base,
+                                              ValaCodeVisitor* visitor);
+static gboolean vala_try_statement_real_check (ValaCodeNode* base,
+                                        ValaCodeContext* context);
+static void vala_try_statement_real_emit (ValaCodeNode* base,
+                                   ValaCodeGenerator* codegen);
+static void vala_try_statement_finalize (ValaCodeNode * obj);
 
 
 /**
@@ -298,24 +63,27 @@ static void vala_try_statement_finalize (ValaCodeNode* obj);
  * @param source_reference reference to source code
  * @return                 newly created try statement
  */
-ValaTryStatement* vala_try_statement_construct (GType object_type, ValaBlock* body, ValaBlock* finally_body, ValaSourceReference* source_reference) {
+ValaTryStatement*
+vala_try_statement_construct (GType object_type,
+                              ValaBlock* body,
+                              ValaBlock* finally_body,
+                              ValaSourceReference* source_reference)
+{
 	ValaTryStatement* self = NULL;
-	ValaBlock* _tmp0_ = NULL;
-	ValaBlock* _tmp1_ = NULL;
-	ValaSourceReference* _tmp2_ = NULL;
 	g_return_val_if_fail (body != NULL, NULL);
 	self = (ValaTryStatement*) vala_code_node_construct (object_type);
-	_tmp0_ = body;
-	vala_try_statement_set_body (self, _tmp0_);
-	_tmp1_ = finally_body;
-	vala_try_statement_set_finally_body (self, _tmp1_);
-	_tmp2_ = source_reference;
-	vala_code_node_set_source_reference ((ValaCodeNode*) self, _tmp2_);
+	vala_try_statement_set_body (self, body);
+	vala_try_statement_set_finally_body (self, finally_body);
+	vala_code_node_set_source_reference ((ValaCodeNode*) self, source_reference);
 	return self;
 }
 
 
-ValaTryStatement* vala_try_statement_new (ValaBlock* body, ValaBlock* finally_body, ValaSourceReference* source_reference) {
+ValaTryStatement*
+vala_try_statement_new (ValaBlock* body,
+                        ValaBlock* finally_body,
+                        ValaSourceReference* source_reference)
+{
 	return vala_try_statement_construct (VALA_TYPE_TRY_STATEMENT, body, finally_body, source_reference);
 }
 
@@ -325,17 +93,16 @@ ValaTryStatement* vala_try_statement_new (ValaBlock* body, ValaBlock* finally_bo
  *
  * @param clause a catch clause
  */
-void vala_try_statement_add_catch_clause (ValaTryStatement* self, ValaCatchClause* clause) {
-	ValaCatchClause* _tmp0_ = NULL;
-	ValaList* _tmp1_ = NULL;
-	ValaCatchClause* _tmp2_ = NULL;
+void
+vala_try_statement_add_catch_clause (ValaTryStatement* self,
+                                     ValaCatchClause* clause)
+{
+	ValaList* _tmp0_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (clause != NULL);
-	_tmp0_ = clause;
-	vala_code_node_set_parent_node ((ValaCodeNode*) _tmp0_, (ValaCodeNode*) self);
-	_tmp1_ = self->priv->catch_clauses;
-	_tmp2_ = clause;
-	vala_collection_add ((ValaCollection*) _tmp1_, _tmp2_);
+	vala_code_node_set_parent_node ((ValaCodeNode*) clause, (ValaCodeNode*) self);
+	_tmp0_ = self->priv->catch_clauses;
+	vala_collection_add ((ValaCollection*) _tmp0_, clause);
 }
 
 
@@ -344,15 +111,19 @@ void vala_try_statement_add_catch_clause (ValaTryStatement* self, ValaCatchClaus
  *
  * @return list of catch clauses
  */
-static gpointer _vala_iterable_ref0 (gpointer self) {
+static gpointer
+_vala_iterable_ref0 (gpointer self)
+{
 	return self ? vala_iterable_ref (self) : NULL;
 }
 
 
-ValaList* vala_try_statement_get_catch_clauses (ValaTryStatement* self) {
+ValaList*
+vala_try_statement_get_catch_clauses (ValaTryStatement* self)
+{
 	ValaList* result = NULL;
-	ValaList* _tmp0_ = NULL;
-	ValaList* _tmp1_ = NULL;
+	ValaList* _tmp0_;
+	ValaList* _tmp1_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->catch_clauses;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -361,114 +132,114 @@ ValaList* vala_try_statement_get_catch_clauses (ValaTryStatement* self) {
 }
 
 
-static void vala_try_statement_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
+static void
+vala_try_statement_real_accept (ValaCodeNode* base,
+                                ValaCodeVisitor* visitor)
+{
 	ValaTryStatement * self;
-	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaTryStatement*) base;
 	g_return_if_fail (visitor != NULL);
-	_tmp0_ = visitor;
-	vala_code_visitor_visit_try_statement (_tmp0_, self);
+	vala_code_visitor_visit_try_statement (visitor, self);
 }
 
 
-static void vala_try_statement_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
+static void
+vala_try_statement_real_accept_children (ValaCodeNode* base,
+                                         ValaCodeVisitor* visitor)
+{
 	ValaTryStatement * self;
-	ValaBlock* _tmp0_ = NULL;
-	ValaBlock* _tmp1_ = NULL;
-	ValaCodeVisitor* _tmp2_ = NULL;
-	ValaBlock* _tmp16_ = NULL;
-	ValaBlock* _tmp17_ = NULL;
+	ValaBlock* _tmp0_;
+	ValaBlock* _tmp1_;
+	ValaBlock* _tmp14_;
+	ValaBlock* _tmp15_;
 	self = (ValaTryStatement*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_try_statement_get_body (self);
 	_tmp1_ = _tmp0_;
-	_tmp2_ = visitor;
-	vala_code_node_accept ((ValaCodeNode*) _tmp1_, _tmp2_);
+	vala_code_node_accept ((ValaCodeNode*) _tmp1_, visitor);
 	{
 		ValaList* _clause_list = NULL;
-		ValaList* _tmp3_ = NULL;
-		ValaList* _tmp4_ = NULL;
+		ValaList* _tmp2_;
+		ValaList* _tmp3_;
 		gint _clause_size = 0;
-		ValaList* _tmp5_ = NULL;
-		gint _tmp6_ = 0;
-		gint _tmp7_ = 0;
+		ValaList* _tmp4_;
+		gint _tmp5_;
+		gint _tmp6_;
 		gint _clause_index = 0;
-		_tmp3_ = self->priv->catch_clauses;
-		_tmp4_ = _vala_iterable_ref0 (_tmp3_);
-		_clause_list = _tmp4_;
-		_tmp5_ = _clause_list;
-		_tmp6_ = vala_collection_get_size ((ValaCollection*) _tmp5_);
-		_tmp7_ = _tmp6_;
-		_clause_size = _tmp7_;
+		_tmp2_ = self->priv->catch_clauses;
+		_tmp3_ = _vala_iterable_ref0 (_tmp2_);
+		_clause_list = _tmp3_;
+		_tmp4_ = _clause_list;
+		_tmp5_ = vala_collection_get_size ((ValaCollection*) _tmp4_);
+		_tmp6_ = _tmp5_;
+		_clause_size = _tmp6_;
 		_clause_index = -1;
 		while (TRUE) {
-			gint _tmp8_ = 0;
-			gint _tmp9_ = 0;
-			gint _tmp10_ = 0;
+			gint _tmp7_;
+			gint _tmp8_;
+			gint _tmp9_;
 			ValaCatchClause* clause = NULL;
-			ValaList* _tmp11_ = NULL;
-			gint _tmp12_ = 0;
-			gpointer _tmp13_ = NULL;
-			ValaCatchClause* _tmp14_ = NULL;
-			ValaCodeVisitor* _tmp15_ = NULL;
+			ValaList* _tmp10_;
+			gint _tmp11_;
+			gpointer _tmp12_;
+			ValaCatchClause* _tmp13_;
+			_tmp7_ = _clause_index;
+			_clause_index = _tmp7_ + 1;
 			_tmp8_ = _clause_index;
-			_clause_index = _tmp8_ + 1;
-			_tmp9_ = _clause_index;
-			_tmp10_ = _clause_size;
-			if (!(_tmp9_ < _tmp10_)) {
+			_tmp9_ = _clause_size;
+			if (!(_tmp8_ < _tmp9_)) {
 				break;
 			}
-			_tmp11_ = _clause_list;
-			_tmp12_ = _clause_index;
-			_tmp13_ = vala_list_get (_tmp11_, _tmp12_);
-			clause = (ValaCatchClause*) _tmp13_;
-			_tmp14_ = clause;
-			_tmp15_ = visitor;
-			vala_code_node_accept ((ValaCodeNode*) _tmp14_, _tmp15_);
+			_tmp10_ = _clause_list;
+			_tmp11_ = _clause_index;
+			_tmp12_ = vala_list_get (_tmp10_, _tmp11_);
+			clause = (ValaCatchClause*) _tmp12_;
+			_tmp13_ = clause;
+			vala_code_node_accept ((ValaCodeNode*) _tmp13_, visitor);
 			_vala_code_node_unref0 (clause);
 		}
 		_vala_iterable_unref0 (_clause_list);
 	}
-	_tmp16_ = vala_try_statement_get_finally_body (self);
-	_tmp17_ = _tmp16_;
-	if (_tmp17_ != NULL) {
-		ValaBlock* _tmp18_ = NULL;
-		ValaBlock* _tmp19_ = NULL;
-		ValaCodeVisitor* _tmp20_ = NULL;
-		_tmp18_ = vala_try_statement_get_finally_body (self);
-		_tmp19_ = _tmp18_;
-		_tmp20_ = visitor;
-		vala_code_node_accept ((ValaCodeNode*) _tmp19_, _tmp20_);
+	_tmp14_ = vala_try_statement_get_finally_body (self);
+	_tmp15_ = _tmp14_;
+	if (_tmp15_ != NULL) {
+		ValaBlock* _tmp16_;
+		ValaBlock* _tmp17_;
+		_tmp16_ = vala_try_statement_get_finally_body (self);
+		_tmp17_ = _tmp16_;
+		vala_code_node_accept ((ValaCodeNode*) _tmp17_, visitor);
 	}
 }
 
 
-static gboolean vala_try_statement_real_check (ValaCodeNode* base, ValaCodeContext* context) {
+static gboolean
+vala_try_statement_real_check (ValaCodeNode* base,
+                               ValaCodeContext* context)
+{
 	ValaTryStatement * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_ = FALSE;
-	gboolean _tmp1_ = FALSE;
-	ValaBlock* _tmp4_ = NULL;
-	ValaBlock* _tmp5_ = NULL;
-	ValaCodeContext* _tmp6_ = NULL;
+	gboolean _tmp0_;
+	gboolean _tmp1_;
+	ValaBlock* _tmp4_;
+	ValaBlock* _tmp5_;
 	ValaArrayList* error_types = NULL;
-	GEqualFunc _tmp7_ = NULL;
-	ValaArrayList* _tmp8_ = NULL;
+	GEqualFunc _tmp6_;
+	ValaArrayList* _tmp7_;
 	ValaArrayList* handled_error_types = NULL;
-	GEqualFunc _tmp23_ = NULL;
-	ValaArrayList* _tmp24_ = NULL;
-	ValaBlock* _tmp89_ = NULL;
-	ValaBlock* _tmp90_ = NULL;
-	ValaArrayList* _tmp108_ = NULL;
-	gboolean _tmp109_ = FALSE;
-	gboolean _tmp110_ = FALSE;
+	GEqualFunc _tmp22_;
+	ValaArrayList* _tmp23_;
+	ValaBlock* _tmp86_;
+	ValaBlock* _tmp87_;
+	ValaArrayList* _tmp104_;
+	gboolean _tmp105_;
+	gboolean _tmp106_;
 	self = (ValaTryStatement*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_ = FALSE;
-		gboolean _tmp3_ = FALSE;
+		gboolean _tmp2_;
+		gboolean _tmp3_;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -477,164 +248,160 @@ static gboolean vala_try_statement_real_check (ValaCodeNode* base, ValaCodeConte
 	vala_code_node_set_checked ((ValaCodeNode*) self, TRUE);
 	_tmp4_ = vala_try_statement_get_body (self);
 	_tmp5_ = _tmp4_;
-	_tmp6_ = context;
-	vala_code_node_check ((ValaCodeNode*) _tmp5_, _tmp6_);
-	_tmp7_ = g_direct_equal;
-	_tmp8_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp7_);
-	error_types = _tmp8_;
+	vala_code_node_check ((ValaCodeNode*) _tmp5_, context);
+	_tmp6_ = g_direct_equal;
+	_tmp7_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp6_);
+	error_types = _tmp7_;
 	{
 		ValaList* _body_error_type_list = NULL;
-		ValaBlock* _tmp9_ = NULL;
-		ValaBlock* _tmp10_ = NULL;
-		ValaList* _tmp11_ = NULL;
+		ValaBlock* _tmp8_;
+		ValaBlock* _tmp9_;
+		ValaList* _tmp10_;
 		gint _body_error_type_size = 0;
-		ValaList* _tmp12_ = NULL;
-		gint _tmp13_ = 0;
-		gint _tmp14_ = 0;
+		ValaList* _tmp11_;
+		gint _tmp12_;
+		gint _tmp13_;
 		gint _body_error_type_index = 0;
-		_tmp9_ = vala_try_statement_get_body (self);
-		_tmp10_ = _tmp9_;
-		_tmp11_ = vala_code_node_get_error_types ((ValaCodeNode*) _tmp10_);
-		_body_error_type_list = _tmp11_;
-		_tmp12_ = _body_error_type_list;
-		_tmp13_ = vala_collection_get_size ((ValaCollection*) _tmp12_);
-		_tmp14_ = _tmp13_;
-		_body_error_type_size = _tmp14_;
+		_tmp8_ = vala_try_statement_get_body (self);
+		_tmp9_ = _tmp8_;
+		_tmp10_ = vala_code_node_get_error_types ((ValaCodeNode*) _tmp9_);
+		_body_error_type_list = _tmp10_;
+		_tmp11_ = _body_error_type_list;
+		_tmp12_ = vala_collection_get_size ((ValaCollection*) _tmp11_);
+		_tmp13_ = _tmp12_;
+		_body_error_type_size = _tmp13_;
 		_body_error_type_index = -1;
 		while (TRUE) {
-			gint _tmp15_ = 0;
-			gint _tmp16_ = 0;
-			gint _tmp17_ = 0;
+			gint _tmp14_;
+			gint _tmp15_;
+			gint _tmp16_;
 			ValaDataType* body_error_type = NULL;
-			ValaList* _tmp18_ = NULL;
-			gint _tmp19_ = 0;
-			gpointer _tmp20_ = NULL;
-			ValaArrayList* _tmp21_ = NULL;
-			ValaDataType* _tmp22_ = NULL;
+			ValaList* _tmp17_;
+			gint _tmp18_;
+			gpointer _tmp19_;
+			ValaArrayList* _tmp20_;
+			ValaDataType* _tmp21_;
+			_tmp14_ = _body_error_type_index;
+			_body_error_type_index = _tmp14_ + 1;
 			_tmp15_ = _body_error_type_index;
-			_body_error_type_index = _tmp15_ + 1;
-			_tmp16_ = _body_error_type_index;
-			_tmp17_ = _body_error_type_size;
-			if (!(_tmp16_ < _tmp17_)) {
+			_tmp16_ = _body_error_type_size;
+			if (!(_tmp15_ < _tmp16_)) {
 				break;
 			}
-			_tmp18_ = _body_error_type_list;
-			_tmp19_ = _body_error_type_index;
-			_tmp20_ = vala_list_get (_tmp18_, _tmp19_);
-			body_error_type = (ValaDataType*) _tmp20_;
-			_tmp21_ = error_types;
-			_tmp22_ = body_error_type;
-			vala_collection_add ((ValaCollection*) _tmp21_, _tmp22_);
+			_tmp17_ = _body_error_type_list;
+			_tmp18_ = _body_error_type_index;
+			_tmp19_ = vala_list_get (_tmp17_, _tmp18_);
+			body_error_type = (ValaDataType*) _tmp19_;
+			_tmp20_ = error_types;
+			_tmp21_ = body_error_type;
+			vala_collection_add ((ValaCollection*) _tmp20_, _tmp21_);
 			_vala_code_node_unref0 (body_error_type);
 		}
 		_vala_iterable_unref0 (_body_error_type_list);
 	}
-	_tmp23_ = g_direct_equal;
-	_tmp24_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp23_);
-	handled_error_types = _tmp24_;
+	_tmp22_ = g_direct_equal;
+	_tmp23_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp22_);
+	handled_error_types = _tmp23_;
 	{
 		ValaList* _clause_list = NULL;
-		ValaList* _tmp25_ = NULL;
-		ValaList* _tmp26_ = NULL;
+		ValaList* _tmp24_;
+		ValaList* _tmp25_;
 		gint _clause_size = 0;
-		ValaList* _tmp27_ = NULL;
-		gint _tmp28_ = 0;
-		gint _tmp29_ = 0;
+		ValaList* _tmp26_;
+		gint _tmp27_;
+		gint _tmp28_;
 		gint _clause_index = 0;
-		_tmp25_ = self->priv->catch_clauses;
-		_tmp26_ = _vala_iterable_ref0 (_tmp25_);
-		_clause_list = _tmp26_;
-		_tmp27_ = _clause_list;
-		_tmp28_ = vala_collection_get_size ((ValaCollection*) _tmp27_);
-		_tmp29_ = _tmp28_;
-		_clause_size = _tmp29_;
+		_tmp24_ = self->priv->catch_clauses;
+		_tmp25_ = _vala_iterable_ref0 (_tmp24_);
+		_clause_list = _tmp25_;
+		_tmp26_ = _clause_list;
+		_tmp27_ = vala_collection_get_size ((ValaCollection*) _tmp26_);
+		_tmp28_ = _tmp27_;
+		_clause_size = _tmp28_;
 		_clause_index = -1;
 		while (TRUE) {
-			gint _tmp30_ = 0;
-			gint _tmp31_ = 0;
-			gint _tmp32_ = 0;
+			gint _tmp29_;
+			gint _tmp30_;
+			gint _tmp31_;
 			ValaCatchClause* clause = NULL;
-			ValaList* _tmp33_ = NULL;
-			gint _tmp34_ = 0;
-			gpointer _tmp35_ = NULL;
-			ValaArrayList* _tmp71_ = NULL;
-			ValaCatchClause* _tmp72_ = NULL;
-			ValaCodeContext* _tmp73_ = NULL;
+			ValaList* _tmp32_;
+			gint _tmp33_;
+			gpointer _tmp34_;
+			ValaArrayList* _tmp69_;
+			ValaCatchClause* _tmp70_;
+			_tmp29_ = _clause_index;
+			_clause_index = _tmp29_ + 1;
 			_tmp30_ = _clause_index;
-			_clause_index = _tmp30_ + 1;
-			_tmp31_ = _clause_index;
-			_tmp32_ = _clause_size;
-			if (!(_tmp31_ < _tmp32_)) {
+			_tmp31_ = _clause_size;
+			if (!(_tmp30_ < _tmp31_)) {
 				break;
 			}
-			_tmp33_ = _clause_list;
-			_tmp34_ = _clause_index;
-			_tmp35_ = vala_list_get (_tmp33_, _tmp34_);
-			clause = (ValaCatchClause*) _tmp35_;
+			_tmp32_ = _clause_list;
+			_tmp33_ = _clause_index;
+			_tmp34_ = vala_list_get (_tmp32_, _tmp33_);
+			clause = (ValaCatchClause*) _tmp34_;
 			{
 				ValaArrayList* _body_error_type_list = NULL;
-				ValaArrayList* _tmp36_ = NULL;
-				ValaArrayList* _tmp37_ = NULL;
+				ValaArrayList* _tmp35_;
+				ValaArrayList* _tmp36_;
 				gint _body_error_type_size = 0;
-				ValaArrayList* _tmp38_ = NULL;
-				gint _tmp39_ = 0;
-				gint _tmp40_ = 0;
+				ValaArrayList* _tmp37_;
+				gint _tmp38_;
+				gint _tmp39_;
 				gint _body_error_type_index = 0;
-				_tmp36_ = error_types;
-				_tmp37_ = _vala_iterable_ref0 (_tmp36_);
-				_body_error_type_list = _tmp37_;
-				_tmp38_ = _body_error_type_list;
-				_tmp39_ = vala_collection_get_size ((ValaCollection*) _tmp38_);
-				_tmp40_ = _tmp39_;
-				_body_error_type_size = _tmp40_;
+				_tmp35_ = error_types;
+				_tmp36_ = _vala_iterable_ref0 (_tmp35_);
+				_body_error_type_list = _tmp36_;
+				_tmp37_ = _body_error_type_list;
+				_tmp38_ = vala_collection_get_size ((ValaCollection*) _tmp37_);
+				_tmp39_ = _tmp38_;
+				_body_error_type_size = _tmp39_;
 				_body_error_type_index = -1;
 				while (TRUE) {
-					gint _tmp41_ = 0;
-					gint _tmp42_ = 0;
-					gint _tmp43_ = 0;
+					gint _tmp40_;
+					gint _tmp41_;
+					gint _tmp42_;
 					ValaDataType* body_error_type = NULL;
-					ValaArrayList* _tmp44_ = NULL;
-					gint _tmp45_ = 0;
-					gpointer _tmp46_ = NULL;
-					gboolean _tmp47_ = FALSE;
-					ValaCatchClause* _tmp48_ = NULL;
-					ValaDataType* _tmp49_ = NULL;
-					ValaDataType* _tmp50_ = NULL;
+					ValaArrayList* _tmp43_;
+					gint _tmp44_;
+					gpointer _tmp45_;
+					gboolean _tmp46_ = FALSE;
+					ValaCatchClause* _tmp47_;
+					ValaDataType* _tmp48_;
+					ValaDataType* _tmp49_;
+					_tmp40_ = _body_error_type_index;
+					_body_error_type_index = _tmp40_ + 1;
 					_tmp41_ = _body_error_type_index;
-					_body_error_type_index = _tmp41_ + 1;
-					_tmp42_ = _body_error_type_index;
-					_tmp43_ = _body_error_type_size;
-					if (!(_tmp42_ < _tmp43_)) {
+					_tmp42_ = _body_error_type_size;
+					if (!(_tmp41_ < _tmp42_)) {
 						break;
 					}
-					_tmp44_ = _body_error_type_list;
-					_tmp45_ = _body_error_type_index;
-					_tmp46_ = vala_list_get ((ValaList*) _tmp44_, _tmp45_);
-					body_error_type = (ValaDataType*) _tmp46_;
-					_tmp48_ = clause;
-					_tmp49_ = vala_catch_clause_get_error_type (_tmp48_);
-					_tmp50_ = _tmp49_;
-					if (_tmp50_ == NULL) {
-						_tmp47_ = TRUE;
+					_tmp43_ = _body_error_type_list;
+					_tmp44_ = _body_error_type_index;
+					_tmp45_ = vala_list_get ((ValaList*) _tmp43_, _tmp44_);
+					body_error_type = (ValaDataType*) _tmp45_;
+					_tmp47_ = clause;
+					_tmp48_ = vala_catch_clause_get_error_type (_tmp47_);
+					_tmp49_ = _tmp48_;
+					if (_tmp49_ == NULL) {
+						_tmp46_ = TRUE;
 					} else {
-						ValaDataType* _tmp51_ = NULL;
-						ValaCatchClause* _tmp52_ = NULL;
-						ValaDataType* _tmp53_ = NULL;
-						ValaDataType* _tmp54_ = NULL;
-						gboolean _tmp55_ = FALSE;
-						_tmp51_ = body_error_type;
-						_tmp52_ = clause;
-						_tmp53_ = vala_catch_clause_get_error_type (_tmp52_);
-						_tmp54_ = _tmp53_;
-						_tmp55_ = vala_data_type_compatible (_tmp51_, _tmp54_);
-						_tmp47_ = _tmp55_;
+						ValaDataType* _tmp50_;
+						ValaCatchClause* _tmp51_;
+						ValaDataType* _tmp52_;
+						ValaDataType* _tmp53_;
+						_tmp50_ = body_error_type;
+						_tmp51_ = clause;
+						_tmp52_ = vala_catch_clause_get_error_type (_tmp51_);
+						_tmp53_ = _tmp52_;
+						_tmp46_ = vala_data_type_compatible (_tmp50_, _tmp53_);
 					}
-					if (_tmp47_) {
-						ValaArrayList* _tmp56_ = NULL;
-						ValaDataType* _tmp57_ = NULL;
-						_tmp56_ = handled_error_types;
-						_tmp57_ = body_error_type;
-						vala_collection_add ((ValaCollection*) _tmp56_, _tmp57_);
+					if (_tmp46_) {
+						ValaArrayList* _tmp54_;
+						ValaDataType* _tmp55_;
+						_tmp54_ = handled_error_types;
+						_tmp55_ = body_error_type;
+						vala_collection_add ((ValaCollection*) _tmp54_, _tmp55_);
 					}
 					_vala_code_node_unref0 (body_error_type);
 				}
@@ -642,99 +409,98 @@ static gboolean vala_try_statement_real_check (ValaCodeNode* base, ValaCodeConte
 			}
 			{
 				ValaArrayList* _handled_error_type_list = NULL;
-				ValaArrayList* _tmp58_ = NULL;
-				ValaArrayList* _tmp59_ = NULL;
+				ValaArrayList* _tmp56_;
+				ValaArrayList* _tmp57_;
 				gint _handled_error_type_size = 0;
-				ValaArrayList* _tmp60_ = NULL;
-				gint _tmp61_ = 0;
-				gint _tmp62_ = 0;
+				ValaArrayList* _tmp58_;
+				gint _tmp59_;
+				gint _tmp60_;
 				gint _handled_error_type_index = 0;
-				_tmp58_ = handled_error_types;
-				_tmp59_ = _vala_iterable_ref0 (_tmp58_);
-				_handled_error_type_list = _tmp59_;
-				_tmp60_ = _handled_error_type_list;
-				_tmp61_ = vala_collection_get_size ((ValaCollection*) _tmp60_);
-				_tmp62_ = _tmp61_;
-				_handled_error_type_size = _tmp62_;
+				_tmp56_ = handled_error_types;
+				_tmp57_ = _vala_iterable_ref0 (_tmp56_);
+				_handled_error_type_list = _tmp57_;
+				_tmp58_ = _handled_error_type_list;
+				_tmp59_ = vala_collection_get_size ((ValaCollection*) _tmp58_);
+				_tmp60_ = _tmp59_;
+				_handled_error_type_size = _tmp60_;
 				_handled_error_type_index = -1;
 				while (TRUE) {
-					gint _tmp63_ = 0;
-					gint _tmp64_ = 0;
-					gint _tmp65_ = 0;
+					gint _tmp61_;
+					gint _tmp62_;
+					gint _tmp63_;
 					ValaDataType* handled_error_type = NULL;
-					ValaArrayList* _tmp66_ = NULL;
-					gint _tmp67_ = 0;
-					gpointer _tmp68_ = NULL;
-					ValaArrayList* _tmp69_ = NULL;
-					ValaDataType* _tmp70_ = NULL;
-					_tmp63_ = _handled_error_type_index;
-					_handled_error_type_index = _tmp63_ + 1;
-					_tmp64_ = _handled_error_type_index;
-					_tmp65_ = _handled_error_type_size;
-					if (!(_tmp64_ < _tmp65_)) {
+					ValaArrayList* _tmp64_;
+					gint _tmp65_;
+					gpointer _tmp66_;
+					ValaArrayList* _tmp67_;
+					ValaDataType* _tmp68_;
+					_tmp61_ = _handled_error_type_index;
+					_handled_error_type_index = _tmp61_ + 1;
+					_tmp62_ = _handled_error_type_index;
+					_tmp63_ = _handled_error_type_size;
+					if (!(_tmp62_ < _tmp63_)) {
 						break;
 					}
-					_tmp66_ = _handled_error_type_list;
-					_tmp67_ = _handled_error_type_index;
-					_tmp68_ = vala_list_get ((ValaList*) _tmp66_, _tmp67_);
-					handled_error_type = (ValaDataType*) _tmp68_;
-					_tmp69_ = error_types;
-					_tmp70_ = handled_error_type;
-					vala_collection_remove ((ValaCollection*) _tmp69_, _tmp70_);
+					_tmp64_ = _handled_error_type_list;
+					_tmp65_ = _handled_error_type_index;
+					_tmp66_ = vala_list_get ((ValaList*) _tmp64_, _tmp65_);
+					handled_error_type = (ValaDataType*) _tmp66_;
+					_tmp67_ = error_types;
+					_tmp68_ = handled_error_type;
+					vala_collection_remove ((ValaCollection*) _tmp67_, _tmp68_);
 					_vala_code_node_unref0 (handled_error_type);
 				}
 				_vala_iterable_unref0 (_handled_error_type_list);
 			}
-			_tmp71_ = handled_error_types;
-			vala_collection_clear ((ValaCollection*) _tmp71_);
-			_tmp72_ = clause;
-			_tmp73_ = context;
-			vala_code_node_check ((ValaCodeNode*) _tmp72_, _tmp73_);
+			_tmp69_ = handled_error_types;
+			vala_collection_clear ((ValaCollection*) _tmp69_);
+			_tmp70_ = clause;
+			vala_code_node_check ((ValaCodeNode*) _tmp70_, context);
 			{
 				ValaList* _body_error_type_list = NULL;
-				ValaCatchClause* _tmp74_ = NULL;
-				ValaBlock* _tmp75_ = NULL;
-				ValaBlock* _tmp76_ = NULL;
-				ValaList* _tmp77_ = NULL;
+				ValaCatchClause* _tmp71_;
+				ValaBlock* _tmp72_;
+				ValaBlock* _tmp73_;
+				ValaList* _tmp74_;
 				gint _body_error_type_size = 0;
-				ValaList* _tmp78_ = NULL;
-				gint _tmp79_ = 0;
-				gint _tmp80_ = 0;
+				ValaList* _tmp75_;
+				gint _tmp76_;
+				gint _tmp77_;
 				gint _body_error_type_index = 0;
-				_tmp74_ = clause;
-				_tmp75_ = vala_catch_clause_get_body (_tmp74_);
-				_tmp76_ = _tmp75_;
-				_tmp77_ = vala_code_node_get_error_types ((ValaCodeNode*) _tmp76_);
-				_body_error_type_list = _tmp77_;
-				_tmp78_ = _body_error_type_list;
-				_tmp79_ = vala_collection_get_size ((ValaCollection*) _tmp78_);
-				_tmp80_ = _tmp79_;
-				_body_error_type_size = _tmp80_;
+				_tmp71_ = clause;
+				_tmp72_ = vala_catch_clause_get_body (_tmp71_);
+				_tmp73_ = _tmp72_;
+				_tmp74_ = vala_code_node_get_error_types ((ValaCodeNode*) _tmp73_);
+				_body_error_type_list = _tmp74_;
+				_tmp75_ = _body_error_type_list;
+				_tmp76_ = vala_collection_get_size ((ValaCollection*) _tmp75_);
+				_tmp77_ = _tmp76_;
+				_body_error_type_size = _tmp77_;
 				_body_error_type_index = -1;
 				while (TRUE) {
-					gint _tmp81_ = 0;
-					gint _tmp82_ = 0;
-					gint _tmp83_ = 0;
+					gint _tmp78_;
+					gint _tmp79_;
+					gint _tmp80_;
 					ValaDataType* body_error_type = NULL;
-					ValaList* _tmp84_ = NULL;
-					gint _tmp85_ = 0;
-					gpointer _tmp86_ = NULL;
-					ValaArrayList* _tmp87_ = NULL;
-					ValaDataType* _tmp88_ = NULL;
-					_tmp81_ = _body_error_type_index;
-					_body_error_type_index = _tmp81_ + 1;
-					_tmp82_ = _body_error_type_index;
-					_tmp83_ = _body_error_type_size;
-					if (!(_tmp82_ < _tmp83_)) {
+					ValaList* _tmp81_;
+					gint _tmp82_;
+					gpointer _tmp83_;
+					ValaArrayList* _tmp84_;
+					ValaDataType* _tmp85_;
+					_tmp78_ = _body_error_type_index;
+					_body_error_type_index = _tmp78_ + 1;
+					_tmp79_ = _body_error_type_index;
+					_tmp80_ = _body_error_type_size;
+					if (!(_tmp79_ < _tmp80_)) {
 						break;
 					}
-					_tmp84_ = _body_error_type_list;
-					_tmp85_ = _body_error_type_index;
-					_tmp86_ = vala_list_get (_tmp84_, _tmp85_);
-					body_error_type = (ValaDataType*) _tmp86_;
-					_tmp87_ = error_types;
-					_tmp88_ = body_error_type;
-					vala_collection_add ((ValaCollection*) _tmp87_, _tmp88_);
+					_tmp81_ = _body_error_type_list;
+					_tmp82_ = _body_error_type_index;
+					_tmp83_ = vala_list_get (_tmp81_, _tmp82_);
+					body_error_type = (ValaDataType*) _tmp83_;
+					_tmp84_ = error_types;
+					_tmp85_ = body_error_type;
+					vala_collection_add ((ValaCollection*) _tmp84_, _tmp85_);
 					_vala_code_node_unref0 (body_error_type);
 				}
 				_vala_iterable_unref0 (_body_error_type_list);
@@ -743,88 +509,89 @@ static gboolean vala_try_statement_real_check (ValaCodeNode* base, ValaCodeConte
 		}
 		_vala_iterable_unref0 (_clause_list);
 	}
-	_tmp89_ = vala_try_statement_get_finally_body (self);
-	_tmp90_ = _tmp89_;
-	if (_tmp90_ != NULL) {
-		ValaBlock* _tmp91_ = NULL;
-		ValaBlock* _tmp92_ = NULL;
-		ValaCodeContext* _tmp93_ = NULL;
-		_tmp91_ = vala_try_statement_get_finally_body (self);
-		_tmp92_ = _tmp91_;
-		_tmp93_ = context;
-		vala_code_node_check ((ValaCodeNode*) _tmp92_, _tmp93_);
+	_tmp86_ = vala_try_statement_get_finally_body (self);
+	_tmp87_ = _tmp86_;
+	if (_tmp87_ != NULL) {
+		ValaBlock* _tmp88_;
+		ValaBlock* _tmp89_;
+		_tmp88_ = vala_try_statement_get_finally_body (self);
+		_tmp89_ = _tmp88_;
+		vala_code_node_check ((ValaCodeNode*) _tmp89_, context);
 		{
 			ValaList* _body_error_type_list = NULL;
-			ValaBlock* _tmp94_ = NULL;
-			ValaBlock* _tmp95_ = NULL;
-			ValaList* _tmp96_ = NULL;
+			ValaBlock* _tmp90_;
+			ValaBlock* _tmp91_;
+			ValaList* _tmp92_;
 			gint _body_error_type_size = 0;
-			ValaList* _tmp97_ = NULL;
-			gint _tmp98_ = 0;
-			gint _tmp99_ = 0;
+			ValaList* _tmp93_;
+			gint _tmp94_;
+			gint _tmp95_;
 			gint _body_error_type_index = 0;
-			_tmp94_ = vala_try_statement_get_finally_body (self);
+			_tmp90_ = vala_try_statement_get_finally_body (self);
+			_tmp91_ = _tmp90_;
+			_tmp92_ = vala_code_node_get_error_types ((ValaCodeNode*) _tmp91_);
+			_body_error_type_list = _tmp92_;
+			_tmp93_ = _body_error_type_list;
+			_tmp94_ = vala_collection_get_size ((ValaCollection*) _tmp93_);
 			_tmp95_ = _tmp94_;
-			_tmp96_ = vala_code_node_get_error_types ((ValaCodeNode*) _tmp95_);
-			_body_error_type_list = _tmp96_;
-			_tmp97_ = _body_error_type_list;
-			_tmp98_ = vala_collection_get_size ((ValaCollection*) _tmp97_);
-			_tmp99_ = _tmp98_;
-			_body_error_type_size = _tmp99_;
+			_body_error_type_size = _tmp95_;
 			_body_error_type_index = -1;
 			while (TRUE) {
-				gint _tmp100_ = 0;
-				gint _tmp101_ = 0;
-				gint _tmp102_ = 0;
+				gint _tmp96_;
+				gint _tmp97_;
+				gint _tmp98_;
 				ValaDataType* body_error_type = NULL;
-				ValaList* _tmp103_ = NULL;
-				gint _tmp104_ = 0;
-				gpointer _tmp105_ = NULL;
-				ValaArrayList* _tmp106_ = NULL;
-				ValaDataType* _tmp107_ = NULL;
-				_tmp100_ = _body_error_type_index;
-				_body_error_type_index = _tmp100_ + 1;
-				_tmp101_ = _body_error_type_index;
-				_tmp102_ = _body_error_type_size;
-				if (!(_tmp101_ < _tmp102_)) {
+				ValaList* _tmp99_;
+				gint _tmp100_;
+				gpointer _tmp101_;
+				ValaArrayList* _tmp102_;
+				ValaDataType* _tmp103_;
+				_tmp96_ = _body_error_type_index;
+				_body_error_type_index = _tmp96_ + 1;
+				_tmp97_ = _body_error_type_index;
+				_tmp98_ = _body_error_type_size;
+				if (!(_tmp97_ < _tmp98_)) {
 					break;
 				}
-				_tmp103_ = _body_error_type_list;
-				_tmp104_ = _body_error_type_index;
-				_tmp105_ = vala_list_get (_tmp103_, _tmp104_);
-				body_error_type = (ValaDataType*) _tmp105_;
-				_tmp106_ = error_types;
-				_tmp107_ = body_error_type;
-				vala_collection_add ((ValaCollection*) _tmp106_, _tmp107_);
+				_tmp99_ = _body_error_type_list;
+				_tmp100_ = _body_error_type_index;
+				_tmp101_ = vala_list_get (_tmp99_, _tmp100_);
+				body_error_type = (ValaDataType*) _tmp101_;
+				_tmp102_ = error_types;
+				_tmp103_ = body_error_type;
+				vala_collection_add ((ValaCollection*) _tmp102_, _tmp103_);
 				_vala_code_node_unref0 (body_error_type);
 			}
 			_vala_iterable_unref0 (_body_error_type_list);
 		}
 	}
-	_tmp108_ = error_types;
-	vala_code_node_add_error_types ((ValaCodeNode*) self, (ValaList*) _tmp108_);
-	_tmp109_ = vala_code_node_get_error ((ValaCodeNode*) self);
-	_tmp110_ = _tmp109_;
-	result = !_tmp110_;
+	_tmp104_ = error_types;
+	vala_code_node_add_error_types ((ValaCodeNode*) self, (ValaList*) _tmp104_);
+	_tmp105_ = vala_code_node_get_error ((ValaCodeNode*) self);
+	_tmp106_ = _tmp105_;
+	result = !_tmp106_;
 	_vala_iterable_unref0 (handled_error_types);
 	_vala_iterable_unref0 (error_types);
 	return result;
 }
 
 
-static void vala_try_statement_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
+static void
+vala_try_statement_real_emit (ValaCodeNode* base,
+                              ValaCodeGenerator* codegen)
+{
 	ValaTryStatement * self;
-	ValaCodeGenerator* _tmp0_ = NULL;
 	self = (ValaTryStatement*) base;
 	g_return_if_fail (codegen != NULL);
-	_tmp0_ = codegen;
-	vala_code_visitor_visit_try_statement ((ValaCodeVisitor*) _tmp0_, self);
+	vala_code_visitor_visit_try_statement ((ValaCodeVisitor*) codegen, self);
 }
 
 
-ValaBlock* vala_try_statement_get_body (ValaTryStatement* self) {
+ValaBlock*
+vala_try_statement_get_body (ValaTryStatement* self)
+{
 	ValaBlock* result;
-	ValaBlock* _tmp0_ = NULL;
+	ValaBlock* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_body;
 	result = _tmp0_;
@@ -832,28 +599,33 @@ ValaBlock* vala_try_statement_get_body (ValaTryStatement* self) {
 }
 
 
-static gpointer _vala_code_node_ref0 (gpointer self) {
+static gpointer
+_vala_code_node_ref0 (gpointer self)
+{
 	return self ? vala_code_node_ref (self) : NULL;
 }
 
 
-void vala_try_statement_set_body (ValaTryStatement* self, ValaBlock* value) {
-	ValaBlock* _tmp0_ = NULL;
-	ValaBlock* _tmp1_ = NULL;
-	ValaBlock* _tmp2_ = NULL;
+void
+vala_try_statement_set_body (ValaTryStatement* self,
+                             ValaBlock* value)
+{
+	ValaBlock* _tmp0_;
+	ValaBlock* _tmp1_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
+	_tmp0_ = _vala_code_node_ref0 (value);
 	_vala_code_node_unref0 (self->priv->_body);
-	self->priv->_body = _tmp1_;
-	_tmp2_ = self->priv->_body;
-	vala_code_node_set_parent_node ((ValaCodeNode*) _tmp2_, (ValaCodeNode*) self);
+	self->priv->_body = _tmp0_;
+	_tmp1_ = self->priv->_body;
+	vala_code_node_set_parent_node ((ValaCodeNode*) _tmp1_, (ValaCodeNode*) self);
 }
 
 
-ValaBlock* vala_try_statement_get_finally_body (ValaTryStatement* self) {
+ValaBlock*
+vala_try_statement_get_finally_body (ValaTryStatement* self)
+{
 	ValaBlock* result;
-	ValaBlock* _tmp0_ = NULL;
+	ValaBlock* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_finally_body;
 	result = _tmp0_;
@@ -861,27 +633,30 @@ ValaBlock* vala_try_statement_get_finally_body (ValaTryStatement* self) {
 }
 
 
-void vala_try_statement_set_finally_body (ValaTryStatement* self, ValaBlock* value) {
-	ValaBlock* _tmp0_ = NULL;
-	ValaBlock* _tmp1_ = NULL;
-	ValaBlock* _tmp2_ = NULL;
+void
+vala_try_statement_set_finally_body (ValaTryStatement* self,
+                                     ValaBlock* value)
+{
+	ValaBlock* _tmp0_;
+	ValaBlock* _tmp1_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
+	_tmp0_ = _vala_code_node_ref0 (value);
 	_vala_code_node_unref0 (self->priv->_finally_body);
-	self->priv->_finally_body = _tmp1_;
-	_tmp2_ = self->priv->_finally_body;
-	if (_tmp2_ != NULL) {
-		ValaBlock* _tmp3_ = NULL;
-		_tmp3_ = self->priv->_finally_body;
-		vala_code_node_set_parent_node ((ValaCodeNode*) _tmp3_, (ValaCodeNode*) self);
+	self->priv->_finally_body = _tmp0_;
+	_tmp1_ = self->priv->_finally_body;
+	if (_tmp1_ != NULL) {
+		ValaBlock* _tmp2_;
+		_tmp2_ = self->priv->_finally_body;
+		vala_code_node_set_parent_node ((ValaCodeNode*) _tmp2_, (ValaCodeNode*) self);
 	}
 }
 
 
-gboolean vala_try_statement_get_after_try_block_reachable (ValaTryStatement* self) {
+gboolean
+vala_try_statement_get_after_try_block_reachable (ValaTryStatement* self)
+{
 	gboolean result;
-	gboolean _tmp0_ = FALSE;
+	gboolean _tmp0_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_after_try_block_reachable;
 	result = _tmp0_;
@@ -889,33 +664,40 @@ gboolean vala_try_statement_get_after_try_block_reachable (ValaTryStatement* sel
 }
 
 
-void vala_try_statement_set_after_try_block_reachable (ValaTryStatement* self, gboolean value) {
-	gboolean _tmp0_ = FALSE;
+void
+vala_try_statement_set_after_try_block_reachable (ValaTryStatement* self,
+                                                  gboolean value)
+{
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	self->priv->_after_try_block_reachable = _tmp0_;
+	self->priv->_after_try_block_reachable = value;
 }
 
 
-static void vala_try_statement_class_init (ValaTryStatementClass * klass) {
+static void
+vala_try_statement_class_init (ValaTryStatementClass * klass)
+{
 	vala_try_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_try_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaTryStatementPrivate));
-	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_try_statement_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_try_statement_real_accept_children;
-	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_try_statement_real_check;
-	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_try_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*) (ValaCodeNode *, ValaCodeVisitor*)) vala_try_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*) (ValaCodeNode *, ValaCodeVisitor*)) vala_try_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*) (ValaCodeNode *, ValaCodeContext*)) vala_try_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*) (ValaCodeNode *, ValaCodeGenerator*)) vala_try_statement_real_emit;
 }
 
 
-static void vala_try_statement_vala_statement_interface_init (ValaStatementIface * iface) {
+static void
+vala_try_statement_vala_statement_interface_init (ValaStatementIface * iface)
+{
 	vala_try_statement_vala_statement_parent_iface = g_type_interface_peek_parent (iface);
 }
 
 
-static void vala_try_statement_instance_init (ValaTryStatement * self) {
-	GEqualFunc _tmp0_ = NULL;
-	ValaArrayList* _tmp1_ = NULL;
+static void
+vala_try_statement_instance_init (ValaTryStatement * self)
+{
+	GEqualFunc _tmp0_;
+	ValaArrayList* _tmp1_;
 	self->priv = VALA_TRY_STATEMENT_GET_PRIVATE (self);
 	self->priv->_after_try_block_reachable = TRUE;
 	_tmp0_ = g_direct_equal;
@@ -924,7 +706,9 @@ static void vala_try_statement_instance_init (ValaTryStatement * self) {
 }
 
 
-static void vala_try_statement_finalize (ValaCodeNode* obj) {
+static void
+vala_try_statement_finalize (ValaCodeNode * obj)
+{
 	ValaTryStatement * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_TRY_STATEMENT, ValaTryStatement);
 	_vala_code_node_unref0 (self->priv->_body);
@@ -937,7 +721,9 @@ static void vala_try_statement_finalize (ValaCodeNode* obj) {
 /**
  * Represents a try statement in the source code.
  */
-GType vala_try_statement_get_type (void) {
+GType
+vala_try_statement_get_type (void)
+{
 	static volatile gsize vala_try_statement_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_try_statement_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (ValaTryStatementClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) vala_try_statement_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (ValaTryStatement), 0, (GInstanceInitFunc) vala_try_statement_instance_init, NULL };

@@ -22,7 +22,7 @@
 
 using GLib;
 
-class Vala.VAPIGen : Object {
+class Vala.VAPIGen {
 	static string directory;
 	static bool version;
 	static bool quiet_mode;
@@ -38,19 +38,22 @@ class Vala.VAPIGen : Object {
 	static string library;
 	[CCode (array_length = false, array_null_terminated = true)]
 	static string[] packages;
+	static bool nostdpkg;
+
 	CodeContext context;
 
 	const OptionEntry[] options = {
 		{ "vapidir", 0, 0, OptionArg.FILENAME_ARRAY, ref vapi_directories, "Look for package bindings in DIRECTORY", "DIRECTORY..." },
 		{ "girdir", 0, 0, OptionArg.FILENAME_ARRAY, ref gir_directories, "Look for GIR bindings in DIRECTORY", "DIRECTORY..." },
 		{ "metadatadir", 0, 0, OptionArg.FILENAME_ARRAY, ref metadata_directories, "Look for GIR .metadata files in DIRECTORY", "DIRECTORY..." },
+		{ "nostdpkg", 0, 0, OptionArg.NONE, ref nostdpkg, "Do not include standard packages", null },
 		{ "pkg", 0, 0, OptionArg.STRING_ARRAY, ref packages, "Include binding for PACKAGE", "PACKAGE..." },
 		{ "library", 0, 0, OptionArg.STRING, ref library, "Library name", "NAME" },
 		{ "directory", 'd', 0, OptionArg.FILENAME, ref directory, "Output directory", "DIRECTORY" },
 		{ "disable-warnings", 0, 0, OptionArg.NONE, ref disable_warnings, "Disable warnings", null },
 		{ "version", 0, 0, OptionArg.NONE, ref version, "Display version number", null },
 		{ "quiet", 'q', 0, OptionArg.NONE, ref quiet_mode, "Do not print messages to the console", null },
-		{ "", 0, 0, OptionArg.FILENAME_ARRAY, ref sources, null, "FILE..." },
+		{ OPTION_REMAINING, 0, 0, OptionArg.FILENAME_ARRAY, ref sources, null, "FILE..." },
 		{ null }
 	};
 	
@@ -77,10 +80,13 @@ class Vala.VAPIGen : Object {
 		context.report.enable_warnings = !disable_warnings;
 		context.report.set_verbose_errors (!quiet_mode);
 		CodeContext.push (context);
-		
-		/* default package */
-		context.add_external_package ("glib-2.0");
-		context.add_external_package ("gobject-2.0");
+		context.nostdpkg = nostdpkg;
+
+		if (!nostdpkg) {
+			/* default package */
+			context.add_external_package ("glib-2.0");
+			context.add_external_package ("gobject-2.0");
+		}
 
 		if (context.report.get_errors () > 0) {
 			return quit ();
@@ -125,7 +131,9 @@ class Vala.VAPIGen : Object {
 
 		foreach (string source in sources) {
 			if (FileUtils.test (source, FileTest.EXISTS)) {
-				context.add_source_file (new SourceFile (context, SourceFileType.PACKAGE, source));
+				var source_file = new SourceFile (context, SourceFileType.PACKAGE, source);
+				source_file.explicit = true;
+				context.add_source_file (source_file);
 			} else {
 				Report.error (null, "%s not found".printf (source));
 			}
@@ -183,7 +191,7 @@ class Vala.VAPIGen : Object {
 			}
 		}
 
-		var interface_writer = new CodeWriter ();
+		var interface_writer = new CodeWriter (CodeWriterType.VAPIGEN);
 		var vapi_filename = "%s.vapi".printf (library);
 		if (directory != null) {
 			vapi_filename = Path.build_path ("/", directory, vapi_filename);

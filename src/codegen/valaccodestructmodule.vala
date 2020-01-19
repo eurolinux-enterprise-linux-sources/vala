@@ -54,33 +54,24 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 		}
 
 		if (get_ccode_has_type_id (st)) {
+			decl_space.add_include ("glib-object.h");
 			decl_space.add_type_declaration (new CCodeNewline ());
 			var macro = "(%s_get_type ())".printf (get_ccode_lower_case_name (st, null));
 			decl_space.add_type_declaration (new CCodeMacroReplacement (get_ccode_type_id (st), macro));
 
-			var type_fun = new StructRegisterFunction (st, context);
-			type_fun.init_from_type (false, true);
+			var type_fun = new StructRegisterFunction (st);
+			type_fun.init_from_type (context, false, true);
 			decl_space.add_type_member_declaration (type_fun.get_declaration ());
 		}
 
 		var instance_struct = new CCodeStruct ("_%s".printf (get_ccode_name (st)));
-		instance_struct.deprecated = st.version.deprecated;
+		instance_struct.modifiers |= (st.version.deprecated ? CCodeModifiers.DEPRECATED : 0);
 
 		foreach (Field f in st.get_fields ()) {
-			string field_ctype = get_ccode_name (f.variable_type);
-			if (f.is_volatile) {
-				field_ctype = "volatile " + field_ctype;
-			}
-
 			if (f.binding == MemberBinding.INSTANCE)  {
 				generate_type_declaration (f.variable_type, decl_space);
-
-				var suffix = get_ccode_declarator_suffix (f.variable_type);
-				if (suffix != null) {
-					suffix.deprecated = f.version.deprecated;
-				}
-
-				instance_struct.add_field (field_ctype, get_ccode_name (f), suffix);
+				CCodeModifiers modifiers = (f.is_volatile ? CCodeModifiers.VOLATILE : 0) | (f.version.deprecated ? CCodeModifiers.DEPRECATED : 0);
+				instance_struct.add_field (get_ccode_name (f.variable_type), get_ccode_name (f), modifiers, get_ccode_declarator_suffix (f.variable_type));
 				if (f.variable_type is ArrayType && get_ccode_array_length (f)) {
 					// create fields to store array dimensions
 					var array_type = (ArrayType) f.variable_type;
@@ -102,7 +93,7 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 							instance_struct.add_field (get_ccode_name (len_type), get_array_size_cname (get_ccode_name (f)));
 						}
 					}
-				} else if (f.variable_type is DelegateType) {
+				} else if (f.variable_type is DelegateType && get_ccode_delegate_target (f)) {
 					var delegate_type = (DelegateType) f.variable_type;
 					if (delegate_type.delegate_symbol.has_target) {
 						// create field to store delegate target
@@ -166,6 +157,12 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 	public override void visit_struct (Struct st) {
 		push_context (new EmitContext (st));
 		push_line (st.source_reference);
+
+		if (get_ccode_has_type_id (st) && get_ccode_name (st).length < 3) {
+			st.error = true;
+			Report.error (st.source_reference, "Name `%s' is too short for struct using GType".printf (get_ccode_name (st)));
+			return;
+		}
 
 		var old_instance_finalize_context = instance_finalize_context;
 		instance_finalize_context = new EmitContext ();
@@ -289,7 +286,7 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 		foreach (var f in st.get_fields ()) {
 			if (f.binding == MemberBinding.INSTANCE) {
 				var value = load_field (f, load_this_parameter ((TypeSymbol) st));
-				if (requires_copy (f.variable_type))  {
+				if (get_ccode_delegate_target (f) && requires_copy (f.variable_type))  {
 					value = copy_value (value, f);
 					if (value == null) {
 						// error case, continue to avoid critical

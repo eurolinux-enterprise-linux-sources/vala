@@ -23,43 +23,33 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
+#include "vala.h"
 #include <string.h>
 
 
-#define VALA_TYPE_SOURCE_LOCATION (vala_source_location_get_type ())
-typedef struct _ValaSourceLocation ValaSourceLocation;
-
-struct _ValaSourceLocation {
-	gchar* pos;
-	gint line;
-	gint column;
-};
 
 
 
-GType vala_source_location_get_type (void) G_GNUC_CONST;
-ValaSourceLocation* vala_source_location_dup (const ValaSourceLocation* self);
-void vala_source_location_free (ValaSourceLocation* self);
-void vala_source_location_init (ValaSourceLocation *self, gchar* _pos, gint _line, gint _column);
 
-
-void vala_source_location_init (ValaSourceLocation *self, gchar* _pos, gint _line, gint _column) {
-	gchar* _tmp0_ = NULL;
-	gint _tmp1_ = 0;
-	gint _tmp2_ = 0;
+void
+vala_source_location_init (ValaSourceLocation *self,
+                           gchar* _pos,
+                           gint _line,
+                           gint _column)
+{
 	memset (self, 0, sizeof (ValaSourceLocation));
-	_tmp0_ = _pos;
-	(*self).pos = _tmp0_;
-	_tmp1_ = _line;
-	(*self).line = _tmp1_;
-	_tmp2_ = _column;
-	(*self).column = _tmp2_;
+	(*self).pos = _pos;
+	(*self).line = _line;
+	(*self).column = _column;
 }
 
 
-ValaSourceLocation* vala_source_location_dup (const ValaSourceLocation* self) {
+ValaSourceLocation*
+vala_source_location_dup (const ValaSourceLocation* self)
+{
 	ValaSourceLocation* dup;
 	dup = g_new0 (ValaSourceLocation, 1);
 	memcpy (dup, self, sizeof (ValaSourceLocation));
@@ -67,12 +57,16 @@ ValaSourceLocation* vala_source_location_dup (const ValaSourceLocation* self) {
 }
 
 
-void vala_source_location_free (ValaSourceLocation* self) {
+void
+vala_source_location_free (ValaSourceLocation* self)
+{
 	g_free (self);
 }
 
 
-GType vala_source_location_get_type (void) {
+GType
+vala_source_location_get_type (void)
+{
 	static volatile gsize vala_source_location_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_source_location_type_id__volatile)) {
 		GType vala_source_location_type_id;

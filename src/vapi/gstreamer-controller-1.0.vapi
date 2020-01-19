@@ -33,6 +33,8 @@ namespace Gst {
 			public double cache_cubic_z;
 			public Gst.ClockTime timestamp;
 			public double value;
+			public Gst.Controller.ControlPoint copy ();
+			public void free ();
 		}
 		[CCode (cheader_filename = "gst/controller/controller.h", cname = "GstDirectControlBinding", lower_case_cprefix = "gst_direct_control_binding_", type_id = "gst_direct_control_binding_get_type ()")]
 		[GIR (name = "DirectControlBinding")]
@@ -72,6 +74,13 @@ namespace Gst {
 			public uint64 timeshift { get; set; }
 			[NoAccessorMethod]
 			public Gst.Controller.LFOWaveform waveform { get; set; }
+		}
+		[CCode (cheader_filename = "gst/controller/controller.h", cname = "GstProxyControlBinding", lower_case_cprefix = "gst_proxy_control_binding_", type_id = "gst_proxy_control_binding_get_type ()")]
+		[GIR (name = "ProxyControlBinding")]
+		public class ProxyControlBinding : Gst.ControlBinding {
+			[CCode (has_construct_function = false, type = "GstControlBinding*")]
+			[Version (since = "1.12")]
+			public ProxyControlBinding (Gst.Object object, string property_name, Gst.Object ref_object, string ref_property_name);
 		}
 		[CCode (cheader_filename = "gst/controller/controller.h", cname = "GstTimedValueControlSource", lower_case_cprefix = "gst_timed_value_control_source_", type_id = "gst_timed_value_control_source_get_type ()")]
 		[GIR (name = "TimedValueControlSource")]

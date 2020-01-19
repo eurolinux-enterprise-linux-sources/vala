@@ -120,6 +120,35 @@ void test_inline_array () {
 	assert (1 in a);
 }
 
+int[,,] nd_array_pass (int[,,] a, out int[,,] b) {
+	assert (a.length[0] == 2);
+	assert (a.length[1] == 2);
+	assert (a.length[2] == 2);
+	assert (a[1,1,0] == 7);
+
+	b = a;
+	return a;
+}
+
+void test_nd_array () {
+	int[2,2,2] a = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
+	assert (a[1,0,1] == 6);
+
+	int[,,] b, c;
+	c = nd_array_pass (a, out b);
+	assert (b.length[0] == 2);
+	assert (b.length[1] == 2);
+	assert (b.length[2] == 2);
+	assert (b[0,1,0] == 3);
+	assert (c.length[0] == 2);
+	assert (c.length[1] == 2);
+	assert (c.length[2] == 2);
+	assert (c[0,1,1] == 4);
+
+	string[1,2,3] s = {{{"a", "b", "c"}, {"d", "e", "f"}}};
+	assert (s[0,0,2] == "c");
+}
+
 [CCode (has_target = false)]
 delegate int SimpleFunc ();
 SimpleFunc[] simple_delegates;
@@ -191,6 +220,40 @@ void test_void_array () {
 	assert ((void*) null in a);
 }
 
+void test_explicit_copying () {
+	int[] a0 = { 1, 2, 3};
+	var a1 = a0.copy ();
+	assert (a1.length == 3);
+	assert (a0[1] == a1[1]);
+}
+
+void test_array_move () {
+	int[] a = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	assert (a[4] == 5);
+	a.move (4, 0, 5);
+	assert (a[4] == 9);
+}
+
+void test_array_resize () {
+	int[] a = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	assert (a[a.length - 1] == 9);
+	a.resize (5);
+	assert (a[a.length - 1] == 5);
+}
+
+struct Foo {
+	unowned string array[2];
+	int bar;
+}
+
+const Foo[] FOO_ARRAY_CONST = {
+	{ { "foo", "bar" }, 42 },
+};
+
+void test_struct_array () {
+	assert (FOO_ARRAY_CONST[0].bar == 42);
+}
+
 void main () {
 	test_integer_array ();
 	test_string_array ();
@@ -199,7 +262,12 @@ void main () {
 	test_reference_transfer ();
 	test_length_assignment ();
 	test_inline_array ();
+	test_nd_array ();
 	test_delegate_array ();
 	test_generics_array ();
 	test_void_array ();
+	test_explicit_copying ();
+	test_array_move ();
+	test_array_resize ();
+	test_struct_array ();
 }

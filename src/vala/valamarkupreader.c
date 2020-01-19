@@ -23,54 +23,23 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
+#include "vala.h"
 #include <stdlib.h>
 #include <string.h>
 #include <valagee.h>
+#include <gobject/gvaluecollector.h>
 
-
-#define VALA_TYPE_MARKUP_READER (vala_markup_reader_get_type ())
-#define VALA_MARKUP_READER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_MARKUP_READER, ValaMarkupReader))
-#define VALA_MARKUP_READER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_MARKUP_READER, ValaMarkupReaderClass))
-#define VALA_IS_MARKUP_READER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_MARKUP_READER))
-#define VALA_IS_MARKUP_READER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_MARKUP_READER))
-#define VALA_MARKUP_READER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_MARKUP_READER, ValaMarkupReaderClass))
-
-typedef struct _ValaMarkupReader ValaMarkupReader;
-typedef struct _ValaMarkupReaderClass ValaMarkupReaderClass;
-typedef struct _ValaMarkupReaderPrivate ValaMarkupReaderPrivate;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_mapped_file_unref0(var) ((var == NULL) ? NULL : (var = (g_mapped_file_unref (var), NULL)))
 #define _vala_map_unref0(var) ((var == NULL) ? NULL : (var = (vala_map_unref (var), NULL)))
-
-#define VALA_TYPE_SOURCE_REFERENCE (vala_source_reference_get_type ())
-#define VALA_SOURCE_REFERENCE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReference))
-#define VALA_SOURCE_REFERENCE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReferenceClass))
-#define VALA_IS_SOURCE_REFERENCE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SOURCE_REFERENCE))
-#define VALA_IS_SOURCE_REFERENCE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SOURCE_REFERENCE))
-#define VALA_SOURCE_REFERENCE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReferenceClass))
-
-typedef struct _ValaSourceReference ValaSourceReference;
-typedef struct _ValaSourceReferenceClass ValaSourceReferenceClass;
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 #define _vala_iterable_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterable_unref (var), NULL)))
 #define _vala_iterator_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterator_unref (var), NULL)))
-
-#define VALA_TYPE_SOURCE_LOCATION (vala_source_location_get_type ())
-typedef struct _ValaSourceLocation ValaSourceLocation;
-
-#define VALA_TYPE_MARKUP_TOKEN_TYPE (vala_markup_token_type_get_type ())
 #define _g_string_free0(var) ((var == NULL) ? NULL : (var = (g_string_free (var, TRUE), NULL)))
-
-struct _ValaMarkupReader {
-	GObject parent_instance;
-	ValaMarkupReaderPrivate * priv;
-};
-
-struct _ValaMarkupReaderClass {
-	GObjectClass parent_class;
-};
+typedef struct _ValaParamSpecMarkupReader ValaParamSpecMarkupReader;
 
 struct _ValaMarkupReaderPrivate {
 	gchar* _filename;
@@ -86,132 +55,91 @@ struct _ValaMarkupReaderPrivate {
 	gboolean empty_element;
 };
 
-struct _ValaSourceLocation {
-	gchar* pos;
-	gint line;
-	gint column;
+struct _ValaParamSpecMarkupReader {
+	GParamSpec parent_instance;
 };
-
-typedef enum  {
-	VALA_MARKUP_TOKEN_TYPE_NONE,
-	VALA_MARKUP_TOKEN_TYPE_START_ELEMENT,
-	VALA_MARKUP_TOKEN_TYPE_END_ELEMENT,
-	VALA_MARKUP_TOKEN_TYPE_TEXT,
-	VALA_MARKUP_TOKEN_TYPE_EOF
-} ValaMarkupTokenType;
 
 
 static gpointer vala_markup_reader_parent_class = NULL;
 
-GType vala_markup_reader_get_type (void) G_GNUC_CONST;
 #define VALA_MARKUP_READER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_MARKUP_READER, ValaMarkupReaderPrivate))
-enum  {
-	VALA_MARKUP_READER_DUMMY_PROPERTY,
-	VALA_MARKUP_READER_FILENAME,
-	VALA_MARKUP_READER_NAME,
-	VALA_MARKUP_READER_CONTENT
-};
-ValaMarkupReader* vala_markup_reader_new (const gchar* filename);
-ValaMarkupReader* vala_markup_reader_construct (GType object_type, const gchar* filename);
-static void vala_markup_reader_set_filename (ValaMarkupReader* self, const gchar* value);
-gpointer vala_source_reference_ref (gpointer instance);
-void vala_source_reference_unref (gpointer instance);
-GParamSpec* vala_param_spec_source_reference (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_source_reference (GValue* value, gpointer v_object);
-void vala_value_take_source_reference (GValue* value, gpointer v_object);
-gpointer vala_value_get_source_reference (const GValue* value);
-GType vala_source_reference_get_type (void) G_GNUC_CONST;
-void vala_report_error (ValaSourceReference* source, const gchar* message);
-gchar* vala_markup_reader_get_attribute (ValaMarkupReader* self, const gchar* attr);
-ValaMap* vala_markup_reader_get_attributes (ValaMarkupReader* self);
+static void vala_markup_reader_set_filename (ValaMarkupReader* self,
+                                      const gchar* value);
 static gchar* vala_markup_reader_read_name (ValaMarkupReader* self);
-GType vala_source_location_get_type (void) G_GNUC_CONST;
-ValaSourceLocation* vala_source_location_dup (const ValaSourceLocation* self);
-void vala_source_location_free (ValaSourceLocation* self);
-GType vala_markup_token_type_get_type (void) G_GNUC_CONST;
-ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaSourceLocation* token_begin, ValaSourceLocation* token_end);
-void vala_source_location_init (ValaSourceLocation *self, gchar* _pos, gint _line, gint _column);
+static void vala_markup_reader_set_content (ValaMarkupReader* self,
+                                     const gchar* value);
+static void vala_markup_reader_set_name (ValaMarkupReader* self,
+                                  const gchar* value);
 static void vala_markup_reader_space (ValaMarkupReader* self);
-static void vala_markup_reader_set_name (ValaMarkupReader* self, const gchar* value);
-static gchar* vala_markup_reader_text (ValaMarkupReader* self, gchar end_char, gboolean rm_trailing_whitespace);
-static void vala_markup_reader_set_content (ValaMarkupReader* self, const gchar* value);
-const gchar* vala_markup_reader_get_filename (ValaMarkupReader* self);
-const gchar* vala_markup_reader_get_name (ValaMarkupReader* self);
-const gchar* vala_markup_reader_get_content (ValaMarkupReader* self);
-static void vala_markup_reader_finalize (GObject* obj);
-static void _vala_vala_markup_reader_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
-static void _vala_vala_markup_reader_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
-const gchar* vala_markup_token_type_to_string (ValaMarkupTokenType self);
+static gchar* vala_markup_reader_text (ValaMarkupReader* self,
+                                gchar end_char,
+                                gboolean rm_trailing_whitespace);
+static void vala_markup_reader_finalize (ValaMarkupReader * obj);
 
 
-ValaMarkupReader* vala_markup_reader_construct (GType object_type, const gchar* filename) {
-	ValaMarkupReader * self = NULL;
-	const gchar* _tmp0_ = NULL;
+ValaMarkupReader*
+vala_markup_reader_construct (GType object_type,
+                              const gchar* filename)
+{
+	ValaMarkupReader* self = NULL;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (filename != NULL, NULL);
-	self = (ValaMarkupReader*) g_object_new (object_type, NULL);
-	_tmp0_ = filename;
-	vala_markup_reader_set_filename (self, _tmp0_);
+	self = (ValaMarkupReader*) g_type_create_instance (object_type);
+	vala_markup_reader_set_filename (self, filename);
 	{
-		GMappedFile* _tmp1_ = NULL;
-		const gchar* _tmp2_ = NULL;
-		GMappedFile* _tmp3_ = NULL;
-		GMappedFile* _tmp4_ = NULL;
-		GMappedFile* _tmp5_ = NULL;
-		gchar* _tmp6_ = NULL;
-		gchar* _tmp7_ = NULL;
-		GMappedFile* _tmp8_ = NULL;
-		gsize _tmp9_ = 0UL;
-		gchar* _tmp10_ = NULL;
-		_tmp2_ = filename;
-		_tmp3_ = g_mapped_file_new (_tmp2_, FALSE, &_inner_error_);
-		_tmp1_ = _tmp3_;
+		GMappedFile* _tmp0_ = NULL;
+		GMappedFile* _tmp1_;
+		GMappedFile* _tmp2_;
+		GMappedFile* _tmp3_;
+		gchar* _tmp4_;
+		gchar* _tmp5_;
+		GMappedFile* _tmp6_;
+		gchar* _tmp7_;
+		_tmp1_ = g_mapped_file_new (filename, FALSE, &_inner_error_);
+		_tmp0_ = _tmp1_;
 		if (G_UNLIKELY (_inner_error_ != NULL)) {
 			if (_inner_error_->domain == G_FILE_ERROR) {
-				goto __catch11_g_file_error;
+				goto __catch13_g_file_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-		_tmp4_ = _tmp1_;
-		_tmp1_ = NULL;
+		_tmp2_ = _tmp0_;
+		_tmp0_ = NULL;
 		_g_mapped_file_unref0 (self->priv->mapped_file);
-		self->priv->mapped_file = _tmp4_;
-		_tmp5_ = self->priv->mapped_file;
-		_tmp6_ = g_mapped_file_get_contents (_tmp5_);
-		self->priv->begin = _tmp6_;
+		self->priv->mapped_file = _tmp2_;
+		_tmp3_ = self->priv->mapped_file;
+		_tmp4_ = g_mapped_file_get_contents (_tmp3_);
+		self->priv->begin = _tmp4_;
+		_tmp5_ = self->priv->begin;
+		_tmp6_ = self->priv->mapped_file;
+		self->priv->end = _tmp5_ + g_mapped_file_get_length (_tmp6_);
 		_tmp7_ = self->priv->begin;
-		_tmp8_ = self->priv->mapped_file;
-		_tmp9_ = g_mapped_file_get_length (_tmp8_);
-		self->priv->end = _tmp7_ + _tmp9_;
-		_tmp10_ = self->priv->begin;
-		self->priv->current = _tmp10_;
+		self->priv->current = _tmp7_;
 		self->priv->line = 1;
 		self->priv->column = 1;
-		_g_mapped_file_unref0 (_tmp1_);
+		_g_mapped_file_unref0 (_tmp0_);
 	}
-	goto __finally11;
-	__catch11_g_file_error:
+	goto __finally13;
+	__catch13_g_file_error:
 	{
 		GError* e = NULL;
-		const gchar* _tmp11_ = NULL;
-		GError* _tmp12_ = NULL;
-		const gchar* _tmp13_ = NULL;
-		gchar* _tmp14_ = NULL;
-		gchar* _tmp15_ = NULL;
+		GError* _tmp8_;
+		const gchar* _tmp9_;
+		gchar* _tmp10_;
+		gchar* _tmp11_;
 		e = _inner_error_;
 		_inner_error_ = NULL;
-		_tmp11_ = filename;
-		_tmp12_ = e;
-		_tmp13_ = _tmp12_->message;
-		_tmp14_ = g_strdup_printf ("Unable to map file `%s': %s", _tmp11_, _tmp13_);
-		_tmp15_ = _tmp14_;
-		vala_report_error (NULL, _tmp15_);
-		_g_free0 (_tmp15_);
+		_tmp8_ = e;
+		_tmp9_ = _tmp8_->message;
+		_tmp10_ = g_strdup_printf ("Unable to map file `%s': %s", filename, _tmp9_);
+		_tmp11_ = _tmp10_;
+		vala_report_error (NULL, _tmp11_);
+		_g_free0 (_tmp11_);
 		_g_error_free0 (e);
 	}
-	__finally11:
+	__finally13:
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
@@ -221,33 +149,73 @@ ValaMarkupReader* vala_markup_reader_construct (GType object_type, const gchar* 
 }
 
 
-ValaMarkupReader* vala_markup_reader_new (const gchar* filename) {
+ValaMarkupReader*
+vala_markup_reader_new (const gchar* filename)
+{
 	return vala_markup_reader_construct (VALA_TYPE_MARKUP_READER, filename);
 }
 
 
-gchar* vala_markup_reader_get_attribute (ValaMarkupReader* self, const gchar* attr) {
+ValaMarkupReader*
+vala_markup_reader_construct_from_string (GType object_type,
+                                          const gchar* filename,
+                                          const gchar* content)
+{
+	ValaMarkupReader* self = NULL;
+	gchar* _tmp0_;
+	gint _tmp1_;
+	gint _tmp2_;
+	gchar* _tmp3_;
+	g_return_val_if_fail (filename != NULL, NULL);
+	g_return_val_if_fail (content != NULL, NULL);
+	self = (ValaMarkupReader*) g_type_create_instance (object_type);
+	vala_markup_reader_set_filename (self, filename);
+	self->priv->begin = content;
+	_tmp0_ = self->priv->begin;
+	_tmp1_ = strlen (content);
+	_tmp2_ = _tmp1_;
+	self->priv->end = _tmp0_ + _tmp2_;
+	_tmp3_ = self->priv->begin;
+	self->priv->current = _tmp3_;
+	self->priv->line = 1;
+	self->priv->column = 1;
+	return self;
+}
+
+
+ValaMarkupReader*
+vala_markup_reader_new_from_string (const gchar* filename,
+                                    const gchar* content)
+{
+	return vala_markup_reader_construct_from_string (VALA_TYPE_MARKUP_READER, filename, content);
+}
+
+
+gchar*
+vala_markup_reader_get_attribute (ValaMarkupReader* self,
+                                  const gchar* attr)
+{
 	gchar* result = NULL;
-	ValaMap* _tmp0_ = NULL;
-	const gchar* _tmp1_ = NULL;
-	gpointer _tmp2_ = NULL;
+	ValaMap* _tmp0_;
+	gpointer _tmp1_;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (attr != NULL, NULL);
 	_tmp0_ = self->priv->attributes;
-	_tmp1_ = attr;
-	_tmp2_ = vala_map_get (_tmp0_, _tmp1_);
-	result = (gchar*) _tmp2_;
+	_tmp1_ = vala_map_get (_tmp0_, attr);
+	result = (gchar*) _tmp1_;
 	return result;
 }
 
 
-ValaMap* vala_markup_reader_get_attributes (ValaMarkupReader* self) {
+ValaMap*
+vala_markup_reader_get_attributes (ValaMarkupReader* self)
+{
 	ValaMap* result = NULL;
 	ValaHashMap* _result_ = NULL;
-	GHashFunc _tmp0_ = NULL;
-	GEqualFunc _tmp1_ = NULL;
-	GEqualFunc _tmp2_ = NULL;
-	ValaHashMap* _tmp3_ = NULL;
+	GHashFunc _tmp0_;
+	GEqualFunc _tmp1_;
+	GEqualFunc _tmp2_;
+	ValaHashMap* _tmp3_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_str_hash;
 	_tmp1_ = g_str_equal;
@@ -256,11 +224,11 @@ ValaMap* vala_markup_reader_get_attributes (ValaMarkupReader* self) {
 	_result_ = _tmp3_;
 	{
 		ValaIterator* _key_it = NULL;
-		ValaMap* _tmp4_ = NULL;
-		ValaSet* _tmp5_ = NULL;
-		ValaSet* _tmp6_ = NULL;
-		ValaIterator* _tmp7_ = NULL;
-		ValaIterator* _tmp8_ = NULL;
+		ValaMap* _tmp4_;
+		ValaSet* _tmp5_;
+		ValaSet* _tmp6_;
+		ValaIterator* _tmp7_;
+		ValaIterator* _tmp8_;
 		_tmp4_ = self->priv->attributes;
 		_tmp5_ = vala_map_get_keys (_tmp4_);
 		_tmp6_ = _tmp5_;
@@ -269,33 +237,31 @@ ValaMap* vala_markup_reader_get_attributes (ValaMarkupReader* self) {
 		_vala_iterable_unref0 (_tmp6_);
 		_key_it = _tmp8_;
 		while (TRUE) {
-			ValaIterator* _tmp9_ = NULL;
-			gboolean _tmp10_ = FALSE;
+			ValaIterator* _tmp9_;
 			gchar* key = NULL;
-			ValaIterator* _tmp11_ = NULL;
-			gpointer _tmp12_ = NULL;
-			ValaHashMap* _tmp13_ = NULL;
-			const gchar* _tmp14_ = NULL;
-			ValaMap* _tmp15_ = NULL;
-			const gchar* _tmp16_ = NULL;
-			gpointer _tmp17_ = NULL;
-			gchar* _tmp18_ = NULL;
+			ValaIterator* _tmp10_;
+			gpointer _tmp11_;
+			ValaHashMap* _tmp12_;
+			const gchar* _tmp13_;
+			ValaMap* _tmp14_;
+			const gchar* _tmp15_;
+			gpointer _tmp16_;
+			gchar* _tmp17_;
 			_tmp9_ = _key_it;
-			_tmp10_ = vala_iterator_next (_tmp9_);
-			if (!_tmp10_) {
+			if (!vala_iterator_next (_tmp9_)) {
 				break;
 			}
-			_tmp11_ = _key_it;
-			_tmp12_ = vala_iterator_get (_tmp11_);
-			key = (gchar*) _tmp12_;
-			_tmp13_ = _result_;
-			_tmp14_ = key;
-			_tmp15_ = self->priv->attributes;
-			_tmp16_ = key;
-			_tmp17_ = vala_map_get (_tmp15_, _tmp16_);
-			_tmp18_ = (gchar*) _tmp17_;
-			vala_map_set ((ValaMap*) _tmp13_, _tmp14_, _tmp18_);
-			_g_free0 (_tmp18_);
+			_tmp10_ = _key_it;
+			_tmp11_ = vala_iterator_get (_tmp10_);
+			key = (gchar*) _tmp11_;
+			_tmp12_ = _result_;
+			_tmp13_ = key;
+			_tmp14_ = self->priv->attributes;
+			_tmp15_ = key;
+			_tmp16_ = vala_map_get (_tmp14_, _tmp15_);
+			_tmp17_ = (gchar*) _tmp16_;
+			vala_map_set ((ValaMap*) _tmp12_, _tmp13_, _tmp17_);
+			_g_free0 (_tmp17_);
 			_g_free0 (key);
 		}
 		_vala_iterator_unref0 (_key_it);
@@ -305,137 +271,107 @@ ValaMap* vala_markup_reader_get_attributes (ValaMarkupReader* self) {
 }
 
 
-static glong string_strnlen (gchar* str, glong maxlen) {
+static glong
+string_strnlen (gchar* str,
+                glong maxlen)
+{
 	glong result = 0L;
 	gchar* end = NULL;
-	gchar* _tmp0_ = NULL;
-	glong _tmp1_ = 0L;
-	gchar* _tmp2_ = NULL;
-	gchar* _tmp3_ = NULL;
-	_tmp0_ = str;
-	_tmp1_ = maxlen;
-	_tmp2_ = memchr (_tmp0_, 0, (gsize) _tmp1_);
-	end = _tmp2_;
-	_tmp3_ = end;
-	if (_tmp3_ == NULL) {
-		glong _tmp4_ = 0L;
-		_tmp4_ = maxlen;
-		result = _tmp4_;
+	gchar* _tmp0_;
+	gchar* _tmp1_;
+	_tmp0_ = memchr (str, 0, (gsize) maxlen);
+	end = _tmp0_;
+	_tmp1_ = end;
+	if (_tmp1_ == NULL) {
+		result = maxlen;
 		return result;
 	} else {
-		gchar* _tmp5_ = NULL;
-		gchar* _tmp6_ = NULL;
-		_tmp5_ = end;
-		_tmp6_ = str;
-		result = (glong) (_tmp5_ - _tmp6_);
+		gchar* _tmp2_;
+		_tmp2_ = end;
+		result = (glong) (_tmp2_ - str);
 		return result;
 	}
 }
 
 
-static gchar* string_substring (const gchar* self, glong offset, glong len) {
+static gchar*
+string_substring (const gchar* self,
+                  glong offset,
+                  glong len)
+{
 	gchar* result = NULL;
 	glong string_length = 0L;
 	gboolean _tmp0_ = FALSE;
-	glong _tmp1_ = 0L;
-	glong _tmp8_ = 0L;
-	glong _tmp14_ = 0L;
-	glong _tmp17_ = 0L;
-	glong _tmp18_ = 0L;
-	glong _tmp19_ = 0L;
-	glong _tmp20_ = 0L;
-	glong _tmp21_ = 0L;
-	gchar* _tmp22_ = NULL;
+	glong _tmp6_;
+	gchar* _tmp7_;
 	g_return_val_if_fail (self != NULL, NULL);
-	_tmp1_ = offset;
-	if (_tmp1_ >= ((glong) 0)) {
-		glong _tmp2_ = 0L;
-		_tmp2_ = len;
-		_tmp0_ = _tmp2_ >= ((glong) 0);
+	if (offset >= ((glong) 0)) {
+		_tmp0_ = len >= ((glong) 0);
 	} else {
 		_tmp0_ = FALSE;
 	}
 	if (_tmp0_) {
-		glong _tmp3_ = 0L;
-		glong _tmp4_ = 0L;
-		glong _tmp5_ = 0L;
-		_tmp3_ = offset;
-		_tmp4_ = len;
-		_tmp5_ = string_strnlen ((gchar*) self, _tmp3_ + _tmp4_);
-		string_length = _tmp5_;
+		string_length = string_strnlen ((gchar*) self, offset + len);
 	} else {
-		gint _tmp6_ = 0;
-		gint _tmp7_ = 0;
-		_tmp6_ = strlen (self);
-		_tmp7_ = _tmp6_;
-		string_length = (glong) _tmp7_;
+		gint _tmp1_;
+		gint _tmp2_;
+		_tmp1_ = strlen (self);
+		_tmp2_ = _tmp1_;
+		string_length = (glong) _tmp2_;
 	}
-	_tmp8_ = offset;
-	if (_tmp8_ < ((glong) 0)) {
-		glong _tmp9_ = 0L;
-		glong _tmp10_ = 0L;
-		glong _tmp11_ = 0L;
-		_tmp9_ = string_length;
-		_tmp10_ = offset;
-		offset = _tmp9_ + _tmp10_;
-		_tmp11_ = offset;
-		g_return_val_if_fail (_tmp11_ >= ((glong) 0), NULL);
+	if (offset < ((glong) 0)) {
+		glong _tmp3_;
+		_tmp3_ = string_length;
+		offset = _tmp3_ + offset;
+		g_return_val_if_fail (offset >= ((glong) 0), NULL);
 	} else {
-		glong _tmp12_ = 0L;
-		glong _tmp13_ = 0L;
-		_tmp12_ = offset;
-		_tmp13_ = string_length;
-		g_return_val_if_fail (_tmp12_ <= _tmp13_, NULL);
+		glong _tmp4_;
+		_tmp4_ = string_length;
+		g_return_val_if_fail (offset <= _tmp4_, NULL);
 	}
-	_tmp14_ = len;
-	if (_tmp14_ < ((glong) 0)) {
-		glong _tmp15_ = 0L;
-		glong _tmp16_ = 0L;
-		_tmp15_ = string_length;
-		_tmp16_ = offset;
-		len = _tmp15_ - _tmp16_;
+	if (len < ((glong) 0)) {
+		glong _tmp5_;
+		_tmp5_ = string_length;
+		len = _tmp5_ - offset;
 	}
-	_tmp17_ = offset;
-	_tmp18_ = len;
-	_tmp19_ = string_length;
-	g_return_val_if_fail ((_tmp17_ + _tmp18_) <= _tmp19_, NULL);
-	_tmp20_ = offset;
-	_tmp21_ = len;
-	_tmp22_ = g_strndup (((gchar*) self) + _tmp20_, (gsize) _tmp21_);
-	result = _tmp22_;
+	_tmp6_ = string_length;
+	g_return_val_if_fail ((offset + len) <= _tmp6_, NULL);
+	_tmp7_ = g_strndup (((gchar*) self) + offset, (gsize) len);
+	result = _tmp7_;
 	return result;
 }
 
 
-static gchar* vala_markup_reader_read_name (ValaMarkupReader* self) {
+static gchar*
+vala_markup_reader_read_name (ValaMarkupReader* self)
+{
 	gchar* result = NULL;
 	gchar* begin = NULL;
-	gchar* _tmp0_ = NULL;
-	gchar* _tmp28_ = NULL;
-	gchar* _tmp29_ = NULL;
-	gchar* _tmp30_ = NULL;
-	gchar* _tmp31_ = NULL;
-	gchar* _tmp32_ = NULL;
-	gchar* _tmp33_ = NULL;
+	gchar* _tmp0_;
+	gchar* _tmp26_;
+	gchar* _tmp27_;
+	gchar* _tmp28_;
+	gchar* _tmp29_;
+	gchar* _tmp30_;
+	gchar* _tmp31_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->current;
 	begin = _tmp0_;
 	while (TRUE) {
-		gchar* _tmp1_ = NULL;
-		gchar* _tmp2_ = NULL;
+		gchar* _tmp1_;
+		gchar* _tmp2_;
 		gboolean _tmp3_ = FALSE;
 		gboolean _tmp4_ = FALSE;
 		gboolean _tmp5_ = FALSE;
 		gboolean _tmp6_ = FALSE;
 		gboolean _tmp7_ = FALSE;
-		gchar* _tmp8_ = NULL;
-		gchar _tmp9_ = '\0';
+		gchar* _tmp8_;
+		gchar _tmp9_;
 		gunichar u = 0U;
-		gchar* _tmp20_ = NULL;
-		gchar* _tmp21_ = NULL;
-		gchar* _tmp22_ = NULL;
-		gunichar _tmp23_ = 0U;
-		gunichar _tmp24_ = 0U;
+		gchar* _tmp20_;
+		gchar* _tmp21_;
+		gchar* _tmp22_;
+		gunichar _tmp23_;
 		_tmp1_ = self->priv->current;
 		_tmp2_ = self->priv->end;
 		if (!(_tmp1_ < _tmp2_)) {
@@ -446,8 +382,8 @@ static gchar* vala_markup_reader_read_name (ValaMarkupReader* self) {
 		if (_tmp9_ == ' ') {
 			_tmp7_ = TRUE;
 		} else {
-			gchar* _tmp10_ = NULL;
-			gchar _tmp11_ = '\0';
+			gchar* _tmp10_;
+			gchar _tmp11_;
 			_tmp10_ = self->priv->current;
 			_tmp11_ = _tmp10_[0];
 			_tmp7_ = _tmp11_ == '\t';
@@ -455,8 +391,8 @@ static gchar* vala_markup_reader_read_name (ValaMarkupReader* self) {
 		if (_tmp7_) {
 			_tmp6_ = TRUE;
 		} else {
-			gchar* _tmp12_ = NULL;
-			gchar _tmp13_ = '\0';
+			gchar* _tmp12_;
+			gchar _tmp13_;
 			_tmp12_ = self->priv->current;
 			_tmp13_ = _tmp12_[0];
 			_tmp6_ = _tmp13_ == '>';
@@ -464,8 +400,8 @@ static gchar* vala_markup_reader_read_name (ValaMarkupReader* self) {
 		if (_tmp6_) {
 			_tmp5_ = TRUE;
 		} else {
-			gchar* _tmp14_ = NULL;
-			gchar _tmp15_ = '\0';
+			gchar* _tmp14_;
+			gchar _tmp15_;
 			_tmp14_ = self->priv->current;
 			_tmp15_ = _tmp14_[0];
 			_tmp5_ = _tmp15_ == '/';
@@ -473,8 +409,8 @@ static gchar* vala_markup_reader_read_name (ValaMarkupReader* self) {
 		if (_tmp5_) {
 			_tmp4_ = TRUE;
 		} else {
-			gchar* _tmp16_ = NULL;
-			gchar _tmp17_ = '\0';
+			gchar* _tmp16_;
+			gchar _tmp17_;
 			_tmp16_ = self->priv->current;
 			_tmp17_ = _tmp16_[0];
 			_tmp4_ = _tmp17_ == '=';
@@ -482,8 +418,8 @@ static gchar* vala_markup_reader_read_name (ValaMarkupReader* self) {
 		if (_tmp4_) {
 			_tmp3_ = TRUE;
 		} else {
-			gchar* _tmp18_ = NULL;
-			gchar _tmp19_ = '\0';
+			gchar* _tmp18_;
+			gchar _tmp19_;
 			_tmp18_ = self->priv->current;
 			_tmp19_ = _tmp18_[0];
 			_tmp3_ = _tmp19_ == '\n';
@@ -494,62 +430,63 @@ static gchar* vala_markup_reader_read_name (ValaMarkupReader* self) {
 		_tmp20_ = self->priv->current;
 		_tmp21_ = self->priv->end;
 		_tmp22_ = self->priv->current;
-		_tmp23_ = g_utf8_get_char_validated ((const gchar*) _tmp20_, (gssize) ((glong) (_tmp21_ - _tmp22_)));
-		u = _tmp23_;
-		_tmp24_ = u;
-		if (_tmp24_ != ((gunichar) -1)) {
-			gchar* _tmp25_ = NULL;
-			gunichar _tmp26_ = 0U;
-			gint _tmp27_ = 0;
-			_tmp25_ = self->priv->current;
-			_tmp26_ = u;
-			_tmp27_ = g_unichar_to_utf8 (_tmp26_, NULL);
-			self->priv->current = _tmp25_ + _tmp27_;
+		u = g_utf8_get_char_validated ((const gchar*) _tmp20_, (gssize) ((glong) (_tmp21_ - _tmp22_)));
+		_tmp23_ = u;
+		if (_tmp23_ != ((gunichar) -1)) {
+			gchar* _tmp24_;
+			gunichar _tmp25_;
+			_tmp24_ = self->priv->current;
+			_tmp25_ = u;
+			self->priv->current = _tmp24_ + g_unichar_to_utf8 (_tmp25_, NULL);
 		} else {
 			vala_report_error (NULL, "invalid UTF-8 character");
 		}
 	}
-	_tmp28_ = self->priv->current;
-	_tmp29_ = begin;
-	if (_tmp28_ == _tmp29_) {
+	_tmp26_ = self->priv->current;
+	_tmp27_ = begin;
+	if (_tmp26_ == _tmp27_) {
 	}
+	_tmp28_ = begin;
+	_tmp29_ = self->priv->current;
 	_tmp30_ = begin;
-	_tmp31_ = self->priv->current;
-	_tmp32_ = begin;
-	_tmp33_ = string_substring ((const gchar*) _tmp30_, (glong) 0, (glong) ((gint) (_tmp31_ - _tmp32_)));
-	result = _tmp33_;
+	_tmp31_ = string_substring ((const gchar*) _tmp28_, (glong) 0, (glong) ((gint) (_tmp29_ - _tmp30_)));
+	result = _tmp31_;
 	return result;
 }
 
 
-ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaSourceLocation* token_begin, ValaSourceLocation* token_end) {
+ValaMarkupTokenType
+vala_markup_reader_read_token (ValaMarkupReader* self,
+                               ValaSourceLocation* token_begin,
+                               ValaSourceLocation* token_end)
+{
 	ValaSourceLocation _vala_token_begin = {0};
 	ValaSourceLocation _vala_token_end = {0};
 	ValaMarkupTokenType result = 0;
-	ValaMap* _tmp0_ = NULL;
-	gboolean _tmp1_ = FALSE;
+	ValaMap* _tmp0_;
+	gboolean _tmp1_;
 	ValaMarkupTokenType type = 0;
 	gchar* begin = NULL;
-	gchar* _tmp8_ = NULL;
-	gchar* _tmp9_ = NULL;
-	gint _tmp10_ = 0;
-	gint _tmp11_ = 0;
-	gchar* _tmp12_ = NULL;
-	gchar* _tmp13_ = NULL;
-	gchar* _tmp118_ = NULL;
-	gint _tmp119_ = 0;
-	gint _tmp120_ = 0;
+	gchar* _tmp8_;
+	gchar* _tmp9_;
+	gint _tmp10_;
+	gint _tmp11_;
+	gchar* _tmp12_;
+	gchar* _tmp13_;
+	gchar* _tmp118_;
+	gint _tmp119_;
+	gint _tmp120_;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->attributes;
 	vala_map_clear (_tmp0_);
 	_tmp1_ = self->priv->empty_element;
 	if (_tmp1_) {
-		gchar* _tmp2_ = NULL;
-		gint _tmp3_ = 0;
-		gint _tmp4_ = 0;
-		gchar* _tmp5_ = NULL;
-		gint _tmp6_ = 0;
-		gint _tmp7_ = 0;
+		gchar* _tmp2_;
+		gint _tmp3_;
+		gint _tmp4_;
+		gchar* _tmp5_;
+		gint _tmp6_;
+		gint _tmp7_;
 		self->priv->empty_element = FALSE;
 		_tmp2_ = self->priv->begin;
 		_tmp3_ = self->priv->line;
@@ -568,6 +505,8 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 		}
 		return result;
 	}
+	vala_markup_reader_set_content (self, NULL);
+	vala_markup_reader_set_name (self, NULL);
 	vala_markup_reader_space (self);
 	type = VALA_MARKUP_TOKEN_TYPE_NONE;
 	_tmp8_ = self->priv->current;
@@ -581,43 +520,43 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 	if (_tmp12_ >= _tmp13_) {
 		type = VALA_MARKUP_TOKEN_TYPE_EOF;
 	} else {
-		gchar* _tmp14_ = NULL;
-		gchar _tmp15_ = '\0';
+		gchar* _tmp14_;
+		gchar _tmp15_;
 		_tmp14_ = self->priv->current;
 		_tmp15_ = _tmp14_[0];
 		if (_tmp15_ == '<') {
-			gchar* _tmp16_ = NULL;
-			gchar* _tmp17_ = NULL;
-			gchar* _tmp18_ = NULL;
+			gchar* _tmp16_;
+			gchar* _tmp17_;
+			gchar* _tmp18_;
 			_tmp16_ = self->priv->current;
 			self->priv->current = _tmp16_ + 1;
 			_tmp17_ = self->priv->current;
 			_tmp18_ = self->priv->end;
 			if (_tmp17_ >= _tmp18_) {
 			} else {
-				gchar* _tmp19_ = NULL;
-				gchar _tmp20_ = '\0';
+				gchar* _tmp19_;
+				gchar _tmp20_;
 				_tmp19_ = self->priv->current;
 				_tmp20_ = _tmp19_[0];
 				if (_tmp20_ == '?') {
 				} else {
-					gchar* _tmp21_ = NULL;
-					gchar _tmp22_ = '\0';
+					gchar* _tmp21_;
+					gchar _tmp22_;
 					_tmp21_ = self->priv->current;
 					_tmp22_ = _tmp21_[0];
 					if (_tmp22_ == '!') {
-						gchar* _tmp23_ = NULL;
+						gchar* _tmp23_;
 						gboolean _tmp24_ = FALSE;
 						gboolean _tmp25_ = FALSE;
-						gchar* _tmp26_ = NULL;
-						gchar* _tmp27_ = NULL;
+						gchar* _tmp26_;
+						gchar* _tmp27_;
 						_tmp23_ = self->priv->current;
 						self->priv->current = _tmp23_ + 1;
 						_tmp26_ = self->priv->current;
 						_tmp27_ = self->priv->end;
 						if (_tmp26_ < (_tmp27_ - 1)) {
-							gchar* _tmp28_ = NULL;
-							gchar _tmp29_ = '\0';
+							gchar* _tmp28_;
+							gchar _tmp29_;
 							_tmp28_ = self->priv->current;
 							_tmp29_ = _tmp28_[0];
 							_tmp25_ = _tmp29_ == '-';
@@ -625,8 +564,8 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 							_tmp25_ = FALSE;
 						}
 						if (_tmp25_) {
-							gchar* _tmp30_ = NULL;
-							gchar _tmp31_ = '\0';
+							gchar* _tmp30_;
+							gchar _tmp31_;
 							_tmp30_ = self->priv->current;
 							_tmp31_ = _tmp30_[1];
 							_tmp24_ = _tmp31_ == '-';
@@ -634,20 +573,20 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 							_tmp24_ = FALSE;
 						}
 						if (_tmp24_) {
-							gchar* _tmp32_ = NULL;
+							gchar* _tmp32_;
 							ValaSourceLocation _tmp48_ = {0};
 							ValaSourceLocation _tmp49_ = {0};
-							ValaMarkupTokenType _tmp50_ = 0;
+							ValaMarkupTokenType _tmp50_;
 							_tmp32_ = self->priv->current;
 							self->priv->current = _tmp32_ + 2;
 							while (TRUE) {
-								gchar* _tmp33_ = NULL;
-								gchar* _tmp34_ = NULL;
+								gchar* _tmp33_;
+								gchar* _tmp34_;
 								gboolean _tmp35_ = FALSE;
 								gboolean _tmp36_ = FALSE;
-								gchar* _tmp37_ = NULL;
-								gchar _tmp38_ = '\0';
-								gchar* _tmp47_ = NULL;
+								gchar* _tmp37_;
+								gchar _tmp38_;
+								gchar* _tmp47_;
 								_tmp33_ = self->priv->current;
 								_tmp34_ = self->priv->end;
 								if (!(_tmp33_ < (_tmp34_ - 2))) {
@@ -656,8 +595,8 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 								_tmp37_ = self->priv->current;
 								_tmp38_ = _tmp37_[0];
 								if (_tmp38_ == '-') {
-									gchar* _tmp39_ = NULL;
-									gchar _tmp40_ = '\0';
+									gchar* _tmp39_;
+									gchar _tmp40_;
 									_tmp39_ = self->priv->current;
 									_tmp40_ = _tmp39_[1];
 									_tmp36_ = _tmp40_ == '-';
@@ -665,8 +604,8 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 									_tmp36_ = FALSE;
 								}
 								if (_tmp36_) {
-									gchar* _tmp41_ = NULL;
-									gchar _tmp42_ = '\0';
+									gchar* _tmp41_;
+									gchar _tmp42_;
 									_tmp41_ = self->priv->current;
 									_tmp42_ = _tmp41_[2];
 									_tmp35_ = _tmp42_ == '>';
@@ -674,17 +613,17 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 									_tmp35_ = FALSE;
 								}
 								if (_tmp35_) {
-									gchar* _tmp43_ = NULL;
+									gchar* _tmp43_;
 									_tmp43_ = self->priv->current;
 									self->priv->current = _tmp43_ + 3;
 									break;
 								} else {
-									gchar* _tmp44_ = NULL;
-									gchar _tmp45_ = '\0';
+									gchar* _tmp44_;
+									gchar _tmp45_;
 									_tmp44_ = self->priv->current;
 									_tmp45_ = _tmp44_[0];
 									if (_tmp45_ == '\n') {
-										gint _tmp46_ = 0;
+										gint _tmp46_;
 										_tmp46_ = self->priv->line;
 										self->priv->line = _tmp46_ + 1;
 										self->priv->column = 0;
@@ -706,18 +645,18 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 							return result;
 						}
 					} else {
-						gchar* _tmp51_ = NULL;
-						gchar _tmp52_ = '\0';
+						gchar* _tmp51_;
+						gchar _tmp52_;
 						_tmp51_ = self->priv->current;
 						_tmp52_ = _tmp51_[0];
 						if (_tmp52_ == '/') {
-							gchar* _tmp53_ = NULL;
-							gchar* _tmp54_ = NULL;
-							gchar* _tmp55_ = NULL;
+							gchar* _tmp53_;
+							gchar* _tmp54_;
+							gchar* _tmp55_;
 							gboolean _tmp56_ = FALSE;
-							gchar* _tmp57_ = NULL;
-							gchar* _tmp58_ = NULL;
-							gchar* _tmp61_ = NULL;
+							gchar* _tmp57_;
+							gchar* _tmp58_;
+							gchar* _tmp61_;
 							type = VALA_MARKUP_TOKEN_TYPE_END_ELEMENT;
 							_tmp53_ = self->priv->current;
 							self->priv->current = _tmp53_ + 1;
@@ -730,8 +669,8 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 							if (_tmp57_ >= _tmp58_) {
 								_tmp56_ = TRUE;
 							} else {
-								gchar* _tmp59_ = NULL;
-								gchar _tmp60_ = '\0';
+								gchar* _tmp59_;
+								gchar _tmp60_;
 								_tmp59_ = self->priv->current;
 								_tmp60_ = _tmp59_[0];
 								_tmp56_ = _tmp60_ != '>';
@@ -741,14 +680,14 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 							_tmp61_ = self->priv->current;
 							self->priv->current = _tmp61_ + 1;
 						} else {
-							gchar* _tmp62_ = NULL;
-							gchar* _tmp63_ = NULL;
-							gchar* _tmp102_ = NULL;
-							gchar _tmp103_ = '\0';
+							gchar* _tmp62_;
+							gchar* _tmp63_;
+							gchar* _tmp102_;
+							gchar _tmp103_;
 							gboolean _tmp105_ = FALSE;
-							gchar* _tmp106_ = NULL;
-							gchar* _tmp107_ = NULL;
-							gchar* _tmp110_ = NULL;
+							gchar* _tmp106_;
+							gchar* _tmp107_;
+							gchar* _tmp110_;
 							type = VALA_MARKUP_TOKEN_TYPE_START_ELEMENT;
 							_tmp62_ = vala_markup_reader_read_name (self);
 							_tmp63_ = _tmp62_;
@@ -758,37 +697,37 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 							while (TRUE) {
 								gboolean _tmp64_ = FALSE;
 								gboolean _tmp65_ = FALSE;
-								gchar* _tmp66_ = NULL;
-								gchar* _tmp67_ = NULL;
+								gchar* _tmp66_;
+								gchar* _tmp67_;
 								gchar* attr_name = NULL;
-								gchar* _tmp72_ = NULL;
+								gchar* _tmp72_;
 								gboolean _tmp73_ = FALSE;
-								gchar* _tmp74_ = NULL;
-								gchar* _tmp75_ = NULL;
-								gchar* _tmp78_ = NULL;
+								gchar* _tmp74_;
+								gchar* _tmp75_;
+								gchar* _tmp78_;
 								gboolean _tmp79_ = FALSE;
 								gboolean _tmp80_ = FALSE;
-								gchar* _tmp81_ = NULL;
-								gchar* _tmp82_ = NULL;
+								gchar* _tmp81_;
+								gchar* _tmp82_;
 								gchar quote = '\0';
-								gchar* _tmp87_ = NULL;
-								gchar _tmp88_ = '\0';
-								gchar* _tmp89_ = NULL;
+								gchar* _tmp87_;
+								gchar _tmp88_;
+								gchar* _tmp89_;
 								gchar* attr_value = NULL;
-								gchar _tmp90_ = '\0';
-								gchar* _tmp91_ = NULL;
+								gchar _tmp90_;
+								gchar* _tmp91_;
 								gboolean _tmp92_ = FALSE;
-								gchar* _tmp93_ = NULL;
-								gchar* _tmp94_ = NULL;
-								gchar* _tmp98_ = NULL;
-								ValaMap* _tmp99_ = NULL;
-								const gchar* _tmp100_ = NULL;
-								const gchar* _tmp101_ = NULL;
+								gchar* _tmp93_;
+								gchar* _tmp94_;
+								gchar* _tmp98_;
+								ValaMap* _tmp99_;
+								const gchar* _tmp100_;
+								const gchar* _tmp101_;
 								_tmp66_ = self->priv->current;
 								_tmp67_ = self->priv->end;
 								if (_tmp66_ < _tmp67_) {
-									gchar* _tmp68_ = NULL;
-									gchar _tmp69_ = '\0';
+									gchar* _tmp68_;
+									gchar _tmp69_;
 									_tmp68_ = self->priv->current;
 									_tmp69_ = _tmp68_[0];
 									_tmp65_ = _tmp69_ != '>';
@@ -796,8 +735,8 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 									_tmp65_ = FALSE;
 								}
 								if (_tmp65_) {
-									gchar* _tmp70_ = NULL;
-									gchar _tmp71_ = '\0';
+									gchar* _tmp70_;
+									gchar _tmp71_;
 									_tmp70_ = self->priv->current;
 									_tmp71_ = _tmp70_[0];
 									_tmp64_ = _tmp71_ != '/';
@@ -814,8 +753,8 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 								if (_tmp74_ >= _tmp75_) {
 									_tmp73_ = TRUE;
 								} else {
-									gchar* _tmp76_ = NULL;
-									gchar _tmp77_ = '\0';
+									gchar* _tmp76_;
+									gchar _tmp77_;
 									_tmp76_ = self->priv->current;
 									_tmp77_ = _tmp76_[0];
 									_tmp73_ = _tmp77_ != '=';
@@ -829,8 +768,8 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 								if (_tmp81_ >= _tmp82_) {
 									_tmp80_ = TRUE;
 								} else {
-									gchar* _tmp83_ = NULL;
-									gchar _tmp84_ = '\0';
+									gchar* _tmp83_;
+									gchar _tmp84_;
 									_tmp83_ = self->priv->current;
 									_tmp84_ = _tmp83_[0];
 									_tmp80_ = _tmp84_ != '"';
@@ -838,8 +777,8 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 								if (_tmp80_) {
 									_tmp79_ = TRUE;
 								} else {
-									gchar* _tmp85_ = NULL;
-									gchar _tmp86_ = '\0';
+									gchar* _tmp85_;
+									gchar _tmp86_;
 									_tmp85_ = self->priv->current;
 									_tmp86_ = _tmp85_[0];
 									_tmp79_ = _tmp86_ != '\'';
@@ -859,9 +798,9 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 								if (_tmp93_ >= _tmp94_) {
 									_tmp92_ = TRUE;
 								} else {
-									gchar* _tmp95_ = NULL;
-									gchar _tmp96_ = '\0';
-									gchar _tmp97_ = '\0';
+									gchar* _tmp95_;
+									gchar _tmp96_;
+									gchar _tmp97_;
 									_tmp95_ = self->priv->current;
 									_tmp96_ = _tmp95_[0];
 									_tmp97_ = quote;
@@ -882,7 +821,7 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 							_tmp102_ = self->priv->current;
 							_tmp103_ = _tmp102_[0];
 							if (_tmp103_ == '/') {
-								gchar* _tmp104_ = NULL;
+								gchar* _tmp104_;
 								self->priv->empty_element = TRUE;
 								_tmp104_ = self->priv->current;
 								self->priv->current = _tmp104_ + 1;
@@ -895,8 +834,8 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 							if (_tmp106_ >= _tmp107_) {
 								_tmp105_ = TRUE;
 							} else {
-								gchar* _tmp108_ = NULL;
-								gchar _tmp109_ = '\0';
+								gchar* _tmp108_;
+								gchar _tmp109_;
 								_tmp108_ = self->priv->current;
 								_tmp109_ = _tmp108_[0];
 								_tmp105_ = _tmp109_ != '>';
@@ -910,14 +849,14 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 				}
 			}
 		} else {
-			gchar* _tmp111_ = NULL;
-			gchar _tmp112_ = '\0';
+			gchar* _tmp111_;
+			gchar _tmp112_;
 			vala_markup_reader_space (self);
 			_tmp111_ = self->priv->current;
 			_tmp112_ = _tmp111_[0];
 			if (_tmp112_ != '<') {
-				gchar* _tmp113_ = NULL;
-				gchar* _tmp114_ = NULL;
+				gchar* _tmp113_;
+				gchar* _tmp114_;
 				_tmp113_ = vala_markup_reader_text (self, '<', TRUE);
 				_tmp114_ = _tmp113_;
 				vala_markup_reader_set_content (self, _tmp114_);
@@ -925,7 +864,7 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 			} else {
 				ValaSourceLocation _tmp115_ = {0};
 				ValaSourceLocation _tmp116_ = {0};
-				ValaMarkupTokenType _tmp117_ = 0;
+				ValaMarkupTokenType _tmp117_;
 				_tmp117_ = vala_markup_reader_read_token (self, &_tmp115_, &_tmp116_);
 				_vala_token_begin = _tmp115_;
 				_vala_token_end = _tmp116_;
@@ -956,23 +895,26 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 }
 
 
-static gchar* vala_markup_reader_text (ValaMarkupReader* self, gchar end_char, gboolean rm_trailing_whitespace) {
+static gchar*
+vala_markup_reader_text (ValaMarkupReader* self,
+                         gchar end_char,
+                         gboolean rm_trailing_whitespace)
+{
 	gchar* result = NULL;
 	GString* content = NULL;
-	GString* _tmp0_ = NULL;
+	GString* _tmp0_;
 	gchar* text_begin = NULL;
-	gchar* _tmp1_ = NULL;
+	gchar* _tmp1_;
 	gchar* last_linebreak = NULL;
-	gchar* _tmp2_ = NULL;
-	gchar* _tmp83_ = NULL;
-	gchar* _tmp84_ = NULL;
-	gint _tmp91_ = 0;
-	gchar* _tmp92_ = NULL;
-	gchar* _tmp93_ = NULL;
-	gboolean _tmp94_ = FALSE;
-	GString* _tmp113_ = NULL;
-	const gchar* _tmp114_ = NULL;
-	gchar* _tmp115_ = NULL;
+	gchar* _tmp2_;
+	gchar* _tmp83_;
+	gchar* _tmp84_;
+	gint _tmp91_;
+	gchar* _tmp92_;
+	gchar* _tmp93_;
+	GString* _tmp111_;
+	const gchar* _tmp112_;
+	gchar* _tmp113_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_string_new ("");
 	content = _tmp0_;
@@ -982,227 +924,235 @@ static gchar* vala_markup_reader_text (ValaMarkupReader* self, gchar end_char, g
 	last_linebreak = _tmp2_;
 	while (TRUE) {
 		gboolean _tmp3_ = FALSE;
-		gchar* _tmp4_ = NULL;
-		gchar* _tmp5_ = NULL;
+		gchar* _tmp4_;
+		gchar* _tmp5_;
 		gunichar u = 0U;
-		gchar* _tmp9_ = NULL;
-		gchar* _tmp10_ = NULL;
-		gchar* _tmp11_ = NULL;
-		gunichar _tmp12_ = 0U;
-		gunichar _tmp13_ = 0U;
+		gchar* _tmp8_;
+		gchar* _tmp9_;
+		gchar* _tmp10_;
+		gunichar _tmp11_;
 		_tmp4_ = self->priv->current;
 		_tmp5_ = self->priv->end;
 		if (_tmp4_ < _tmp5_) {
-			gchar* _tmp6_ = NULL;
-			gchar _tmp7_ = '\0';
-			gchar _tmp8_ = '\0';
+			gchar* _tmp6_;
+			gchar _tmp7_;
 			_tmp6_ = self->priv->current;
 			_tmp7_ = _tmp6_[0];
-			_tmp8_ = end_char;
-			_tmp3_ = _tmp7_ != _tmp8_;
+			_tmp3_ = _tmp7_ != end_char;
 		} else {
 			_tmp3_ = FALSE;
 		}
 		if (!_tmp3_) {
 			break;
 		}
-		_tmp9_ = self->priv->current;
-		_tmp10_ = self->priv->end;
-		_tmp11_ = self->priv->current;
-		_tmp12_ = g_utf8_get_char_validated ((const gchar*) _tmp9_, (gssize) ((glong) (_tmp10_ - _tmp11_)));
-		u = _tmp12_;
-		_tmp13_ = u;
-		if (_tmp13_ == ((gunichar) -1)) {
+		_tmp8_ = self->priv->current;
+		_tmp9_ = self->priv->end;
+		_tmp10_ = self->priv->current;
+		u = g_utf8_get_char_validated ((const gchar*) _tmp8_, (gssize) ((glong) (_tmp9_ - _tmp10_)));
+		_tmp11_ = u;
+		if (_tmp11_ == ((gunichar) -1)) {
 			vala_report_error (NULL, "invalid UTF-8 character");
 		} else {
-			gunichar _tmp14_ = 0U;
-			_tmp14_ = u;
-			if (_tmp14_ == ((gunichar) '&')) {
+			gunichar _tmp12_;
+			_tmp12_ = u;
+			if (_tmp12_ == ((gunichar) '&')) {
 				gchar* next_pos = NULL;
-				gchar* _tmp15_ = NULL;
-				gunichar _tmp16_ = 0U;
-				gint _tmp17_ = 0;
-				gchar* _tmp18_ = NULL;
-				gboolean _tmp19_ = FALSE;
-				_tmp15_ = self->priv->current;
-				_tmp16_ = u;
-				_tmp17_ = g_unichar_to_utf8 (_tmp16_, NULL);
-				next_pos = _tmp15_ + _tmp17_;
-				_tmp18_ = next_pos;
-				_tmp19_ = g_str_has_prefix ((const gchar*) _tmp18_, "amp;");
-				if (_tmp19_) {
-					GString* _tmp20_ = NULL;
-					gchar* _tmp21_ = NULL;
-					gchar* _tmp22_ = NULL;
-					gchar* _tmp23_ = NULL;
-					gchar* _tmp24_ = NULL;
-					gchar* _tmp25_ = NULL;
-					GString* _tmp26_ = NULL;
-					gchar* _tmp27_ = NULL;
-					gchar* _tmp28_ = NULL;
-					_tmp20_ = content;
-					_tmp21_ = text_begin;
-					_tmp22_ = self->priv->current;
-					_tmp23_ = text_begin;
-					_tmp24_ = string_substring ((const gchar*) _tmp21_, (glong) 0, (glong) ((gint) (_tmp22_ - _tmp23_)));
-					_tmp25_ = _tmp24_;
-					g_string_append (_tmp20_, _tmp25_);
-					_g_free0 (_tmp25_);
-					_tmp26_ = content;
-					g_string_append_c (_tmp26_, '&');
-					_tmp27_ = self->priv->current;
-					self->priv->current = _tmp27_ + 5;
-					_tmp28_ = self->priv->current;
-					text_begin = _tmp28_;
+				gchar* _tmp13_;
+				gunichar _tmp14_;
+				gchar* _tmp15_;
+				_tmp13_ = self->priv->current;
+				_tmp14_ = u;
+				next_pos = _tmp13_ + g_unichar_to_utf8 (_tmp14_, NULL);
+				_tmp15_ = next_pos;
+				if (g_str_has_prefix ((const gchar*) _tmp15_, "amp;")) {
+					GString* _tmp16_;
+					gchar* _tmp17_;
+					gchar* _tmp18_;
+					gchar* _tmp19_;
+					gchar* _tmp20_;
+					gchar* _tmp21_;
+					GString* _tmp22_;
+					gchar* _tmp23_;
+					gchar* _tmp24_;
+					_tmp16_ = content;
+					_tmp17_ = text_begin;
+					_tmp18_ = self->priv->current;
+					_tmp19_ = text_begin;
+					_tmp20_ = string_substring ((const gchar*) _tmp17_, (glong) 0, (glong) ((gint) (_tmp18_ - _tmp19_)));
+					_tmp21_ = _tmp20_;
+					g_string_append (_tmp16_, _tmp21_);
+					_g_free0 (_tmp21_);
+					_tmp22_ = content;
+					g_string_append_c (_tmp22_, '&');
+					_tmp23_ = self->priv->current;
+					self->priv->current = _tmp23_ + 5;
+					_tmp24_ = self->priv->current;
+					text_begin = _tmp24_;
 				} else {
-					gchar* _tmp29_ = NULL;
-					gboolean _tmp30_ = FALSE;
-					_tmp29_ = next_pos;
-					_tmp30_ = g_str_has_prefix ((const gchar*) _tmp29_, "quot;");
-					if (_tmp30_) {
-						GString* _tmp31_ = NULL;
-						gchar* _tmp32_ = NULL;
-						gchar* _tmp33_ = NULL;
-						gchar* _tmp34_ = NULL;
-						gchar* _tmp35_ = NULL;
-						gchar* _tmp36_ = NULL;
-						GString* _tmp37_ = NULL;
-						gchar* _tmp38_ = NULL;
-						gchar* _tmp39_ = NULL;
-						_tmp31_ = content;
-						_tmp32_ = text_begin;
+					gchar* _tmp25_;
+					_tmp25_ = next_pos;
+					if (g_str_has_prefix ((const gchar*) _tmp25_, "quot;")) {
+						GString* _tmp26_;
+						gchar* _tmp27_;
+						gchar* _tmp28_;
+						gchar* _tmp29_;
+						gchar* _tmp30_;
+						gchar* _tmp31_;
+						GString* _tmp32_;
+						gchar* _tmp33_;
+						gchar* _tmp34_;
+						_tmp26_ = content;
+						_tmp27_ = text_begin;
+						_tmp28_ = self->priv->current;
+						_tmp29_ = text_begin;
+						_tmp30_ = string_substring ((const gchar*) _tmp27_, (glong) 0, (glong) ((gint) (_tmp28_ - _tmp29_)));
+						_tmp31_ = _tmp30_;
+						g_string_append (_tmp26_, _tmp31_);
+						_g_free0 (_tmp31_);
+						_tmp32_ = content;
+						g_string_append_c (_tmp32_, '"');
 						_tmp33_ = self->priv->current;
-						_tmp34_ = text_begin;
-						_tmp35_ = string_substring ((const gchar*) _tmp32_, (glong) 0, (glong) ((gint) (_tmp33_ - _tmp34_)));
-						_tmp36_ = _tmp35_;
-						g_string_append (_tmp31_, _tmp36_);
-						_g_free0 (_tmp36_);
-						_tmp37_ = content;
-						g_string_append_c (_tmp37_, '"');
-						_tmp38_ = self->priv->current;
-						self->priv->current = _tmp38_ + 6;
-						_tmp39_ = self->priv->current;
-						text_begin = _tmp39_;
+						self->priv->current = _tmp33_ + 6;
+						_tmp34_ = self->priv->current;
+						text_begin = _tmp34_;
 					} else {
-						gchar* _tmp40_ = NULL;
-						gboolean _tmp41_ = FALSE;
-						_tmp40_ = next_pos;
-						_tmp41_ = g_str_has_prefix ((const gchar*) _tmp40_, "apos;");
-						if (_tmp41_) {
-							GString* _tmp42_ = NULL;
-							gchar* _tmp43_ = NULL;
-							gchar* _tmp44_ = NULL;
-							gchar* _tmp45_ = NULL;
-							gchar* _tmp46_ = NULL;
-							gchar* _tmp47_ = NULL;
-							GString* _tmp48_ = NULL;
-							gchar* _tmp49_ = NULL;
-							gchar* _tmp50_ = NULL;
+						gchar* _tmp35_;
+						_tmp35_ = next_pos;
+						if (g_str_has_prefix ((const gchar*) _tmp35_, "apos;")) {
+							GString* _tmp36_;
+							gchar* _tmp37_;
+							gchar* _tmp38_;
+							gchar* _tmp39_;
+							gchar* _tmp40_;
+							gchar* _tmp41_;
+							GString* _tmp42_;
+							gchar* _tmp43_;
+							gchar* _tmp44_;
+							_tmp36_ = content;
+							_tmp37_ = text_begin;
+							_tmp38_ = self->priv->current;
+							_tmp39_ = text_begin;
+							_tmp40_ = string_substring ((const gchar*) _tmp37_, (glong) 0, (glong) ((gint) (_tmp38_ - _tmp39_)));
+							_tmp41_ = _tmp40_;
+							g_string_append (_tmp36_, _tmp41_);
+							_g_free0 (_tmp41_);
 							_tmp42_ = content;
-							_tmp43_ = text_begin;
+							g_string_append_c (_tmp42_, '\'');
+							_tmp43_ = self->priv->current;
+							self->priv->current = _tmp43_ + 6;
 							_tmp44_ = self->priv->current;
-							_tmp45_ = text_begin;
-							_tmp46_ = string_substring ((const gchar*) _tmp43_, (glong) 0, (glong) ((gint) (_tmp44_ - _tmp45_)));
-							_tmp47_ = _tmp46_;
-							g_string_append (_tmp42_, _tmp47_);
-							_g_free0 (_tmp47_);
-							_tmp48_ = content;
-							g_string_append_c (_tmp48_, '\'');
-							_tmp49_ = self->priv->current;
-							self->priv->current = _tmp49_ + 6;
-							_tmp50_ = self->priv->current;
-							text_begin = _tmp50_;
+							text_begin = _tmp44_;
 						} else {
-							gchar* _tmp51_ = NULL;
-							gboolean _tmp52_ = FALSE;
-							_tmp51_ = next_pos;
-							_tmp52_ = g_str_has_prefix ((const gchar*) _tmp51_, "lt;");
-							if (_tmp52_) {
-								GString* _tmp53_ = NULL;
-								gchar* _tmp54_ = NULL;
-								gchar* _tmp55_ = NULL;
-								gchar* _tmp56_ = NULL;
-								gchar* _tmp57_ = NULL;
-								gchar* _tmp58_ = NULL;
-								GString* _tmp59_ = NULL;
-								gchar* _tmp60_ = NULL;
-								gchar* _tmp61_ = NULL;
-								_tmp53_ = content;
-								_tmp54_ = text_begin;
-								_tmp55_ = self->priv->current;
-								_tmp56_ = text_begin;
-								_tmp57_ = string_substring ((const gchar*) _tmp54_, (glong) 0, (glong) ((gint) (_tmp55_ - _tmp56_)));
-								_tmp58_ = _tmp57_;
-								g_string_append (_tmp53_, _tmp58_);
-								_g_free0 (_tmp58_);
-								_tmp59_ = content;
-								g_string_append_c (_tmp59_, '<');
-								_tmp60_ = self->priv->current;
-								self->priv->current = _tmp60_ + 4;
-								_tmp61_ = self->priv->current;
-								text_begin = _tmp61_;
+							gchar* _tmp45_;
+							_tmp45_ = next_pos;
+							if (g_str_has_prefix ((const gchar*) _tmp45_, "lt;")) {
+								GString* _tmp46_;
+								gchar* _tmp47_;
+								gchar* _tmp48_;
+								gchar* _tmp49_;
+								gchar* _tmp50_;
+								gchar* _tmp51_;
+								GString* _tmp52_;
+								gchar* _tmp53_;
+								gchar* _tmp54_;
+								_tmp46_ = content;
+								_tmp47_ = text_begin;
+								_tmp48_ = self->priv->current;
+								_tmp49_ = text_begin;
+								_tmp50_ = string_substring ((const gchar*) _tmp47_, (glong) 0, (glong) ((gint) (_tmp48_ - _tmp49_)));
+								_tmp51_ = _tmp50_;
+								g_string_append (_tmp46_, _tmp51_);
+								_g_free0 (_tmp51_);
+								_tmp52_ = content;
+								g_string_append_c (_tmp52_, '<');
+								_tmp53_ = self->priv->current;
+								self->priv->current = _tmp53_ + 4;
+								_tmp54_ = self->priv->current;
+								text_begin = _tmp54_;
 							} else {
-								gchar* _tmp62_ = NULL;
-								gboolean _tmp63_ = FALSE;
-								_tmp62_ = next_pos;
-								_tmp63_ = g_str_has_prefix ((const gchar*) _tmp62_, "gt;");
-								if (_tmp63_) {
-									GString* _tmp64_ = NULL;
-									gchar* _tmp65_ = NULL;
-									gchar* _tmp66_ = NULL;
-									gchar* _tmp67_ = NULL;
-									gchar* _tmp68_ = NULL;
-									gchar* _tmp69_ = NULL;
-									GString* _tmp70_ = NULL;
-									gchar* _tmp71_ = NULL;
-									gchar* _tmp72_ = NULL;
-									_tmp64_ = content;
-									_tmp65_ = text_begin;
-									_tmp66_ = self->priv->current;
-									_tmp67_ = text_begin;
-									_tmp68_ = string_substring ((const gchar*) _tmp65_, (glong) 0, (glong) ((gint) (_tmp66_ - _tmp67_)));
-									_tmp69_ = _tmp68_;
-									g_string_append (_tmp64_, _tmp69_);
-									_g_free0 (_tmp69_);
-									_tmp70_ = content;
-									g_string_append_c (_tmp70_, '>');
-									_tmp71_ = self->priv->current;
-									self->priv->current = _tmp71_ + 4;
-									_tmp72_ = self->priv->current;
-									text_begin = _tmp72_;
+								gchar* _tmp55_;
+								_tmp55_ = next_pos;
+								if (g_str_has_prefix ((const gchar*) _tmp55_, "gt;")) {
+									GString* _tmp56_;
+									gchar* _tmp57_;
+									gchar* _tmp58_;
+									gchar* _tmp59_;
+									gchar* _tmp60_;
+									gchar* _tmp61_;
+									GString* _tmp62_;
+									gchar* _tmp63_;
+									gchar* _tmp64_;
+									_tmp56_ = content;
+									_tmp57_ = text_begin;
+									_tmp58_ = self->priv->current;
+									_tmp59_ = text_begin;
+									_tmp60_ = string_substring ((const gchar*) _tmp57_, (glong) 0, (glong) ((gint) (_tmp58_ - _tmp59_)));
+									_tmp61_ = _tmp60_;
+									g_string_append (_tmp56_, _tmp61_);
+									_g_free0 (_tmp61_);
+									_tmp62_ = content;
+									g_string_append_c (_tmp62_, '>');
+									_tmp63_ = self->priv->current;
+									self->priv->current = _tmp63_ + 4;
+									_tmp64_ = self->priv->current;
+									text_begin = _tmp64_;
 								} else {
-									gchar* _tmp73_ = NULL;
-									gunichar _tmp74_ = 0U;
-									gint _tmp75_ = 0;
-									_tmp73_ = self->priv->current;
-									_tmp74_ = u;
-									_tmp75_ = g_unichar_to_utf8 (_tmp74_, NULL);
-									self->priv->current = _tmp73_ + _tmp75_;
+									gchar* _tmp65_;
+									_tmp65_ = next_pos;
+									if (g_str_has_prefix ((const gchar*) _tmp65_, "percnt;")) {
+										GString* _tmp66_;
+										gchar* _tmp67_;
+										gchar* _tmp68_;
+										gchar* _tmp69_;
+										gchar* _tmp70_;
+										gchar* _tmp71_;
+										GString* _tmp72_;
+										gchar* _tmp73_;
+										gchar* _tmp74_;
+										_tmp66_ = content;
+										_tmp67_ = text_begin;
+										_tmp68_ = self->priv->current;
+										_tmp69_ = text_begin;
+										_tmp70_ = string_substring ((const gchar*) _tmp67_, (glong) 0, (glong) ((gint) (_tmp68_ - _tmp69_)));
+										_tmp71_ = _tmp70_;
+										g_string_append (_tmp66_, _tmp71_);
+										_g_free0 (_tmp71_);
+										_tmp72_ = content;
+										g_string_append_c (_tmp72_, '%');
+										_tmp73_ = self->priv->current;
+										self->priv->current = _tmp73_ + 8;
+										_tmp74_ = self->priv->current;
+										text_begin = _tmp74_;
+									} else {
+										gchar* _tmp75_;
+										gunichar _tmp76_;
+										_tmp75_ = self->priv->current;
+										_tmp76_ = u;
+										self->priv->current = _tmp75_ + g_unichar_to_utf8 (_tmp76_, NULL);
+									}
 								}
 							}
 						}
 					}
 				}
 			} else {
-				gunichar _tmp76_ = 0U;
-				gchar* _tmp79_ = NULL;
-				gunichar _tmp80_ = 0U;
-				gint _tmp81_ = 0;
-				gint _tmp82_ = 0;
-				_tmp76_ = u;
-				if (_tmp76_ == ((gunichar) '\n')) {
-					gint _tmp77_ = 0;
-					gchar* _tmp78_ = NULL;
-					_tmp77_ = self->priv->line;
-					self->priv->line = _tmp77_ + 1;
+				gunichar _tmp77_;
+				gchar* _tmp80_;
+				gunichar _tmp81_;
+				gint _tmp82_;
+				_tmp77_ = u;
+				if (_tmp77_ == ((gunichar) '\n')) {
+					gint _tmp78_;
+					gchar* _tmp79_;
+					_tmp78_ = self->priv->line;
+					self->priv->line = _tmp78_ + 1;
 					self->priv->column = 0;
-					_tmp78_ = self->priv->current;
-					last_linebreak = _tmp78_;
+					_tmp79_ = self->priv->current;
+					last_linebreak = _tmp79_;
 				}
-				_tmp79_ = self->priv->current;
-				_tmp80_ = u;
-				_tmp81_ = g_unichar_to_utf8 (_tmp80_, NULL);
-				self->priv->current = _tmp79_ + _tmp81_;
+				_tmp80_ = self->priv->current;
+				_tmp81_ = u;
+				self->priv->current = _tmp80_ + g_unichar_to_utf8 (_tmp81_, NULL);
 				_tmp82_ = self->priv->column;
 				self->priv->column = _tmp82_ + 1;
 			}
@@ -1211,12 +1161,12 @@ static gchar* vala_markup_reader_text (ValaMarkupReader* self, gchar end_char, g
 	_tmp83_ = text_begin;
 	_tmp84_ = self->priv->current;
 	if (_tmp83_ != _tmp84_) {
-		GString* _tmp85_ = NULL;
-		gchar* _tmp86_ = NULL;
-		gchar* _tmp87_ = NULL;
-		gchar* _tmp88_ = NULL;
-		gchar* _tmp89_ = NULL;
-		gchar* _tmp90_ = NULL;
+		GString* _tmp85_;
+		gchar* _tmp86_;
+		gchar* _tmp87_;
+		gchar* _tmp88_;
+		gchar* _tmp89_;
+		gchar* _tmp90_;
 		_tmp85_ = content;
 		_tmp86_ = text_begin;
 		_tmp87_ = self->priv->current;
@@ -1230,118 +1180,117 @@ static gchar* vala_markup_reader_text (ValaMarkupReader* self, gchar end_char, g
 	_tmp92_ = self->priv->current;
 	_tmp93_ = last_linebreak;
 	self->priv->column = _tmp91_ + ((gint) (_tmp92_ - _tmp93_));
-	_tmp94_ = rm_trailing_whitespace;
-	if (_tmp94_) {
+	if (rm_trailing_whitespace) {
 		gchar* str_pos = NULL;
-		GString* _tmp95_ = NULL;
-		const gchar* _tmp96_ = NULL;
-		GString* _tmp97_ = NULL;
-		gssize _tmp98_ = 0L;
-		GString* _tmp109_ = NULL;
-		gchar* _tmp110_ = NULL;
-		GString* _tmp111_ = NULL;
-		const gchar* _tmp112_ = NULL;
-		_tmp95_ = content;
-		_tmp96_ = _tmp95_->str;
-		_tmp97_ = content;
-		_tmp98_ = _tmp97_->len;
-		str_pos = ((gchar*) _tmp96_) + _tmp98_;
+		GString* _tmp94_;
+		const gchar* _tmp95_;
+		GString* _tmp96_;
+		gssize _tmp97_;
+		GString* _tmp107_;
+		gchar* _tmp108_;
+		GString* _tmp109_;
+		const gchar* _tmp110_;
+		_tmp94_ = content;
+		_tmp95_ = _tmp94_->str;
+		_tmp96_ = content;
+		_tmp97_ = _tmp96_->len;
+		str_pos = ((gchar*) _tmp95_) + _tmp97_;
 		{
-			gchar* _tmp99_ = NULL;
-			gboolean _tmp100_ = FALSE;
-			_tmp99_ = str_pos;
-			str_pos = _tmp99_ - 1;
-			_tmp100_ = TRUE;
+			gchar* _tmp98_;
+			gboolean _tmp99_ = FALSE;
+			_tmp98_ = str_pos;
+			str_pos = _tmp98_ - 1;
+			_tmp99_ = TRUE;
 			while (TRUE) {
-				gboolean _tmp102_ = FALSE;
-				gchar* _tmp103_ = NULL;
-				GString* _tmp104_ = NULL;
-				const gchar* _tmp105_ = NULL;
-				if (!_tmp100_) {
-					gchar* _tmp101_ = NULL;
-					_tmp101_ = str_pos;
-					str_pos = _tmp101_ - 1;
+				gboolean _tmp101_ = FALSE;
+				gchar* _tmp102_;
+				GString* _tmp103_;
+				const gchar* _tmp104_;
+				if (!_tmp99_) {
+					gchar* _tmp100_;
+					_tmp100_ = str_pos;
+					str_pos = _tmp100_ - 1;
 				}
-				_tmp100_ = FALSE;
-				_tmp103_ = str_pos;
-				_tmp104_ = content;
-				_tmp105_ = _tmp104_->str;
-				if (_tmp103_ > ((gchar*) _tmp105_)) {
-					gchar* _tmp106_ = NULL;
-					gchar _tmp107_ = '\0';
-					gboolean _tmp108_ = FALSE;
-					_tmp106_ = str_pos;
-					_tmp107_ = _tmp106_[0];
-					_tmp108_ = g_ascii_isspace (_tmp107_);
-					_tmp102_ = _tmp108_;
+				_tmp99_ = FALSE;
+				_tmp102_ = str_pos;
+				_tmp103_ = content;
+				_tmp104_ = _tmp103_->str;
+				if (_tmp102_ > ((gchar*) _tmp104_)) {
+					gchar* _tmp105_;
+					gchar _tmp106_;
+					_tmp105_ = str_pos;
+					_tmp106_ = _tmp105_[0];
+					_tmp101_ = g_ascii_isspace (_tmp106_);
 				} else {
-					_tmp102_ = FALSE;
+					_tmp101_ = FALSE;
 				}
-				if (!_tmp102_) {
+				if (!_tmp101_) {
 					break;
 				}
 			}
 		}
+		_tmp107_ = content;
+		_tmp108_ = str_pos;
 		_tmp109_ = content;
-		_tmp110_ = str_pos;
-		_tmp111_ = content;
-		_tmp112_ = _tmp111_->str;
-		g_string_erase (_tmp109_, (gssize) ((_tmp110_ - ((gchar*) _tmp112_)) + 1), (gssize) -1);
+		_tmp110_ = _tmp109_->str;
+		g_string_erase (_tmp107_, (gssize) ((_tmp108_ - ((gchar*) _tmp110_)) + 1), (gssize) -1);
 	}
-	_tmp113_ = content;
-	_tmp114_ = _tmp113_->str;
-	_tmp115_ = g_strdup (_tmp114_);
-	result = _tmp115_;
+	_tmp111_ = content;
+	_tmp112_ = _tmp111_->str;
+	_tmp113_ = g_strdup (_tmp112_);
+	result = _tmp113_;
 	_g_string_free0 (content);
 	return result;
 }
 
 
-static void vala_markup_reader_space (ValaMarkupReader* self) {
+static void
+vala_markup_reader_space (ValaMarkupReader* self)
+{
 	g_return_if_fail (self != NULL);
 	while (TRUE) {
 		gboolean _tmp0_ = FALSE;
-		gchar* _tmp1_ = NULL;
-		gchar* _tmp2_ = NULL;
-		gchar* _tmp6_ = NULL;
-		gchar _tmp7_ = '\0';
-		gchar* _tmp9_ = NULL;
-		gint _tmp10_ = 0;
+		gchar* _tmp1_;
+		gchar* _tmp2_;
+		gchar* _tmp5_;
+		gchar _tmp6_;
+		gchar* _tmp8_;
+		gint _tmp9_;
 		_tmp1_ = self->priv->current;
 		_tmp2_ = self->priv->end;
 		if (_tmp1_ < _tmp2_) {
-			gchar* _tmp3_ = NULL;
-			gchar _tmp4_ = '\0';
-			gboolean _tmp5_ = FALSE;
+			gchar* _tmp3_;
+			gchar _tmp4_;
 			_tmp3_ = self->priv->current;
 			_tmp4_ = _tmp3_[0];
-			_tmp5_ = g_ascii_isspace (_tmp4_);
-			_tmp0_ = _tmp5_;
+			_tmp0_ = g_ascii_isspace (_tmp4_);
 		} else {
 			_tmp0_ = FALSE;
 		}
 		if (!_tmp0_) {
 			break;
 		}
-		_tmp6_ = self->priv->current;
-		_tmp7_ = _tmp6_[0];
-		if (_tmp7_ == '\n') {
-			gint _tmp8_ = 0;
-			_tmp8_ = self->priv->line;
-			self->priv->line = _tmp8_ + 1;
+		_tmp5_ = self->priv->current;
+		_tmp6_ = _tmp5_[0];
+		if (_tmp6_ == '\n') {
+			gint _tmp7_;
+			_tmp7_ = self->priv->line;
+			self->priv->line = _tmp7_ + 1;
 			self->priv->column = 0;
 		}
-		_tmp9_ = self->priv->current;
-		self->priv->current = _tmp9_ + 1;
-		_tmp10_ = self->priv->column;
-		self->priv->column = _tmp10_ + 1;
+		_tmp8_ = self->priv->current;
+		self->priv->current = _tmp8_ + 1;
+		_tmp9_ = self->priv->column;
+		self->priv->column = _tmp9_ + 1;
 	}
 }
 
 
-const gchar* vala_markup_reader_get_filename (ValaMarkupReader* self) {
+const gchar*
+vala_markup_reader_get_filename (ValaMarkupReader* self)
+{
 	const gchar* result;
-	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_filename;
 	result = _tmp0_;
@@ -1349,21 +1298,23 @@ const gchar* vala_markup_reader_get_filename (ValaMarkupReader* self) {
 }
 
 
-static void vala_markup_reader_set_filename (ValaMarkupReader* self, const gchar* value) {
-	const gchar* _tmp0_ = NULL;
-	gchar* _tmp1_ = NULL;
+static void
+vala_markup_reader_set_filename (ValaMarkupReader* self,
+                                 const gchar* value)
+{
+	gchar* _tmp0_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	_tmp1_ = g_strdup (_tmp0_);
+	_tmp0_ = g_strdup (value);
 	_g_free0 (self->priv->_filename);
-	self->priv->_filename = _tmp1_;
-	g_object_notify ((GObject *) self, "filename");
+	self->priv->_filename = _tmp0_;
 }
 
 
-const gchar* vala_markup_reader_get_name (ValaMarkupReader* self) {
+const gchar*
+vala_markup_reader_get_name (ValaMarkupReader* self)
+{
 	const gchar* result;
-	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_name;
 	result = _tmp0_;
@@ -1371,21 +1322,23 @@ const gchar* vala_markup_reader_get_name (ValaMarkupReader* self) {
 }
 
 
-static void vala_markup_reader_set_name (ValaMarkupReader* self, const gchar* value) {
-	const gchar* _tmp0_ = NULL;
-	gchar* _tmp1_ = NULL;
+static void
+vala_markup_reader_set_name (ValaMarkupReader* self,
+                             const gchar* value)
+{
+	gchar* _tmp0_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	_tmp1_ = g_strdup (_tmp0_);
+	_tmp0_ = g_strdup (value);
 	_g_free0 (self->priv->_name);
-	self->priv->_name = _tmp1_;
-	g_object_notify ((GObject *) self, "name");
+	self->priv->_name = _tmp0_;
 }
 
 
-const gchar* vala_markup_reader_get_content (ValaMarkupReader* self) {
+const gchar*
+vala_markup_reader_get_content (ValaMarkupReader* self)
+{
 	const gchar* result;
-	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_content;
 	result = _tmp0_;
@@ -1393,112 +1346,245 @@ const gchar* vala_markup_reader_get_content (ValaMarkupReader* self) {
 }
 
 
-static void vala_markup_reader_set_content (ValaMarkupReader* self, const gchar* value) {
-	const gchar* _tmp0_ = NULL;
-	gchar* _tmp1_ = NULL;
+static void
+vala_markup_reader_set_content (ValaMarkupReader* self,
+                                const gchar* value)
+{
+	gchar* _tmp0_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	_tmp1_ = g_strdup (_tmp0_);
+	_tmp0_ = g_strdup (value);
 	_g_free0 (self->priv->_content);
-	self->priv->_content = _tmp1_;
-	g_object_notify ((GObject *) self, "content");
+	self->priv->_content = _tmp0_;
 }
 
 
-static void vala_markup_reader_class_init (ValaMarkupReaderClass * klass) {
+static void
+vala_value_markup_reader_init (GValue* value)
+{
+	value->data[0].v_pointer = NULL;
+}
+
+
+static void
+vala_value_markup_reader_free_value (GValue* value)
+{
+	if (value->data[0].v_pointer) {
+		vala_markup_reader_unref (value->data[0].v_pointer);
+	}
+}
+
+
+static void
+vala_value_markup_reader_copy_value (const GValue* src_value,
+                                     GValue* dest_value)
+{
+	if (src_value->data[0].v_pointer) {
+		dest_value->data[0].v_pointer = vala_markup_reader_ref (src_value->data[0].v_pointer);
+	} else {
+		dest_value->data[0].v_pointer = NULL;
+	}
+}
+
+
+static gpointer
+vala_value_markup_reader_peek_pointer (const GValue* value)
+{
+	return value->data[0].v_pointer;
+}
+
+
+static gchar*
+vala_value_markup_reader_collect_value (GValue* value,
+                                        guint n_collect_values,
+                                        GTypeCValue* collect_values,
+                                        guint collect_flags)
+{
+	if (collect_values[0].v_pointer) {
+		ValaMarkupReader * object;
+		object = collect_values[0].v_pointer;
+		if (object->parent_instance.g_class == NULL) {
+			return g_strconcat ("invalid unclassed object pointer for value type `", G_VALUE_TYPE_NAME (value), "'", NULL);
+		} else if (!g_value_type_compatible (G_TYPE_FROM_INSTANCE (object), G_VALUE_TYPE (value))) {
+			return g_strconcat ("invalid object type `", g_type_name (G_TYPE_FROM_INSTANCE (object)), "' for value type `", G_VALUE_TYPE_NAME (value), "'", NULL);
+		}
+		value->data[0].v_pointer = vala_markup_reader_ref (object);
+	} else {
+		value->data[0].v_pointer = NULL;
+	}
+	return NULL;
+}
+
+
+static gchar*
+vala_value_markup_reader_lcopy_value (const GValue* value,
+                                      guint n_collect_values,
+                                      GTypeCValue* collect_values,
+                                      guint collect_flags)
+{
+	ValaMarkupReader ** object_p;
+	object_p = collect_values[0].v_pointer;
+	if (!object_p) {
+		return g_strdup_printf ("value location for `%s' passed as NULL", G_VALUE_TYPE_NAME (value));
+	}
+	if (!value->data[0].v_pointer) {
+		*object_p = NULL;
+	} else if (collect_flags & G_VALUE_NOCOPY_CONTENTS) {
+		*object_p = value->data[0].v_pointer;
+	} else {
+		*object_p = vala_markup_reader_ref (value->data[0].v_pointer);
+	}
+	return NULL;
+}
+
+
+GParamSpec*
+vala_param_spec_markup_reader (const gchar* name,
+                               const gchar* nick,
+                               const gchar* blurb,
+                               GType object_type,
+                               GParamFlags flags)
+{
+	ValaParamSpecMarkupReader* spec;
+	g_return_val_if_fail (g_type_is_a (object_type, VALA_TYPE_MARKUP_READER), NULL);
+	spec = g_param_spec_internal (G_TYPE_PARAM_OBJECT, name, nick, blurb, flags);
+	G_PARAM_SPEC (spec)->value_type = object_type;
+	return G_PARAM_SPEC (spec);
+}
+
+
+gpointer
+vala_value_get_markup_reader (const GValue* value)
+{
+	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_MARKUP_READER), NULL);
+	return value->data[0].v_pointer;
+}
+
+
+void
+vala_value_set_markup_reader (GValue* value,
+                              gpointer v_object)
+{
+	ValaMarkupReader * old;
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_MARKUP_READER));
+	old = value->data[0].v_pointer;
+	if (v_object) {
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, VALA_TYPE_MARKUP_READER));
+		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
+		value->data[0].v_pointer = v_object;
+		vala_markup_reader_ref (value->data[0].v_pointer);
+	} else {
+		value->data[0].v_pointer = NULL;
+	}
+	if (old) {
+		vala_markup_reader_unref (old);
+	}
+}
+
+
+void
+vala_value_take_markup_reader (GValue* value,
+                               gpointer v_object)
+{
+	ValaMarkupReader * old;
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_MARKUP_READER));
+	old = value->data[0].v_pointer;
+	if (v_object) {
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, VALA_TYPE_MARKUP_READER));
+		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
+		value->data[0].v_pointer = v_object;
+	} else {
+		value->data[0].v_pointer = NULL;
+	}
+	if (old) {
+		vala_markup_reader_unref (old);
+	}
+}
+
+
+static void
+vala_markup_reader_class_init (ValaMarkupReaderClass * klass)
+{
 	vala_markup_reader_parent_class = g_type_class_peek_parent (klass);
+	((ValaMarkupReaderClass *) klass)->finalize = vala_markup_reader_finalize;
 	g_type_class_add_private (klass, sizeof (ValaMarkupReaderPrivate));
-	G_OBJECT_CLASS (klass)->get_property = _vala_vala_markup_reader_get_property;
-	G_OBJECT_CLASS (klass)->set_property = _vala_vala_markup_reader_set_property;
-	G_OBJECT_CLASS (klass)->finalize = vala_markup_reader_finalize;
-	g_object_class_install_property (G_OBJECT_CLASS (klass), VALA_MARKUP_READER_FILENAME, g_param_spec_string ("filename", "filename", "filename", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), VALA_MARKUP_READER_NAME, g_param_spec_string ("name", "name", "name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), VALA_MARKUP_READER_CONTENT, g_param_spec_string ("content", "content", "content", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
 }
 
 
-static void vala_markup_reader_instance_init (ValaMarkupReader * self) {
-	GHashFunc _tmp0_ = NULL;
-	GEqualFunc _tmp1_ = NULL;
-	GEqualFunc _tmp2_ = NULL;
-	ValaHashMap* _tmp3_ = NULL;
+static void
+vala_markup_reader_instance_init (ValaMarkupReader * self)
+{
+	GHashFunc _tmp0_;
+	GEqualFunc _tmp1_;
+	GEqualFunc _tmp2_;
+	ValaHashMap* _tmp3_;
 	self->priv = VALA_MARKUP_READER_GET_PRIVATE (self);
 	_tmp0_ = g_str_hash;
 	_tmp1_ = g_str_equal;
 	_tmp2_ = g_direct_equal;
 	_tmp3_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, _tmp0_, _tmp1_, _tmp2_);
 	self->priv->attributes = (ValaMap*) _tmp3_;
+	self->ref_count = 1;
 }
 
 
-static void vala_markup_reader_finalize (GObject* obj) {
+static void
+vala_markup_reader_finalize (ValaMarkupReader * obj)
+{
 	ValaMarkupReader * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_MARKUP_READER, ValaMarkupReader);
+	g_signal_handlers_destroy (self);
 	_g_free0 (self->priv->_filename);
 	_g_free0 (self->priv->_name);
 	_g_free0 (self->priv->_content);
 	_g_mapped_file_unref0 (self->priv->mapped_file);
 	_vala_map_unref0 (self->priv->attributes);
-	G_OBJECT_CLASS (vala_markup_reader_parent_class)->finalize (obj);
 }
 
 
 /**
  * Simple reader for a subset of XML.
  */
-GType vala_markup_reader_get_type (void) {
+GType
+vala_markup_reader_get_type (void)
+{
 	static volatile gsize vala_markup_reader_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_markup_reader_type_id__volatile)) {
-		static const GTypeInfo g_define_type_info = { sizeof (ValaMarkupReaderClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) vala_markup_reader_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (ValaMarkupReader), 0, (GInstanceInitFunc) vala_markup_reader_instance_init, NULL };
+		static const GTypeValueTable g_define_type_value_table = { vala_value_markup_reader_init, vala_value_markup_reader_free_value, vala_value_markup_reader_copy_value, vala_value_markup_reader_peek_pointer, "p", vala_value_markup_reader_collect_value, "p", vala_value_markup_reader_lcopy_value };
+		static const GTypeInfo g_define_type_info = { sizeof (ValaMarkupReaderClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) vala_markup_reader_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (ValaMarkupReader), 0, (GInstanceInitFunc) vala_markup_reader_instance_init, &g_define_type_value_table };
+		static const GTypeFundamentalInfo g_define_type_fundamental_info = { (G_TYPE_FLAG_CLASSED | G_TYPE_FLAG_INSTANTIATABLE | G_TYPE_FLAG_DERIVABLE | G_TYPE_FLAG_DEEP_DERIVABLE) };
 		GType vala_markup_reader_type_id;
-		vala_markup_reader_type_id = g_type_register_static (G_TYPE_OBJECT, "ValaMarkupReader", &g_define_type_info, 0);
+		vala_markup_reader_type_id = g_type_register_fundamental (g_type_fundamental_next (), "ValaMarkupReader", &g_define_type_info, &g_define_type_fundamental_info, 0);
 		g_once_init_leave (&vala_markup_reader_type_id__volatile, vala_markup_reader_type_id);
 	}
 	return vala_markup_reader_type_id__volatile;
 }
 
 
-static void _vala_vala_markup_reader_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
+gpointer
+vala_markup_reader_ref (gpointer instance)
+{
 	ValaMarkupReader * self;
-	self = G_TYPE_CHECK_INSTANCE_CAST (object, VALA_TYPE_MARKUP_READER, ValaMarkupReader);
-	switch (property_id) {
-		case VALA_MARKUP_READER_FILENAME:
-		g_value_set_string (value, vala_markup_reader_get_filename (self));
-		break;
-		case VALA_MARKUP_READER_NAME:
-		g_value_set_string (value, vala_markup_reader_get_name (self));
-		break;
-		case VALA_MARKUP_READER_CONTENT:
-		g_value_set_string (value, vala_markup_reader_get_content (self));
-		break;
-		default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-		break;
+	self = instance;
+	g_atomic_int_inc (&self->ref_count);
+	return instance;
+}
+
+
+void
+vala_markup_reader_unref (gpointer instance)
+{
+	ValaMarkupReader * self;
+	self = instance;
+	if (g_atomic_int_dec_and_test (&self->ref_count)) {
+		VALA_MARKUP_READER_GET_CLASS (self)->finalize (self);
+		g_type_free_instance ((GTypeInstance *) self);
 	}
 }
 
 
-static void _vala_vala_markup_reader_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
-	ValaMarkupReader * self;
-	self = G_TYPE_CHECK_INSTANCE_CAST (object, VALA_TYPE_MARKUP_READER, ValaMarkupReader);
-	switch (property_id) {
-		case VALA_MARKUP_READER_FILENAME:
-		vala_markup_reader_set_filename (self, g_value_get_string (value));
-		break;
-		case VALA_MARKUP_READER_NAME:
-		vala_markup_reader_set_name (self, g_value_get_string (value));
-		break;
-		case VALA_MARKUP_READER_CONTENT:
-		vala_markup_reader_set_content (self, g_value_get_string (value));
-		break;
-		default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-		break;
-	}
-}
-
-
-const gchar* vala_markup_token_type_to_string (ValaMarkupTokenType self) {
+const gchar*
+vala_markup_token_type_to_string (ValaMarkupTokenType self)
+{
 	const gchar* result = NULL;
 	switch (self) {
 		case VALA_MARKUP_TOKEN_TYPE_START_ELEMENT:
@@ -1530,7 +1616,9 @@ const gchar* vala_markup_token_type_to_string (ValaMarkupTokenType self) {
 }
 
 
-GType vala_markup_token_type_get_type (void) {
+GType
+vala_markup_token_type_get_type (void)
+{
 	static volatile gsize vala_markup_token_type_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_markup_token_type_type_id__volatile)) {
 		static const GEnumValue values[] = {{VALA_MARKUP_TOKEN_TYPE_NONE, "VALA_MARKUP_TOKEN_TYPE_NONE", "none"}, {VALA_MARKUP_TOKEN_TYPE_START_ELEMENT, "VALA_MARKUP_TOKEN_TYPE_START_ELEMENT", "start-element"}, {VALA_MARKUP_TOKEN_TYPE_END_ELEMENT, "VALA_MARKUP_TOKEN_TYPE_END_ELEMENT", "end-element"}, {VALA_MARKUP_TOKEN_TYPE_TEXT, "VALA_MARKUP_TOKEN_TYPE_TEXT", "text"}, {VALA_MARKUP_TOKEN_TYPE_EOF, "VALA_MARKUP_TOKEN_TYPE_EOF", "eof"}, {0, NULL, NULL}};

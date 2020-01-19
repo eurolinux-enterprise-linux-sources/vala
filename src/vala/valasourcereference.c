@@ -23,77 +23,18 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
+#include "vala.h"
 #include <valagee.h>
 #include <stdlib.h>
 #include <string.h>
 #include <gobject/gvaluecollector.h>
 
-
-#define VALA_TYPE_SOURCE_REFERENCE (vala_source_reference_get_type ())
-#define VALA_SOURCE_REFERENCE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReference))
-#define VALA_SOURCE_REFERENCE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReferenceClass))
-#define VALA_IS_SOURCE_REFERENCE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SOURCE_REFERENCE))
-#define VALA_IS_SOURCE_REFERENCE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SOURCE_REFERENCE))
-#define VALA_SOURCE_REFERENCE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReferenceClass))
-
-typedef struct _ValaSourceReference ValaSourceReference;
-typedef struct _ValaSourceReferenceClass ValaSourceReferenceClass;
-typedef struct _ValaSourceReferencePrivate ValaSourceReferencePrivate;
-
-#define VALA_TYPE_SOURCE_FILE (vala_source_file_get_type ())
-#define VALA_SOURCE_FILE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SOURCE_FILE, ValaSourceFile))
-#define VALA_SOURCE_FILE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SOURCE_FILE, ValaSourceFileClass))
-#define VALA_IS_SOURCE_FILE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SOURCE_FILE))
-#define VALA_IS_SOURCE_FILE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SOURCE_FILE))
-#define VALA_SOURCE_FILE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SOURCE_FILE, ValaSourceFileClass))
-
-typedef struct _ValaSourceFile ValaSourceFile;
-typedef struct _ValaSourceFileClass ValaSourceFileClass;
-
-#define VALA_TYPE_SOURCE_LOCATION (vala_source_location_get_type ())
-typedef struct _ValaSourceLocation ValaSourceLocation;
-
-#define VALA_TYPE_CODE_NODE (vala_code_node_get_type ())
-#define VALA_CODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_NODE, ValaCodeNode))
-#define VALA_CODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_NODE, ValaCodeNodeClass))
-#define VALA_IS_CODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CODE_NODE))
-#define VALA_IS_CODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CODE_NODE))
-#define VALA_CODE_NODE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CODE_NODE, ValaCodeNodeClass))
-
-typedef struct _ValaCodeNode ValaCodeNode;
-typedef struct _ValaCodeNodeClass ValaCodeNodeClass;
-
-#define VALA_TYPE_USING_DIRECTIVE (vala_using_directive_get_type ())
-#define VALA_USING_DIRECTIVE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_USING_DIRECTIVE, ValaUsingDirective))
-#define VALA_USING_DIRECTIVE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_USING_DIRECTIVE, ValaUsingDirectiveClass))
-#define VALA_IS_USING_DIRECTIVE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_USING_DIRECTIVE))
-#define VALA_IS_USING_DIRECTIVE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_USING_DIRECTIVE))
-#define VALA_USING_DIRECTIVE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_USING_DIRECTIVE, ValaUsingDirectiveClass))
-
-typedef struct _ValaUsingDirective ValaUsingDirective;
-typedef struct _ValaUsingDirectiveClass ValaUsingDirectiveClass;
 #define _vala_iterable_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterable_unref (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
 typedef struct _ValaParamSpecSourceReference ValaParamSpecSourceReference;
-
-struct _ValaSourceReference {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	ValaSourceReferencePrivate * priv;
-};
-
-struct _ValaSourceReferenceClass {
-	GTypeClass parent_class;
-	void (*finalize) (ValaSourceReference *self);
-};
-
-struct _ValaSourceLocation {
-	gchar* pos;
-	gint line;
-	gint column;
-};
 
 struct _ValaSourceReferencePrivate {
 	ValaSourceFile* _file;
@@ -109,49 +50,10 @@ struct _ValaParamSpecSourceReference {
 
 static gpointer vala_source_reference_parent_class = NULL;
 
-gpointer vala_source_reference_ref (gpointer instance);
-void vala_source_reference_unref (gpointer instance);
-GParamSpec* vala_param_spec_source_reference (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_source_reference (GValue* value, gpointer v_object);
-void vala_value_take_source_reference (GValue* value, gpointer v_object);
-gpointer vala_value_get_source_reference (const GValue* value);
-GType vala_source_reference_get_type (void) G_GNUC_CONST;
-gpointer vala_source_file_ref (gpointer instance);
-void vala_source_file_unref (gpointer instance);
-GParamSpec* vala_param_spec_source_file (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_source_file (GValue* value, gpointer v_object);
-void vala_value_take_source_file (GValue* value, gpointer v_object);
-gpointer vala_value_get_source_file (const GValue* value);
-GType vala_source_file_get_type (void) G_GNUC_CONST;
-GType vala_source_location_get_type (void) G_GNUC_CONST;
-ValaSourceLocation* vala_source_location_dup (const ValaSourceLocation* self);
-void vala_source_location_free (ValaSourceLocation* self);
-gpointer vala_code_node_ref (gpointer instance);
-void vala_code_node_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_node (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_node (GValue* value, gpointer v_object);
-void vala_value_take_code_node (GValue* value, gpointer v_object);
-gpointer vala_value_get_code_node (const GValue* value);
-GType vala_code_node_get_type (void) G_GNUC_CONST;
-GType vala_using_directive_get_type (void) G_GNUC_CONST;
 #define VALA_SOURCE_REFERENCE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_SOURCE_REFERENCE, ValaSourceReferencePrivate))
-enum  {
-	VALA_SOURCE_REFERENCE_DUMMY_PROPERTY
-};
-ValaSourceReference* vala_source_reference_new (ValaSourceFile* _file, ValaSourceLocation* begin, ValaSourceLocation* end);
-ValaSourceReference* vala_source_reference_construct (GType object_type, ValaSourceFile* _file, ValaSourceLocation* begin, ValaSourceLocation* end);
-void vala_source_reference_set_file (ValaSourceReference* self, ValaSourceFile* value);
-void vala_source_reference_set_begin (ValaSourceReference* self, ValaSourceLocation* value);
-void vala_source_reference_set_end (ValaSourceReference* self, ValaSourceLocation* value);
-ValaSourceFile* vala_source_reference_get_file (ValaSourceReference* self);
-ValaList* vala_source_file_get_current_using_directives (ValaSourceFile* self);
-static void vala_source_reference_set_using_directives (ValaSourceReference* self, ValaList* value);
-gchar* vala_source_reference_to_string (ValaSourceReference* self);
-gchar* vala_source_file_get_relative_filename (ValaSourceFile* self);
-void vala_source_reference_get_begin (ValaSourceReference* self, ValaSourceLocation* result);
-void vala_source_reference_get_end (ValaSourceReference* self, ValaSourceLocation* result);
-ValaList* vala_source_reference_get_using_directives (ValaSourceReference* self);
-static void vala_source_reference_finalize (ValaSourceReference* obj);
+static void vala_source_reference_set_using_directives (ValaSourceReference* self,
+                                                 ValaList* value);
+static void vala_source_reference_finalize (ValaSourceReference * obj);
 
 
 /**
@@ -162,33 +64,40 @@ static void vala_source_reference_finalize (ValaSourceReference* obj);
  * @param end          the end of the referenced source code
  * @return             newly created source reference
  */
-ValaSourceReference* vala_source_reference_construct (GType object_type, ValaSourceFile* _file, ValaSourceLocation* begin, ValaSourceLocation* end) {
+ValaSourceReference*
+vala_source_reference_construct (GType object_type,
+                                 ValaSourceFile* _file,
+                                 ValaSourceLocation* begin,
+                                 ValaSourceLocation* end)
+{
 	ValaSourceReference* self = NULL;
-	ValaSourceFile* _tmp0_ = NULL;
-	ValaSourceLocation _tmp1_ = {0};
-	ValaSourceLocation _tmp2_ = {0};
-	ValaSourceFile* _tmp3_ = NULL;
-	ValaList* _tmp4_ = NULL;
-	ValaList* _tmp5_ = NULL;
+	ValaSourceLocation _tmp0_;
+	ValaSourceLocation _tmp1_;
+	ValaSourceFile* _tmp2_;
+	ValaList* _tmp3_;
+	ValaList* _tmp4_;
 	g_return_val_if_fail (_file != NULL, NULL);
 	g_return_val_if_fail (begin != NULL, NULL);
 	g_return_val_if_fail (end != NULL, NULL);
 	self = (ValaSourceReference*) g_type_create_instance (object_type);
-	_tmp0_ = _file;
-	vala_source_reference_set_file (self, _tmp0_);
-	_tmp1_ = *begin;
-	vala_source_reference_set_begin (self, &_tmp1_);
-	_tmp2_ = *end;
-	vala_source_reference_set_end (self, &_tmp2_);
-	_tmp3_ = self->priv->_file;
-	_tmp4_ = vala_source_file_get_current_using_directives (_tmp3_);
-	_tmp5_ = _tmp4_;
-	vala_source_reference_set_using_directives (self, _tmp5_);
+	vala_source_reference_set_file (self, _file);
+	_tmp0_ = *begin;
+	vala_source_reference_set_begin (self, &_tmp0_);
+	_tmp1_ = *end;
+	vala_source_reference_set_end (self, &_tmp1_);
+	_tmp2_ = self->priv->_file;
+	_tmp3_ = vala_source_file_get_current_using_directives (_tmp2_);
+	_tmp4_ = _tmp3_;
+	vala_source_reference_set_using_directives (self, _tmp4_);
 	return self;
 }
 
 
-ValaSourceReference* vala_source_reference_new (ValaSourceFile* _file, ValaSourceLocation* begin, ValaSourceLocation* end) {
+ValaSourceReference*
+vala_source_reference_new (ValaSourceFile* _file,
+                           ValaSourceLocation* begin,
+                           ValaSourceLocation* end)
+{
 	return vala_source_reference_construct (VALA_TYPE_SOURCE_REFERENCE, _file, begin, end);
 }
 
@@ -198,21 +107,23 @@ ValaSourceReference* vala_source_reference_new (ValaSourceFile* _file, ValaSourc
  *
  * @return human-readable string
  */
-gchar* vala_source_reference_to_string (ValaSourceReference* self) {
+gchar*
+vala_source_reference_to_string (ValaSourceReference* self)
+{
 	gchar* result = NULL;
-	ValaSourceFile* _tmp0_ = NULL;
-	gchar* _tmp1_ = NULL;
-	gchar* _tmp2_ = NULL;
-	ValaSourceLocation _tmp3_ = {0};
-	gint _tmp4_ = 0;
-	ValaSourceLocation _tmp5_ = {0};
-	gint _tmp6_ = 0;
-	ValaSourceLocation _tmp7_ = {0};
-	gint _tmp8_ = 0;
-	ValaSourceLocation _tmp9_ = {0};
-	gint _tmp10_ = 0;
-	gchar* _tmp11_ = NULL;
-	gchar* _tmp12_ = NULL;
+	ValaSourceFile* _tmp0_;
+	gchar* _tmp1_;
+	gchar* _tmp2_;
+	ValaSourceLocation _tmp3_;
+	gint _tmp4_;
+	ValaSourceLocation _tmp5_;
+	gint _tmp6_;
+	ValaSourceLocation _tmp7_;
+	gint _tmp8_;
+	ValaSourceLocation _tmp9_;
+	gint _tmp10_;
+	gchar* _tmp11_;
+	gchar* _tmp12_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_file;
 	_tmp1_ = vala_source_file_get_relative_filename (_tmp0_);
@@ -233,9 +144,11 @@ gchar* vala_source_reference_to_string (ValaSourceReference* self) {
 }
 
 
-ValaSourceFile* vala_source_reference_get_file (ValaSourceReference* self) {
+ValaSourceFile*
+vala_source_reference_get_file (ValaSourceReference* self)
+{
 	ValaSourceFile* result;
-	ValaSourceFile* _tmp0_ = NULL;
+	ValaSourceFile* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_file;
 	result = _tmp0_;
@@ -243,16 +156,20 @@ ValaSourceFile* vala_source_reference_get_file (ValaSourceReference* self) {
 }
 
 
-void vala_source_reference_set_file (ValaSourceReference* self, ValaSourceFile* value) {
-	ValaSourceFile* _tmp0_ = NULL;
+void
+vala_source_reference_set_file (ValaSourceReference* self,
+                                ValaSourceFile* value)
+{
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	self->priv->_file = _tmp0_;
+	self->priv->_file = value;
 }
 
 
-void vala_source_reference_get_begin (ValaSourceReference* self, ValaSourceLocation* result) {
-	ValaSourceLocation _tmp0_ = {0};
+void
+vala_source_reference_get_begin (ValaSourceReference* self,
+                                 ValaSourceLocation * result)
+{
+	ValaSourceLocation _tmp0_;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = self->priv->_begin;
 	*result = _tmp0_;
@@ -260,16 +177,22 @@ void vala_source_reference_get_begin (ValaSourceReference* self, ValaSourceLocat
 }
 
 
-void vala_source_reference_set_begin (ValaSourceReference* self, ValaSourceLocation* value) {
-	ValaSourceLocation _tmp0_ = {0};
+void
+vala_source_reference_set_begin (ValaSourceReference* self,
+                                 ValaSourceLocation * value)
+{
+	ValaSourceLocation _tmp0_;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = *value;
 	self->priv->_begin = _tmp0_;
 }
 
 
-void vala_source_reference_get_end (ValaSourceReference* self, ValaSourceLocation* result) {
-	ValaSourceLocation _tmp0_ = {0};
+void
+vala_source_reference_get_end (ValaSourceReference* self,
+                               ValaSourceLocation * result)
+{
+	ValaSourceLocation _tmp0_;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = self->priv->_end;
 	*result = _tmp0_;
@@ -277,17 +200,22 @@ void vala_source_reference_get_end (ValaSourceReference* self, ValaSourceLocatio
 }
 
 
-void vala_source_reference_set_end (ValaSourceReference* self, ValaSourceLocation* value) {
-	ValaSourceLocation _tmp0_ = {0};
+void
+vala_source_reference_set_end (ValaSourceReference* self,
+                               ValaSourceLocation * value)
+{
+	ValaSourceLocation _tmp0_;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = *value;
 	self->priv->_end = _tmp0_;
 }
 
 
-ValaList* vala_source_reference_get_using_directives (ValaSourceReference* self) {
+ValaList*
+vala_source_reference_get_using_directives (ValaSourceReference* self)
+{
 	ValaList* result;
-	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_using_directives;
 	result = _tmp0_;
@@ -295,35 +223,45 @@ ValaList* vala_source_reference_get_using_directives (ValaSourceReference* self)
 }
 
 
-static gpointer _vala_iterable_ref0 (gpointer self) {
+static gpointer
+_vala_iterable_ref0 (gpointer self)
+{
 	return self ? vala_iterable_ref (self) : NULL;
 }
 
 
-static void vala_source_reference_set_using_directives (ValaSourceReference* self, ValaList* value) {
-	ValaList* _tmp0_ = NULL;
-	ValaList* _tmp1_ = NULL;
+static void
+vala_source_reference_set_using_directives (ValaSourceReference* self,
+                                            ValaList* value)
+{
+	ValaList* _tmp0_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
+	_tmp0_ = _vala_iterable_ref0 (value);
 	_vala_iterable_unref0 (self->priv->_using_directives);
-	self->priv->_using_directives = _tmp1_;
+	self->priv->_using_directives = _tmp0_;
 }
 
 
-static void vala_value_source_reference_init (GValue* value) {
+static void
+vala_value_source_reference_init (GValue* value)
+{
 	value->data[0].v_pointer = NULL;
 }
 
 
-static void vala_value_source_reference_free_value (GValue* value) {
+static void
+vala_value_source_reference_free_value (GValue* value)
+{
 	if (value->data[0].v_pointer) {
 		vala_source_reference_unref (value->data[0].v_pointer);
 	}
 }
 
 
-static void vala_value_source_reference_copy_value (const GValue* src_value, GValue* dest_value) {
+static void
+vala_value_source_reference_copy_value (const GValue* src_value,
+                                        GValue* dest_value)
+{
 	if (src_value->data[0].v_pointer) {
 		dest_value->data[0].v_pointer = vala_source_reference_ref (src_value->data[0].v_pointer);
 	} else {
@@ -332,14 +270,21 @@ static void vala_value_source_reference_copy_value (const GValue* src_value, GVa
 }
 
 
-static gpointer vala_value_source_reference_peek_pointer (const GValue* value) {
+static gpointer
+vala_value_source_reference_peek_pointer (const GValue* value)
+{
 	return value->data[0].v_pointer;
 }
 
 
-static gchar* vala_value_source_reference_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar*
+vala_value_source_reference_collect_value (GValue* value,
+                                           guint n_collect_values,
+                                           GTypeCValue* collect_values,
+                                           guint collect_flags)
+{
 	if (collect_values[0].v_pointer) {
-		ValaSourceReference* object;
+		ValaSourceReference * object;
 		object = collect_values[0].v_pointer;
 		if (object->parent_instance.g_class == NULL) {
 			return g_strconcat ("invalid unclassed object pointer for value type `", G_VALUE_TYPE_NAME (value), "'", NULL);
@@ -354,8 +299,13 @@ static gchar* vala_value_source_reference_collect_value (GValue* value, guint n_
 }
 
 
-static gchar* vala_value_source_reference_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
-	ValaSourceReference** object_p;
+static gchar*
+vala_value_source_reference_lcopy_value (const GValue* value,
+                                         guint n_collect_values,
+                                         GTypeCValue* collect_values,
+                                         guint collect_flags)
+{
+	ValaSourceReference ** object_p;
 	object_p = collect_values[0].v_pointer;
 	if (!object_p) {
 		return g_strdup_printf ("value location for `%s' passed as NULL", G_VALUE_TYPE_NAME (value));
@@ -371,7 +321,13 @@ static gchar* vala_value_source_reference_lcopy_value (const GValue* value, guin
 }
 
 
-GParamSpec* vala_param_spec_source_reference (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
+GParamSpec*
+vala_param_spec_source_reference (const gchar* name,
+                                  const gchar* nick,
+                                  const gchar* blurb,
+                                  GType object_type,
+                                  GParamFlags flags)
+{
 	ValaParamSpecSourceReference* spec;
 	g_return_val_if_fail (g_type_is_a (object_type, VALA_TYPE_SOURCE_REFERENCE), NULL);
 	spec = g_param_spec_internal (G_TYPE_PARAM_OBJECT, name, nick, blurb, flags);
@@ -380,14 +336,19 @@ GParamSpec* vala_param_spec_source_reference (const gchar* name, const gchar* ni
 }
 
 
-gpointer vala_value_get_source_reference (const GValue* value) {
+gpointer
+vala_value_get_source_reference (const GValue* value)
+{
 	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_SOURCE_REFERENCE), NULL);
 	return value->data[0].v_pointer;
 }
 
 
-void vala_value_set_source_reference (GValue* value, gpointer v_object) {
-	ValaSourceReference* old;
+void
+vala_value_set_source_reference (GValue* value,
+                                 gpointer v_object)
+{
+	ValaSourceReference * old;
 	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_SOURCE_REFERENCE));
 	old = value->data[0].v_pointer;
 	if (v_object) {
@@ -404,8 +365,11 @@ void vala_value_set_source_reference (GValue* value, gpointer v_object) {
 }
 
 
-void vala_value_take_source_reference (GValue* value, gpointer v_object) {
-	ValaSourceReference* old;
+void
+vala_value_take_source_reference (GValue* value,
+                                  gpointer v_object)
+{
+	ValaSourceReference * old;
 	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, VALA_TYPE_SOURCE_REFERENCE));
 	old = value->data[0].v_pointer;
 	if (v_object) {
@@ -421,20 +385,26 @@ void vala_value_take_source_reference (GValue* value, gpointer v_object) {
 }
 
 
-static void vala_source_reference_class_init (ValaSourceReferenceClass * klass) {
+static void
+vala_source_reference_class_init (ValaSourceReferenceClass * klass)
+{
 	vala_source_reference_parent_class = g_type_class_peek_parent (klass);
 	((ValaSourceReferenceClass *) klass)->finalize = vala_source_reference_finalize;
 	g_type_class_add_private (klass, sizeof (ValaSourceReferencePrivate));
 }
 
 
-static void vala_source_reference_instance_init (ValaSourceReference * self) {
+static void
+vala_source_reference_instance_init (ValaSourceReference * self)
+{
 	self->priv = VALA_SOURCE_REFERENCE_GET_PRIVATE (self);
 	self->ref_count = 1;
 }
 
 
-static void vala_source_reference_finalize (ValaSourceReference* obj) {
+static void
+vala_source_reference_finalize (ValaSourceReference * obj)
+{
 	ValaSourceReference * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_SOURCE_REFERENCE, ValaSourceReference);
 	g_signal_handlers_destroy (self);
@@ -445,7 +415,9 @@ static void vala_source_reference_finalize (ValaSourceReference* obj) {
 /**
  * Represents a reference to a location in a source file.
  */
-GType vala_source_reference_get_type (void) {
+GType
+vala_source_reference_get_type (void)
+{
 	static volatile gsize vala_source_reference_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_source_reference_type_id__volatile)) {
 		static const GTypeValueTable g_define_type_value_table = { vala_value_source_reference_init, vala_value_source_reference_free_value, vala_value_source_reference_copy_value, vala_value_source_reference_peek_pointer, "p", vala_value_source_reference_collect_value, "p", vala_value_source_reference_lcopy_value };
@@ -459,16 +431,20 @@ GType vala_source_reference_get_type (void) {
 }
 
 
-gpointer vala_source_reference_ref (gpointer instance) {
-	ValaSourceReference* self;
+gpointer
+vala_source_reference_ref (gpointer instance)
+{
+	ValaSourceReference * self;
 	self = instance;
 	g_atomic_int_inc (&self->ref_count);
 	return instance;
 }
 
 
-void vala_source_reference_unref (gpointer instance) {
-	ValaSourceReference* self;
+void
+vala_source_reference_unref (gpointer instance)
+{
+	ValaSourceReference * self;
 	self = instance;
 	if (g_atomic_int_dec_and_test (&self->ref_count)) {
 		VALA_SOURCE_REFERENCE_GET_CLASS (self)->finalize (self);

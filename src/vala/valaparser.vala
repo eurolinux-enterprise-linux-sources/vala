@@ -76,10 +76,11 @@ public class Vala.Parser : CodeVisitor {
 	public void parse (CodeContext context) {
 		this.context = context;
 		context.accept (this);
+		this.context = null;
 	}
 
 	public override void visit_source_file (SourceFile source_file) {
-		if (context.run_output || source_file.filename.has_suffix (".vala") || source_file.filename.has_suffix (".vapi")) {
+		if ((context != null && context.run_output) || source_file.filename.has_suffix (".vala") || source_file.filename.has_suffix (".vapi")) {
 			parse_file (source_file);
 		}
 	}
@@ -90,9 +91,7 @@ public class Vala.Parser : CodeVisitor {
 		if (size <= 0) {
 			SourceLocation begin, end;
 			TokenType type = scanner.read_token (out begin, out end);
-			tokens[index].type = type;
-			tokens[index].begin = begin;
-			tokens[index].end = end;
+			tokens[index] = { type, begin, end };
 			size = 1;
 		}
 		return (tokens[index].type != TokenType.EOF);
@@ -116,11 +115,10 @@ public class Vala.Parser : CodeVisitor {
 		return false;
 	}
 
-	string get_error (string msg) {
+	void report_parse_error (ParseError e) {
 		var begin = get_location ();
 		next ();
-		Report.error (get_src (begin), "syntax error, " + msg);
-		return msg;
+		Report.error (get_src (begin), "syntax error, " + e.message);
 	}
 
 	inline bool expect (TokenType type) throws ParseError {
@@ -128,7 +126,7 @@ public class Vala.Parser : CodeVisitor {
 			return true;
 		}
 
-		throw new ParseError.SYNTAX (get_error ("expected %s".printf (type.to_string ())));
+		throw new ParseError.SYNTAX ("expected %s", type.to_string ());
 	}
 
 	inline SourceLocation get_location () {
@@ -136,12 +134,14 @@ public class Vala.Parser : CodeVisitor {
 	}
 
 	string get_current_string () {
-		return ((string) tokens[index].begin.pos).substring (0, (int) (tokens[index].end.pos - tokens[index].begin.pos));
+		var token = tokens[index];
+		return ((string) token.begin.pos).substring (0, (int) (token.end.pos - token.begin.pos));
 	}
 
 	string get_last_string () {
 		int last_index = (index + BUFFER_SIZE - 1) % BUFFER_SIZE;
-		return ((string) tokens[last_index].begin.pos).substring (0, (int) (tokens[last_index].end.pos - tokens[last_index].begin.pos));
+		var token = tokens[last_index];
+		return ((string) token.begin.pos).substring (0, (int) (token.end.pos - token.begin.pos));
 	}
 
 	SourceReference get_src (SourceLocation begin) {
@@ -151,13 +151,14 @@ public class Vala.Parser : CodeVisitor {
 	}
 
 	SourceReference get_current_src () {
-		return new SourceReference (scanner.source_file, tokens[index].begin, tokens[index].end);
+		var token = tokens[index];
+		return new SourceReference (scanner.source_file, token.begin, token.end);
 	}
 
 	SourceReference get_last_src () {
 		int last_index = (index + BUFFER_SIZE - 1) % BUFFER_SIZE;
-
-		return new SourceReference (scanner.source_file, tokens[last_index].begin, tokens[last_index].end);
+		var token = tokens[last_index];
+		return new SourceReference (scanner.source_file, token.begin, token.end);
 	}
 
 	void rollback (SourceLocation location) {
@@ -261,7 +262,7 @@ public class Vala.Parser : CodeVisitor {
 			}
 			break;
 		default:
-			throw new ParseError.SYNTAX (get_error ("expected identifier"));
+			throw new ParseError.SYNTAX ("expected identifier");
 		}
 	}
 
@@ -316,11 +317,16 @@ public class Vala.Parser : CodeVisitor {
 			next ();
 			return new NullLiteral (get_src (begin));
 		default:
-			throw new ParseError.SYNTAX (get_error ("expected literal"));
+			throw new ParseError.SYNTAX ("expected literal");
 		}
 	}
 
 	public void parse_file (SourceFile source_file) {
+		var has_global_context = (context != null);
+		if (!has_global_context) {
+			context = source_file.context;
+		}
+
 		scanner = new Scanner (source_file);
 		parse_file_comments ();
 
@@ -340,10 +346,13 @@ public class Vala.Parser : CodeVisitor {
 				}
 			}
 		} catch (ParseError e) {
-			// already reported
+			report_parse_error (e);
 		}
 		
 		scanner = null;
+		if (!has_global_context) {
+			context = null;
+		}
 	}
 
 	void parse_file_comments () {
@@ -438,9 +447,18 @@ public class Vala.Parser : CodeVisitor {
 						Report.warning (get_last_src (), "deprecated syntax, use `unowned` modifier");
 					}
 					value_owned = false;
+				} else if (accept (TokenType.OWNED)) {
+					Report.warning (get_last_src (), "`owned' is default in this context");
 				}
 			} else {
-				value_owned = accept (TokenType.OWNED);
+				if (accept (TokenType.OWNED)) {
+					value_owned = true;
+				} else {
+					value_owned = false;
+					if (accept (TokenType.UNOWNED)) {
+						Report.warning (get_last_src (), "`unowned' is default in this context");
+					}
+				}
 			}
 		}
 
@@ -866,7 +884,7 @@ public class Vala.Parser : CodeVisitor {
 				var expr = parse_array_creation_expression ();
 				return expr;
 			} else {
-				throw new ParseError.SYNTAX (get_error ("expected ( or ["));
+				throw new ParseError.SYNTAX ("expected ( or [");
 			}
 		}
 	}
@@ -927,7 +945,7 @@ public class Vala.Parser : CodeVisitor {
 				// array of arrays: new T[][42]
 
 				if (size_specified) {
-					throw new ParseError.SYNTAX (get_error ("size of inner arrays must not be specified in array creation expression"));
+					throw new ParseError.SYNTAX ("size of inner arrays must not be specified in array creation expression");
 				}
 
 				element_type = new ArrayType (element_type, size_specifier_list.size, element_type.source_reference);
@@ -1102,7 +1120,17 @@ public class Vala.Parser : CodeVisitor {
 						case TokenType.IDENTIFIER:
 						case TokenType.PARAMS:
 							var inner = parse_unary_expression ();
-							return new CastExpression (inner, type, get_src (begin), false);
+							return new CastExpression (inner, type, get_src (begin));
+						case TokenType.STAR:
+							next ();
+							var op = parse_unary_expression ();
+							var inner = new PointerIndirection (op, get_src (begin));
+							return new CastExpression (inner, type, get_src (begin));
+						case TokenType.BITWISE_AND:
+							next ();
+							var op = parse_unary_expression ();
+							var inner = new AddressofExpression (op, get_src (begin));
+							return new CastExpression (inner, type, get_src (begin));
 						default:
 							break;
 						}
@@ -1246,13 +1274,10 @@ public class Vala.Parser : CodeVisitor {
 			case BinaryOperator.GREATER_THAN_OR_EQUAL:
 				next ();
 				var right = parse_shift_expression ();
-				left = new BinaryExpression (operator, left, right, get_src (begin));
-				if (!first) {
-					var be = (BinaryExpression) left;
-					be.chained = true;
-					if (!context.experimental) {
-						Report.warning (left.source_reference, "chained relational expressions are experimental");
-					}
+				if (first) {
+					left = new BinaryExpression (operator, left, right, get_src (begin));
+				} else {
+					left = new BinaryExpression.chained (operator, left, right, get_src (begin));
 				}
 				first = false;
 				break;
@@ -1261,13 +1286,10 @@ public class Vala.Parser : CodeVisitor {
 				// ignore >> and >>= (two tokens due to generics)
 				if (current () != TokenType.OP_GT && current () != TokenType.OP_GE) {
 					var right = parse_shift_expression ();
-					left = new BinaryExpression (operator, left, right, get_src (begin));
-					if (!first) {
-						var be = (BinaryExpression) left;
-						be.chained = true;
-						if (!context.experimental) {
-							Report.warning (left.source_reference, "chained relational expressions are experimental");
-						}
+					if (first) {
+						left = new BinaryExpression (operator, left, right, get_src (begin));
+					} else {
+						left = new BinaryExpression.chained (operator, left, right, get_src (begin));
 					}
 					first = false;
 				} else {
@@ -1285,7 +1307,7 @@ public class Vala.Parser : CodeVisitor {
 				case TokenType.AS:
 					next ();
 					var type = parse_type (true, false);
-					left = new CastExpression (left, type, get_src (begin), true);
+					left = new CastExpression.silent (left, type, get_src (begin));
 					break;
 				default:
 					found = false;
@@ -1588,6 +1610,7 @@ public class Vala.Parser : CodeVisitor {
 					block.add_statement (stmt);
 				}
 			} catch (ParseError e) {
+				report_parse_error (e);
 				if (recover () != RecoveryState.STATEMENT_BEGIN) {
 					// beginning of next declaration or end of file reached
 					// return what we have so far
@@ -1720,7 +1743,7 @@ public class Vala.Parser : CodeVisitor {
 		case TokenType.DELETE:    return parse_delete_statement ();
 		case TokenType.VAR:
 		case TokenType.CONST:
-			throw new ParseError.SYNTAX (get_error ("embedded statement cannot be declaration "));
+			throw new ParseError.SYNTAX ("embedded statement cannot be declaration ");
 		case TokenType.OP_INC:
 		case TokenType.OP_DEC:
 		case TokenType.BASE:
@@ -1733,7 +1756,7 @@ public class Vala.Parser : CodeVisitor {
 			if (is_expression ()) {
 				return parse_expression_statement ();
 			} else {
-				throw new ParseError.SYNTAX (get_error ("embedded statement cannot be declaration"));
+				throw new ParseError.SYNTAX ("embedded statement cannot be declaration");
 			}
 		}
 	}
@@ -1893,6 +1916,10 @@ public class Vala.Parser : CodeVisitor {
 			do {
 				if (accept (TokenType.CASE)) {
 					section.add_label (new SwitchLabel (parse_expression (), get_src (begin)));
+					while (current () == TokenType.COMMA) {
+						expect (TokenType.COMMA);
+						section.add_label (new SwitchLabel (parse_expression (), get_src (begin)));
+					}
 				} else {
 					expect (TokenType.DEFAULT);
 					section.add_label (new SwitchLabel.with_default (get_src (begin)));
@@ -2137,10 +2164,10 @@ public class Vala.Parser : CodeVisitor {
 				next ();
 				return "-" + get_last_string ();
 			default:
-				throw new ParseError.SYNTAX (get_error ("expected number"));
+				throw new ParseError.SYNTAX ("expected number");
 			}
 		default:
-			throw new ParseError.SYNTAX (get_error ("expected literal"));
+			throw new ParseError.SYNTAX ("expected literal");
 		}
 	}
 
@@ -2249,10 +2276,10 @@ public class Vala.Parser : CodeVisitor {
 			// statement
 			if (attrs != null) {
 				// no attributes allowed before statements
-				throw new ParseError.SYNTAX (get_error ("expected statement"));
+				throw new ParseError.SYNTAX ("expected statement");
 			}
 			if (!root) {
-				throw new ParseError.SYNTAX (get_error ("statements outside blocks allowed only in root namespace"));
+				throw new ParseError.SYNTAX ("statements outside blocks allowed only in root namespace");
 			}
 			rollback (begin);
 			parse_main_block (parent);
@@ -2342,7 +2369,7 @@ public class Vala.Parser : CodeVisitor {
 
 		rollback (begin);
 
-		throw new ParseError.SYNTAX (get_error ("expected declaration"));
+		throw new ParseError.SYNTAX ("expected declaration");
 	}
 
 	void parse_declarations (Symbol parent, bool root = false) throws ParseError {
@@ -2353,6 +2380,7 @@ public class Vala.Parser : CodeVisitor {
 			try {
 				parse_declaration (parent, (parent == context.root));
 			} catch (ParseError e) {
+				report_parse_error (e);
 				int r;
 				do {
 					r = recover ();
@@ -2681,13 +2709,13 @@ public class Vala.Parser : CodeVisitor {
 			if ((method.is_abstract && method.is_virtual)
 			    || (method.is_abstract && method.overrides)
 			    || (method.is_virtual && method.overrides)) {
-				throw new ParseError.SYNTAX (get_error ("only one of `abstract', `virtual', or `override' may be specified"));
+				throw new ParseError.SYNTAX ("only one of `abstract', `virtual', or `override' may be specified");
 			}
 		} else {
 			if (ModifierFlags.ABSTRACT in flags
 			    || ModifierFlags.VIRTUAL in flags
 			    || ModifierFlags.OVERRIDE in flags) {
-				throw new ParseError.SYNTAX (get_error ("the modifiers `abstract', `virtual', and `override' are not valid for %s methods".printf ((ModifierFlags.CLASS in flags) ? "class" : "static")));
+				throw new ParseError.SYNTAX ("the modifiers `abstract', `virtual', and `override' are not valid for %s methods", (ModifierFlags.CLASS in flags) ? "class" : "static");
 			}
 		}
 
@@ -2775,7 +2803,7 @@ public class Vala.Parser : CodeVisitor {
 		if ((prop.is_abstract && prop.is_virtual)
 			|| (prop.is_abstract && prop.overrides)
 			|| (prop.is_virtual && prop.overrides)) {
-			throw new ParseError.SYNTAX (get_error ("only one of `abstract', `virtual', or `override' may be specified"));
+			throw new ParseError.SYNTAX ("only one of `abstract', `virtual', or `override' may be specified");
 		}
 
 		if (accept (TokenType.THROWS)) {
@@ -2788,7 +2816,7 @@ public class Vala.Parser : CodeVisitor {
 		while (current () != TokenType.CLOSE_BRACE) {
 			if (accept (TokenType.DEFAULT)) {
 				if (prop.initializer != null) {
-					throw new ParseError.SYNTAX (get_error ("property default value already defined"));
+					throw new ParseError.SYNTAX ("property default value already defined");
 				}
 				expect (TokenType.ASSIGN);
 				prop.initializer = parse_expression ();
@@ -2801,11 +2829,18 @@ public class Vala.Parser : CodeVisitor {
 				var accessor_access = parse_access_modifier (SymbolAccessibility.PUBLIC);
 
 				var value_type = type.copy ();
-				value_type.value_owned = accept (TokenType.OWNED);
+				if (accept (TokenType.OWNED)) {
+					value_type.value_owned = true;
+				} else {
+					value_type.value_owned = false;
+					if (accept (TokenType.UNOWNED)) {
+						Report.warning (get_last_src (), "property getters are `unowned' by default");
+					}
+				}
 
 				if (accept (TokenType.GET)) {
 					if (prop.get_accessor != null) {
-						throw new ParseError.SYNTAX (get_error ("property get accessor already defined"));
+						throw new ParseError.SYNTAX ("property get accessor already defined");
 					}
 
 					if (getter_owned) {
@@ -2829,10 +2864,10 @@ public class Vala.Parser : CodeVisitor {
 						_construct = true;
 						writable = accept (TokenType.SET);
 					} else {
-						throw new ParseError.SYNTAX (get_error ("expected get, set, or construct"));
+						throw new ParseError.SYNTAX ("expected get, set, or construct");
 					}
 					if (prop.set_accessor != null) {
-						throw new ParseError.SYNTAX (get_error ("property set accessor already defined"));
+						throw new ParseError.SYNTAX ("property set accessor already defined");
 					}
 					Block block = null;
 					if (!accept (TokenType.SEMICOLON)) {
@@ -2883,9 +2918,9 @@ public class Vala.Parser : CodeVisitor {
 		sig.access = access;
 		set_attributes (sig, attrs);
 		if (ModifierFlags.STATIC in flags) {
-			throw new ParseError.SYNTAX (get_error ("`static' modifier not allowed on signals"));
+			throw new ParseError.SYNTAX ("`static' modifier not allowed on signals");
 		} else if (ModifierFlags.CLASS in flags) {
-			throw new ParseError.SYNTAX (get_error ("`class' modifier not allowed on signals"));
+			throw new ParseError.SYNTAX ("`class' modifier not allowed on signals");
 		}
 		if (ModifierFlags.VIRTUAL in flags) {
 			sig.is_virtual = true;
@@ -2913,7 +2948,7 @@ public class Vala.Parser : CodeVisitor {
 		var flags = parse_member_declaration_modifiers ();
 		expect (TokenType.CONSTRUCT);
 		if (ModifierFlags.NEW in flags) {
-			throw new ParseError.SYNTAX (get_error ("`new' modifier not allowed on constructor"));
+			throw new ParseError.SYNTAX ("`new' modifier not allowed on constructor");
 		}
 		var c = new Constructor (get_src (begin));
 		if (ModifierFlags.STATIC in flags && ModifierFlags.CLASS in flags) {
@@ -2936,7 +2971,7 @@ public class Vala.Parser : CodeVisitor {
 		expect (TokenType.OPEN_PARENS);
 		expect (TokenType.CLOSE_PARENS);
 		if (ModifierFlags.NEW in flags) {
-			throw new ParseError.SYNTAX (get_error ("`new' modifier not allowed on destructor"));
+			throw new ParseError.SYNTAX ("`new' modifier not allowed on destructor");
 		}
 		var d = new Destructor (get_src (begin));
 		if (identifier != parent.name) {
@@ -3051,10 +3086,17 @@ public class Vala.Parser : CodeVisitor {
 		set_attributes (en, attrs);
 
 		expect (TokenType.OPEN_BRACE);
+		var inner_begin = get_location ();
+		try {
+			// enum methods
+			while (current () != TokenType.CLOSE_BRACE) {
+				parse_declaration (en);
+			}
+		} catch (ParseError e) {
+			rollback (inner_begin);
+		}
 		do {
-			if (current () == TokenType.CLOSE_BRACE
-			    && en.get_values ().size > 0) {
-				// allow trailing comma
+			if (current () == TokenType.CLOSE_BRACE) {
 				break;
 			}
 			var value_attrs = parse_attributes ();
@@ -3108,10 +3150,17 @@ public class Vala.Parser : CodeVisitor {
 		set_attributes (ed, attrs);
 
 		expect (TokenType.OPEN_BRACE);
+		var inner_begin = get_location ();
+		try {
+			// errordomain methods
+			while (current () != TokenType.CLOSE_BRACE) {
+				parse_declaration (ed);
+			}
+		} catch (ParseError e) {
+			rollback (inner_begin);
+		}
 		do {
-			if (current () == TokenType.CLOSE_BRACE
-			    && ed.get_codes ().size > 0) {
-				// allow trailing comma
+			if (current () == TokenType.CLOSE_BRACE) {
 				break;
 			}
 			var code_attrs = parse_attributes ();
@@ -3284,7 +3333,7 @@ public class Vala.Parser : CodeVisitor {
 		var flags = parse_member_declaration_modifiers ();
 		var sym = parse_symbol_name ();
 		if (ModifierFlags.NEW in flags) {
-			throw new ParseError.SYNTAX (get_error ("`new' modifier not allowed on creation method"));
+			throw new ParseError.SYNTAX ("`new' modifier not allowed on creation method");
 		}
 		CreationMethod method;
 		if (sym.inner == null) {
@@ -3343,7 +3392,7 @@ public class Vala.Parser : CodeVisitor {
 		var flags = parse_member_declaration_modifiers ();
 		expect (TokenType.DELEGATE);
 		if (ModifierFlags.NEW in flags) {
-			throw new ParseError.SYNTAX (get_error ("`new' modifier not allowed on delegates"));
+			throw new ParseError.SYNTAX ("`new' modifier not allowed on delegates");
 		}
 		var type = parse_type (true, false);
 		var sym = parse_symbol_name ();

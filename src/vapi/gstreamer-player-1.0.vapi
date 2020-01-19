@@ -7,8 +7,11 @@ namespace Gst {
 		[CCode (has_construct_function = false)]
 		public Player (owned Gst.PlayerVideoRenderer? video_renderer, owned Gst.PlayerSignalDispatcher? signal_dispatcher);
 		public static uint config_get_position_update_interval (Gst.Structure config);
+		public static bool config_get_seek_accurate (Gst.Structure config);
 		public static string config_get_user_agent (Gst.Structure config);
 		public static void config_set_position_update_interval (Gst.Structure config, uint interval);
+		[Version (since = "1.12")]
+		public static void config_set_seek_accurate (Gst.Structure config, bool accurate);
 		public static void config_set_user_agent (Gst.Structure config, string agent);
 		public static unowned GLib.List<Gst.PlayerAudioInfo> get_audio_streams (Gst.PlayerMediaInfo info);
 		public int64 get_audio_video_offset ();
@@ -23,7 +26,7 @@ namespace Gst {
 		[Version (since = "1.10")]
 		public Gst.Video.MultiviewFlags get_multiview_flags ();
 		[Version (since = "1.10")]
-		public Gst.Video.MultiviewMode get_multiview_mode ();
+		public Gst.Video.MultiviewFramePacking get_multiview_mode ();
 		public bool get_mute ();
 		public Gst.Element get_pipeline ();
 		public Gst.ClockTime get_position ();
@@ -31,6 +34,7 @@ namespace Gst {
 		public static unowned GLib.List<Gst.PlayerSubtitleInfo> get_subtitle_streams (Gst.PlayerMediaInfo info);
 		public string get_subtitle_uri ();
 		public string get_uri ();
+		public Gst.Sample get_video_snapshot (Gst.PlayerSnapshotFormat format, Gst.Structure? config);
 		public static unowned GLib.List<Gst.PlayerVideoInfo> get_video_streams (Gst.PlayerMediaInfo info);
 		public double get_volume ();
 		public bool has_color_balance ();
@@ -45,7 +49,7 @@ namespace Gst {
 		[Version (since = "1.10")]
 		public void set_multiview_flags (Gst.Video.MultiviewFlags flags);
 		[Version (since = "1.10")]
-		public void set_multiview_mode (Gst.Video.MultiviewMode mode);
+		public void set_multiview_mode (Gst.Video.MultiviewFramePacking mode);
 		public void set_mute (bool val);
 		public void set_rate (double rate);
 		public bool set_subtitle_track (int stream_index);
@@ -71,6 +75,7 @@ namespace Gst {
 		public Gst.Element pipeline { owned get; }
 		public uint64 position { get; }
 		public double rate { get; set; }
+		[NoAccessorMethod]
 		public Gst.PlayerSignalDispatcher signal_dispatcher { construct; }
 		[NoAccessorMethod]
 		public string suburi { owned get; set; }
@@ -79,6 +84,7 @@ namespace Gst {
 		public Gst.Video.MultiviewFlags video_multiview_flags { get; set; }
 		[NoAccessorMethod]
 		public Gst.Video.MultiviewFramePacking video_multiview_mode { get; set; }
+		[NoAccessorMethod]
 		public Gst.PlayerVideoRenderer video_renderer { construct; }
 		public double volume { get; set; }
 		public signal void buffering (int object);
@@ -116,13 +122,24 @@ namespace Gst {
 	public class PlayerMediaInfo : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected PlayerMediaInfo ();
+		public unowned GLib.List<Gst.PlayerAudioInfo> get_audio_streams ();
 		public unowned string get_container_format ();
 		public Gst.ClockTime get_duration ();
 		public unowned Gst.Sample get_image_sample ();
+		[Version (since = "1.12")]
+		public uint get_number_of_audio_streams ();
+		[Version (since = "1.12")]
+		public uint get_number_of_streams ();
+		[Version (since = "1.12")]
+		public uint get_number_of_subtitle_streams ();
+		[Version (since = "1.12")]
+		public uint get_number_of_video_streams ();
 		public unowned GLib.List<Gst.PlayerStreamInfo> get_stream_list ();
+		public unowned GLib.List<Gst.PlayerSubtitleInfo> get_subtitle_streams ();
 		public unowned Gst.TagList get_tags ();
 		public unowned string get_title ();
 		public unowned string get_uri ();
+		public unowned GLib.List<Gst.PlayerVideoInfo> get_video_streams ();
 		public bool is_live ();
 		public bool is_seekable ();
 	}
@@ -160,8 +177,11 @@ namespace Gst {
 		public void expose ();
 		public void get_render_rectangle (out int x, out int y, out int width, out int height);
 		public void* get_window_handle ();
+		public static Gst.PlayerVideoRenderer new_with_sink (void* window_handle, Gst.Element video_sink);
 		public void set_render_rectangle (int x, int y, int width, int height);
 		public void set_window_handle (void* window_handle);
+		[NoAccessorMethod]
+		public Gst.Element video_sink { owned get; set; }
 		public void* window_handle { get; set construct; }
 	}
 	[CCode (cheader_filename = "gst/player/player.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "gst_player_visualization_get_type ()")]
@@ -188,7 +208,17 @@ namespace Gst {
 		BRIGHTNESS,
 		SATURATION,
 		CONTRAST;
-		public static unowned string get_name (Gst.PlayerColorBalanceType type);
+		public unowned string get_name ();
+	}
+	[CCode (cheader_filename = "gst/player/player.h", cprefix = "GST_PLAYER_THUMBNAIL_", has_type_id = false)]
+	public enum PlayerSnapshotFormat {
+		RAW_NATIVE,
+		[CCode (cname = "GST_PLAYER_THUMBNAIL_RAW_xRGB")]
+		RAW_XRGB,
+		[CCode (cname = "GST_PLAYER_THUMBNAIL_RAW_BGRx")]
+		RAW_BGRX,
+		JPG,
+		PNG
 	}
 	[CCode (cheader_filename = "gst/player/player.h", cprefix = "GST_PLAYER_STATE_", type_id = "gst_player_state_get_type ()")]
 	public enum PlayerState {
@@ -196,12 +226,12 @@ namespace Gst {
 		BUFFERING,
 		PAUSED,
 		PLAYING;
-		public static unowned string get_name (Gst.PlayerState state);
+		public unowned string get_name ();
 	}
 	[CCode (cheader_filename = "gst/player/player.h", cprefix = "GST_PLAYER_ERROR_")]
 	public errordomain PlayerError {
 		FAILED;
-		public static unowned string get_name (Gst.PlayerError error);
+		public unowned string get_name ();
 		public static GLib.Quark quark ();
 	}
 	[CCode (cheader_filename = "gst/player/player.h", has_target = false)]

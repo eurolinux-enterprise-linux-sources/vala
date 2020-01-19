@@ -44,6 +44,7 @@ public class Vala.CCodeArrayModule : CCodeMethodCallModule {
 			// no heap allocation for fixed-length arrays
 
 			var temp_var = get_temp_variable (array_type, true, expr);
+			temp_var.init = true;
 			var name_cnode = get_variable_cexpression (temp_var.name);
 			int i = 0;
 
@@ -163,6 +164,9 @@ public class Vala.CCodeArrayModule : CCodeMethodCallModule {
 			for (int i = 1; i < rank; i++) {
 				var cmul = new CCodeBinaryExpression (CCodeBinaryOperator.MUL, cindex, get_array_length_cexpression (expr.container, i + 1));
 				cindex = new CCodeBinaryExpression (CCodeBinaryOperator.PLUS, cmul, get_cvalue (indices[i]));
+				if (expr.container.is_constant ()) {
+					ccontainer = new CCodeUnaryExpression (CCodeUnaryOperator.POINTER_INDIRECTION, ccontainer);
+				}
 			}
 			set_cvalue (expr, new CCodeElementAccess (ccontainer, cindex));
 		}
@@ -211,7 +215,7 @@ public class Vala.CCodeArrayModule : CCodeMethodCallModule {
 
 		var fun = new CCodeFunction (cname, "void");
 		fun.modifiers = CCodeModifiers.STATIC;
-		fun.add_parameter (new CCodeParameter ("array", "%s*".printf (get_ccode_name (st))));
+		fun.add_parameter (new CCodeParameter ("array", "%s *".printf (get_ccode_name (st))));
 		fun.add_parameter (new CCodeParameter ("array_length", "gint"));
 
 		push_function (fun);
@@ -479,7 +483,7 @@ public class Vala.CCodeArrayModule : CCodeMethodCallModule {
 		function.add_parameter (new CCodeParameter ("length", "int"));
 		if (array_type.element_type is GenericType) {
 			// dup function array elements
-			string func_name = "%s_dup_func".printf (array_type.element_type.type_parameter.name.down ());
+			string func_name = "%s_dup_func".printf (((GenericType) array_type.element_type).type_parameter.name.down ());
 			function.add_parameter (new CCodeParameter (func_name, "GBoxedCopyFunc"));
 		}
 
@@ -547,8 +551,8 @@ public class Vala.CCodeArrayModule : CCodeMethodCallModule {
 		var function = new CCodeFunction (dup_func, "void");
 		function.modifiers = CCodeModifiers.STATIC;
 
-		function.add_parameter (new CCodeParameter ("self", get_ccode_name (array_type) + "*"));
-		function.add_parameter (new CCodeParameter ("dest", get_ccode_name (array_type) + "*"));
+		function.add_parameter (new CCodeParameter ("self", "%s *".printf (get_ccode_name (array_type))));
+		function.add_parameter (new CCodeParameter ("dest", "%s *".printf (get_ccode_name (array_type))));
 
 		// definition
 
@@ -599,7 +603,7 @@ public class Vala.CCodeArrayModule : CCodeMethodCallModule {
 		var function = new CCodeFunction (add_func, "void");
 		function.modifiers = CCodeModifiers.STATIC;
 
-		function.add_parameter (new CCodeParameter ("array", get_ccode_name (array_type) + "*"));
+		function.add_parameter (new CCodeParameter ("array", "%s *".printf (get_ccode_name (array_type))));
 		function.add_parameter (new CCodeParameter ("length", "int*"));
 		function.add_parameter (new CCodeParameter ("size", "int*"));
 

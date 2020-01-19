@@ -62,6 +62,7 @@ namespace Peas {
 		public unowned Peas.Extension get_extension (Peas.PluginInfo info);
 		[CCode (cname = "peas_extension_set_newv", has_construct_function = false)]
 		public ExtensionSet.newv (Peas.Engine? engine, GLib.Type exten_type, [CCode (array_length_cname = "n_parameters", array_length_pos = 2.5, array_length_type = "guint")] GLib.Parameter[] parameters);
+		[NoAccessorMethod]
 		public void* construct_properties { construct; }
 		[NoAccessorMethod]
 		public Peas.Engine engine { owned get; construct; }
@@ -74,8 +75,8 @@ namespace Peas {
 	public class ObjectModule : GLib.TypeModule, GLib.TypePlugin {
 		[CCode (has_construct_function = false)]
 		protected ObjectModule ();
-		public void register_extension_factory (GLib.Type iface_type, owned Peas.FactoryFunc factory_func);
-		public void register_extension_type (GLib.Type iface_type, GLib.Type extension_type);
+		public void register_extension_factory (GLib.Type exten_type, owned Peas.FactoryFunc factory_func);
+		public void register_extension_type (GLib.Type exten_type, GLib.Type impl_type);
 		[NoAccessorMethod]
 		public bool local_linkage { get; construct; }
 		[NoAccessorMethod]

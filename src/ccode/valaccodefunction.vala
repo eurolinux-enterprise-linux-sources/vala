@@ -32,16 +32,9 @@ public class Vala.CCodeFunction : CCodeNode {
 	public string name { get; set; }
 	
 	/**
-	 * The function modifiers.
-	 */
-	public CCodeModifiers modifiers { get; set; }
-	
-	/**
 	 * The function return type.
 	 */
 	public string return_type { get; set; }
-
-	public string attributes { get; set; }
 
 	public bool is_declaration { get; set; }
 
@@ -55,9 +48,13 @@ public class Vala.CCodeFunction : CCodeNode {
 	 */
 	public CCodeLineDirective current_line { get; set; }
 
+	/**
+	 * The current block to be written into.
+	 */
+	public CCodeBlock current_block { get; set; }
+
 	private List<CCodeParameter> parameters = new ArrayList<CCodeParameter> ();
 
-	CCodeBlock current_block;
 	List<CCodeStatement> statement_stack = new ArrayList<CCodeStatement> ();
 
 	public CCodeFunction (string name, string return_type = "void") {
@@ -96,7 +93,6 @@ public class Vala.CCodeFunction : CCodeNode {
 	public CCodeFunction copy () {
 		var func = new CCodeFunction (name, return_type);
 		func.modifiers = modifiers;
-		func.attributes = attributes;
 
 		/* no deep copy for lists available yet
 		 * func.parameters = parameters.copy ();
@@ -122,37 +118,73 @@ public class Vala.CCodeFunction : CCodeNode {
 			writer.write_string ("inline ");
 		}
 		writer.write_string (return_type);
-		writer.write_string (" ");
+		if (is_declaration) {
+			writer.write_string (" ");
+		} else {
+			writer.write_newline ();
+		}
 		writer.write_string (name);
 		writer.write_string (" (");
+		int param_pos_begin = (is_declaration ? return_type.char_count () + 1 : 0 ) + name.char_count () + 2;
 		
-		bool first = true;
+		bool has_args = (CCodeModifiers.PRINTF in modifiers || CCodeModifiers.SCANF in modifiers);
+		int i = 0;
+		int format_arg_index = -1;
+		int args_index = -1;
 		foreach (CCodeParameter param in parameters) {
-			if (!first) {
-				writer.write_string (", ");
-			} else {
-				first = false;
+			if (i > 0) {
+				writer.write_string (",");
+				writer.write_newline ();
+				writer.write_nspaces (param_pos_begin);
 			}
 			param.write (writer);
+			if (CCodeModifiers.FORMAT_ARG in param.modifiers) {
+				format_arg_index = i;
+			}
+			if (has_args && param.ellipsis) {
+				args_index = i;
+			} else if (has_args && param.type_name == "va_list" && format_arg_index < 0) {
+				format_arg_index = i - 1;
+			}
+			i++;
 		}
-		if (first) {
+		if (i == 0) {
 			writer.write_string ("void");
 		}
 		
 		writer.write_string (")");
 
-		if (CCodeModifiers.DEPRECATED in modifiers) {
-			writer.write_string (" G_GNUC_DEPRECATED");
-		}
-
 		if (is_declaration) {
-			if (attributes != null) {
-				writer.write_string (" ");
-				writer.write_string (attributes);
+			if (CCodeModifiers.DEPRECATED in modifiers) {
+				writer.write_string (" G_GNUC_DEPRECATED");
+			}
+
+			if (CCodeModifiers.PRINTF in modifiers) {
+				format_arg_index = (format_arg_index >= 0 ? format_arg_index + 1 : args_index);
+				writer.write_string (" G_GNUC_PRINTF(%d,%d)".printf (format_arg_index, args_index + 1));
+			} else if (CCodeModifiers.SCANF in modifiers) {
+				format_arg_index = (format_arg_index >= 0 ? format_arg_index + 1 : args_index);
+				writer.write_string (" G_GNUC_SCANF(%d,%d)".printf (format_arg_index, args_index + 1));
+			} else if (format_arg_index >= 0) {
+				writer.write_string (" G_GNUC_FORMAT(%d)".printf (format_arg_index + 1));
+			}
+
+			if (CCodeModifiers.CONST in modifiers) {
+				writer.write_string (" G_GNUC_CONST");
+			}
+			if (CCodeModifiers.UNUSED in modifiers) {
+				writer.write_string (" G_GNUC_UNUSED");
+			}
+
+			if (CCodeModifiers.CONSTRUCTOR in modifiers) {
+				writer.write_string (" __attribute__((constructor))");
+			} else if (CCodeModifiers.DESTRUCTOR in modifiers) {
+				writer.write_string (" __attribute__((destructor))");
 			}
 
 			writer.write_string (";");
 		} else {
+			writer.write_newline ();
 			block.write (writer);
 			writer.write_newline ();
 		}
@@ -196,10 +228,8 @@ public class Vala.CCodeFunction : CCodeNode {
 	}
 
 	public void else_if (CCodeExpression condition) {
-		var parent_if = (CCodeIfStatement) statement_stack[statement_stack.size - 1];
+		var parent_if = (CCodeIfStatement) statement_stack.remove_at (statement_stack.size - 1);
 		assert (parent_if.false_statement == null);
-
-		statement_stack.remove_at (statement_stack.size - 1);
 
 		current_block = new CCodeBlock ();
 
@@ -294,8 +324,7 @@ public class Vala.CCodeFunction : CCodeNode {
 
 	public void close () {
 		do {
-			var top = statement_stack[statement_stack.size - 1];
-			statement_stack.remove_at (statement_stack.size - 1);
+			var top = statement_stack.remove_at (statement_stack.size - 1);
 			current_block = top as CCodeBlock;
 		} while (current_block == null);
 	}

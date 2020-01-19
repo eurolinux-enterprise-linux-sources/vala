@@ -26,6 +26,16 @@ typedef struct _ValaCodeNode ValaCodeNode;
 typedef struct _ValaCodeNodeClass ValaCodeNodeClass;
 typedef struct _ValaCodeNodePrivate ValaCodeNodePrivate;
 
+#define VALA_TYPE_ATTRIBUTE (vala_attribute_get_type ())
+#define VALA_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_ATTRIBUTE, ValaAttribute))
+#define VALA_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_ATTRIBUTE, ValaAttributeClass))
+#define VALA_IS_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_ATTRIBUTE))
+#define VALA_IS_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_ATTRIBUTE))
+#define VALA_ATTRIBUTE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_ATTRIBUTE, ValaAttributeClass))
+
+typedef struct _ValaAttribute ValaAttribute;
+typedef struct _ValaAttributeClass ValaAttributeClass;
+
 #define VALA_TYPE_CODE_VISITOR (vala_code_visitor_get_type ())
 #define VALA_CODE_VISITOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CODE_VISITOR, ValaCodeVisitor))
 #define VALA_CODE_VISITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CODE_VISITOR, ValaCodeVisitorClass))
@@ -95,16 +105,6 @@ typedef struct _ValaSymbolClass ValaSymbolClass;
 
 typedef struct _ValaVariable ValaVariable;
 typedef struct _ValaVariableClass ValaVariableClass;
-
-#define VALA_TYPE_ATTRIBUTE (vala_attribute_get_type ())
-#define VALA_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_ATTRIBUTE, ValaAttribute))
-#define VALA_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_ATTRIBUTE, ValaAttributeClass))
-#define VALA_IS_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_ATTRIBUTE))
-#define VALA_IS_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_ATTRIBUTE))
-#define VALA_ATTRIBUTE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_ATTRIBUTE, ValaAttributeClass))
-
-typedef struct _ValaAttribute ValaAttribute;
-typedef struct _ValaAttributeClass ValaAttributeClass;
 typedef struct _ValaExpressionPrivate ValaExpressionPrivate;
 
 #define VALA_TYPE_ADDRESSOF_EXPRESSION (vala_addressof_expression_get_type ())
@@ -127,27 +127,6 @@ typedef struct _ValaAddressofExpressionPrivate ValaAddressofExpressionPrivate;
 
 typedef struct _ValaSourceReference ValaSourceReference;
 typedef struct _ValaSourceReferenceClass ValaSourceReferenceClass;
-
-#define VALA_TYPE_ARRAY_CREATION_EXPRESSION (vala_array_creation_expression_get_type ())
-#define VALA_ARRAY_CREATION_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_ARRAY_CREATION_EXPRESSION, ValaArrayCreationExpression))
-#define VALA_ARRAY_CREATION_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_ARRAY_CREATION_EXPRESSION, ValaArrayCreationExpressionClass))
-#define VALA_IS_ARRAY_CREATION_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_ARRAY_CREATION_EXPRESSION))
-#define VALA_IS_ARRAY_CREATION_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_ARRAY_CREATION_EXPRESSION))
-#define VALA_ARRAY_CREATION_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_ARRAY_CREATION_EXPRESSION, ValaArrayCreationExpressionClass))
-
-typedef struct _ValaArrayCreationExpression ValaArrayCreationExpression;
-typedef struct _ValaArrayCreationExpressionClass ValaArrayCreationExpressionClass;
-typedef struct _ValaArrayCreationExpressionPrivate ValaArrayCreationExpressionPrivate;
-
-#define VALA_TYPE_INITIALIZER_LIST (vala_initializer_list_get_type ())
-#define VALA_INITIALIZER_LIST(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_INITIALIZER_LIST, ValaInitializerList))
-#define VALA_INITIALIZER_LIST_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_INITIALIZER_LIST, ValaInitializerListClass))
-#define VALA_IS_INITIALIZER_LIST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_INITIALIZER_LIST))
-#define VALA_IS_INITIALIZER_LIST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_INITIALIZER_LIST))
-#define VALA_INITIALIZER_LIST_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_INITIALIZER_LIST, ValaInitializerListClass))
-
-typedef struct _ValaInitializerList ValaInitializerList;
-typedef struct _ValaInitializerListClass ValaInitializerListClass;
 typedef struct _ValaSymbolPrivate ValaSymbolPrivate;
 
 #define VALA_TYPE_NAMESPACE (vala_namespace_get_type ())
@@ -319,6 +298,58 @@ typedef struct _ValaConstructorClass ValaConstructorClass;
 
 typedef struct _ValaDestructor ValaDestructor;
 typedef struct _ValaDestructorClass ValaDestructorClass;
+typedef struct _ValaSubroutinePrivate ValaSubroutinePrivate;
+
+#define VALA_TYPE_CALLABLE (vala_callable_get_type ())
+#define VALA_CALLABLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CALLABLE, ValaCallable))
+#define VALA_IS_CALLABLE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CALLABLE))
+#define VALA_CALLABLE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), VALA_TYPE_CALLABLE, ValaCallableIface))
+
+typedef struct _ValaCallable ValaCallable;
+typedef struct _ValaCallableIface ValaCallableIface;
+
+#define VALA_TYPE_PARAMETER (vala_parameter_get_type ())
+#define VALA_PARAMETER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_PARAMETER, ValaParameter))
+#define VALA_PARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_PARAMETER, ValaParameterClass))
+#define VALA_IS_PARAMETER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_PARAMETER))
+#define VALA_IS_PARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_PARAMETER))
+#define VALA_PARAMETER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_PARAMETER, ValaParameterClass))
+
+typedef struct _ValaParameter ValaParameter;
+typedef struct _ValaParameterClass ValaParameterClass;
+typedef struct _ValaMethodPrivate ValaMethodPrivate;
+
+#define VALA_TYPE_ARRAY_COPY_METHOD (vala_array_copy_method_get_type ())
+#define VALA_ARRAY_COPY_METHOD(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_ARRAY_COPY_METHOD, ValaArrayCopyMethod))
+#define VALA_ARRAY_COPY_METHOD_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_ARRAY_COPY_METHOD, ValaArrayCopyMethodClass))
+#define VALA_IS_ARRAY_COPY_METHOD(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_ARRAY_COPY_METHOD))
+#define VALA_IS_ARRAY_COPY_METHOD_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_ARRAY_COPY_METHOD))
+#define VALA_ARRAY_COPY_METHOD_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_ARRAY_COPY_METHOD, ValaArrayCopyMethodClass))
+
+typedef struct _ValaArrayCopyMethod ValaArrayCopyMethod;
+typedef struct _ValaArrayCopyMethodClass ValaArrayCopyMethodClass;
+typedef struct _ValaArrayCopyMethodPrivate ValaArrayCopyMethodPrivate;
+
+#define VALA_TYPE_ARRAY_CREATION_EXPRESSION (vala_array_creation_expression_get_type ())
+#define VALA_ARRAY_CREATION_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_ARRAY_CREATION_EXPRESSION, ValaArrayCreationExpression))
+#define VALA_ARRAY_CREATION_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_ARRAY_CREATION_EXPRESSION, ValaArrayCreationExpressionClass))
+#define VALA_IS_ARRAY_CREATION_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_ARRAY_CREATION_EXPRESSION))
+#define VALA_IS_ARRAY_CREATION_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_ARRAY_CREATION_EXPRESSION))
+#define VALA_ARRAY_CREATION_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_ARRAY_CREATION_EXPRESSION, ValaArrayCreationExpressionClass))
+
+typedef struct _ValaArrayCreationExpression ValaArrayCreationExpression;
+typedef struct _ValaArrayCreationExpressionClass ValaArrayCreationExpressionClass;
+typedef struct _ValaArrayCreationExpressionPrivate ValaArrayCreationExpressionPrivate;
+
+#define VALA_TYPE_INITIALIZER_LIST (vala_initializer_list_get_type ())
+#define VALA_INITIALIZER_LIST(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_INITIALIZER_LIST, ValaInitializerList))
+#define VALA_INITIALIZER_LIST_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_INITIALIZER_LIST, ValaInitializerListClass))
+#define VALA_IS_INITIALIZER_LIST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_INITIALIZER_LIST))
+#define VALA_IS_INITIALIZER_LIST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_INITIALIZER_LIST))
+#define VALA_INITIALIZER_LIST_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_INITIALIZER_LIST, ValaInitializerListClass))
+
+typedef struct _ValaInitializerList ValaInitializerList;
+typedef struct _ValaInitializerListClass ValaInitializerListClass;
 typedef struct _ValaVariablePrivate ValaVariablePrivate;
 
 #define VALA_TYPE_LOCKABLE (vala_lockable_get_type ())
@@ -340,8 +371,6 @@ typedef struct _ValaFieldPrivate ValaFieldPrivate;
 typedef struct _ValaArrayLengthField ValaArrayLengthField;
 typedef struct _ValaArrayLengthFieldClass ValaArrayLengthFieldClass;
 typedef struct _ValaArrayLengthFieldPrivate ValaArrayLengthFieldPrivate;
-typedef struct _ValaSubroutinePrivate ValaSubroutinePrivate;
-typedef struct _ValaMethodPrivate ValaMethodPrivate;
 
 #define VALA_TYPE_ARRAY_MOVE_METHOD (vala_array_move_method_get_type ())
 #define VALA_ARRAY_MOVE_METHOD(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_ARRAY_MOVE_METHOD, ValaArrayMoveMethod))
@@ -375,16 +404,6 @@ typedef struct _ValaDataTypePrivate ValaDataTypePrivate;
 
 typedef struct _ValaScope ValaScope;
 typedef struct _ValaScopeClass ValaScopeClass;
-
-#define VALA_TYPE_PARAMETER (vala_parameter_get_type ())
-#define VALA_PARAMETER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_PARAMETER, ValaParameter))
-#define VALA_PARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_PARAMETER, ValaParameterClass))
-#define VALA_IS_PARAMETER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_PARAMETER))
-#define VALA_IS_PARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_PARAMETER))
-#define VALA_PARAMETER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_PARAMETER, ValaParameterClass))
-
-typedef struct _ValaParameter ValaParameter;
-typedef struct _ValaParameterClass ValaParameterClass;
 
 #define VALA_TYPE_TYPEPARAMETER (vala_typeparameter_get_type ())
 #define VALA_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameter))
@@ -560,6 +579,17 @@ typedef struct _ValaBooleanTypePrivate ValaBooleanTypePrivate;
 typedef struct _ValaBreakStatement ValaBreakStatement;
 typedef struct _ValaBreakStatementClass ValaBreakStatementClass;
 typedef struct _ValaBreakStatementPrivate ValaBreakStatementPrivate;
+
+#define VALA_TYPE_CALLABLE_TYPE (vala_callable_type_get_type ())
+#define VALA_CALLABLE_TYPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CALLABLE_TYPE, ValaCallableType))
+#define VALA_CALLABLE_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CALLABLE_TYPE, ValaCallableTypeClass))
+#define VALA_IS_CALLABLE_TYPE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CALLABLE_TYPE))
+#define VALA_IS_CALLABLE_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CALLABLE_TYPE))
+#define VALA_CALLABLE_TYPE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CALLABLE_TYPE, ValaCallableTypeClass))
+
+typedef struct _ValaCallableType ValaCallableType;
+typedef struct _ValaCallableTypeClass ValaCallableTypeClass;
+typedef struct _ValaCallableTypePrivate ValaCallableTypePrivate;
 
 #define VALA_TYPE_CAST_EXPRESSION (vala_cast_expression_get_type ())
 #define VALA_CAST_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CAST_EXPRESSION, ValaCastExpression))
@@ -1496,6 +1526,8 @@ typedef struct _ValaRealLiteralPrivate ValaRealLiteralPrivate;
 typedef struct _ValaReferenceTransferExpressionPrivate ValaReferenceTransferExpressionPrivate;
 typedef struct _ValaRegexLiteralPrivate ValaRegexLiteralPrivate;
 typedef struct _ValaReportPrivate ValaReportPrivate;
+
+#define VALA_REPORT_TYPE_COLORED (vala_report_colored_get_type ())
 typedef struct _ValaReturnStatementPrivate ValaReturnStatementPrivate;
 
 #define VALA_TYPE_SCANNER (vala_scanner_get_type ())
@@ -1623,8 +1655,8 @@ typedef struct _ValaYieldStatementPrivate ValaYieldStatementPrivate;
 struct _ValaCodeNode {
 	GTypeInstance parent_instance;
 	volatile int ref_count;
-	ValaCodeNodePrivate * priv;
 	GList* attributes;
+	ValaCodeNodePrivate * priv;
 };
 
 struct _ValaCodeNodeClass {
@@ -1651,6 +1683,7 @@ struct _ValaExpressionClass {
 	gboolean (*is_constant) (ValaExpression* self);
 	gboolean (*is_pure) (ValaExpression* self);
 	gboolean (*is_non_null) (ValaExpression* self);
+	gboolean (*is_accessible) (ValaExpression* self, ValaSymbol* sym);
 };
 
 struct _ValaAddressofExpression {
@@ -1659,15 +1692,6 @@ struct _ValaAddressofExpression {
 };
 
 struct _ValaAddressofExpressionClass {
-	ValaExpressionClass parent_class;
-};
-
-struct _ValaArrayCreationExpression {
-	ValaExpression parent_instance;
-	ValaArrayCreationExpressionPrivate * priv;
-};
-
-struct _ValaArrayCreationExpressionClass {
 	ValaExpressionClass parent_class;
 };
 
@@ -1694,6 +1718,51 @@ struct _ValaSymbolClass {
 	void (*add_signal) (ValaSymbol* self, ValaSignal* sig);
 	void (*add_constructor) (ValaSymbol* self, ValaConstructor* c);
 	void (*add_destructor) (ValaSymbol* self, ValaDestructor* d);
+};
+
+struct _ValaSubroutine {
+	ValaSymbol parent_instance;
+	ValaSubroutinePrivate * priv;
+};
+
+struct _ValaSubroutineClass {
+	ValaSymbolClass parent_class;
+	gboolean (*get_has_result) (ValaSubroutine* self);
+};
+
+struct _ValaCallableIface {
+	GTypeInterface parent_iface;
+	ValaDataType* (*get_return_type) (ValaCallable* self);
+	void (*set_return_type) (ValaCallable* self, ValaDataType* value);
+	void (*add_parameter) (ValaCallable* self, ValaParameter* param);
+	ValaList* (*get_parameters) (ValaCallable* self);
+};
+
+struct _ValaMethod {
+	ValaSubroutine parent_instance;
+	ValaMethodPrivate * priv;
+};
+
+struct _ValaMethodClass {
+	ValaSubroutineClass parent_class;
+};
+
+struct _ValaArrayCopyMethod {
+	ValaMethod parent_instance;
+	ValaArrayCopyMethodPrivate * priv;
+};
+
+struct _ValaArrayCopyMethodClass {
+	ValaMethodClass parent_class;
+};
+
+struct _ValaArrayCreationExpression {
+	ValaExpression parent_instance;
+	ValaArrayCreationExpressionPrivate * priv;
+};
+
+struct _ValaArrayCreationExpressionClass {
+	ValaExpressionClass parent_class;
 };
 
 struct _ValaVariable {
@@ -1727,25 +1796,6 @@ struct _ValaArrayLengthField {
 
 struct _ValaArrayLengthFieldClass {
 	ValaFieldClass parent_class;
-};
-
-struct _ValaSubroutine {
-	ValaSymbol parent_instance;
-	ValaSubroutinePrivate * priv;
-};
-
-struct _ValaSubroutineClass {
-	ValaSymbolClass parent_class;
-	gboolean (*get_has_result) (ValaSubroutine* self);
-};
-
-struct _ValaMethod {
-	ValaSubroutine parent_instance;
-	ValaMethodPrivate * priv;
-};
-
-struct _ValaMethodClass {
-	ValaSubroutineClass parent_class;
 };
 
 struct _ValaArrayMoveMethod {
@@ -1790,6 +1840,7 @@ struct _ValaDataTypeClass {
 	gboolean (*is_disposable) (ValaDataType* self);
 	ValaDataType* (*get_actual_type) (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
 	ValaDataType* (*infer_type_argument) (ValaDataType* self, ValaTypeParameter* type_param, ValaDataType* value_type);
+	gchar* (*to_prototype_string) (ValaDataType* self, const gchar* override_name);
 };
 
 struct _ValaReferenceType {
@@ -1837,7 +1888,6 @@ typedef enum  {
 struct _ValaAttribute {
 	ValaCodeNode parent_instance;
 	ValaAttributePrivate * priv;
-	ValaMap* args;
 };
 
 struct _ValaAttributeClass {
@@ -1867,7 +1917,6 @@ struct _ValaBasicBlockClass {
 struct _ValaBinaryExpression {
 	ValaExpression parent_instance;
 	ValaBinaryExpressionPrivate * priv;
-	gboolean chained;
 };
 
 struct _ValaBinaryExpressionClass {
@@ -1956,6 +2005,15 @@ struct _ValaBreakStatementClass {
 	ValaCodeNodeClass parent_class;
 };
 
+struct _ValaCallableType {
+	ValaDataType parent_instance;
+	ValaCallableTypePrivate * priv;
+};
+
+struct _ValaCallableTypeClass {
+	ValaDataTypeClass parent_class;
+};
+
 struct _ValaCastExpression {
 	ValaExpression parent_instance;
 	ValaCastExpressionPrivate * priv;
@@ -2002,9 +2060,6 @@ struct _ValaObjectTypeSymbol {
 
 struct _ValaObjectTypeSymbolClass {
 	ValaTypeSymbolClass parent_class;
-	ValaList* (*get_methods) (ValaObjectTypeSymbol* self);
-	ValaList* (*get_signals) (ValaObjectTypeSymbol* self);
-	ValaList* (*get_properties) (ValaObjectTypeSymbol* self);
 };
 
 struct _ValaClass {
@@ -2029,14 +2084,6 @@ struct _ValaCodeContext {
 	GTypeInstance parent_instance;
 	volatile int ref_count;
 	ValaCodeContextPrivate * priv;
-	gchar** vapi_directories;
-	gint vapi_directories_length1;
-	gchar** gir_directories;
-	gint gir_directories_length1;
-	gchar** metadata_directories;
-	gint metadata_directories_length1;
-	gchar** gresources;
-	gint gresources_length1;
 };
 
 struct _ValaCodeContextClass {
@@ -2147,13 +2194,12 @@ struct _ValaCodeGenerator {
 struct _ValaCodeGeneratorClass {
 	ValaCodeVisitorClass parent_class;
 	void (*emit) (ValaCodeGenerator* self, ValaCodeContext* context);
-	ValaLocalVariable* (*create_local) (ValaCodeGenerator* self, ValaDataType* type);
 	ValaTargetValue* (*load_local) (ValaCodeGenerator* self, ValaLocalVariable* local);
-	void (*store_local) (ValaCodeGenerator* self, ValaLocalVariable* local, ValaTargetValue* value, gboolean initializer);
+	void (*store_local) (ValaCodeGenerator* self, ValaLocalVariable* local, ValaTargetValue* value, gboolean initializer, ValaSourceReference* source_reference);
 	ValaTargetValue* (*load_parameter) (ValaCodeGenerator* self, ValaParameter* param);
-	void (*store_parameter) (ValaCodeGenerator* self, ValaParameter* param, ValaTargetValue* value, gboolean capturing_parameter);
+	void (*store_parameter) (ValaCodeGenerator* self, ValaParameter* param, ValaTargetValue* value, gboolean capturing_parameter, ValaSourceReference* source_reference);
 	ValaTargetValue* (*load_field) (ValaCodeGenerator* self, ValaField* field, ValaTargetValue* instance);
-	void (*store_field) (ValaCodeGenerator* self, ValaField* field, ValaTargetValue* instance, ValaTargetValue* value);
+	void (*store_field) (ValaCodeGenerator* self, ValaField* field, ValaTargetValue* instance, ValaTargetValue* value, ValaSourceReference* source_reference);
 };
 
 struct _ValaAttributeCache {
@@ -2180,7 +2226,8 @@ typedef enum  {
 	VALA_CODE_WRITER_TYPE_EXTERNAL,
 	VALA_CODE_WRITER_TYPE_INTERNAL,
 	VALA_CODE_WRITER_TYPE_FAST,
-	VALA_CODE_WRITER_TYPE_DUMP
+	VALA_CODE_WRITER_TYPE_DUMP,
+	VALA_CODE_WRITER_TYPE_VAPIGEN
 } ValaCodeWriterType;
 
 struct _ValaComment {
@@ -2273,12 +2320,12 @@ struct _ValaDelegateClass {
 };
 
 struct _ValaDelegateType {
-	ValaDataType parent_instance;
+	ValaCallableType parent_instance;
 	ValaDelegateTypePrivate * priv;
 };
 
 struct _ValaDelegateTypeClass {
-	ValaDataTypeClass parent_class;
+	ValaCallableTypeClass parent_class;
 };
 
 struct _ValaDeleteStatement {
@@ -2774,12 +2821,14 @@ struct _ValaLoopClass {
 };
 
 struct _ValaMarkupReader {
-	GObject parent_instance;
+	GTypeInstance parent_instance;
+	volatile int ref_count;
 	ValaMarkupReaderPrivate * priv;
 };
 
 struct _ValaMarkupReaderClass {
-	GObjectClass parent_class;
+	GTypeClass parent_class;
+	void (*finalize) (ValaMarkupReader *self);
 };
 
 typedef enum  {
@@ -2811,7 +2860,6 @@ struct _ValaMemberInitializerClass {
 struct _ValaMethodCall {
 	ValaExpression parent_instance;
 	ValaMethodCallPrivate * priv;
-	ValaExpression* _call;
 };
 
 struct _ValaMethodCallClass {
@@ -2819,12 +2867,12 @@ struct _ValaMethodCallClass {
 };
 
 struct _ValaMethodType {
-	ValaDataType parent_instance;
+	ValaCallableType parent_instance;
 	ValaMethodTypePrivate * priv;
 };
 
 struct _ValaMethodTypeClass {
-	ValaDataTypeClass parent_class;
+	ValaCallableTypeClass parent_class;
 };
 
 struct _ValaNamedArgument {
@@ -2985,19 +3033,27 @@ struct _ValaRegexLiteralClass {
 };
 
 struct _ValaReport {
-	GObject parent_instance;
-	ValaReportPrivate * priv;
+	GTypeInstance parent_instance;
+	volatile int ref_count;
 	gint warnings;
 	gint errors;
+	ValaReportPrivate * priv;
 };
 
 struct _ValaReportClass {
-	GObjectClass parent_class;
+	GTypeClass parent_class;
+	void (*finalize) (ValaReport *self);
 	void (*note) (ValaReport* self, ValaSourceReference* source, const gchar* message);
 	void (*depr) (ValaReport* self, ValaSourceReference* source, const gchar* message);
 	void (*warn) (ValaReport* self, ValaSourceReference* source, const gchar* message);
 	void (*err) (ValaReport* self, ValaSourceReference* source, const gchar* message);
 };
+
+typedef enum  {
+	VALA_REPORT_COLORED_AUTO,
+	VALA_REPORT_COLORED_NEVER,
+	VALA_REPORT_COLORED_ALWAYS
+} ValaReportColored;
 
 struct _ValaReturnStatement {
 	ValaCodeNode parent_instance;
@@ -3165,8 +3221,6 @@ struct _ValaScopeClass {
 
 struct _ValaSemanticAnalyzer {
 	ValaCodeVisitor parent_instance;
-	ValaSemanticAnalyzerPrivate * priv;
-	ValaSymbol* root_symbol;
 	ValaBlock* insert_block;
 	ValaDataType* void_type;
 	ValaDataType* bool_type;
@@ -3196,10 +3250,9 @@ struct _ValaSemanticAnalyzer {
 	ValaClass* gerror_type;
 	ValaDataType* list_type;
 	ValaDataType* tuple_type;
-	ValaDataType* error_type;
 	ValaClass* gsource_type;
-	gint next_lambda_id;
 	ValaList* replaced_nodes;
+	ValaSemanticAnalyzerPrivate * priv;
 };
 
 struct _ValaSemanticAnalyzerClass {
@@ -3207,12 +3260,12 @@ struct _ValaSemanticAnalyzerClass {
 };
 
 struct _ValaSignalType {
-	ValaDataType parent_instance;
+	ValaCallableType parent_instance;
 	ValaSignalTypePrivate * priv;
 };
 
 struct _ValaSignalTypeClass {
-	ValaDataTypeClass parent_class;
+	ValaCallableTypeClass parent_class;
 };
 
 struct _ValaSizeofExpression {
@@ -3465,8 +3518,8 @@ struct _ValaUnresolvedTypeClass {
 
 struct _ValaUsedAttr {
 	ValaCodeVisitor parent_instance;
-	ValaUsedAttrPrivate * priv;
 	ValaMap* marked;
+	ValaUsedAttrPrivate * priv;
 };
 
 struct _ValaUsedAttrClass {
@@ -3523,23 +3576,42 @@ struct _ValaYieldStatementClass {
 
 gpointer vala_code_node_ref (gpointer instance);
 void vala_code_node_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_node (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_node (GValue* value, gpointer v_object);
-void vala_value_take_code_node (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_code_node (const gchar* name,
+                                       const gchar* nick,
+                                       const gchar* blurb,
+                                       GType object_type,
+                                       GParamFlags flags);
+void vala_value_set_code_node (GValue* value,
+                               gpointer v_object);
+void vala_value_take_code_node (GValue* value,
+                                gpointer v_object);
 gpointer vala_value_get_code_node (const GValue* value);
 GType vala_code_node_get_type (void) G_GNUC_CONST;
+GType vala_attribute_get_type (void) G_GNUC_CONST;
 gpointer vala_code_visitor_ref (gpointer instance);
 void vala_code_visitor_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_visitor (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_visitor (GValue* value, gpointer v_object);
-void vala_value_take_code_visitor (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_code_visitor (const gchar* name,
+                                          const gchar* nick,
+                                          const gchar* blurb,
+                                          GType object_type,
+                                          GParamFlags flags);
+void vala_value_set_code_visitor (GValue* value,
+                                  gpointer v_object);
+void vala_value_take_code_visitor (GValue* value,
+                                   gpointer v_object);
 gpointer vala_value_get_code_visitor (const GValue* value);
 GType vala_code_visitor_get_type (void) G_GNUC_CONST;
 gpointer vala_code_context_ref (gpointer instance);
 void vala_code_context_unref (gpointer instance);
-GParamSpec* vala_param_spec_code_context (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_code_context (GValue* value, gpointer v_object);
-void vala_value_take_code_context (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_code_context (const gchar* name,
+                                          const gchar* nick,
+                                          const gchar* blurb,
+                                          GType object_type,
+                                          GParamFlags flags);
+void vala_value_set_code_context (GValue* value,
+                                  gpointer v_object);
+void vala_value_take_code_context (GValue* value,
+                                   gpointer v_object);
 gpointer vala_value_get_code_context (const GValue* value);
 GType vala_code_context_get_type (void) G_GNUC_CONST;
 GType vala_code_generator_get_type (void) G_GNUC_CONST;
@@ -3547,31 +3619,28 @@ GType vala_data_type_get_type (void) G_GNUC_CONST;
 GType vala_expression_get_type (void) G_GNUC_CONST;
 GType vala_symbol_get_type (void) G_GNUC_CONST;
 GType vala_variable_get_type (void) G_GNUC_CONST;
-GType vala_attribute_get_type (void) G_GNUC_CONST;
 GType vala_addressof_expression_get_type (void) G_GNUC_CONST;
 gpointer vala_source_reference_ref (gpointer instance);
 void vala_source_reference_unref (gpointer instance);
-GParamSpec* vala_param_spec_source_reference (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_source_reference (GValue* value, gpointer v_object);
-void vala_value_take_source_reference (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_source_reference (const gchar* name,
+                                              const gchar* nick,
+                                              const gchar* blurb,
+                                              GType object_type,
+                                              GParamFlags flags);
+void vala_value_set_source_reference (GValue* value,
+                                      gpointer v_object);
+void vala_value_take_source_reference (GValue* value,
+                                       gpointer v_object);
 gpointer vala_value_get_source_reference (const GValue* value);
 GType vala_source_reference_get_type (void) G_GNUC_CONST;
-ValaAddressofExpression* vala_addressof_expression_new (ValaExpression* inner, ValaSourceReference* source_reference);
-ValaAddressofExpression* vala_addressof_expression_construct (GType object_type, ValaExpression* inner, ValaSourceReference* source_reference);
+ValaAddressofExpression* vala_addressof_expression_new (ValaExpression* inner,
+                                                        ValaSourceReference* source_reference);
+ValaAddressofExpression* vala_addressof_expression_construct (GType object_type,
+                                                              ValaExpression* inner,
+                                                              ValaSourceReference* source_reference);
 ValaExpression* vala_addressof_expression_get_inner (ValaAddressofExpression* self);
-void vala_addressof_expression_set_inner (ValaAddressofExpression* self, ValaExpression* value);
-GType vala_array_creation_expression_get_type (void) G_GNUC_CONST;
-void vala_array_creation_expression_append_size (ValaArrayCreationExpression* self, ValaExpression* size);
-ValaList* vala_array_creation_expression_get_sizes (ValaArrayCreationExpression* self);
-GType vala_initializer_list_get_type (void) G_GNUC_CONST;
-ValaArrayCreationExpression* vala_array_creation_expression_new (ValaDataType* element_type, gint rank, ValaInitializerList* initializer_list, ValaSourceReference* source_reference);
-ValaArrayCreationExpression* vala_array_creation_expression_construct (GType object_type, ValaDataType* element_type, gint rank, ValaInitializerList* initializer_list, ValaSourceReference* source_reference);
-ValaDataType* vala_array_creation_expression_get_element_type (ValaArrayCreationExpression* self);
-void vala_array_creation_expression_set_element_type (ValaArrayCreationExpression* self, ValaDataType* value);
-gint vala_array_creation_expression_get_rank (ValaArrayCreationExpression* self);
-void vala_array_creation_expression_set_rank (ValaArrayCreationExpression* self, gint value);
-ValaInitializerList* vala_array_creation_expression_get_initializer_list (ValaArrayCreationExpression* self);
-void vala_array_creation_expression_set_initializer_list (ValaArrayCreationExpression* self, ValaInitializerList* value);
+void vala_addressof_expression_set_inner (ValaAddressofExpression* self,
+                                          ValaExpression* value);
 GType vala_namespace_get_type (void) G_GNUC_CONST;
 GType vala_typesymbol_get_type (void) G_GNUC_CONST;
 GType vala_object_type_symbol_get_type (void) G_GNUC_CONST;
@@ -3589,69 +3658,150 @@ GType vala_property_get_type (void) G_GNUC_CONST;
 GType vala_signal_get_type (void) G_GNUC_CONST;
 GType vala_constructor_get_type (void) G_GNUC_CONST;
 GType vala_destructor_get_type (void) G_GNUC_CONST;
+GType vala_parameter_get_type (void) G_GNUC_CONST;
+GType vala_callable_get_type (void) G_GNUC_CONST;
+GType vala_array_copy_method_get_type (void) G_GNUC_CONST;
+ValaArrayCopyMethod* vala_array_copy_method_new (ValaSourceReference* source_reference);
+ValaArrayCopyMethod* vala_array_copy_method_construct (GType object_type,
+                                                       ValaSourceReference* source_reference);
+GType vala_array_creation_expression_get_type (void) G_GNUC_CONST;
+void vala_array_creation_expression_append_size (ValaArrayCreationExpression* self,
+                                                 ValaExpression* size);
+ValaList* vala_array_creation_expression_get_sizes (ValaArrayCreationExpression* self);
+GType vala_initializer_list_get_type (void) G_GNUC_CONST;
+ValaArrayCreationExpression* vala_array_creation_expression_new (ValaDataType* element_type,
+                                                                 gint rank,
+                                                                 ValaInitializerList* initializer_list,
+                                                                 ValaSourceReference* source_reference);
+ValaArrayCreationExpression* vala_array_creation_expression_construct (GType object_type,
+                                                                       ValaDataType* element_type,
+                                                                       gint rank,
+                                                                       ValaInitializerList* initializer_list,
+                                                                       ValaSourceReference* source_reference);
+ValaDataType* vala_array_creation_expression_get_element_type (ValaArrayCreationExpression* self);
+void vala_array_creation_expression_set_element_type (ValaArrayCreationExpression* self,
+                                                      ValaDataType* value);
+gint vala_array_creation_expression_get_rank (ValaArrayCreationExpression* self);
+void vala_array_creation_expression_set_rank (ValaArrayCreationExpression* self,
+                                              gint value);
+ValaInitializerList* vala_array_creation_expression_get_initializer_list (ValaArrayCreationExpression* self);
+void vala_array_creation_expression_set_initializer_list (ValaArrayCreationExpression* self,
+                                                          ValaInitializerList* value);
 GType vala_lockable_get_type (void) G_GNUC_CONST;
 GType vala_array_length_field_get_type (void) G_GNUC_CONST;
 ValaArrayLengthField* vala_array_length_field_new (ValaSourceReference* source_reference);
-ValaArrayLengthField* vala_array_length_field_construct (GType object_type, ValaSourceReference* source_reference);
+ValaArrayLengthField* vala_array_length_field_construct (GType object_type,
+                                                         ValaSourceReference* source_reference);
 GType vala_array_move_method_get_type (void) G_GNUC_CONST;
 ValaArrayMoveMethod* vala_array_move_method_new (ValaSourceReference* source_reference);
-ValaArrayMoveMethod* vala_array_move_method_construct (GType object_type, ValaSourceReference* source_reference);
+ValaArrayMoveMethod* vala_array_move_method_construct (GType object_type,
+                                                       ValaSourceReference* source_reference);
 GType vala_array_resize_method_get_type (void) G_GNUC_CONST;
 ValaArrayResizeMethod* vala_array_resize_method_new (ValaSourceReference* source_reference);
-ValaArrayResizeMethod* vala_array_resize_method_construct (GType object_type, ValaSourceReference* source_reference);
+ValaArrayResizeMethod* vala_array_resize_method_construct (GType object_type,
+                                                           ValaSourceReference* source_reference);
 gpointer vala_scope_ref (gpointer instance);
 void vala_scope_unref (gpointer instance);
-GParamSpec* vala_param_spec_scope (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_scope (GValue* value, gpointer v_object);
-void vala_value_take_scope (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_scope (const gchar* name,
+                                   const gchar* nick,
+                                   const gchar* blurb,
+                                   GType object_type,
+                                   GParamFlags flags);
+void vala_value_set_scope (GValue* value,
+                           gpointer v_object);
+void vala_value_take_scope (GValue* value,
+                            gpointer v_object);
 gpointer vala_value_get_scope (const GValue* value);
 GType vala_scope_get_type (void) G_GNUC_CONST;
-GType vala_parameter_get_type (void) G_GNUC_CONST;
 GType vala_typeparameter_get_type (void) G_GNUC_CONST;
 GType vala_reference_type_get_type (void) G_GNUC_CONST;
 GType vala_array_type_get_type (void) G_GNUC_CONST;
-ValaArrayType* vala_array_type_new (ValaDataType* element_type, gint rank, ValaSourceReference* source_reference);
-ValaArrayType* vala_array_type_construct (GType object_type, ValaDataType* element_type, gint rank, ValaSourceReference* source_reference);
+ValaArrayType* vala_array_type_new (ValaDataType* element_type,
+                                    gint rank,
+                                    ValaSourceReference* source_reference);
+ValaArrayType* vala_array_type_construct (GType object_type,
+                                          ValaDataType* element_type,
+                                          gint rank,
+                                          ValaSourceReference* source_reference);
 ValaDataType* vala_array_type_get_element_type (ValaArrayType* self);
-void vala_array_type_set_element_type (ValaArrayType* self, ValaDataType* value);
+void vala_array_type_set_element_type (ValaArrayType* self,
+                                       ValaDataType* value);
 gboolean vala_array_type_get_invalid_syntax (ValaArrayType* self);
-void vala_array_type_set_invalid_syntax (ValaArrayType* self, gboolean value);
+void vala_array_type_set_invalid_syntax (ValaArrayType* self,
+                                         gboolean value);
 gboolean vala_array_type_get_inline_allocated (ValaArrayType* self);
-void vala_array_type_set_inline_allocated (ValaArrayType* self, gboolean value);
+void vala_array_type_set_inline_allocated (ValaArrayType* self,
+                                           gboolean value);
 gboolean vala_array_type_get_fixed_length (ValaArrayType* self);
-void vala_array_type_set_fixed_length (ValaArrayType* self, gboolean value);
+void vala_array_type_set_fixed_length (ValaArrayType* self,
+                                       gboolean value);
 ValaExpression* vala_array_type_get_length (ValaArrayType* self);
-void vala_array_type_set_length (ValaArrayType* self, ValaExpression* value);
+void vala_array_type_set_length (ValaArrayType* self,
+                                 ValaExpression* value);
 gint vala_array_type_get_rank (ValaArrayType* self);
-void vala_array_type_set_rank (ValaArrayType* self, gint value);
+void vala_array_type_set_rank (ValaArrayType* self,
+                               gint value);
 GType vala_assignment_get_type (void) G_GNUC_CONST;
 GType vala_assignment_operator_get_type (void) G_GNUC_CONST;
-ValaAssignment* vala_assignment_new (ValaExpression* left, ValaExpression* right, ValaAssignmentOperator operator, ValaSourceReference* source_reference);
-ValaAssignment* vala_assignment_construct (GType object_type, ValaExpression* left, ValaExpression* right, ValaAssignmentOperator operator, ValaSourceReference* source_reference);
+ValaAssignment* vala_assignment_new (ValaExpression* left,
+                                     ValaExpression* right,
+                                     ValaAssignmentOperator operator,
+                                     ValaSourceReference* source_reference);
+ValaAssignment* vala_assignment_construct (GType object_type,
+                                           ValaExpression* left,
+                                           ValaExpression* right,
+                                           ValaAssignmentOperator operator,
+                                           ValaSourceReference* source_reference);
 ValaExpression* vala_assignment_get_left (ValaAssignment* self);
-void vala_assignment_set_left (ValaAssignment* self, ValaExpression* value);
+void vala_assignment_set_left (ValaAssignment* self,
+                               ValaExpression* value);
 ValaAssignmentOperator vala_assignment_get_operator (ValaAssignment* self);
-void vala_assignment_set_operator (ValaAssignment* self, ValaAssignmentOperator value);
+void vala_assignment_set_operator (ValaAssignment* self,
+                                   ValaAssignmentOperator value);
 ValaExpression* vala_assignment_get_right (ValaAssignment* self);
-void vala_assignment_set_right (ValaAssignment* self, ValaExpression* value);
-ValaAttribute* vala_attribute_new (const gchar* name, ValaSourceReference* source_reference);
-ValaAttribute* vala_attribute_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference);
-void vala_attribute_add_argument (ValaAttribute* self, const gchar* key, const gchar* value);
-gboolean vala_attribute_has_argument (ValaAttribute* self, const gchar* name);
-gchar* vala_attribute_get_string (ValaAttribute* self, const gchar* name, const gchar* default_value);
-gint vala_attribute_get_integer (ValaAttribute* self, const gchar* name, gint default_value);
-gdouble vala_attribute_get_double (ValaAttribute* self, const gchar* name, gdouble default_value);
-gboolean vala_attribute_get_bool (ValaAttribute* self, const gchar* name, gboolean default_value);
+void vala_assignment_set_right (ValaAssignment* self,
+                                ValaExpression* value);
+ValaAttribute* vala_attribute_new (const gchar* name,
+                                   ValaSourceReference* source_reference);
+ValaAttribute* vala_attribute_construct (GType object_type,
+                                         const gchar* name,
+                                         ValaSourceReference* source_reference);
+void vala_attribute_add_argument (ValaAttribute* self,
+                                  const gchar* key,
+                                  const gchar* value);
+gboolean vala_attribute_has_argument (ValaAttribute* self,
+                                      const gchar* name);
+gchar* vala_attribute_get_string (ValaAttribute* self,
+                                  const gchar* name,
+                                  const gchar* default_value);
+gint vala_attribute_get_integer (ValaAttribute* self,
+                                 const gchar* name,
+                                 gint default_value);
+gdouble vala_attribute_get_double (ValaAttribute* self,
+                                   const gchar* name,
+                                   gdouble default_value);
+gboolean vala_attribute_get_bool (ValaAttribute* self,
+                                  const gchar* name,
+                                  gboolean default_value);
 const gchar* vala_attribute_get_name (ValaAttribute* self);
-void vala_attribute_set_name (ValaAttribute* self, const gchar* value);
+void vala_attribute_set_name (ValaAttribute* self,
+                              const gchar* value);
+ValaMap* vala_attribute_get_args (ValaAttribute* self);
 GType vala_base_access_get_type (void) G_GNUC_CONST;
 ValaBaseAccess* vala_base_access_new (ValaSourceReference* source);
-ValaBaseAccess* vala_base_access_construct (GType object_type, ValaSourceReference* source);
+ValaBaseAccess* vala_base_access_construct (GType object_type,
+                                            ValaSourceReference* source);
 gpointer vala_basic_block_ref (gpointer instance);
 void vala_basic_block_unref (gpointer instance);
-GParamSpec* vala_param_spec_basic_block (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_basic_block (GValue* value, gpointer v_object);
-void vala_value_take_basic_block (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_basic_block (const gchar* name,
+                                         const gchar* nick,
+                                         const gchar* blurb,
+                                         GType object_type,
+                                         GParamFlags flags);
+void vala_value_set_basic_block (GValue* value,
+                                 gpointer v_object);
+void vala_value_take_basic_block (GValue* value,
+                                  gpointer v_object);
 gpointer vala_value_get_basic_block (const GValue* value);
 GType vala_basic_block_get_type (void) G_GNUC_CONST;
 ValaBasicBlock* vala_basic_block_new (void);
@@ -3660,154 +3810,266 @@ ValaBasicBlock* vala_basic_block_new_entry (void);
 ValaBasicBlock* vala_basic_block_construct_entry (GType object_type);
 ValaBasicBlock* vala_basic_block_new_exit (void);
 ValaBasicBlock* vala_basic_block_construct_exit (GType object_type);
-void vala_basic_block_add_node (ValaBasicBlock* self, ValaCodeNode* node);
+void vala_basic_block_add_node (ValaBasicBlock* self,
+                                ValaCodeNode* node);
 ValaList* vala_basic_block_get_nodes (ValaBasicBlock* self);
-void vala_basic_block_connect (ValaBasicBlock* self, ValaBasicBlock* target);
+void vala_basic_block_connect (ValaBasicBlock* self,
+                               ValaBasicBlock* target);
 ValaList* vala_basic_block_get_predecessors (ValaBasicBlock* self);
 ValaList* vala_basic_block_get_successors (ValaBasicBlock* self);
-void vala_basic_block_add_child (ValaBasicBlock* self, ValaBasicBlock* block);
+void vala_basic_block_add_child (ValaBasicBlock* self,
+                                 ValaBasicBlock* block);
 ValaList* vala_basic_block_get_children (ValaBasicBlock* self);
-void vala_basic_block_add_dominator_frontier (ValaBasicBlock* self, ValaBasicBlock* block);
+void vala_basic_block_add_dominator_frontier (ValaBasicBlock* self,
+                                              ValaBasicBlock* block);
 ValaSet* vala_basic_block_get_dominator_frontier (ValaBasicBlock* self);
 gpointer vala_phi_function_ref (gpointer instance);
 void vala_phi_function_unref (gpointer instance);
-GParamSpec* vala_param_spec_phi_function (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_phi_function (GValue* value, gpointer v_object);
-void vala_value_take_phi_function (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_phi_function (const gchar* name,
+                                          const gchar* nick,
+                                          const gchar* blurb,
+                                          GType object_type,
+                                          GParamFlags flags);
+void vala_value_set_phi_function (GValue* value,
+                                  gpointer v_object);
+void vala_value_take_phi_function (GValue* value,
+                                   gpointer v_object);
 gpointer vala_value_get_phi_function (const GValue* value);
 GType vala_phi_function_get_type (void) G_GNUC_CONST;
-void vala_basic_block_add_phi_function (ValaBasicBlock* self, ValaPhiFunction* phi);
+void vala_basic_block_add_phi_function (ValaBasicBlock* self,
+                                        ValaPhiFunction* phi);
 ValaSet* vala_basic_block_get_phi_functions (ValaBasicBlock* self);
 ValaBasicBlock* vala_basic_block_get_parent (ValaBasicBlock* self);
 gboolean vala_basic_block_get_postorder_visited (ValaBasicBlock* self);
-void vala_basic_block_set_postorder_visited (ValaBasicBlock* self, gboolean value);
+void vala_basic_block_set_postorder_visited (ValaBasicBlock* self,
+                                             gboolean value);
 gint vala_basic_block_get_postorder_number (ValaBasicBlock* self);
-void vala_basic_block_set_postorder_number (ValaBasicBlock* self, gint value);
+void vala_basic_block_set_postorder_number (ValaBasicBlock* self,
+                                            gint value);
 GType vala_binary_expression_get_type (void) G_GNUC_CONST;
 GType vala_binary_operator_get_type (void) G_GNUC_CONST;
-ValaBinaryExpression* vala_binary_expression_new (ValaBinaryOperator op, ValaExpression* _left, ValaExpression* _right, ValaSourceReference* source);
-ValaBinaryExpression* vala_binary_expression_construct (GType object_type, ValaBinaryOperator op, ValaExpression* _left, ValaExpression* _right, ValaSourceReference* source);
-gchar* vala_binary_expression_get_operator_string (ValaBinaryExpression* self);
+ValaBinaryExpression* vala_binary_expression_new (ValaBinaryOperator op,
+                                                  ValaExpression* _left,
+                                                  ValaExpression* _right,
+                                                  ValaSourceReference* source);
+ValaBinaryExpression* vala_binary_expression_construct (GType object_type,
+                                                        ValaBinaryOperator op,
+                                                        ValaExpression* _left,
+                                                        ValaExpression* _right,
+                                                        ValaSourceReference* source);
+ValaBinaryExpression* vala_binary_expression_new_chained (ValaBinaryOperator op,
+                                                          ValaExpression* _left,
+                                                          ValaExpression* _right,
+                                                          ValaSourceReference* source);
+ValaBinaryExpression* vala_binary_expression_construct_chained (GType object_type,
+                                                                ValaBinaryOperator op,
+                                                                ValaExpression* _left,
+                                                                ValaExpression* _right,
+                                                                ValaSourceReference* source);
 ValaBinaryOperator vala_binary_expression_get_operator (ValaBinaryExpression* self);
-void vala_binary_expression_set_operator (ValaBinaryExpression* self, ValaBinaryOperator value);
+void vala_binary_expression_set_operator (ValaBinaryExpression* self,
+                                          ValaBinaryOperator value);
 ValaExpression* vala_binary_expression_get_left (ValaBinaryExpression* self);
-void vala_binary_expression_set_left (ValaBinaryExpression* self, ValaExpression* value);
+void vala_binary_expression_set_left (ValaBinaryExpression* self,
+                                      ValaExpression* value);
 ValaExpression* vala_binary_expression_get_right (ValaBinaryExpression* self);
-void vala_binary_expression_set_right (ValaBinaryExpression* self, ValaExpression* value);
+void vala_binary_expression_set_right (ValaBinaryExpression* self,
+                                       ValaExpression* value);
+gboolean vala_binary_expression_get_is_chained (ValaBinaryExpression* self);
 GType vala_statement_get_type (void) G_GNUC_CONST;
 GType vala_block_get_type (void) G_GNUC_CONST;
 ValaBlock* vala_block_new (ValaSourceReference* source_reference);
-ValaBlock* vala_block_construct (GType object_type, ValaSourceReference* source_reference);
-void vala_block_add_statement (ValaBlock* self, ValaStatement* stmt);
-void vala_block_insert_statement (ValaBlock* self, gint index, ValaStatement* stmt);
+ValaBlock* vala_block_construct (GType object_type,
+                                 ValaSourceReference* source_reference);
+void vala_block_add_statement (ValaBlock* self,
+                               ValaStatement* stmt);
+void vala_block_insert_statement (ValaBlock* self,
+                                  gint index,
+                                  ValaStatement* stmt);
 ValaList* vala_block_get_statements (ValaBlock* self);
 GType vala_local_variable_get_type (void) G_GNUC_CONST;
-void vala_block_add_local_variable (ValaBlock* self, ValaLocalVariable* local);
-void vala_block_remove_local_variable (ValaBlock* self, ValaLocalVariable* local);
+void vala_block_add_local_variable (ValaBlock* self,
+                                    ValaLocalVariable* local);
+void vala_block_remove_local_variable (ValaBlock* self,
+                                       ValaLocalVariable* local);
 ValaList* vala_block_get_local_variables (ValaBlock* self);
-void vala_block_add_local_constant (ValaBlock* self, ValaConstant* constant);
-void vala_block_insert_before (ValaBlock* self, ValaStatement* stmt, ValaStatement* new_stmt);
-void vala_block_replace_statement (ValaBlock* self, ValaStatement* old_stmt, ValaStatement* new_stmt);
+void vala_block_add_local_constant (ValaBlock* self,
+                                    ValaConstant* constant);
+void vala_block_insert_before (ValaBlock* self,
+                               ValaStatement* stmt,
+                               ValaStatement* new_stmt);
+void vala_block_replace_statement (ValaBlock* self,
+                                   ValaStatement* old_stmt,
+                                   ValaStatement* new_stmt);
 gboolean vala_block_get_contains_jump_statement (ValaBlock* self);
-void vala_block_set_contains_jump_statement (ValaBlock* self, gboolean value);
+void vala_block_set_contains_jump_statement (ValaBlock* self,
+                                             gboolean value);
 gboolean vala_block_get_captured (ValaBlock* self);
-void vala_block_set_captured (ValaBlock* self, gboolean value);
+void vala_block_set_captured (ValaBlock* self,
+                              gboolean value);
 GType vala_literal_get_type (void) G_GNUC_CONST;
 GType vala_boolean_literal_get_type (void) G_GNUC_CONST;
-ValaBooleanLiteral* vala_boolean_literal_new (gboolean b, ValaSourceReference* source);
-ValaBooleanLiteral* vala_boolean_literal_construct (GType object_type, gboolean b, ValaSourceReference* source);
+ValaBooleanLiteral* vala_boolean_literal_new (gboolean b,
+                                              ValaSourceReference* source);
+ValaBooleanLiteral* vala_boolean_literal_construct (GType object_type,
+                                                    gboolean b,
+                                                    ValaSourceReference* source);
 gboolean vala_boolean_literal_get_value (ValaBooleanLiteral* self);
-void vala_boolean_literal_set_value (ValaBooleanLiteral* self, gboolean value);
+void vala_boolean_literal_set_value (ValaBooleanLiteral* self,
+                                     gboolean value);
 GType vala_value_type_get_type (void) G_GNUC_CONST;
 GType vala_boolean_type_get_type (void) G_GNUC_CONST;
 ValaBooleanType* vala_boolean_type_new (ValaStruct* type_symbol);
-ValaBooleanType* vala_boolean_type_construct (GType object_type, ValaStruct* type_symbol);
+ValaBooleanType* vala_boolean_type_construct (GType object_type,
+                                              ValaStruct* type_symbol);
 GType vala_break_statement_get_type (void) G_GNUC_CONST;
 ValaBreakStatement* vala_break_statement_new (ValaSourceReference* source);
-ValaBreakStatement* vala_break_statement_construct (GType object_type, ValaSourceReference* source);
+ValaBreakStatement* vala_break_statement_construct (GType object_type,
+                                                    ValaSourceReference* source);
+void vala_callable_add_parameter (ValaCallable* self,
+                                  ValaParameter* param);
+ValaList* vala_callable_get_parameters (ValaCallable* self);
+ValaDataType* vala_callable_get_return_type (ValaCallable* self);
+void vala_callable_set_return_type (ValaCallable* self,
+                                    ValaDataType* value);
+GType vala_callable_type_get_type (void) G_GNUC_CONST;
+ValaCallableType* vala_callable_type_construct (GType object_type);
 GType vala_cast_expression_get_type (void) G_GNUC_CONST;
-ValaCastExpression* vala_cast_expression_new (ValaExpression* inner, ValaDataType* type_reference, ValaSourceReference* source_reference, gboolean is_silent_cast);
-ValaCastExpression* vala_cast_expression_construct (GType object_type, ValaExpression* inner, ValaDataType* type_reference, ValaSourceReference* source_reference, gboolean is_silent_cast);
-ValaCastExpression* vala_cast_expression_new_non_null (ValaExpression* inner, ValaSourceReference* source_reference);
-ValaCastExpression* vala_cast_expression_construct_non_null (GType object_type, ValaExpression* inner, ValaSourceReference* source_reference);
+ValaCastExpression* vala_cast_expression_new (ValaExpression* inner,
+                                              ValaDataType* type_reference,
+                                              ValaSourceReference* source_reference);
+ValaCastExpression* vala_cast_expression_construct (GType object_type,
+                                                    ValaExpression* inner,
+                                                    ValaDataType* type_reference,
+                                                    ValaSourceReference* source_reference);
+ValaCastExpression* vala_cast_expression_new_silent (ValaExpression* inner,
+                                                     ValaDataType* type_reference,
+                                                     ValaSourceReference* source_reference);
+ValaCastExpression* vala_cast_expression_construct_silent (GType object_type,
+                                                           ValaExpression* inner,
+                                                           ValaDataType* type_reference,
+                                                           ValaSourceReference* source_reference);
+ValaCastExpression* vala_cast_expression_new_non_null (ValaExpression* inner,
+                                                       ValaSourceReference* source_reference);
+ValaCastExpression* vala_cast_expression_construct_non_null (GType object_type,
+                                                             ValaExpression* inner,
+                                                             ValaSourceReference* source_reference);
 ValaExpression* vala_cast_expression_get_inner (ValaCastExpression* self);
-void vala_cast_expression_set_inner (ValaCastExpression* self, ValaExpression* value);
+void vala_cast_expression_set_inner (ValaCastExpression* self,
+                                     ValaExpression* value);
 ValaDataType* vala_cast_expression_get_type_reference (ValaCastExpression* self);
-void vala_cast_expression_set_type_reference (ValaCastExpression* self, ValaDataType* value);
+void vala_cast_expression_set_type_reference (ValaCastExpression* self,
+                                              ValaDataType* value);
 gboolean vala_cast_expression_get_is_silent_cast (ValaCastExpression* self);
-void vala_cast_expression_set_is_silent_cast (ValaCastExpression* self, gboolean value);
 gboolean vala_cast_expression_get_is_non_null_cast (ValaCastExpression* self);
-void vala_cast_expression_set_is_non_null_cast (ValaCastExpression* self, gboolean value);
 GType vala_catch_clause_get_type (void) G_GNUC_CONST;
-ValaCatchClause* vala_catch_clause_new (ValaDataType* error_type, const gchar* variable_name, ValaBlock* body, ValaSourceReference* source_reference);
-ValaCatchClause* vala_catch_clause_construct (GType object_type, ValaDataType* error_type, const gchar* variable_name, ValaBlock* body, ValaSourceReference* source_reference);
+ValaCatchClause* vala_catch_clause_new (ValaDataType* error_type,
+                                        const gchar* variable_name,
+                                        ValaBlock* body,
+                                        ValaSourceReference* source_reference);
+ValaCatchClause* vala_catch_clause_construct (GType object_type,
+                                              ValaDataType* error_type,
+                                              const gchar* variable_name,
+                                              ValaBlock* body,
+                                              ValaSourceReference* source_reference);
 ValaDataType* vala_catch_clause_get_error_type (ValaCatchClause* self);
-void vala_catch_clause_set_error_type (ValaCatchClause* self, ValaDataType* value);
+void vala_catch_clause_set_error_type (ValaCatchClause* self,
+                                       ValaDataType* value);
 const gchar* vala_catch_clause_get_variable_name (ValaCatchClause* self);
-void vala_catch_clause_set_variable_name (ValaCatchClause* self, const gchar* value);
+void vala_catch_clause_set_variable_name (ValaCatchClause* self,
+                                          const gchar* value);
 ValaBlock* vala_catch_clause_get_body (ValaCatchClause* self);
-void vala_catch_clause_set_body (ValaCatchClause* self, ValaBlock* value);
+void vala_catch_clause_set_body (ValaCatchClause* self,
+                                 ValaBlock* value);
 ValaLocalVariable* vala_catch_clause_get_error_variable (ValaCatchClause* self);
-void vala_catch_clause_set_error_variable (ValaCatchClause* self, ValaLocalVariable* value);
+void vala_catch_clause_set_error_variable (ValaCatchClause* self,
+                                           ValaLocalVariable* value);
 const gchar* vala_catch_clause_get_clabel_name (ValaCatchClause* self);
-void vala_catch_clause_set_clabel_name (ValaCatchClause* self, const gchar* value);
+void vala_catch_clause_set_clabel_name (ValaCatchClause* self,
+                                        const gchar* value);
 GType vala_character_literal_get_type (void) G_GNUC_CONST;
-ValaCharacterLiteral* vala_character_literal_new (const gchar* c, ValaSourceReference* source);
-ValaCharacterLiteral* vala_character_literal_construct (GType object_type, const gchar* c, ValaSourceReference* source);
+ValaCharacterLiteral* vala_character_literal_new (const gchar* c,
+                                                  ValaSourceReference* source);
+ValaCharacterLiteral* vala_character_literal_construct (GType object_type,
+                                                        const gchar* c,
+                                                        ValaSourceReference* source);
 gunichar vala_character_literal_get_char (ValaCharacterLiteral* self);
 const gchar* vala_character_literal_get_value (ValaCharacterLiteral* self);
-void vala_character_literal_set_value (ValaCharacterLiteral* self, const gchar* value);
-ValaList* vala_class_get_classes (ValaClass* self);
-ValaList* vala_class_get_structs (ValaClass* self);
-ValaList* vala_class_get_enums (ValaClass* self);
-ValaList* vala_class_get_delegates (ValaClass* self);
+void vala_character_literal_set_value (ValaCharacterLiteral* self,
+                                       const gchar* value);
 gpointer vala_comment_ref (gpointer instance);
 void vala_comment_unref (gpointer instance);
-GParamSpec* vala_param_spec_comment (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_comment (GValue* value, gpointer v_object);
-void vala_value_take_comment (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_comment (const gchar* name,
+                                     const gchar* nick,
+                                     const gchar* blurb,
+                                     GType object_type,
+                                     GParamFlags flags);
+void vala_value_set_comment (GValue* value,
+                             gpointer v_object);
+void vala_value_take_comment (GValue* value,
+                              gpointer v_object);
 gpointer vala_value_get_comment (const GValue* value);
 GType vala_comment_get_type (void) G_GNUC_CONST;
-ValaClass* vala_class_new (const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-ValaClass* vala_class_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-void vala_class_add_base_type (ValaClass* self, ValaDataType* type);
+ValaClass* vala_class_new (const gchar* name,
+                           ValaSourceReference* source_reference,
+                           ValaComment* comment);
+ValaClass* vala_class_construct (GType object_type,
+                                 const gchar* name,
+                                 ValaSourceReference* source_reference,
+                                 ValaComment* comment);
+void vala_class_add_base_type (ValaClass* self,
+                               ValaDataType* type);
 ValaList* vala_class_get_base_types (ValaClass* self);
-ValaList* vala_class_get_fields (ValaClass* self);
-ValaList* vala_class_get_constants (ValaClass* self);
 gboolean vala_class_is_fundamental (ValaClass* self);
 ValaClass* vala_class_get_base_class (ValaClass* self);
-void vala_class_set_base_class (ValaClass* self, ValaClass* value);
+void vala_class_set_base_class (ValaClass* self,
+                                ValaClass* value);
 gboolean vala_class_get_is_abstract (ValaClass* self);
-void vala_class_set_is_abstract (ValaClass* self, gboolean value);
+void vala_class_set_is_abstract (ValaClass* self,
+                                 gboolean value);
 gboolean vala_class_get_is_compact (ValaClass* self);
-void vala_class_set_is_compact (ValaClass* self, gboolean value);
+void vala_class_set_is_compact (ValaClass* self,
+                                gboolean value);
 gboolean vala_class_get_is_immutable (ValaClass* self);
-void vala_class_set_is_immutable (ValaClass* self, gboolean value);
+void vala_class_set_is_immutable (ValaClass* self,
+                                  gboolean value);
 gboolean vala_class_get_has_private_fields (ValaClass* self);
-void vala_class_set_has_private_fields (ValaClass* self, gboolean value);
+void vala_class_set_has_private_fields (ValaClass* self,
+                                        gboolean value);
 gboolean vala_class_get_has_class_private_fields (ValaClass* self);
 GType vala_creation_method_get_type (void) G_GNUC_CONST;
 ValaCreationMethod* vala_class_get_default_construction_method (ValaClass* self);
-void vala_class_set_default_construction_method (ValaClass* self, ValaCreationMethod* value);
+void vala_class_set_default_construction_method (ValaClass* self,
+                                                 ValaCreationMethod* value);
 ValaConstructor* vala_class_get_constructor (ValaClass* self);
-void vala_class_set_constructor (ValaClass* self, ValaConstructor* value);
+void vala_class_set_constructor (ValaClass* self,
+                                 ValaConstructor* value);
 ValaConstructor* vala_class_get_class_constructor (ValaClass* self);
-void vala_class_set_class_constructor (ValaClass* self, ValaConstructor* value);
+void vala_class_set_class_constructor (ValaClass* self,
+                                       ValaConstructor* value);
 ValaConstructor* vala_class_get_static_constructor (ValaClass* self);
-void vala_class_set_static_constructor (ValaClass* self, ValaConstructor* value);
+void vala_class_set_static_constructor (ValaClass* self,
+                                        ValaConstructor* value);
 ValaDestructor* vala_class_get_destructor (ValaClass* self);
-void vala_class_set_destructor (ValaClass* self, ValaDestructor* value);
+void vala_class_set_destructor (ValaClass* self,
+                                ValaDestructor* value);
 ValaDestructor* vala_class_get_static_destructor (ValaClass* self);
-void vala_class_set_static_destructor (ValaClass* self, ValaDestructor* value);
+void vala_class_set_static_destructor (ValaClass* self,
+                                       ValaDestructor* value);
 ValaDestructor* vala_class_get_class_destructor (ValaClass* self);
-void vala_class_set_class_destructor (ValaClass* self, ValaDestructor* value);
+void vala_class_set_class_destructor (ValaClass* self,
+                                      ValaDestructor* value);
 gboolean vala_class_get_is_error_base (ValaClass* self);
 GType vala_class_type_get_type (void) G_GNUC_CONST;
 ValaClassType* vala_class_type_new (ValaClass* class_symbol);
-ValaClassType* vala_class_type_construct (GType object_type, ValaClass* class_symbol);
+ValaClassType* vala_class_type_construct (GType object_type,
+                                          ValaClass* class_symbol);
 ValaClass* vala_class_type_get_class_symbol (ValaClassType* self);
-void vala_class_type_set_class_symbol (ValaClassType* self, ValaClass* value);
-gboolean vala_code_context_require_glib_version (ValaCodeContext* self, gint major, gint minor);
+void vala_class_type_set_class_symbol (ValaClassType* self,
+                                       ValaClass* value);
+gboolean vala_code_context_require_glib_version (ValaCodeContext* self,
+                                                 gint major,
+                                                 gint minor);
 ValaCodeContext* vala_code_context_new (void);
 ValaCodeContext* vala_code_context_construct (GType object_type);
 ValaCodeContext* vala_code_context_get (void);
@@ -3815,105 +4077,212 @@ void vala_code_context_push (ValaCodeContext* context);
 void vala_code_context_pop (void);
 gpointer vala_source_file_ref (gpointer instance);
 void vala_source_file_unref (gpointer instance);
-GParamSpec* vala_param_spec_source_file (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_source_file (GValue* value, gpointer v_object);
-void vala_value_take_source_file (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_source_file (const gchar* name,
+                                         const gchar* nick,
+                                         const gchar* blurb,
+                                         GType object_type,
+                                         GParamFlags flags);
+void vala_value_set_source_file (GValue* value,
+                                 gpointer v_object);
+void vala_value_take_source_file (GValue* value,
+                                  gpointer v_object);
 gpointer vala_value_get_source_file (const GValue* value);
 GType vala_source_file_get_type (void) G_GNUC_CONST;
 ValaList* vala_code_context_get_source_files (ValaCodeContext* self);
 ValaList* vala_code_context_get_c_source_files (ValaCodeContext* self);
-void vala_code_context_add_source_file (ValaCodeContext* self, ValaSourceFile* file);
-void vala_code_context_add_c_source_file (ValaCodeContext* self, const gchar* file);
+void vala_code_context_add_source_file (ValaCodeContext* self,
+                                        ValaSourceFile* file);
+void vala_code_context_add_c_source_file (ValaCodeContext* self,
+                                          const gchar* file);
 ValaList* vala_code_context_get_packages (ValaCodeContext* self);
-gboolean vala_code_context_has_package (ValaCodeContext* self, const gchar* pkg);
-void vala_code_context_add_package (ValaCodeContext* self, const gchar* pkg);
-gboolean vala_code_context_add_external_package (ValaCodeContext* self, const gchar* pkg);
-gboolean vala_code_context_add_packages_from_file (ValaCodeContext* self, const gchar* filename);
-gboolean vala_code_context_add_source_filename (ValaCodeContext* self, const gchar* filename, gboolean is_source, gboolean cmdline);
-void vala_code_context_accept (ValaCodeContext* self, ValaCodeVisitor* visitor);
+gboolean vala_code_context_has_package (ValaCodeContext* self,
+                                        const gchar* pkg);
+void vala_code_context_add_package (ValaCodeContext* self,
+                                    const gchar* pkg);
+gboolean vala_code_context_add_external_package (ValaCodeContext* self,
+                                                 const gchar* pkg);
+gboolean vala_code_context_add_packages_from_file (ValaCodeContext* self,
+                                                   const gchar* filename);
+gboolean vala_code_context_add_source_filename (ValaCodeContext* self,
+                                                const gchar* filename,
+                                                gboolean is_source,
+                                                gboolean cmdline);
+void vala_code_context_accept (ValaCodeContext* self,
+                               ValaCodeVisitor* visitor);
 void vala_code_context_check (ValaCodeContext* self);
-void vala_code_context_add_define (ValaCodeContext* self, const gchar* define);
-gboolean vala_code_context_is_defined (ValaCodeContext* self, const gchar* define);
-gchar* vala_code_context_get_vapi_path (ValaCodeContext* self, const gchar* pkg);
-gchar* vala_code_context_get_gir_path (ValaCodeContext* self, const gchar* gir);
-gchar* vala_code_context_get_metadata_path (ValaCodeContext* self, const gchar* gir_filename);
-void vala_code_context_write_dependencies (ValaCodeContext* self, const gchar* filename);
+void vala_code_context_add_define (ValaCodeContext* self,
+                                   const gchar* define);
+gboolean vala_code_context_is_defined (ValaCodeContext* self,
+                                       const gchar* define);
+gchar* vala_code_context_get_vapi_path (ValaCodeContext* self,
+                                        const gchar* pkg);
+gchar* vala_code_context_get_gir_path (ValaCodeContext* self,
+                                       const gchar* gir);
+gchar* vala_code_context_get_gresource_path (ValaCodeContext* self,
+                                             const gchar* gresource,
+                                             const gchar* resource);
+gchar* vala_code_context_get_metadata_path (ValaCodeContext* self,
+                                            const gchar* gir_filename);
+void vala_code_context_write_dependencies (ValaCodeContext* self,
+                                           const gchar* filename);
 gchar* vala_code_context_realpath (const gchar* name);
+gboolean vala_code_context_pkg_config_exists (ValaCodeContext* self,
+                                              const gchar* package_name);
+gchar* vala_code_context_pkg_config_modversion (ValaCodeContext* self,
+                                                const gchar* package_name);
+gchar* vala_code_context_pkg_config_compile_flags (ValaCodeContext* self,
+                                                   const gchar* package_name);
 gboolean vala_code_context_get_assert (ValaCodeContext* self);
-void vala_code_context_set_assert (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_assert (ValaCodeContext* self,
+                                   gboolean value);
 gboolean vala_code_context_get_checking (ValaCodeContext* self);
-void vala_code_context_set_checking (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_checking (ValaCodeContext* self,
+                                     gboolean value);
 gboolean vala_code_context_get_deprecated (ValaCodeContext* self);
-void vala_code_context_set_deprecated (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_deprecated (ValaCodeContext* self,
+                                       gboolean value);
 gboolean vala_code_context_get_hide_internal (ValaCodeContext* self);
-void vala_code_context_set_hide_internal (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_hide_internal (ValaCodeContext* self,
+                                          gboolean value);
 gboolean vala_code_context_get_since_check (ValaCodeContext* self);
-void vala_code_context_set_since_check (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_since_check (ValaCodeContext* self,
+                                        gboolean value);
 gboolean vala_code_context_get_experimental (ValaCodeContext* self);
-void vala_code_context_set_experimental (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_experimental (ValaCodeContext* self,
+                                         gboolean value);
 gboolean vala_code_context_get_experimental_non_null (ValaCodeContext* self);
-void vala_code_context_set_experimental_non_null (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_experimental_non_null (ValaCodeContext* self,
+                                                  gboolean value);
 gboolean vala_code_context_get_gobject_tracing (ValaCodeContext* self);
-void vala_code_context_set_gobject_tracing (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_gobject_tracing (ValaCodeContext* self,
+                                            gboolean value);
 gboolean vala_code_context_get_ccode_only (ValaCodeContext* self);
-void vala_code_context_set_ccode_only (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_ccode_only (ValaCodeContext* self,
+                                       gboolean value);
+const gchar* vala_code_context_get_pkg_config_command (ValaCodeContext* self);
+void vala_code_context_set_pkg_config_command (ValaCodeContext* self,
+                                               const gchar* value);
+gboolean vala_code_context_get_abi_stability (ValaCodeContext* self);
+void vala_code_context_set_abi_stability (ValaCodeContext* self,
+                                          gboolean value);
 const gchar* vala_code_context_get_header_filename (ValaCodeContext* self);
-void vala_code_context_set_header_filename (ValaCodeContext* self, const gchar* value);
+void vala_code_context_set_header_filename (ValaCodeContext* self,
+                                            const gchar* value);
 const gchar* vala_code_context_get_internal_header_filename (ValaCodeContext* self);
-void vala_code_context_set_internal_header_filename (ValaCodeContext* self, const gchar* value);
+void vala_code_context_set_internal_header_filename (ValaCodeContext* self,
+                                                     const gchar* value);
 gboolean vala_code_context_get_use_header (ValaCodeContext* self);
-void vala_code_context_set_use_header (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_use_header (ValaCodeContext* self,
+                                       gboolean value);
 const gchar* vala_code_context_get_includedir (ValaCodeContext* self);
-void vala_code_context_set_includedir (ValaCodeContext* self, const gchar* value);
+void vala_code_context_set_includedir (ValaCodeContext* self,
+                                       const gchar* value);
 const gchar* vala_code_context_get_symbols_filename (ValaCodeContext* self);
-void vala_code_context_set_symbols_filename (ValaCodeContext* self, const gchar* value);
+void vala_code_context_set_symbols_filename (ValaCodeContext* self,
+                                             const gchar* value);
 gboolean vala_code_context_get_compile_only (ValaCodeContext* self);
-void vala_code_context_set_compile_only (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_compile_only (ValaCodeContext* self,
+                                         gboolean value);
 const gchar* vala_code_context_get_output (ValaCodeContext* self);
-void vala_code_context_set_output (ValaCodeContext* self, const gchar* value);
+void vala_code_context_set_output (ValaCodeContext* self,
+                                   const gchar* value);
 const gchar* vala_code_context_get_basedir (ValaCodeContext* self);
-void vala_code_context_set_basedir (ValaCodeContext* self, const gchar* value);
+void vala_code_context_set_basedir (ValaCodeContext* self,
+                                    const gchar* value);
 const gchar* vala_code_context_get_directory (ValaCodeContext* self);
-void vala_code_context_set_directory (ValaCodeContext* self, const gchar* value);
+void vala_code_context_set_directory (ValaCodeContext* self,
+                                      const gchar* value);
+gchar** vala_code_context_get_vapi_directories (ValaCodeContext* self,
+                                                int* result_length1);
+void vala_code_context_set_vapi_directories (ValaCodeContext* self,
+                                             gchar** value,
+                                             int value_length1);
+gchar** vala_code_context_get_gir_directories (ValaCodeContext* self,
+                                               int* result_length1);
+void vala_code_context_set_gir_directories (ValaCodeContext* self,
+                                            gchar** value,
+                                            int value_length1);
+gchar** vala_code_context_get_metadata_directories (ValaCodeContext* self,
+                                                    int* result_length1);
+void vala_code_context_set_metadata_directories (ValaCodeContext* self,
+                                                 gchar** value,
+                                                 int value_length1);
 gboolean vala_code_context_get_debug (ValaCodeContext* self);
-void vala_code_context_set_debug (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_debug (ValaCodeContext* self,
+                                  gboolean value);
 gint vala_code_context_get_optlevel (ValaCodeContext* self);
-void vala_code_context_set_optlevel (ValaCodeContext* self, gint value);
-gboolean vala_code_context_get_thread (ValaCodeContext* self);
-void vala_code_context_set_thread (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_optlevel (ValaCodeContext* self,
+                                     gint value);
 gboolean vala_code_context_get_mem_profiler (ValaCodeContext* self);
-void vala_code_context_set_mem_profiler (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_mem_profiler (ValaCodeContext* self,
+                                         gboolean value);
 ValaMethod* vala_code_context_get_module_init_method (ValaCodeContext* self);
-void vala_code_context_set_module_init_method (ValaCodeContext* self, ValaMethod* value);
+void vala_code_context_set_module_init_method (ValaCodeContext* self,
+                                               ValaMethod* value);
 gboolean vala_code_context_get_save_temps (ValaCodeContext* self);
-void vala_code_context_set_save_temps (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_save_temps (ValaCodeContext* self,
+                                       gboolean value);
 GType vala_profile_get_type (void) G_GNUC_CONST;
 ValaProfile vala_code_context_get_profile (ValaCodeContext* self);
-void vala_code_context_set_profile (ValaCodeContext* self, ValaProfile value);
+void vala_code_context_set_profile (ValaCodeContext* self,
+                                    ValaProfile value);
 gint vala_code_context_get_target_glib_major (ValaCodeContext* self);
-void vala_code_context_set_target_glib_major (ValaCodeContext* self, gint value);
+void vala_code_context_set_target_glib_major (ValaCodeContext* self,
+                                              gint value);
 gint vala_code_context_get_target_glib_minor (ValaCodeContext* self);
-void vala_code_context_set_target_glib_minor (ValaCodeContext* self, gint value);
+void vala_code_context_set_target_glib_minor (ValaCodeContext* self,
+                                              gint value);
 gboolean vala_code_context_get_verbose_mode (ValaCodeContext* self);
-void vala_code_context_set_verbose_mode (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_verbose_mode (ValaCodeContext* self,
+                                         gboolean value);
 gboolean vala_code_context_get_version_header (ValaCodeContext* self);
-void vala_code_context_set_version_header (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_version_header (ValaCodeContext* self,
+                                           gboolean value);
 gboolean vala_code_context_get_nostdpkg (ValaCodeContext* self);
-void vala_code_context_set_nostdpkg (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_nostdpkg (ValaCodeContext* self,
+                                     gboolean value);
 gboolean vala_code_context_get_use_fast_vapi (ValaCodeContext* self);
-void vala_code_context_set_use_fast_vapi (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_use_fast_vapi (ValaCodeContext* self,
+                                          gboolean value);
 gboolean vala_code_context_get_vapi_comments (ValaCodeContext* self);
-void vala_code_context_set_vapi_comments (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_vapi_comments (ValaCodeContext* self,
+                                          gboolean value);
 gboolean vala_code_context_get_save_csources (ValaCodeContext* self);
+gpointer vala_report_ref (gpointer instance);
+void vala_report_unref (gpointer instance);
+GParamSpec* vala_param_spec_report (const gchar* name,
+                                    const gchar* nick,
+                                    const gchar* blurb,
+                                    GType object_type,
+                                    GParamFlags flags);
+void vala_value_set_report (GValue* value,
+                            gpointer v_object);
+void vala_value_take_report (GValue* value,
+                             gpointer v_object);
+gpointer vala_value_get_report (const GValue* value);
 GType vala_report_get_type (void) G_GNUC_CONST;
 ValaReport* vala_code_context_get_report (ValaCodeContext* self);
-void vala_code_context_set_report (ValaCodeContext* self, ValaReport* value);
+void vala_code_context_set_report (ValaCodeContext* self,
+                                   ValaReport* value);
 ValaMethod* vala_code_context_get_entry_point (ValaCodeContext* self);
-void vala_code_context_set_entry_point (ValaCodeContext* self, ValaMethod* value);
+void vala_code_context_set_entry_point (ValaCodeContext* self,
+                                        ValaMethod* value);
 const gchar* vala_code_context_get_entry_point_name (ValaCodeContext* self);
-void vala_code_context_set_entry_point_name (ValaCodeContext* self, const gchar* value);
+void vala_code_context_set_entry_point_name (ValaCodeContext* self,
+                                             const gchar* value);
 gboolean vala_code_context_get_run_output (ValaCodeContext* self);
-void vala_code_context_set_run_output (ValaCodeContext* self, gboolean value);
+void vala_code_context_set_run_output (ValaCodeContext* self,
+                                       gboolean value);
+gchar** vala_code_context_get_gresources (ValaCodeContext* self,
+                                          int* result_length1);
+void vala_code_context_set_gresources (ValaCodeContext* self,
+                                       gchar** value,
+                                       int value_length1);
+gchar** vala_code_context_get_gresources_directories (ValaCodeContext* self,
+                                                      int* result_length1);
+void vala_code_context_set_gresources_directories (ValaCodeContext* self,
+                                                   gchar** value,
+                                                   int value_length1);
 ValaNamespace* vala_code_context_get_root (ValaCodeContext* self);
 GType vala_symbol_resolver_get_type (void) G_GNUC_CONST;
 ValaSymbolResolver* vala_code_context_get_resolver (ValaCodeContext* self);
@@ -3922,10 +4291,12 @@ ValaSemanticAnalyzer* vala_code_context_get_analyzer (ValaCodeContext* self);
 GType vala_flow_analyzer_get_type (void) G_GNUC_CONST;
 ValaFlowAnalyzer* vala_code_context_get_flow_analyzer (ValaCodeContext* self);
 ValaCodeGenerator* vala_code_context_get_codegen (ValaCodeContext* self);
-void vala_code_context_set_codegen (ValaCodeContext* self, ValaCodeGenerator* value);
+void vala_code_context_set_codegen (ValaCodeContext* self,
+                                    ValaCodeGenerator* value);
 GType vala_used_attr_get_type (void) G_GNUC_CONST;
 ValaUsedAttr* vala_code_context_get_used_attr (ValaCodeContext* self);
-void vala_code_context_set_used_attr (ValaCodeContext* self, ValaUsedAttr* value);
+void vala_code_context_set_used_attr (ValaCodeContext* self,
+                                      ValaUsedAttr* value);
 GType vala_enum_value_get_type (void) G_GNUC_CONST;
 GType vala_error_code_get_type (void) G_GNUC_CONST;
 GType vala_property_accessor_get_type (void) G_GNUC_CONST;
@@ -3974,648 +4345,1215 @@ GType vala_conditional_expression_get_type (void) G_GNUC_CONST;
 GType vala_lambda_expression_get_type (void) G_GNUC_CONST;
 gpointer vala_target_value_ref (gpointer instance);
 void vala_target_value_unref (gpointer instance);
-GParamSpec* vala_param_spec_target_value (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_target_value (GValue* value, gpointer v_object);
-void vala_value_take_target_value (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_target_value (const gchar* name,
+                                          const gchar* nick,
+                                          const gchar* blurb,
+                                          GType object_type,
+                                          GParamFlags flags);
+void vala_value_set_target_value (GValue* value,
+                                  gpointer v_object);
+void vala_value_take_target_value (GValue* value,
+                                   gpointer v_object);
 gpointer vala_value_get_target_value (const GValue* value);
 GType vala_target_value_get_type (void) G_GNUC_CONST;
-void vala_code_generator_emit (ValaCodeGenerator* self, ValaCodeContext* context);
-ValaLocalVariable* vala_code_generator_create_local (ValaCodeGenerator* self, ValaDataType* type);
-ValaTargetValue* vala_code_generator_load_local (ValaCodeGenerator* self, ValaLocalVariable* local);
-void vala_code_generator_store_local (ValaCodeGenerator* self, ValaLocalVariable* local, ValaTargetValue* value, gboolean initializer);
-ValaTargetValue* vala_code_generator_load_parameter (ValaCodeGenerator* self, ValaParameter* param);
-void vala_code_generator_store_parameter (ValaCodeGenerator* self, ValaParameter* param, ValaTargetValue* value, gboolean capturing_parameter);
-ValaTargetValue* vala_code_generator_load_field (ValaCodeGenerator* self, ValaField* field, ValaTargetValue* instance);
-void vala_code_generator_store_field (ValaCodeGenerator* self, ValaField* field, ValaTargetValue* instance, ValaTargetValue* value);
+void vala_code_generator_emit (ValaCodeGenerator* self,
+                               ValaCodeContext* context);
+ValaTargetValue* vala_code_generator_load_local (ValaCodeGenerator* self,
+                                                 ValaLocalVariable* local);
+void vala_code_generator_store_local (ValaCodeGenerator* self,
+                                      ValaLocalVariable* local,
+                                      ValaTargetValue* value,
+                                      gboolean initializer,
+                                      ValaSourceReference* source_reference);
+ValaTargetValue* vala_code_generator_load_parameter (ValaCodeGenerator* self,
+                                                     ValaParameter* param);
+void vala_code_generator_store_parameter (ValaCodeGenerator* self,
+                                          ValaParameter* param,
+                                          ValaTargetValue* value,
+                                          gboolean capturing_parameter,
+                                          ValaSourceReference* source_reference);
+ValaTargetValue* vala_code_generator_load_field (ValaCodeGenerator* self,
+                                                 ValaField* field,
+                                                 ValaTargetValue* instance);
+void vala_code_generator_store_field (ValaCodeGenerator* self,
+                                      ValaField* field,
+                                      ValaTargetValue* instance,
+                                      ValaTargetValue* value,
+                                      ValaSourceReference* source_reference);
 ValaCodeGenerator* vala_code_generator_construct (GType object_type);
 ValaList* vala_code_node_get_error_types (ValaCodeNode* self);
-void vala_code_node_add_error_type (ValaCodeNode* self, ValaDataType* error_type);
-void vala_code_node_add_error_types (ValaCodeNode* self, ValaList* error_types);
-void vala_code_node_accept (ValaCodeNode* self, ValaCodeVisitor* visitor);
-void vala_code_node_accept_children (ValaCodeNode* self, ValaCodeVisitor* visitor);
-gboolean vala_code_node_check (ValaCodeNode* self, ValaCodeContext* context);
-void vala_code_node_emit (ValaCodeNode* self, ValaCodeGenerator* codegen);
-void vala_code_node_replace_type (ValaCodeNode* self, ValaDataType* old_type, ValaDataType* new_type);
-void vala_code_node_replace_expression (ValaCodeNode* self, ValaExpression* old_node, ValaExpression* new_node);
-ValaAttribute* vala_code_node_get_attribute (ValaCodeNode* self, const gchar* name);
-gboolean vala_code_node_has_attribute_argument (ValaCodeNode* self, const gchar* attribute, const gchar* argument);
-void vala_code_node_set_attribute (ValaCodeNode* self, const gchar* name, gboolean value, ValaSourceReference* source_reference);
-void vala_code_node_remove_attribute_argument (ValaCodeNode* self, const gchar* attribute, const gchar* argument);
-gchar* vala_code_node_get_attribute_string (ValaCodeNode* self, const gchar* attribute, const gchar* argument, const gchar* default_value);
-gint vala_code_node_get_attribute_integer (ValaCodeNode* self, const gchar* attribute, const gchar* argument, gint default_value);
-gdouble vala_code_node_get_attribute_double (ValaCodeNode* self, const gchar* attribute, const gchar* argument, gdouble default_value);
-gboolean vala_code_node_get_attribute_bool (ValaCodeNode* self, const gchar* attribute, const gchar* argument, gboolean default_value);
-void vala_code_node_set_attribute_string (ValaCodeNode* self, const gchar* attribute, const gchar* argument, const gchar* value, ValaSourceReference* source_reference);
-void vala_code_node_set_attribute_integer (ValaCodeNode* self, const gchar* attribute, const gchar* argument, gint value, ValaSourceReference* source_reference);
-void vala_code_node_set_attribute_double (ValaCodeNode* self, const gchar* attribute, const gchar* argument, gdouble value, ValaSourceReference* source_reference);
-void vala_code_node_set_attribute_bool (ValaCodeNode* self, const gchar* attribute, const gchar* argument, gboolean value, ValaSourceReference* source_reference);
+void vala_code_node_add_error_type (ValaCodeNode* self,
+                                    ValaDataType* error_type);
+void vala_code_node_add_error_types (ValaCodeNode* self,
+                                     ValaList* error_types);
+void vala_code_node_accept (ValaCodeNode* self,
+                            ValaCodeVisitor* visitor);
+void vala_code_node_accept_children (ValaCodeNode* self,
+                                     ValaCodeVisitor* visitor);
+gboolean vala_code_node_check (ValaCodeNode* self,
+                               ValaCodeContext* context);
+void vala_code_node_emit (ValaCodeNode* self,
+                          ValaCodeGenerator* codegen);
+void vala_code_node_replace_type (ValaCodeNode* self,
+                                  ValaDataType* old_type,
+                                  ValaDataType* new_type);
+void vala_code_node_replace_expression (ValaCodeNode* self,
+                                        ValaExpression* old_node,
+                                        ValaExpression* new_node);
+ValaAttribute* vala_code_node_get_attribute (ValaCodeNode* self,
+                                             const gchar* name);
+gboolean vala_code_node_has_attribute_argument (ValaCodeNode* self,
+                                                const gchar* attribute,
+                                                const gchar* argument);
+void vala_code_node_set_attribute (ValaCodeNode* self,
+                                   const gchar* name,
+                                   gboolean value,
+                                   ValaSourceReference* source_reference);
+void vala_code_node_remove_attribute_argument (ValaCodeNode* self,
+                                               const gchar* attribute,
+                                               const gchar* argument);
+gchar* vala_code_node_get_attribute_string (ValaCodeNode* self,
+                                            const gchar* attribute,
+                                            const gchar* argument,
+                                            const gchar* default_value);
+gint vala_code_node_get_attribute_integer (ValaCodeNode* self,
+                                           const gchar* attribute,
+                                           const gchar* argument,
+                                           gint default_value);
+gdouble vala_code_node_get_attribute_double (ValaCodeNode* self,
+                                             const gchar* attribute,
+                                             const gchar* argument,
+                                             gdouble default_value);
+gboolean vala_code_node_get_attribute_bool (ValaCodeNode* self,
+                                            const gchar* attribute,
+                                            const gchar* argument,
+                                            gboolean default_value);
+void vala_code_node_set_attribute_string (ValaCodeNode* self,
+                                          const gchar* attribute,
+                                          const gchar* argument,
+                                          const gchar* value,
+                                          ValaSourceReference* source_reference);
+void vala_code_node_set_attribute_integer (ValaCodeNode* self,
+                                           const gchar* attribute,
+                                           const gchar* argument,
+                                           gint value,
+                                           ValaSourceReference* source_reference);
+void vala_code_node_set_attribute_double (ValaCodeNode* self,
+                                          const gchar* attribute,
+                                          const gchar* argument,
+                                          gdouble value,
+                                          ValaSourceReference* source_reference);
+void vala_code_node_set_attribute_bool (ValaCodeNode* self,
+                                        const gchar* attribute,
+                                        const gchar* argument,
+                                        gboolean value,
+                                        ValaSourceReference* source_reference);
 gpointer vala_attribute_cache_ref (gpointer instance);
 void vala_attribute_cache_unref (gpointer instance);
-GParamSpec* vala_param_spec_attribute_cache (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_attribute_cache (GValue* value, gpointer v_object);
-void vala_value_take_attribute_cache (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_attribute_cache (const gchar* name,
+                                             const gchar* nick,
+                                             const gchar* blurb,
+                                             GType object_type,
+                                             GParamFlags flags);
+void vala_value_set_attribute_cache (GValue* value,
+                                     gpointer v_object);
+void vala_value_take_attribute_cache (GValue* value,
+                                      gpointer v_object);
 gpointer vala_value_get_attribute_cache (const GValue* value);
 GType vala_attribute_cache_get_type (void) G_GNUC_CONST;
-ValaAttributeCache* vala_code_node_get_attribute_cache (ValaCodeNode* self, gint index);
-void vala_code_node_set_attribute_cache (ValaCodeNode* self, gint index, ValaAttributeCache* cache);
+ValaAttributeCache* vala_code_node_get_attribute_cache (ValaCodeNode* self,
+                                                        gint index);
+void vala_code_node_set_attribute_cache (ValaCodeNode* self,
+                                         gint index,
+                                         ValaAttributeCache* cache);
 gchar* vala_code_node_to_string (ValaCodeNode* self);
-void vala_code_node_get_defined_variables (ValaCodeNode* self, ValaCollection* collection);
-void vala_code_node_get_used_variables (ValaCodeNode* self, ValaCollection* collection);
+void vala_code_node_get_defined_variables (ValaCodeNode* self,
+                                           ValaCollection* collection);
+void vala_code_node_get_used_variables (ValaCodeNode* self,
+                                        ValaCollection* collection);
 gchar* vala_code_node_get_temp_name (void);
 gint vala_code_node_get_attribute_cache_index (void);
 ValaCodeNode* vala_code_node_construct (GType object_type);
 ValaCodeNode* vala_code_node_get_parent_node (ValaCodeNode* self);
-void vala_code_node_set_parent_node (ValaCodeNode* self, ValaCodeNode* value);
+void vala_code_node_set_parent_node (ValaCodeNode* self,
+                                     ValaCodeNode* value);
 ValaSourceReference* vala_code_node_get_source_reference (ValaCodeNode* self);
-void vala_code_node_set_source_reference (ValaCodeNode* self, ValaSourceReference* value);
+void vala_code_node_set_source_reference (ValaCodeNode* self,
+                                          ValaSourceReference* value);
 gboolean vala_code_node_get_unreachable (ValaCodeNode* self);
-void vala_code_node_set_unreachable (ValaCodeNode* self, gboolean value);
+void vala_code_node_set_unreachable (ValaCodeNode* self,
+                                     gboolean value);
 const gchar* vala_code_node_get_type_name (ValaCodeNode* self);
 gboolean vala_code_node_get_checked (ValaCodeNode* self);
-void vala_code_node_set_checked (ValaCodeNode* self, gboolean value);
+void vala_code_node_set_checked (ValaCodeNode* self,
+                                 gboolean value);
 gboolean vala_code_node_get_error (ValaCodeNode* self);
-void vala_code_node_set_error (ValaCodeNode* self, gboolean value);
+void vala_code_node_set_error (ValaCodeNode* self,
+                               gboolean value);
 gboolean vala_code_node_get_tree_can_fail (ValaCodeNode* self);
 ValaAttributeCache* vala_attribute_cache_new (void);
 ValaAttributeCache* vala_attribute_cache_construct (GType object_type);
-void vala_code_visitor_visit_source_file (ValaCodeVisitor* self, ValaSourceFile* source_file);
-void vala_code_visitor_visit_namespace (ValaCodeVisitor* self, ValaNamespace* ns);
-void vala_code_visitor_visit_class (ValaCodeVisitor* self, ValaClass* cl);
-void vala_code_visitor_visit_struct (ValaCodeVisitor* self, ValaStruct* st);
-void vala_code_visitor_visit_interface (ValaCodeVisitor* self, ValaInterface* iface);
-void vala_code_visitor_visit_enum (ValaCodeVisitor* self, ValaEnum* en);
-void vala_code_visitor_visit_enum_value (ValaCodeVisitor* self, ValaEnumValue* ev);
-void vala_code_visitor_visit_error_domain (ValaCodeVisitor* self, ValaErrorDomain* edomain);
-void vala_code_visitor_visit_error_code (ValaCodeVisitor* self, ValaErrorCode* ecode);
-void vala_code_visitor_visit_delegate (ValaCodeVisitor* self, ValaDelegate* d);
-void vala_code_visitor_visit_constant (ValaCodeVisitor* self, ValaConstant* c);
-void vala_code_visitor_visit_field (ValaCodeVisitor* self, ValaField* f);
-void vala_code_visitor_visit_method (ValaCodeVisitor* self, ValaMethod* m);
-void vala_code_visitor_visit_creation_method (ValaCodeVisitor* self, ValaCreationMethod* m);
-void vala_code_visitor_visit_formal_parameter (ValaCodeVisitor* self, ValaParameter* p);
-void vala_code_visitor_visit_property (ValaCodeVisitor* self, ValaProperty* prop);
-void vala_code_visitor_visit_property_accessor (ValaCodeVisitor* self, ValaPropertyAccessor* acc);
-void vala_code_visitor_visit_signal (ValaCodeVisitor* self, ValaSignal* sig);
-void vala_code_visitor_visit_constructor (ValaCodeVisitor* self, ValaConstructor* c);
-void vala_code_visitor_visit_destructor (ValaCodeVisitor* self, ValaDestructor* d);
-void vala_code_visitor_visit_type_parameter (ValaCodeVisitor* self, ValaTypeParameter* p);
-void vala_code_visitor_visit_using_directive (ValaCodeVisitor* self, ValaUsingDirective* ns);
-void vala_code_visitor_visit_data_type (ValaCodeVisitor* self, ValaDataType* type);
-void vala_code_visitor_visit_block (ValaCodeVisitor* self, ValaBlock* b);
-void vala_code_visitor_visit_empty_statement (ValaCodeVisitor* self, ValaEmptyStatement* stmt);
-void vala_code_visitor_visit_declaration_statement (ValaCodeVisitor* self, ValaDeclarationStatement* stmt);
-void vala_code_visitor_visit_local_variable (ValaCodeVisitor* self, ValaLocalVariable* local);
-void vala_code_visitor_visit_initializer_list (ValaCodeVisitor* self, ValaInitializerList* list);
-void vala_code_visitor_visit_expression_statement (ValaCodeVisitor* self, ValaExpressionStatement* stmt);
-void vala_code_visitor_visit_if_statement (ValaCodeVisitor* self, ValaIfStatement* stmt);
-void vala_code_visitor_visit_switch_statement (ValaCodeVisitor* self, ValaSwitchStatement* stmt);
-void vala_code_visitor_visit_switch_section (ValaCodeVisitor* self, ValaSwitchSection* section);
-void vala_code_visitor_visit_switch_label (ValaCodeVisitor* self, ValaSwitchLabel* label);
-void vala_code_visitor_visit_loop (ValaCodeVisitor* self, ValaLoop* stmt);
-void vala_code_visitor_visit_while_statement (ValaCodeVisitor* self, ValaWhileStatement* stmt);
-void vala_code_visitor_visit_do_statement (ValaCodeVisitor* self, ValaDoStatement* stmt);
-void vala_code_visitor_visit_for_statement (ValaCodeVisitor* self, ValaForStatement* stmt);
-void vala_code_visitor_visit_foreach_statement (ValaCodeVisitor* self, ValaForeachStatement* stmt);
-void vala_code_visitor_visit_break_statement (ValaCodeVisitor* self, ValaBreakStatement* stmt);
-void vala_code_visitor_visit_continue_statement (ValaCodeVisitor* self, ValaContinueStatement* stmt);
-void vala_code_visitor_visit_return_statement (ValaCodeVisitor* self, ValaReturnStatement* stmt);
-void vala_code_visitor_visit_yield_statement (ValaCodeVisitor* self, ValaYieldStatement* y);
-void vala_code_visitor_visit_throw_statement (ValaCodeVisitor* self, ValaThrowStatement* stmt);
-void vala_code_visitor_visit_try_statement (ValaCodeVisitor* self, ValaTryStatement* stmt);
-void vala_code_visitor_visit_catch_clause (ValaCodeVisitor* self, ValaCatchClause* clause);
-void vala_code_visitor_visit_lock_statement (ValaCodeVisitor* self, ValaLockStatement* stmt);
-void vala_code_visitor_visit_unlock_statement (ValaCodeVisitor* self, ValaUnlockStatement* stmt);
-void vala_code_visitor_visit_delete_statement (ValaCodeVisitor* self, ValaDeleteStatement* stmt);
-void vala_code_visitor_visit_expression (ValaCodeVisitor* self, ValaExpression* expr);
-void vala_code_visitor_visit_array_creation_expression (ValaCodeVisitor* self, ValaArrayCreationExpression* expr);
-void vala_code_visitor_visit_boolean_literal (ValaCodeVisitor* self, ValaBooleanLiteral* lit);
-void vala_code_visitor_visit_character_literal (ValaCodeVisitor* self, ValaCharacterLiteral* lit);
-void vala_code_visitor_visit_integer_literal (ValaCodeVisitor* self, ValaIntegerLiteral* lit);
-void vala_code_visitor_visit_real_literal (ValaCodeVisitor* self, ValaRealLiteral* lit);
-void vala_code_visitor_visit_regex_literal (ValaCodeVisitor* self, ValaRegexLiteral* lit);
-void vala_code_visitor_visit_string_literal (ValaCodeVisitor* self, ValaStringLiteral* lit);
-void vala_code_visitor_visit_template (ValaCodeVisitor* self, ValaTemplate* tmpl);
-void vala_code_visitor_visit_tuple (ValaCodeVisitor* self, ValaTuple* tuple);
-void vala_code_visitor_visit_null_literal (ValaCodeVisitor* self, ValaNullLiteral* lit);
-void vala_code_visitor_visit_member_access (ValaCodeVisitor* self, ValaMemberAccess* expr);
-void vala_code_visitor_visit_method_call (ValaCodeVisitor* self, ValaMethodCall* expr);
-void vala_code_visitor_visit_element_access (ValaCodeVisitor* self, ValaElementAccess* expr);
-void vala_code_visitor_visit_slice_expression (ValaCodeVisitor* self, ValaSliceExpression* expr);
-void vala_code_visitor_visit_base_access (ValaCodeVisitor* self, ValaBaseAccess* expr);
-void vala_code_visitor_visit_postfix_expression (ValaCodeVisitor* self, ValaPostfixExpression* expr);
-void vala_code_visitor_visit_object_creation_expression (ValaCodeVisitor* self, ValaObjectCreationExpression* expr);
-void vala_code_visitor_visit_sizeof_expression (ValaCodeVisitor* self, ValaSizeofExpression* expr);
-void vala_code_visitor_visit_typeof_expression (ValaCodeVisitor* self, ValaTypeofExpression* expr);
-void vala_code_visitor_visit_unary_expression (ValaCodeVisitor* self, ValaUnaryExpression* expr);
-void vala_code_visitor_visit_cast_expression (ValaCodeVisitor* self, ValaCastExpression* expr);
-void vala_code_visitor_visit_named_argument (ValaCodeVisitor* self, ValaNamedArgument* expr);
-void vala_code_visitor_visit_pointer_indirection (ValaCodeVisitor* self, ValaPointerIndirection* expr);
-void vala_code_visitor_visit_addressof_expression (ValaCodeVisitor* self, ValaAddressofExpression* expr);
-void vala_code_visitor_visit_reference_transfer_expression (ValaCodeVisitor* self, ValaReferenceTransferExpression* expr);
-void vala_code_visitor_visit_binary_expression (ValaCodeVisitor* self, ValaBinaryExpression* expr);
-void vala_code_visitor_visit_type_check (ValaCodeVisitor* self, ValaTypeCheck* expr);
-void vala_code_visitor_visit_conditional_expression (ValaCodeVisitor* self, ValaConditionalExpression* expr);
-void vala_code_visitor_visit_lambda_expression (ValaCodeVisitor* self, ValaLambdaExpression* expr);
-void vala_code_visitor_visit_assignment (ValaCodeVisitor* self, ValaAssignment* a);
-void vala_code_visitor_visit_end_full_expression (ValaCodeVisitor* self, ValaExpression* expr);
+void vala_code_visitor_visit_source_file (ValaCodeVisitor* self,
+                                          ValaSourceFile* source_file);
+void vala_code_visitor_visit_namespace (ValaCodeVisitor* self,
+                                        ValaNamespace* ns);
+void vala_code_visitor_visit_class (ValaCodeVisitor* self,
+                                    ValaClass* cl);
+void vala_code_visitor_visit_struct (ValaCodeVisitor* self,
+                                     ValaStruct* st);
+void vala_code_visitor_visit_interface (ValaCodeVisitor* self,
+                                        ValaInterface* iface);
+void vala_code_visitor_visit_enum (ValaCodeVisitor* self,
+                                   ValaEnum* en);
+void vala_code_visitor_visit_enum_value (ValaCodeVisitor* self,
+                                         ValaEnumValue* ev);
+void vala_code_visitor_visit_error_domain (ValaCodeVisitor* self,
+                                           ValaErrorDomain* edomain);
+void vala_code_visitor_visit_error_code (ValaCodeVisitor* self,
+                                         ValaErrorCode* ecode);
+void vala_code_visitor_visit_delegate (ValaCodeVisitor* self,
+                                       ValaDelegate* d);
+void vala_code_visitor_visit_constant (ValaCodeVisitor* self,
+                                       ValaConstant* c);
+void vala_code_visitor_visit_field (ValaCodeVisitor* self,
+                                    ValaField* f);
+void vala_code_visitor_visit_method (ValaCodeVisitor* self,
+                                     ValaMethod* m);
+void vala_code_visitor_visit_creation_method (ValaCodeVisitor* self,
+                                              ValaCreationMethod* m);
+void vala_code_visitor_visit_formal_parameter (ValaCodeVisitor* self,
+                                               ValaParameter* p);
+void vala_code_visitor_visit_property (ValaCodeVisitor* self,
+                                       ValaProperty* prop);
+void vala_code_visitor_visit_property_accessor (ValaCodeVisitor* self,
+                                                ValaPropertyAccessor* acc);
+void vala_code_visitor_visit_signal (ValaCodeVisitor* self,
+                                     ValaSignal* sig);
+void vala_code_visitor_visit_constructor (ValaCodeVisitor* self,
+                                          ValaConstructor* c);
+void vala_code_visitor_visit_destructor (ValaCodeVisitor* self,
+                                         ValaDestructor* d);
+void vala_code_visitor_visit_type_parameter (ValaCodeVisitor* self,
+                                             ValaTypeParameter* p);
+void vala_code_visitor_visit_using_directive (ValaCodeVisitor* self,
+                                              ValaUsingDirective* ns);
+void vala_code_visitor_visit_data_type (ValaCodeVisitor* self,
+                                        ValaDataType* type);
+void vala_code_visitor_visit_block (ValaCodeVisitor* self,
+                                    ValaBlock* b);
+void vala_code_visitor_visit_empty_statement (ValaCodeVisitor* self,
+                                              ValaEmptyStatement* stmt);
+void vala_code_visitor_visit_declaration_statement (ValaCodeVisitor* self,
+                                                    ValaDeclarationStatement* stmt);
+void vala_code_visitor_visit_local_variable (ValaCodeVisitor* self,
+                                             ValaLocalVariable* local);
+void vala_code_visitor_visit_initializer_list (ValaCodeVisitor* self,
+                                               ValaInitializerList* list);
+void vala_code_visitor_visit_expression_statement (ValaCodeVisitor* self,
+                                                   ValaExpressionStatement* stmt);
+void vala_code_visitor_visit_if_statement (ValaCodeVisitor* self,
+                                           ValaIfStatement* stmt);
+void vala_code_visitor_visit_switch_statement (ValaCodeVisitor* self,
+                                               ValaSwitchStatement* stmt);
+void vala_code_visitor_visit_switch_section (ValaCodeVisitor* self,
+                                             ValaSwitchSection* section);
+void vala_code_visitor_visit_switch_label (ValaCodeVisitor* self,
+                                           ValaSwitchLabel* label);
+void vala_code_visitor_visit_loop (ValaCodeVisitor* self,
+                                   ValaLoop* stmt);
+void vala_code_visitor_visit_while_statement (ValaCodeVisitor* self,
+                                              ValaWhileStatement* stmt);
+void vala_code_visitor_visit_do_statement (ValaCodeVisitor* self,
+                                           ValaDoStatement* stmt);
+void vala_code_visitor_visit_for_statement (ValaCodeVisitor* self,
+                                            ValaForStatement* stmt);
+void vala_code_visitor_visit_foreach_statement (ValaCodeVisitor* self,
+                                                ValaForeachStatement* stmt);
+void vala_code_visitor_visit_break_statement (ValaCodeVisitor* self,
+                                              ValaBreakStatement* stmt);
+void vala_code_visitor_visit_continue_statement (ValaCodeVisitor* self,
+                                                 ValaContinueStatement* stmt);
+void vala_code_visitor_visit_return_statement (ValaCodeVisitor* self,
+                                               ValaReturnStatement* stmt);
+void vala_code_visitor_visit_yield_statement (ValaCodeVisitor* self,
+                                              ValaYieldStatement* y);
+void vala_code_visitor_visit_throw_statement (ValaCodeVisitor* self,
+                                              ValaThrowStatement* stmt);
+void vala_code_visitor_visit_try_statement (ValaCodeVisitor* self,
+                                            ValaTryStatement* stmt);
+void vala_code_visitor_visit_catch_clause (ValaCodeVisitor* self,
+                                           ValaCatchClause* clause);
+void vala_code_visitor_visit_lock_statement (ValaCodeVisitor* self,
+                                             ValaLockStatement* stmt);
+void vala_code_visitor_visit_unlock_statement (ValaCodeVisitor* self,
+                                               ValaUnlockStatement* stmt);
+void vala_code_visitor_visit_delete_statement (ValaCodeVisitor* self,
+                                               ValaDeleteStatement* stmt);
+void vala_code_visitor_visit_expression (ValaCodeVisitor* self,
+                                         ValaExpression* expr);
+void vala_code_visitor_visit_array_creation_expression (ValaCodeVisitor* self,
+                                                        ValaArrayCreationExpression* expr);
+void vala_code_visitor_visit_boolean_literal (ValaCodeVisitor* self,
+                                              ValaBooleanLiteral* lit);
+void vala_code_visitor_visit_character_literal (ValaCodeVisitor* self,
+                                                ValaCharacterLiteral* lit);
+void vala_code_visitor_visit_integer_literal (ValaCodeVisitor* self,
+                                              ValaIntegerLiteral* lit);
+void vala_code_visitor_visit_real_literal (ValaCodeVisitor* self,
+                                           ValaRealLiteral* lit);
+void vala_code_visitor_visit_regex_literal (ValaCodeVisitor* self,
+                                            ValaRegexLiteral* lit);
+void vala_code_visitor_visit_string_literal (ValaCodeVisitor* self,
+                                             ValaStringLiteral* lit);
+void vala_code_visitor_visit_template (ValaCodeVisitor* self,
+                                       ValaTemplate* tmpl);
+void vala_code_visitor_visit_tuple (ValaCodeVisitor* self,
+                                    ValaTuple* tuple);
+void vala_code_visitor_visit_null_literal (ValaCodeVisitor* self,
+                                           ValaNullLiteral* lit);
+void vala_code_visitor_visit_member_access (ValaCodeVisitor* self,
+                                            ValaMemberAccess* expr);
+void vala_code_visitor_visit_method_call (ValaCodeVisitor* self,
+                                          ValaMethodCall* expr);
+void vala_code_visitor_visit_element_access (ValaCodeVisitor* self,
+                                             ValaElementAccess* expr);
+void vala_code_visitor_visit_slice_expression (ValaCodeVisitor* self,
+                                               ValaSliceExpression* expr);
+void vala_code_visitor_visit_base_access (ValaCodeVisitor* self,
+                                          ValaBaseAccess* expr);
+void vala_code_visitor_visit_postfix_expression (ValaCodeVisitor* self,
+                                                 ValaPostfixExpression* expr);
+void vala_code_visitor_visit_object_creation_expression (ValaCodeVisitor* self,
+                                                         ValaObjectCreationExpression* expr);
+void vala_code_visitor_visit_sizeof_expression (ValaCodeVisitor* self,
+                                                ValaSizeofExpression* expr);
+void vala_code_visitor_visit_typeof_expression (ValaCodeVisitor* self,
+                                                ValaTypeofExpression* expr);
+void vala_code_visitor_visit_unary_expression (ValaCodeVisitor* self,
+                                               ValaUnaryExpression* expr);
+void vala_code_visitor_visit_cast_expression (ValaCodeVisitor* self,
+                                              ValaCastExpression* expr);
+void vala_code_visitor_visit_named_argument (ValaCodeVisitor* self,
+                                             ValaNamedArgument* expr);
+void vala_code_visitor_visit_pointer_indirection (ValaCodeVisitor* self,
+                                                  ValaPointerIndirection* expr);
+void vala_code_visitor_visit_addressof_expression (ValaCodeVisitor* self,
+                                                   ValaAddressofExpression* expr);
+void vala_code_visitor_visit_reference_transfer_expression (ValaCodeVisitor* self,
+                                                            ValaReferenceTransferExpression* expr);
+void vala_code_visitor_visit_binary_expression (ValaCodeVisitor* self,
+                                                ValaBinaryExpression* expr);
+void vala_code_visitor_visit_type_check (ValaCodeVisitor* self,
+                                         ValaTypeCheck* expr);
+void vala_code_visitor_visit_conditional_expression (ValaCodeVisitor* self,
+                                                     ValaConditionalExpression* expr);
+void vala_code_visitor_visit_lambda_expression (ValaCodeVisitor* self,
+                                                ValaLambdaExpression* expr);
+void vala_code_visitor_visit_assignment (ValaCodeVisitor* self,
+                                         ValaAssignment* a);
+void vala_code_visitor_visit_end_full_expression (ValaCodeVisitor* self,
+                                                  ValaExpression* expr);
 ValaCodeVisitor* vala_code_visitor_construct (GType object_type);
 GType vala_code_writer_get_type (void) G_GNUC_CONST;
 GType vala_code_writer_type_get_type (void) G_GNUC_CONST;
 ValaCodeWriter* vala_code_writer_new (ValaCodeWriterType type);
-ValaCodeWriter* vala_code_writer_construct (GType object_type, ValaCodeWriterType type);
-void vala_code_writer_set_cheader_override (ValaCodeWriter* self, const gchar* original, const gchar* replacement);
-void vala_code_writer_write_file (ValaCodeWriter* self, ValaCodeContext* context, const gchar* filename);
-ValaComment* vala_comment_new (const gchar* comment, ValaSourceReference* _source_reference);
-ValaComment* vala_comment_construct (GType object_type, const gchar* comment, ValaSourceReference* _source_reference);
+ValaCodeWriter* vala_code_writer_construct (GType object_type,
+                                            ValaCodeWriterType type);
+void vala_code_writer_set_cheader_override (ValaCodeWriter* self,
+                                            const gchar* original,
+                                            const gchar* replacement);
+void vala_code_writer_write_file (ValaCodeWriter* self,
+                                  ValaCodeContext* context,
+                                  const gchar* filename);
+ValaComment* vala_comment_new (const gchar* comment,
+                               ValaSourceReference* _source_reference);
+ValaComment* vala_comment_construct (GType object_type,
+                                     const gchar* comment,
+                                     ValaSourceReference* _source_reference);
 const gchar* vala_comment_get_content (ValaComment* self);
-void vala_comment_set_content (ValaComment* self, const gchar* value);
+void vala_comment_set_content (ValaComment* self,
+                               const gchar* value);
 ValaSourceReference* vala_comment_get_source_reference (ValaComment* self);
-void vala_comment_set_source_reference (ValaComment* self, ValaSourceReference* value);
+void vala_comment_set_source_reference (ValaComment* self,
+                                        ValaSourceReference* value);
 GType vala_gir_comment_get_type (void) G_GNUC_CONST;
 ValaMapIterator* vala_gir_comment_parameter_iterator (ValaGirComment* self);
-ValaGirComment* vala_gir_comment_new (const gchar* comment, ValaSourceReference* _source_reference);
-ValaGirComment* vala_gir_comment_construct (GType object_type, const gchar* comment, ValaSourceReference* _source_reference);
-ValaComment* vala_gir_comment_get_content_for_parameter (ValaGirComment* self, const gchar* name);
+ValaGirComment* vala_gir_comment_new (const gchar* comment,
+                                      ValaSourceReference* _source_reference);
+ValaGirComment* vala_gir_comment_construct (GType object_type,
+                                            const gchar* comment,
+                                            ValaSourceReference* _source_reference);
+ValaComment* vala_gir_comment_get_content_for_parameter (ValaGirComment* self,
+                                                         const gchar* name);
 ValaComment* vala_gir_comment_get_return_content (ValaGirComment* self);
-void vala_gir_comment_set_return_content (ValaGirComment* self, ValaComment* value);
-ValaConditionalExpression* vala_conditional_expression_new (ValaExpression* cond, ValaExpression* true_expr, ValaExpression* false_expr, ValaSourceReference* source);
-ValaConditionalExpression* vala_conditional_expression_construct (GType object_type, ValaExpression* cond, ValaExpression* true_expr, ValaExpression* false_expr, ValaSourceReference* source);
+void vala_gir_comment_set_return_content (ValaGirComment* self,
+                                          ValaComment* value);
+ValaConditionalExpression* vala_conditional_expression_new (ValaExpression* cond,
+                                                            ValaExpression* true_expr,
+                                                            ValaExpression* false_expr,
+                                                            ValaSourceReference* source);
+ValaConditionalExpression* vala_conditional_expression_construct (GType object_type,
+                                                                  ValaExpression* cond,
+                                                                  ValaExpression* true_expr,
+                                                                  ValaExpression* false_expr,
+                                                                  ValaSourceReference* source);
 ValaExpression* vala_conditional_expression_get_condition (ValaConditionalExpression* self);
-void vala_conditional_expression_set_condition (ValaConditionalExpression* self, ValaExpression* value);
+void vala_conditional_expression_set_condition (ValaConditionalExpression* self,
+                                                ValaExpression* value);
 ValaExpression* vala_conditional_expression_get_true_expression (ValaConditionalExpression* self);
-void vala_conditional_expression_set_true_expression (ValaConditionalExpression* self, ValaExpression* value);
+void vala_conditional_expression_set_true_expression (ValaConditionalExpression* self,
+                                                      ValaExpression* value);
 ValaExpression* vala_conditional_expression_get_false_expression (ValaConditionalExpression* self);
-void vala_conditional_expression_set_false_expression (ValaConditionalExpression* self, ValaExpression* value);
-ValaConstant* vala_constant_new (const gchar* name, ValaDataType* type_reference, ValaExpression* value, ValaSourceReference* source_reference, ValaComment* comment);
-ValaConstant* vala_constant_construct (GType object_type, const gchar* name, ValaDataType* type_reference, ValaExpression* value, ValaSourceReference* source_reference, ValaComment* comment);
+void vala_conditional_expression_set_false_expression (ValaConditionalExpression* self,
+                                                       ValaExpression* value);
+ValaConstant* vala_constant_new (const gchar* name,
+                                 ValaDataType* type_reference,
+                                 ValaExpression* value,
+                                 ValaSourceReference* source_reference,
+                                 ValaComment* comment);
+ValaConstant* vala_constant_construct (GType object_type,
+                                       const gchar* name,
+                                       ValaDataType* type_reference,
+                                       ValaExpression* value,
+                                       ValaSourceReference* source_reference,
+                                       ValaComment* comment);
 ValaDataType* vala_constant_get_type_reference (ValaConstant* self);
-void vala_constant_set_type_reference (ValaConstant* self, ValaDataType* value);
+void vala_constant_set_type_reference (ValaConstant* self,
+                                       ValaDataType* value);
 ValaExpression* vala_constant_get_value (ValaConstant* self);
-void vala_constant_set_value (ValaConstant* self, ValaExpression* value);
+void vala_constant_set_value (ValaConstant* self,
+                              ValaExpression* value);
 ValaConstructor* vala_constructor_new (ValaSourceReference* source);
-ValaConstructor* vala_constructor_construct (GType object_type, ValaSourceReference* source);
+ValaConstructor* vala_constructor_construct (GType object_type,
+                                             ValaSourceReference* source);
 ValaParameter* vala_constructor_get_this_parameter (ValaConstructor* self);
-void vala_constructor_set_this_parameter (ValaConstructor* self, ValaParameter* value);
+void vala_constructor_set_this_parameter (ValaConstructor* self,
+                                          ValaParameter* value);
 GType vala_member_binding_get_type (void) G_GNUC_CONST;
 ValaMemberBinding vala_constructor_get_binding (ValaConstructor* self);
-void vala_constructor_set_binding (ValaConstructor* self, ValaMemberBinding value);
+void vala_constructor_set_binding (ValaConstructor* self,
+                                   ValaMemberBinding value);
 ValaContinueStatement* vala_continue_statement_new (ValaSourceReference* source);
-ValaContinueStatement* vala_continue_statement_construct (GType object_type, ValaSourceReference* source);
-ValaCreationMethod* vala_creation_method_new (const gchar* class_name, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-ValaCreationMethod* vala_creation_method_construct (GType object_type, const gchar* class_name, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
+ValaContinueStatement* vala_continue_statement_construct (GType object_type,
+                                                          ValaSourceReference* source);
+ValaCreationMethod* vala_creation_method_new (const gchar* class_name,
+                                              const gchar* name,
+                                              ValaSourceReference* source_reference,
+                                              ValaComment* comment);
+ValaCreationMethod* vala_creation_method_construct (GType object_type,
+                                                    const gchar* class_name,
+                                                    const gchar* name,
+                                                    ValaSourceReference* source_reference,
+                                                    ValaComment* comment);
 const gchar* vala_creation_method_get_class_name (ValaCreationMethod* self);
-void vala_creation_method_set_class_name (ValaCreationMethod* self, const gchar* value);
+void vala_creation_method_set_class_name (ValaCreationMethod* self,
+                                          const gchar* value);
 gboolean vala_creation_method_get_chain_up (ValaCreationMethod* self);
-void vala_creation_method_set_chain_up (ValaCreationMethod* self, gboolean value);
-void vala_data_type_add_type_argument (ValaDataType* self, ValaDataType* arg);
+void vala_creation_method_set_chain_up (ValaCreationMethod* self,
+                                        gboolean value);
+void vala_data_type_add_type_argument (ValaDataType* self,
+                                       ValaDataType* arg);
 ValaList* vala_data_type_get_type_arguments (ValaDataType* self);
 gboolean vala_data_type_has_type_arguments (ValaDataType* self);
 void vala_data_type_remove_all_type_arguments (ValaDataType* self);
-gchar* vala_data_type_to_qualified_string (ValaDataType* self, ValaScope* scope);
+gchar* vala_data_type_to_qualified_string (ValaDataType* self,
+                                           ValaScope* scope);
 ValaDataType* vala_data_type_copy (ValaDataType* self);
-gboolean vala_data_type_equals (ValaDataType* self, ValaDataType* type2);
-gboolean vala_data_type_stricter (ValaDataType* self, ValaDataType* type2);
-gboolean vala_data_type_compatible (ValaDataType* self, ValaDataType* target_type);
+gboolean vala_data_type_equals (ValaDataType* self,
+                                ValaDataType* type2);
+gboolean vala_data_type_stricter (ValaDataType* self,
+                                  ValaDataType* type2);
+gboolean vala_data_type_compatible (ValaDataType* self,
+                                    ValaDataType* target_type);
 gboolean vala_data_type_is_invokable (ValaDataType* self);
 ValaDataType* vala_data_type_get_return_type (ValaDataType* self);
 ValaList* vala_data_type_get_parameters (ValaDataType* self);
 gboolean vala_data_type_is_reference_type_or_type_parameter (ValaDataType* self);
 gboolean vala_data_type_is_array (ValaDataType* self);
-gboolean vala_data_type_is_accessible (ValaDataType* self, ValaSymbol* sym);
-ValaSymbol* vala_data_type_get_member (ValaDataType* self, const gchar* member_name);
-ValaSymbol* vala_data_type_get_pointer_member (ValaDataType* self, const gchar* member_name);
+gboolean vala_data_type_is_accessible (ValaDataType* self,
+                                       ValaSymbol* sym);
+ValaSymbol* vala_data_type_get_member (ValaDataType* self,
+                                       const gchar* member_name);
+ValaSymbol* vala_data_type_get_pointer_member (ValaDataType* self,
+                                               const gchar* member_name);
 gboolean vala_data_type_is_real_struct_type (ValaDataType* self);
 gboolean vala_data_type_is_real_non_null_struct_type (ValaDataType* self);
 gboolean vala_data_type_is_disposable (ValaDataType* self);
-ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
-ValaDataType* vala_data_type_infer_type_argument (ValaDataType* self, ValaTypeParameter* type_param, ValaDataType* value_type);
+ValaDataType* vala_data_type_get_actual_type (ValaDataType* self,
+                                              ValaDataType* derived_instance_type,
+                                              ValaList* method_type_arguments,
+                                              ValaCodeNode* node_reference);
+ValaDataType* vala_data_type_infer_type_argument (ValaDataType* self,
+                                                  ValaTypeParameter* type_param,
+                                                  ValaDataType* value_type);
+gchar* vala_data_type_to_prototype_string (ValaDataType* self,
+                                           const gchar* override_name);
 gboolean vala_data_type_is_weak (ValaDataType* self);
 ValaDataType* vala_data_type_construct (GType object_type);
 gboolean vala_data_type_get_value_owned (ValaDataType* self);
-void vala_data_type_set_value_owned (ValaDataType* self, gboolean value);
+void vala_data_type_set_value_owned (ValaDataType* self,
+                                     gboolean value);
 gboolean vala_data_type_get_nullable (ValaDataType* self);
-void vala_data_type_set_nullable (ValaDataType* self, gboolean value);
+void vala_data_type_set_nullable (ValaDataType* self,
+                                  gboolean value);
 ValaTypeSymbol* vala_data_type_get_data_type (ValaDataType* self);
-void vala_data_type_set_data_type (ValaDataType* self, ValaTypeSymbol* value);
-ValaTypeParameter* vala_data_type_get_type_parameter (ValaDataType* self);
-void vala_data_type_set_type_parameter (ValaDataType* self, ValaTypeParameter* value);
+void vala_data_type_set_data_type (ValaDataType* self,
+                                   ValaTypeSymbol* value);
 gboolean vala_data_type_get_floating_reference (ValaDataType* self);
-void vala_data_type_set_floating_reference (ValaDataType* self, gboolean value);
+void vala_data_type_set_floating_reference (ValaDataType* self,
+                                            gboolean value);
 gboolean vala_data_type_get_is_dynamic (ValaDataType* self);
-void vala_data_type_set_is_dynamic (ValaDataType* self, gboolean value);
-ValaDeclarationStatement* vala_declaration_statement_new (ValaSymbol* declaration, ValaSourceReference* source_reference);
-ValaDeclarationStatement* vala_declaration_statement_construct (GType object_type, ValaSymbol* declaration, ValaSourceReference* source_reference);
+void vala_data_type_set_is_dynamic (ValaDataType* self,
+                                    gboolean value);
+ValaDeclarationStatement* vala_declaration_statement_new (ValaSymbol* declaration,
+                                                          ValaSourceReference* source_reference);
+ValaDeclarationStatement* vala_declaration_statement_construct (GType object_type,
+                                                                ValaSymbol* declaration,
+                                                                ValaSourceReference* source_reference);
 ValaSymbol* vala_declaration_statement_get_declaration (ValaDeclarationStatement* self);
-void vala_declaration_statement_set_declaration (ValaDeclarationStatement* self, ValaSymbol* value);
-ValaDelegate* vala_delegate_new (const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment);
-ValaDelegate* vala_delegate_construct (GType object_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment);
-void vala_delegate_add_type_parameter (ValaDelegate* self, ValaTypeParameter* p);
+void vala_declaration_statement_set_declaration (ValaDeclarationStatement* self,
+                                                 ValaSymbol* value);
+ValaDelegate* vala_delegate_new (const gchar* name,
+                                 ValaDataType* return_type,
+                                 ValaSourceReference* source_reference,
+                                 ValaComment* comment);
+ValaDelegate* vala_delegate_construct (GType object_type,
+                                       const gchar* name,
+                                       ValaDataType* return_type,
+                                       ValaSourceReference* source_reference,
+                                       ValaComment* comment);
+void vala_delegate_add_type_parameter (ValaDelegate* self,
+                                       ValaTypeParameter* p);
 ValaList* vala_delegate_get_type_parameters (ValaDelegate* self);
-void vala_delegate_add_parameter (ValaDelegate* self, ValaParameter* param);
-ValaList* vala_delegate_get_parameters (ValaDelegate* self);
-gboolean vala_delegate_matches_method (ValaDelegate* self, ValaMethod* m, ValaDataType* dt);
-gchar* vala_delegate_get_prototype_string (ValaDelegate* self, const gchar* name);
-ValaDataType* vala_delegate_get_return_type (ValaDelegate* self);
-void vala_delegate_set_return_type (ValaDelegate* self, ValaDataType* value);
+gboolean vala_delegate_matches_method (ValaDelegate* self,
+                                       ValaMethod* m,
+                                       ValaDataType* dt);
 gboolean vala_delegate_get_has_target (ValaDelegate* self);
-void vala_delegate_set_has_target (ValaDelegate* self, gboolean value);
+void vala_delegate_set_has_target (ValaDelegate* self,
+                                   gboolean value);
 ValaDataType* vala_delegate_get_sender_type (ValaDelegate* self);
-void vala_delegate_set_sender_type (ValaDelegate* self, ValaDataType* value);
+void vala_delegate_set_sender_type (ValaDelegate* self,
+                                    ValaDataType* value);
 GType vala_delegate_type_get_type (void) G_GNUC_CONST;
 ValaDelegateType* vala_delegate_type_new (ValaDelegate* delegate_symbol);
-ValaDelegateType* vala_delegate_type_construct (GType object_type, ValaDelegate* delegate_symbol);
+ValaDelegateType* vala_delegate_type_construct (GType object_type,
+                                                ValaDelegate* delegate_symbol);
 ValaDelegate* vala_delegate_type_get_delegate_symbol (ValaDelegateType* self);
-void vala_delegate_type_set_delegate_symbol (ValaDelegateType* self, ValaDelegate* value);
+void vala_delegate_type_set_delegate_symbol (ValaDelegateType* self,
+                                             ValaDelegate* value);
 gboolean vala_delegate_type_get_is_called_once (ValaDelegateType* self);
-void vala_delegate_type_set_is_called_once (ValaDelegateType* self, gboolean value);
-ValaDeleteStatement* vala_delete_statement_new (ValaExpression* expression, ValaSourceReference* source_reference);
-ValaDeleteStatement* vala_delete_statement_construct (GType object_type, ValaExpression* expression, ValaSourceReference* source_reference);
+void vala_delegate_type_set_is_called_once (ValaDelegateType* self,
+                                            gboolean value);
+ValaDeleteStatement* vala_delete_statement_new (ValaExpression* expression,
+                                                ValaSourceReference* source_reference);
+ValaDeleteStatement* vala_delete_statement_construct (GType object_type,
+                                                      ValaExpression* expression,
+                                                      ValaSourceReference* source_reference);
 ValaExpression* vala_delete_statement_get_expression (ValaDeleteStatement* self);
-void vala_delete_statement_set_expression (ValaDeleteStatement* self, ValaExpression* value);
+void vala_delete_statement_set_expression (ValaDeleteStatement* self,
+                                           ValaExpression* value);
 ValaDestructor* vala_destructor_new (ValaSourceReference* source_reference);
-ValaDestructor* vala_destructor_construct (GType object_type, ValaSourceReference* source_reference);
+ValaDestructor* vala_destructor_construct (GType object_type,
+                                           ValaSourceReference* source_reference);
 ValaParameter* vala_destructor_get_this_parameter (ValaDestructor* self);
-void vala_destructor_set_this_parameter (ValaDestructor* self, ValaParameter* value);
+void vala_destructor_set_this_parameter (ValaDestructor* self,
+                                         ValaParameter* value);
 ValaMemberBinding vala_destructor_get_binding (ValaDestructor* self);
-void vala_destructor_set_binding (ValaDestructor* self, ValaMemberBinding value);
-ValaDoStatement* vala_do_statement_new (ValaBlock* body, ValaExpression* condition, ValaSourceReference* source_reference);
-ValaDoStatement* vala_do_statement_construct (GType object_type, ValaBlock* body, ValaExpression* condition, ValaSourceReference* source_reference);
+void vala_destructor_set_binding (ValaDestructor* self,
+                                  ValaMemberBinding value);
+ValaDoStatement* vala_do_statement_new (ValaBlock* body,
+                                        ValaExpression* condition,
+                                        ValaSourceReference* source_reference);
+ValaDoStatement* vala_do_statement_construct (GType object_type,
+                                              ValaBlock* body,
+                                              ValaExpression* condition,
+                                              ValaSourceReference* source_reference);
 ValaBlock* vala_do_statement_get_body (ValaDoStatement* self);
-void vala_do_statement_set_body (ValaDoStatement* self, ValaBlock* value);
+void vala_do_statement_set_body (ValaDoStatement* self,
+                                 ValaBlock* value);
 ValaExpression* vala_do_statement_get_condition (ValaDoStatement* self);
-void vala_do_statement_set_condition (ValaDoStatement* self, ValaExpression* value);
+void vala_do_statement_set_condition (ValaDoStatement* self,
+                                      ValaExpression* value);
 GType vala_dynamic_method_get_type (void) G_GNUC_CONST;
-ValaDynamicMethod* vala_dynamic_method_new (ValaDataType* dynamic_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment);
-ValaDynamicMethod* vala_dynamic_method_construct (GType object_type, ValaDataType* dynamic_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment);
+ValaDynamicMethod* vala_dynamic_method_new (ValaDataType* dynamic_type,
+                                            const gchar* name,
+                                            ValaDataType* return_type,
+                                            ValaSourceReference* source_reference,
+                                            ValaComment* comment);
+ValaDynamicMethod* vala_dynamic_method_construct (GType object_type,
+                                                  ValaDataType* dynamic_type,
+                                                  const gchar* name,
+                                                  ValaDataType* return_type,
+                                                  ValaSourceReference* source_reference,
+                                                  ValaComment* comment);
 ValaDataType* vala_dynamic_method_get_dynamic_type (ValaDynamicMethod* self);
-void vala_dynamic_method_set_dynamic_type (ValaDynamicMethod* self, ValaDataType* value);
+void vala_dynamic_method_set_dynamic_type (ValaDynamicMethod* self,
+                                           ValaDataType* value);
 ValaMethodCall* vala_dynamic_method_get_invocation (ValaDynamicMethod* self);
-void vala_dynamic_method_set_invocation (ValaDynamicMethod* self, ValaMethodCall* value);
+void vala_dynamic_method_set_invocation (ValaDynamicMethod* self,
+                                         ValaMethodCall* value);
 GType vala_dynamic_property_get_type (void) G_GNUC_CONST;
-ValaDynamicProperty* vala_dynamic_property_new (ValaDataType* dynamic_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-ValaDynamicProperty* vala_dynamic_property_construct (GType object_type, ValaDataType* dynamic_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
+ValaDynamicProperty* vala_dynamic_property_new (ValaDataType* dynamic_type,
+                                                const gchar* name,
+                                                ValaSourceReference* source_reference,
+                                                ValaComment* comment);
+ValaDynamicProperty* vala_dynamic_property_construct (GType object_type,
+                                                      ValaDataType* dynamic_type,
+                                                      const gchar* name,
+                                                      ValaSourceReference* source_reference,
+                                                      ValaComment* comment);
 ValaDataType* vala_dynamic_property_get_dynamic_type (ValaDynamicProperty* self);
-void vala_dynamic_property_set_dynamic_type (ValaDynamicProperty* self, ValaDataType* value);
+void vala_dynamic_property_set_dynamic_type (ValaDynamicProperty* self,
+                                             ValaDataType* value);
 GType vala_dynamic_signal_get_type (void) G_GNUC_CONST;
-ValaDynamicSignal* vala_dynamic_signal_new (ValaDataType* dynamic_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment);
-ValaDynamicSignal* vala_dynamic_signal_construct (GType object_type, ValaDataType* dynamic_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment);
+ValaDynamicSignal* vala_dynamic_signal_new (ValaDataType* dynamic_type,
+                                            const gchar* name,
+                                            ValaDataType* return_type,
+                                            ValaSourceReference* source_reference,
+                                            ValaComment* comment);
+ValaDynamicSignal* vala_dynamic_signal_construct (GType object_type,
+                                                  ValaDataType* dynamic_type,
+                                                  const gchar* name,
+                                                  ValaDataType* return_type,
+                                                  ValaSourceReference* source_reference,
+                                                  ValaComment* comment);
 ValaDataType* vala_dynamic_signal_get_dynamic_type (ValaDynamicSignal* self);
-void vala_dynamic_signal_set_dynamic_type (ValaDynamicSignal* self, ValaDataType* value);
+void vala_dynamic_signal_set_dynamic_type (ValaDynamicSignal* self,
+                                           ValaDataType* value);
 ValaExpression* vala_dynamic_signal_get_handler (ValaDynamicSignal* self);
-void vala_dynamic_signal_set_handler (ValaDynamicSignal* self, ValaExpression* value);
-void vala_element_access_append_index (ValaElementAccess* self, ValaExpression* index);
+void vala_dynamic_signal_set_handler (ValaDynamicSignal* self,
+                                      ValaExpression* value);
+void vala_element_access_append_index (ValaElementAccess* self,
+                                       ValaExpression* index);
 ValaList* vala_element_access_get_indices (ValaElementAccess* self);
-ValaElementAccess* vala_element_access_new (ValaExpression* container, ValaSourceReference* source_reference);
-ValaElementAccess* vala_element_access_construct (GType object_type, ValaExpression* container, ValaSourceReference* source_reference);
+ValaElementAccess* vala_element_access_new (ValaExpression* container,
+                                            ValaSourceReference* source_reference);
+ValaElementAccess* vala_element_access_construct (GType object_type,
+                                                  ValaExpression* container,
+                                                  ValaSourceReference* source_reference);
 ValaExpression* vala_element_access_get_container (ValaElementAccess* self);
-void vala_element_access_set_container (ValaElementAccess* self, ValaExpression* value);
+void vala_element_access_set_container (ValaElementAccess* self,
+                                        ValaExpression* value);
 ValaEmptyStatement* vala_empty_statement_new (ValaSourceReference* source);
-ValaEmptyStatement* vala_empty_statement_construct (GType object_type, ValaSourceReference* source);
-ValaEnum* vala_enum_new (const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-ValaEnum* vala_enum_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-void vala_enum_add_value (ValaEnum* self, ValaEnumValue* value);
+ValaEmptyStatement* vala_empty_statement_construct (GType object_type,
+                                                    ValaSourceReference* source);
+ValaEnum* vala_enum_new (const gchar* name,
+                         ValaSourceReference* source_reference,
+                         ValaComment* comment);
+ValaEnum* vala_enum_construct (GType object_type,
+                               const gchar* name,
+                               ValaSourceReference* source_reference,
+                               ValaComment* comment);
+void vala_enum_add_value (ValaEnum* self,
+                          ValaEnumValue* value);
 ValaList* vala_enum_get_values (ValaEnum* self);
 void vala_enum_remove_all_values (ValaEnum* self);
 ValaList* vala_enum_get_methods (ValaEnum* self);
 ValaList* vala_enum_get_constants (ValaEnum* self);
 gboolean vala_enum_get_is_flags (ValaEnum* self);
-ValaEnumValue* vala_enum_value_new (const gchar* name, ValaExpression* value, ValaSourceReference* source_reference, ValaComment* comment);
-ValaEnumValue* vala_enum_value_construct (GType object_type, const gchar* name, ValaExpression* value, ValaSourceReference* source_reference, ValaComment* comment);
+ValaEnumValue* vala_enum_value_new (const gchar* name,
+                                    ValaExpression* value,
+                                    ValaSourceReference* source_reference,
+                                    ValaComment* comment);
+ValaEnumValue* vala_enum_value_construct (GType object_type,
+                                          const gchar* name,
+                                          ValaExpression* value,
+                                          ValaSourceReference* source_reference,
+                                          ValaComment* comment);
 GType vala_enum_value_type_get_type (void) G_GNUC_CONST;
 ValaEnumValueType* vala_enum_value_type_new (ValaEnum* type_symbol);
-ValaEnumValueType* vala_enum_value_type_construct (GType object_type, ValaEnum* type_symbol);
+ValaEnumValueType* vala_enum_value_type_construct (GType object_type,
+                                                   ValaEnum* type_symbol);
 ValaMethod* vala_enum_value_type_get_to_string_method (ValaEnumValueType* self);
-ValaErrorCode* vala_error_code_new (const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-ValaErrorCode* vala_error_code_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-ValaErrorCode* vala_error_code_new_with_value (const gchar* name, ValaExpression* value, ValaSourceReference* source_reference);
-ValaErrorCode* vala_error_code_construct_with_value (GType object_type, const gchar* name, ValaExpression* value, ValaSourceReference* source_reference);
+ValaErrorCode* vala_error_code_new (const gchar* name,
+                                    ValaSourceReference* source_reference,
+                                    ValaComment* comment);
+ValaErrorCode* vala_error_code_construct (GType object_type,
+                                          const gchar* name,
+                                          ValaSourceReference* source_reference,
+                                          ValaComment* comment);
+ValaErrorCode* vala_error_code_new_with_value (const gchar* name,
+                                               ValaExpression* value,
+                                               ValaSourceReference* source_reference);
+ValaErrorCode* vala_error_code_construct_with_value (GType object_type,
+                                                     const gchar* name,
+                                                     ValaExpression* value,
+                                                     ValaSourceReference* source_reference);
 ValaExpression* vala_error_code_get_value (ValaErrorCode* self);
-void vala_error_code_set_value (ValaErrorCode* self, ValaExpression* value);
-ValaErrorDomain* vala_error_domain_new (const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-ValaErrorDomain* vala_error_domain_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-void vala_error_domain_add_code (ValaErrorDomain* self, ValaErrorCode* ecode);
+void vala_error_code_set_value (ValaErrorCode* self,
+                                ValaExpression* value);
+ValaErrorDomain* vala_error_domain_new (const gchar* name,
+                                        ValaSourceReference* source_reference,
+                                        ValaComment* comment);
+ValaErrorDomain* vala_error_domain_construct (GType object_type,
+                                              const gchar* name,
+                                              ValaSourceReference* source_reference,
+                                              ValaComment* comment);
+void vala_error_domain_add_code (ValaErrorDomain* self,
+                                 ValaErrorCode* ecode);
 ValaList* vala_error_domain_get_codes (ValaErrorDomain* self);
 ValaList* vala_error_domain_get_methods (ValaErrorDomain* self);
 GType vala_error_type_get_type (void) G_GNUC_CONST;
-ValaErrorType* vala_error_type_new (ValaErrorDomain* error_domain, ValaErrorCode* error_code, ValaSourceReference* source_reference);
-ValaErrorType* vala_error_type_construct (GType object_type, ValaErrorDomain* error_domain, ValaErrorCode* error_code, ValaSourceReference* source_reference);
+ValaErrorType* vala_error_type_new (ValaErrorDomain* error_domain,
+                                    ValaErrorCode* error_code,
+                                    ValaSourceReference* source_reference);
+ValaErrorType* vala_error_type_construct (GType object_type,
+                                          ValaErrorDomain* error_domain,
+                                          ValaErrorCode* error_code,
+                                          ValaSourceReference* source_reference);
 ValaErrorDomain* vala_error_type_get_error_domain (ValaErrorType* self);
-void vala_error_type_set_error_domain (ValaErrorType* self, ValaErrorDomain* value);
+void vala_error_type_set_error_domain (ValaErrorType* self,
+                                       ValaErrorDomain* value);
 ValaErrorCode* vala_error_type_get_error_code (ValaErrorType* self);
-void vala_error_type_set_error_code (ValaErrorType* self, ValaErrorCode* value);
+void vala_error_type_set_error_code (ValaErrorType* self,
+                                     ValaErrorCode* value);
 gboolean vala_error_type_get_dynamic_error (ValaErrorType* self);
-void vala_error_type_set_dynamic_error (ValaErrorType* self, gboolean value);
+void vala_error_type_set_dynamic_error (ValaErrorType* self,
+                                        gboolean value);
 gboolean vala_expression_is_constant (ValaExpression* self);
 gboolean vala_expression_is_pure (ValaExpression* self);
 gboolean vala_expression_is_non_null (ValaExpression* self);
-void vala_expression_insert_statement (ValaExpression* self, ValaBlock* block, ValaStatement* stmt);
+gboolean vala_expression_is_accessible (ValaExpression* self,
+                                        ValaSymbol* sym);
+void vala_expression_insert_statement (ValaExpression* self,
+                                       ValaBlock* block,
+                                       ValaStatement* stmt);
 ValaExpression* vala_expression_construct (GType object_type);
 ValaDataType* vala_expression_get_value_type (ValaExpression* self);
-void vala_expression_set_value_type (ValaExpression* self, ValaDataType* value);
+void vala_expression_set_value_type (ValaExpression* self,
+                                     ValaDataType* value);
 ValaDataType* vala_expression_get_formal_value_type (ValaExpression* self);
-void vala_expression_set_formal_value_type (ValaExpression* self, ValaDataType* value);
+void vala_expression_set_formal_value_type (ValaExpression* self,
+                                            ValaDataType* value);
 ValaDataType* vala_expression_get_target_type (ValaExpression* self);
-void vala_expression_set_target_type (ValaExpression* self, ValaDataType* value);
+void vala_expression_set_target_type (ValaExpression* self,
+                                      ValaDataType* value);
 ValaDataType* vala_expression_get_formal_target_type (ValaExpression* self);
-void vala_expression_set_formal_target_type (ValaExpression* self, ValaDataType* value);
+void vala_expression_set_formal_target_type (ValaExpression* self,
+                                             ValaDataType* value);
 ValaSymbol* vala_expression_get_symbol_reference (ValaExpression* self);
-void vala_expression_set_symbol_reference (ValaExpression* self, ValaSymbol* value);
+void vala_expression_set_symbol_reference (ValaExpression* self,
+                                           ValaSymbol* value);
 gboolean vala_expression_get_lvalue (ValaExpression* self);
-void vala_expression_set_lvalue (ValaExpression* self, gboolean value);
+void vala_expression_set_lvalue (ValaExpression* self,
+                                 gboolean value);
 ValaTargetValue* vala_expression_get_target_value (ValaExpression* self);
-void vala_expression_set_target_value (ValaExpression* self, ValaTargetValue* value);
+void vala_expression_set_target_value (ValaExpression* self,
+                                       ValaTargetValue* value);
 ValaStatement* vala_expression_get_parent_statement (ValaExpression* self);
-ValaExpressionStatement* vala_expression_statement_new (ValaExpression* expression, ValaSourceReference* source_reference);
-ValaExpressionStatement* vala_expression_statement_construct (GType object_type, ValaExpression* expression, ValaSourceReference* source_reference);
+ValaExpressionStatement* vala_expression_statement_new (ValaExpression* expression,
+                                                        ValaSourceReference* source_reference);
+ValaExpressionStatement* vala_expression_statement_construct (GType object_type,
+                                                              ValaExpression* expression,
+                                                              ValaSourceReference* source_reference);
 ValaExpression* vala_expression_statement_get_expression (ValaExpressionStatement* self);
-void vala_expression_statement_set_expression (ValaExpressionStatement* self, ValaExpression* value);
-ValaField* vala_field_new (const gchar* name, ValaDataType* variable_type, ValaExpression* initializer, ValaSourceReference* source_reference, ValaComment* comment);
-ValaField* vala_field_construct (GType object_type, const gchar* name, ValaDataType* variable_type, ValaExpression* initializer, ValaSourceReference* source_reference, ValaComment* comment);
-gchar* vala_field_get_ctype (ValaField* self);
-void vala_field_set_ctype (ValaField* self, const gchar* ctype);
+void vala_expression_statement_set_expression (ValaExpressionStatement* self,
+                                               ValaExpression* value);
+ValaField* vala_field_new (const gchar* name,
+                           ValaDataType* variable_type,
+                           ValaExpression* initializer,
+                           ValaSourceReference* source_reference,
+                           ValaComment* comment);
+ValaField* vala_field_construct (GType object_type,
+                                 const gchar* name,
+                                 ValaDataType* variable_type,
+                                 ValaExpression* initializer,
+                                 ValaSourceReference* source_reference,
+                                 ValaComment* comment);
 ValaMemberBinding vala_field_get_binding (ValaField* self);
-void vala_field_set_binding (ValaField* self, ValaMemberBinding value);
+void vala_field_set_binding (ValaField* self,
+                             ValaMemberBinding value);
 gboolean vala_field_get_is_volatile (ValaField* self);
-void vala_field_set_is_volatile (ValaField* self, gboolean value);
+void vala_field_set_is_volatile (ValaField* self,
+                                 gboolean value);
 GType vala_field_prototype_get_type (void) G_GNUC_CONST;
 ValaFieldPrototype* vala_field_prototype_new (ValaField* field_symbol);
-ValaFieldPrototype* vala_field_prototype_construct (GType object_type, ValaField* field_symbol);
+ValaFieldPrototype* vala_field_prototype_construct (GType object_type,
+                                                    ValaField* field_symbol);
 ValaField* vala_field_prototype_get_field_symbol (ValaFieldPrototype* self);
-void vala_field_prototype_set_field_symbol (ValaFieldPrototype* self, ValaField* value);
+void vala_field_prototype_set_field_symbol (ValaFieldPrototype* self,
+                                            ValaField* value);
 GType vala_floating_type_get_type (void) G_GNUC_CONST;
 ValaFloatingType* vala_floating_type_new (ValaStruct* type_symbol);
-ValaFloatingType* vala_floating_type_construct (GType object_type, ValaStruct* type_symbol);
+ValaFloatingType* vala_floating_type_construct (GType object_type,
+                                                ValaStruct* type_symbol);
 ValaFlowAnalyzer* vala_flow_analyzer_new (void);
 ValaFlowAnalyzer* vala_flow_analyzer_construct (GType object_type);
-void vala_flow_analyzer_analyze (ValaFlowAnalyzer* self, ValaCodeContext* context);
-ValaForeachStatement* vala_foreach_statement_new (ValaDataType* type_reference, const gchar* variable_name, ValaExpression* collection, ValaBlock* body, ValaSourceReference* source_reference);
-ValaForeachStatement* vala_foreach_statement_construct (GType object_type, ValaDataType* type_reference, const gchar* variable_name, ValaExpression* collection, ValaBlock* body, ValaSourceReference* source_reference);
+void vala_flow_analyzer_analyze (ValaFlowAnalyzer* self,
+                                 ValaCodeContext* context);
+ValaForeachStatement* vala_foreach_statement_new (ValaDataType* type_reference,
+                                                  const gchar* variable_name,
+                                                  ValaExpression* collection,
+                                                  ValaBlock* body,
+                                                  ValaSourceReference* source_reference);
+ValaForeachStatement* vala_foreach_statement_construct (GType object_type,
+                                                        ValaDataType* type_reference,
+                                                        const gchar* variable_name,
+                                                        ValaExpression* collection,
+                                                        ValaBlock* body,
+                                                        ValaSourceReference* source_reference);
 ValaDataType* vala_foreach_statement_get_type_reference (ValaForeachStatement* self);
-void vala_foreach_statement_set_type_reference (ValaForeachStatement* self, ValaDataType* value);
+void vala_foreach_statement_set_type_reference (ValaForeachStatement* self,
+                                                ValaDataType* value);
 const gchar* vala_foreach_statement_get_variable_name (ValaForeachStatement* self);
-void vala_foreach_statement_set_variable_name (ValaForeachStatement* self, const gchar* value);
+void vala_foreach_statement_set_variable_name (ValaForeachStatement* self,
+                                               const gchar* value);
 ValaExpression* vala_foreach_statement_get_collection (ValaForeachStatement* self);
-void vala_foreach_statement_set_collection (ValaForeachStatement* self, ValaExpression* value);
+void vala_foreach_statement_set_collection (ValaForeachStatement* self,
+                                            ValaExpression* value);
 ValaBlock* vala_foreach_statement_get_body (ValaForeachStatement* self);
-void vala_foreach_statement_set_body (ValaForeachStatement* self, ValaBlock* value);
+void vala_foreach_statement_set_body (ValaForeachStatement* self,
+                                      ValaBlock* value);
 gboolean vala_foreach_statement_get_use_iterator (ValaForeachStatement* self);
 ValaLocalVariable* vala_foreach_statement_get_element_variable (ValaForeachStatement* self);
-void vala_foreach_statement_set_element_variable (ValaForeachStatement* self, ValaLocalVariable* value);
+void vala_foreach_statement_set_element_variable (ValaForeachStatement* self,
+                                                  ValaLocalVariable* value);
 ValaLocalVariable* vala_foreach_statement_get_collection_variable (ValaForeachStatement* self);
-void vala_foreach_statement_set_collection_variable (ValaForeachStatement* self, ValaLocalVariable* value);
+void vala_foreach_statement_set_collection_variable (ValaForeachStatement* self,
+                                                     ValaLocalVariable* value);
 ValaLocalVariable* vala_foreach_statement_get_iterator_variable (ValaForeachStatement* self);
-void vala_foreach_statement_set_iterator_variable (ValaForeachStatement* self, ValaLocalVariable* value);
-ValaForStatement* vala_for_statement_new (ValaExpression* condition, ValaBlock* body, ValaSourceReference* source_reference);
-ValaForStatement* vala_for_statement_construct (GType object_type, ValaExpression* condition, ValaBlock* body, ValaSourceReference* source_reference);
-void vala_for_statement_add_initializer (ValaForStatement* self, ValaExpression* init);
+void vala_foreach_statement_set_iterator_variable (ValaForeachStatement* self,
+                                                   ValaLocalVariable* value);
+ValaForStatement* vala_for_statement_new (ValaExpression* condition,
+                                          ValaBlock* body,
+                                          ValaSourceReference* source_reference);
+ValaForStatement* vala_for_statement_construct (GType object_type,
+                                                ValaExpression* condition,
+                                                ValaBlock* body,
+                                                ValaSourceReference* source_reference);
+void vala_for_statement_add_initializer (ValaForStatement* self,
+                                         ValaExpression* init);
 ValaList* vala_for_statement_get_initializer (ValaForStatement* self);
-void vala_for_statement_add_iterator (ValaForStatement* self, ValaExpression* iter);
+void vala_for_statement_add_iterator (ValaForStatement* self,
+                                      ValaExpression* iter);
 ValaList* vala_for_statement_get_iterator (ValaForStatement* self);
 ValaExpression* vala_for_statement_get_condition (ValaForStatement* self);
-void vala_for_statement_set_condition (ValaForStatement* self, ValaExpression* value);
+void vala_for_statement_set_condition (ValaForStatement* self,
+                                       ValaExpression* value);
 ValaBlock* vala_for_statement_get_body (ValaForStatement* self);
-void vala_for_statement_set_body (ValaForStatement* self, ValaBlock* value);
+void vala_for_statement_set_body (ValaForStatement* self,
+                                  ValaBlock* value);
 GType vala_gir_parser_get_type (void) G_GNUC_CONST;
-void vala_gir_parser_parse (ValaGirParser* self, ValaCodeContext* context);
-void vala_gir_parser_parse_file (ValaGirParser* self, ValaSourceFile* source_file);
+void vala_gir_parser_parse (ValaGirParser* self,
+                            ValaCodeContext* context);
+void vala_gir_parser_parse_file (ValaGirParser* self,
+                                 ValaSourceFile* source_file);
 ValaGirParser* vala_gir_parser_new (void);
 ValaGirParser* vala_gir_parser_construct (GType object_type);
 GType vala_generic_type_get_type (void) G_GNUC_CONST;
 ValaGenericType* vala_generic_type_new (ValaTypeParameter* type_parameter);
-ValaGenericType* vala_generic_type_construct (GType object_type, ValaTypeParameter* type_parameter);
+ValaGenericType* vala_generic_type_construct (GType object_type,
+                                              ValaTypeParameter* type_parameter);
+ValaTypeParameter* vala_generic_type_get_type_parameter (ValaGenericType* self);
+void vala_generic_type_set_type_parameter (ValaGenericType* self,
+                                           ValaTypeParameter* value);
 GType vala_genie_parser_get_type (void) G_GNUC_CONST;
 ValaGenieParser* vala_genie_parser_new (void);
 ValaGenieParser* vala_genie_parser_construct (GType object_type);
-void vala_genie_parser_parse (ValaGenieParser* self, ValaCodeContext* context);
-void vala_genie_parser_parse_file (ValaGenieParser* self, ValaSourceFile* source_file);
+void vala_genie_parser_parse (ValaGenieParser* self,
+                              ValaCodeContext* context);
+void vala_genie_parser_parse_file (ValaGenieParser* self,
+                                   ValaSourceFile* source_file);
 gpointer vala_genie_scanner_ref (gpointer instance);
 void vala_genie_scanner_unref (gpointer instance);
-GParamSpec* vala_genie_param_spec_scanner (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_genie_value_set_scanner (GValue* value, gpointer v_object);
-void vala_genie_value_take_scanner (GValue* value, gpointer v_object);
+GParamSpec* vala_genie_param_spec_scanner (const gchar* name,
+                                           const gchar* nick,
+                                           const gchar* blurb,
+                                           GType object_type,
+                                           GParamFlags flags);
+void vala_genie_value_set_scanner (GValue* value,
+                                   gpointer v_object);
+void vala_genie_value_take_scanner (GValue* value,
+                                    gpointer v_object);
 gpointer vala_genie_value_get_scanner (const GValue* value);
 GType vala_genie_scanner_get_type (void) G_GNUC_CONST;
 ValaGenieScanner* vala_genie_scanner_new (ValaSourceFile* source_file);
-ValaGenieScanner* vala_genie_scanner_construct (GType object_type, ValaSourceFile* source_file);
+ValaGenieScanner* vala_genie_scanner_construct (GType object_type,
+                                                ValaSourceFile* source_file);
 GType vala_source_location_get_type (void) G_GNUC_CONST;
 ValaSourceLocation* vala_source_location_dup (const ValaSourceLocation* self);
 void vala_source_location_free (ValaSourceLocation* self);
 GType vala_genie_token_type_get_type (void) G_GNUC_CONST;
-ValaGenieTokenType vala_genie_scanner_read_regex_token (ValaGenieScanner* self, ValaSourceLocation* token_begin, ValaSourceLocation* token_end);
-void vala_genie_scanner_seek (ValaGenieScanner* self, ValaSourceLocation* location);
-ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, gint len);
-ValaGenieTokenType vala_genie_scanner_read_template_token (ValaGenieScanner* self, ValaSourceLocation* token_begin, ValaSourceLocation* token_end);
-ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSourceLocation* token_begin, ValaSourceLocation* token_end);
+ValaGenieTokenType vala_genie_scanner_read_regex_token (ValaGenieScanner* self,
+                                                        ValaSourceLocation* token_begin,
+                                                        ValaSourceLocation* token_end);
+void vala_genie_scanner_seek (ValaGenieScanner* self,
+                              ValaSourceLocation* location);
+ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin,
+                                                                 gint len);
+ValaGenieTokenType vala_genie_scanner_read_template_token (ValaGenieScanner* self,
+                                                           ValaSourceLocation* token_begin,
+                                                           ValaSourceLocation* token_end);
+ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self,
+                                                  ValaSourceLocation* token_begin,
+                                                  ValaSourceLocation* token_end);
 void vala_genie_scanner_parse_file_comments (ValaGenieScanner* self);
 ValaComment* vala_genie_scanner_pop_comment (ValaGenieScanner* self);
 ValaSourceFile* vala_genie_scanner_get_source_file (ValaGenieScanner* self);
 gint vala_genie_scanner_get_indent_spaces (ValaGenieScanner* self);
-void vala_genie_scanner_set_indent_spaces (ValaGenieScanner* self, gint value);
+void vala_genie_scanner_set_indent_spaces (ValaGenieScanner* self,
+                                           gint value);
 const gchar* vala_genie_token_type_to_string (ValaGenieTokenType self);
-ValaIfStatement* vala_if_statement_new (ValaExpression* cond, ValaBlock* true_stmt, ValaBlock* false_stmt, ValaSourceReference* source);
-ValaIfStatement* vala_if_statement_construct (GType object_type, ValaExpression* cond, ValaBlock* true_stmt, ValaBlock* false_stmt, ValaSourceReference* source);
+ValaIfStatement* vala_if_statement_new (ValaExpression* cond,
+                                        ValaBlock* true_stmt,
+                                        ValaBlock* false_stmt,
+                                        ValaSourceReference* source);
+ValaIfStatement* vala_if_statement_construct (GType object_type,
+                                              ValaExpression* cond,
+                                              ValaBlock* true_stmt,
+                                              ValaBlock* false_stmt,
+                                              ValaSourceReference* source);
 ValaExpression* vala_if_statement_get_condition (ValaIfStatement* self);
-void vala_if_statement_set_condition (ValaIfStatement* self, ValaExpression* value);
+void vala_if_statement_set_condition (ValaIfStatement* self,
+                                      ValaExpression* value);
 ValaBlock* vala_if_statement_get_true_statement (ValaIfStatement* self);
-void vala_if_statement_set_true_statement (ValaIfStatement* self, ValaBlock* value);
+void vala_if_statement_set_true_statement (ValaIfStatement* self,
+                                           ValaBlock* value);
 ValaBlock* vala_if_statement_get_false_statement (ValaIfStatement* self);
-void vala_if_statement_set_false_statement (ValaIfStatement* self, ValaBlock* value);
-void vala_initializer_list_append (ValaInitializerList* self, ValaExpression* expr);
+void vala_if_statement_set_false_statement (ValaIfStatement* self,
+                                            ValaBlock* value);
+void vala_initializer_list_append (ValaInitializerList* self,
+                                   ValaExpression* expr);
 ValaList* vala_initializer_list_get_initializers (ValaInitializerList* self);
 ValaInitializerList* vala_initializer_list_new (ValaSourceReference* source_reference);
-ValaInitializerList* vala_initializer_list_construct (GType object_type, ValaSourceReference* source_reference);
+ValaInitializerList* vala_initializer_list_construct (GType object_type,
+                                                      ValaSourceReference* source_reference);
 gint vala_initializer_list_get_size (ValaInitializerList* self);
-ValaIntegerLiteral* vala_integer_literal_new (const gchar* i, ValaSourceReference* source);
-ValaIntegerLiteral* vala_integer_literal_construct (GType object_type, const gchar* i, ValaSourceReference* source);
+ValaIntegerLiteral* vala_integer_literal_new (const gchar* i,
+                                              ValaSourceReference* source);
+ValaIntegerLiteral* vala_integer_literal_construct (GType object_type,
+                                                    const gchar* i,
+                                                    ValaSourceReference* source);
 const gchar* vala_integer_literal_get_value (ValaIntegerLiteral* self);
-void vala_integer_literal_set_value (ValaIntegerLiteral* self, const gchar* value);
+void vala_integer_literal_set_value (ValaIntegerLiteral* self,
+                                     const gchar* value);
 const gchar* vala_integer_literal_get_type_suffix (ValaIntegerLiteral* self);
-void vala_integer_literal_set_type_suffix (ValaIntegerLiteral* self, const gchar* value);
+void vala_integer_literal_set_type_suffix (ValaIntegerLiteral* self,
+                                           const gchar* value);
 GType vala_integer_type_get_type (void) G_GNUC_CONST;
-ValaIntegerType* vala_integer_type_new (ValaStruct* type_symbol, const gchar* literal_value, const gchar* literal_type_name);
-ValaIntegerType* vala_integer_type_construct (GType object_type, ValaStruct* type_symbol, const gchar* literal_value, const gchar* literal_type_name);
-ValaList* vala_interface_get_classes (ValaInterface* self);
-ValaList* vala_interface_get_structs (ValaInterface* self);
-ValaList* vala_interface_get_enums (ValaInterface* self);
-ValaList* vala_interface_get_delegates (ValaInterface* self);
-ValaInterface* vala_interface_new (const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-ValaInterface* vala_interface_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-void vala_interface_add_prerequisite (ValaInterface* self, ValaDataType* type);
-void vala_interface_prepend_prerequisite (ValaInterface* self, ValaDataType* type);
+ValaIntegerType* vala_integer_type_new (ValaStruct* type_symbol,
+                                        const gchar* literal_value,
+                                        const gchar* literal_type_name);
+ValaIntegerType* vala_integer_type_construct (GType object_type,
+                                              ValaStruct* type_symbol,
+                                              const gchar* literal_value,
+                                              const gchar* literal_type_name);
+ValaInterface* vala_interface_new (const gchar* name,
+                                   ValaSourceReference* source_reference,
+                                   ValaComment* comment);
+ValaInterface* vala_interface_construct (GType object_type,
+                                         const gchar* name,
+                                         ValaSourceReference* source_reference,
+                                         ValaComment* comment);
+void vala_interface_add_prerequisite (ValaInterface* self,
+                                      ValaDataType* type);
+void vala_interface_prepend_prerequisite (ValaInterface* self,
+                                          ValaDataType* type);
 ValaList* vala_interface_get_prerequisites (ValaInterface* self);
-ValaList* vala_interface_get_fields (ValaInterface* self);
-ValaList* vala_interface_get_constants (ValaInterface* self);
 ValaList* vala_interface_get_virtuals (ValaInterface* self);
 GType vala_interface_type_get_type (void) G_GNUC_CONST;
 ValaInterfaceType* vala_interface_type_new (ValaInterface* interface_symbol);
-ValaInterfaceType* vala_interface_type_construct (GType object_type, ValaInterface* interface_symbol);
+ValaInterfaceType* vala_interface_type_construct (GType object_type,
+                                                  ValaInterface* interface_symbol);
 ValaInterface* vala_interface_type_get_interface_symbol (ValaInterfaceType* self);
-void vala_interface_type_set_interface_symbol (ValaInterfaceType* self, ValaInterface* value);
+void vala_interface_type_set_interface_symbol (ValaInterfaceType* self,
+                                               ValaInterface* value);
 GType vala_invalid_type_get_type (void) G_GNUC_CONST;
 ValaInvalidType* vala_invalid_type_new (void);
 ValaInvalidType* vala_invalid_type_construct (GType object_type);
-ValaLambdaExpression* vala_lambda_expression_new (ValaExpression* expression_body, ValaSourceReference* source_reference);
-ValaLambdaExpression* vala_lambda_expression_construct (GType object_type, ValaExpression* expression_body, ValaSourceReference* source_reference);
-ValaLambdaExpression* vala_lambda_expression_new_with_statement_body (ValaBlock* statement_body, ValaSourceReference* source_reference);
-ValaLambdaExpression* vala_lambda_expression_construct_with_statement_body (GType object_type, ValaBlock* statement_body, ValaSourceReference* source_reference);
-void vala_lambda_expression_add_parameter (ValaLambdaExpression* self, ValaParameter* param);
+ValaLambdaExpression* vala_lambda_expression_new (ValaExpression* expression_body,
+                                                  ValaSourceReference* source_reference);
+ValaLambdaExpression* vala_lambda_expression_construct (GType object_type,
+                                                        ValaExpression* expression_body,
+                                                        ValaSourceReference* source_reference);
+ValaLambdaExpression* vala_lambda_expression_new_with_statement_body (ValaBlock* statement_body,
+                                                                      ValaSourceReference* source_reference);
+ValaLambdaExpression* vala_lambda_expression_construct_with_statement_body (GType object_type,
+                                                                            ValaBlock* statement_body,
+                                                                            ValaSourceReference* source_reference);
+void vala_lambda_expression_add_parameter (ValaLambdaExpression* self,
+                                           ValaParameter* param);
 ValaList* vala_lambda_expression_get_parameters (ValaLambdaExpression* self);
 ValaExpression* vala_lambda_expression_get_expression_body (ValaLambdaExpression* self);
-void vala_lambda_expression_set_expression_body (ValaLambdaExpression* self, ValaExpression* value);
+void vala_lambda_expression_set_expression_body (ValaLambdaExpression* self,
+                                                 ValaExpression* value);
 ValaBlock* vala_lambda_expression_get_statement_body (ValaLambdaExpression* self);
-void vala_lambda_expression_set_statement_body (ValaLambdaExpression* self, ValaBlock* value);
+void vala_lambda_expression_set_statement_body (ValaLambdaExpression* self,
+                                                ValaBlock* value);
 ValaMethod* vala_lambda_expression_get_method (ValaLambdaExpression* self);
-void vala_lambda_expression_set_method (ValaLambdaExpression* self, ValaMethod* value);
+void vala_lambda_expression_set_method (ValaLambdaExpression* self,
+                                        ValaMethod* value);
 ValaLiteral* vala_literal_construct (GType object_type);
-ValaLocalVariable* vala_local_variable_new (ValaDataType* variable_type, const gchar* name, ValaExpression* initializer, ValaSourceReference* source_reference);
-ValaLocalVariable* vala_local_variable_construct (GType object_type, ValaDataType* variable_type, const gchar* name, ValaExpression* initializer, ValaSourceReference* source_reference);
+ValaLocalVariable* vala_local_variable_new (ValaDataType* variable_type,
+                                            const gchar* name,
+                                            ValaExpression* initializer,
+                                            ValaSourceReference* source_reference);
+ValaLocalVariable* vala_local_variable_construct (GType object_type,
+                                                  ValaDataType* variable_type,
+                                                  const gchar* name,
+                                                  ValaExpression* initializer,
+                                                  ValaSourceReference* source_reference);
 gboolean vala_local_variable_get_is_result (ValaLocalVariable* self);
-void vala_local_variable_set_is_result (ValaLocalVariable* self, gboolean value);
+void vala_local_variable_set_is_result (ValaLocalVariable* self,
+                                        gboolean value);
 gboolean vala_local_variable_get_captured (ValaLocalVariable* self);
-void vala_local_variable_set_captured (ValaLocalVariable* self, gboolean value);
-gboolean vala_local_variable_get_no_init (ValaLocalVariable* self);
-void vala_local_variable_set_no_init (ValaLocalVariable* self, gboolean value);
+void vala_local_variable_set_captured (ValaLocalVariable* self,
+                                       gboolean value);
+gboolean vala_local_variable_get_init (ValaLocalVariable* self);
+void vala_local_variable_set_init (ValaLocalVariable* self,
+                                   gboolean value);
 gboolean vala_lockable_get_lock_used (ValaLockable* self);
-void vala_lockable_set_lock_used (ValaLockable* self, gboolean used);
-ValaLockStatement* vala_lock_statement_new (ValaExpression* resource, ValaBlock* body, ValaSourceReference* source_reference);
-ValaLockStatement* vala_lock_statement_construct (GType object_type, ValaExpression* resource, ValaBlock* body, ValaSourceReference* source_reference);
+void vala_lockable_set_lock_used (ValaLockable* self,
+                                  gboolean used);
+ValaLockStatement* vala_lock_statement_new (ValaExpression* resource,
+                                            ValaBlock* body,
+                                            ValaSourceReference* source_reference);
+ValaLockStatement* vala_lock_statement_construct (GType object_type,
+                                                  ValaExpression* resource,
+                                                  ValaBlock* body,
+                                                  ValaSourceReference* source_reference);
 ValaExpression* vala_lock_statement_get_resource (ValaLockStatement* self);
-void vala_lock_statement_set_resource (ValaLockStatement* self, ValaExpression* value);
+void vala_lock_statement_set_resource (ValaLockStatement* self,
+                                       ValaExpression* value);
 ValaBlock* vala_lock_statement_get_body (ValaLockStatement* self);
-void vala_lock_statement_set_body (ValaLockStatement* self, ValaBlock* value);
-ValaLoop* vala_loop_new (ValaBlock* body, ValaSourceReference* source_reference);
-ValaLoop* vala_loop_construct (GType object_type, ValaBlock* body, ValaSourceReference* source_reference);
+void vala_lock_statement_set_body (ValaLockStatement* self,
+                                   ValaBlock* value);
+ValaLoop* vala_loop_new (ValaBlock* body,
+                         ValaSourceReference* source_reference);
+ValaLoop* vala_loop_construct (GType object_type,
+                               ValaBlock* body,
+                               ValaSourceReference* source_reference);
 ValaBlock* vala_loop_get_body (ValaLoop* self);
-void vala_loop_set_body (ValaLoop* self, ValaBlock* value);
+void vala_loop_set_body (ValaLoop* self,
+                         ValaBlock* value);
+gpointer vala_markup_reader_ref (gpointer instance);
+void vala_markup_reader_unref (gpointer instance);
+GParamSpec* vala_param_spec_markup_reader (const gchar* name,
+                                           const gchar* nick,
+                                           const gchar* blurb,
+                                           GType object_type,
+                                           GParamFlags flags);
+void vala_value_set_markup_reader (GValue* value,
+                                   gpointer v_object);
+void vala_value_take_markup_reader (GValue* value,
+                                    gpointer v_object);
+gpointer vala_value_get_markup_reader (const GValue* value);
 GType vala_markup_reader_get_type (void) G_GNUC_CONST;
 ValaMarkupReader* vala_markup_reader_new (const gchar* filename);
-ValaMarkupReader* vala_markup_reader_construct (GType object_type, const gchar* filename);
-gchar* vala_markup_reader_get_attribute (ValaMarkupReader* self, const gchar* attr);
+ValaMarkupReader* vala_markup_reader_construct (GType object_type,
+                                                const gchar* filename);
+ValaMarkupReader* vala_markup_reader_new_from_string (const gchar* filename,
+                                                      const gchar* content);
+ValaMarkupReader* vala_markup_reader_construct_from_string (GType object_type,
+                                                            const gchar* filename,
+                                                            const gchar* content);
+gchar* vala_markup_reader_get_attribute (ValaMarkupReader* self,
+                                         const gchar* attr);
 ValaMap* vala_markup_reader_get_attributes (ValaMarkupReader* self);
 GType vala_markup_token_type_get_type (void) G_GNUC_CONST;
-ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaSourceLocation* token_begin, ValaSourceLocation* token_end);
+ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self,
+                                                   ValaSourceLocation* token_begin,
+                                                   ValaSourceLocation* token_end);
 const gchar* vala_markup_reader_get_filename (ValaMarkupReader* self);
 const gchar* vala_markup_reader_get_name (ValaMarkupReader* self);
 const gchar* vala_markup_reader_get_content (ValaMarkupReader* self);
 const gchar* vala_markup_token_type_to_string (ValaMarkupTokenType self);
-ValaMemberAccess* vala_member_access_new (ValaExpression* inner, const gchar* member_name, ValaSourceReference* source_reference);
-ValaMemberAccess* vala_member_access_construct (GType object_type, ValaExpression* inner, const gchar* member_name, ValaSourceReference* source_reference);
-ValaMemberAccess* vala_member_access_new_simple (const gchar* member_name, ValaSourceReference* source_reference);
-ValaMemberAccess* vala_member_access_construct_simple (GType object_type, const gchar* member_name, ValaSourceReference* source_reference);
-ValaMemberAccess* vala_member_access_new_pointer (ValaExpression* inner, const gchar* member_name, ValaSourceReference* source_reference);
-ValaMemberAccess* vala_member_access_construct_pointer (GType object_type, ValaExpression* inner, const gchar* member_name, ValaSourceReference* source_reference);
-void vala_member_access_add_type_argument (ValaMemberAccess* self, ValaDataType* arg);
+ValaMemberAccess* vala_member_access_new (ValaExpression* inner,
+                                          const gchar* member_name,
+                                          ValaSourceReference* source_reference);
+ValaMemberAccess* vala_member_access_construct (GType object_type,
+                                                ValaExpression* inner,
+                                                const gchar* member_name,
+                                                ValaSourceReference* source_reference);
+ValaMemberAccess* vala_member_access_new_simple (const gchar* member_name,
+                                                 ValaSourceReference* source_reference);
+ValaMemberAccess* vala_member_access_construct_simple (GType object_type,
+                                                       const gchar* member_name,
+                                                       ValaSourceReference* source_reference);
+ValaMemberAccess* vala_member_access_new_pointer (ValaExpression* inner,
+                                                  const gchar* member_name,
+                                                  ValaSourceReference* source_reference);
+ValaMemberAccess* vala_member_access_construct_pointer (GType object_type,
+                                                        ValaExpression* inner,
+                                                        const gchar* member_name,
+                                                        ValaSourceReference* source_reference);
+void vala_member_access_add_type_argument (ValaMemberAccess* self,
+                                           ValaDataType* arg);
 ValaList* vala_member_access_get_type_arguments (ValaMemberAccess* self);
 void vala_member_access_check_lvalue_access (ValaMemberAccess* self);
 ValaExpression* vala_member_access_get_inner (ValaMemberAccess* self);
-void vala_member_access_set_inner (ValaMemberAccess* self, ValaExpression* value);
+void vala_member_access_set_inner (ValaMemberAccess* self,
+                                   ValaExpression* value);
 const gchar* vala_member_access_get_member_name (ValaMemberAccess* self);
-void vala_member_access_set_member_name (ValaMemberAccess* self, const gchar* value);
+void vala_member_access_set_member_name (ValaMemberAccess* self,
+                                         const gchar* value);
 gboolean vala_member_access_get_pointer_member_access (ValaMemberAccess* self);
-void vala_member_access_set_pointer_member_access (ValaMemberAccess* self, gboolean value);
+void vala_member_access_set_pointer_member_access (ValaMemberAccess* self,
+                                                   gboolean value);
 gboolean vala_member_access_get_prototype_access (ValaMemberAccess* self);
-void vala_member_access_set_prototype_access (ValaMemberAccess* self, gboolean value);
+void vala_member_access_set_prototype_access (ValaMemberAccess* self,
+                                              gboolean value);
 gboolean vala_member_access_get_creation_member (ValaMemberAccess* self);
-void vala_member_access_set_creation_member (ValaMemberAccess* self, gboolean value);
+void vala_member_access_set_creation_member (ValaMemberAccess* self,
+                                             gboolean value);
 gboolean vala_member_access_get_qualified (ValaMemberAccess* self);
-void vala_member_access_set_qualified (ValaMemberAccess* self, gboolean value);
+void vala_member_access_set_qualified (ValaMemberAccess* self,
+                                       gboolean value);
 GType vala_member_initializer_get_type (void) G_GNUC_CONST;
-ValaMemberInitializer* vala_member_initializer_new (const gchar* name, ValaExpression* initializer, ValaSourceReference* source_reference);
-ValaMemberInitializer* vala_member_initializer_construct (GType object_type, const gchar* name, ValaExpression* initializer, ValaSourceReference* source_reference);
+ValaMemberInitializer* vala_member_initializer_new (const gchar* name,
+                                                    ValaExpression* initializer,
+                                                    ValaSourceReference* source_reference);
+ValaMemberInitializer* vala_member_initializer_construct (GType object_type,
+                                                          const gchar* name,
+                                                          ValaExpression* initializer,
+                                                          ValaSourceReference* source_reference);
 const gchar* vala_member_initializer_get_name (ValaMemberInitializer* self);
-void vala_member_initializer_set_name (ValaMemberInitializer* self, const gchar* value);
+void vala_member_initializer_set_name (ValaMemberInitializer* self,
+                                       const gchar* value);
 ValaExpression* vala_member_initializer_get_initializer (ValaMemberInitializer* self);
-void vala_member_initializer_set_initializer (ValaMemberInitializer* self, ValaExpression* value);
+void vala_member_initializer_set_initializer (ValaMemberInitializer* self,
+                                              ValaExpression* value);
 ValaSymbol* vala_member_initializer_get_symbol_reference (ValaMemberInitializer* self);
-void vala_member_initializer_set_symbol_reference (ValaMemberInitializer* self, ValaSymbol* value);
-ValaMethod* vala_method_new (const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment);
-ValaMethod* vala_method_construct (GType object_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment);
-void vala_method_add_parameter (ValaMethod* self, ValaParameter* param);
-ValaList* vala_method_get_parameters (ValaMethod* self);
+void vala_member_initializer_set_symbol_reference (ValaMemberInitializer* self,
+                                                   ValaSymbol* value);
+ValaMethod* vala_method_new (const gchar* name,
+                             ValaDataType* return_type,
+                             ValaSourceReference* source_reference,
+                             ValaComment* comment);
+ValaMethod* vala_method_construct (GType object_type,
+                                   const gchar* name,
+                                   ValaDataType* return_type,
+                                   ValaSourceReference* source_reference,
+                                   ValaComment* comment);
 void vala_method_clear_parameters (ValaMethod* self);
 gboolean vala_method_is_variadic (ValaMethod* self);
-gboolean vala_method_compatible (ValaMethod* self, ValaMethod* base_method, gchar** invalid_match);
-void vala_method_add_type_parameter (ValaMethod* self, ValaTypeParameter* p);
+gboolean vala_method_compatible (ValaMethod* self,
+                                 ValaMethod* base_method,
+                                 gchar* * invalid_match);
+void vala_method_add_type_parameter (ValaMethod* self,
+                                     ValaTypeParameter* p);
 ValaList* vala_method_get_type_parameters (ValaMethod* self);
-gint vala_method_get_type_parameter_index (ValaMethod* self, const gchar* name);
-void vala_method_add_precondition (ValaMethod* self, ValaExpression* precondition);
+gint vala_method_get_type_parameter_index (ValaMethod* self,
+                                           const gchar* name);
+void vala_method_add_precondition (ValaMethod* self,
+                                   ValaExpression* precondition);
 ValaList* vala_method_get_preconditions (ValaMethod* self);
-void vala_method_add_postcondition (ValaMethod* self, ValaExpression* postcondition);
+void vala_method_add_postcondition (ValaMethod* self,
+                                    ValaExpression* postcondition);
 ValaList* vala_method_get_postconditions (ValaMethod* self);
 gint vala_method_get_required_arguments (ValaMethod* self);
+ValaMethod* vala_method_get_end_method (ValaMethod* self);
 ValaMethod* vala_method_get_callback_method (ValaMethod* self);
 ValaList* vala_method_get_async_begin_parameters (ValaMethod* self);
 ValaList* vala_method_get_async_end_parameters (ValaMethod* self);
-void vala_method_add_captured_variable (ValaMethod* self, ValaLocalVariable* local);
-void vala_method_get_captured_variables (ValaMethod* self, ValaCollection* variables);
-ValaDataType* vala_method_get_return_type (ValaMethod* self);
-void vala_method_set_return_type (ValaMethod* self, ValaDataType* value);
+void vala_method_add_captured_variable (ValaMethod* self,
+                                        ValaLocalVariable* local);
+void vala_method_get_captured_variables (ValaMethod* self,
+                                         ValaCollection* variables);
+gint vala_method_get_format_arg_index (ValaMethod* self);
+gboolean vala_method_has_error_type_parameter (ValaMethod* self);
 ValaMemberBinding vala_method_get_binding (ValaMethod* self);
-void vala_method_set_binding (ValaMethod* self, ValaMemberBinding value);
+void vala_method_set_binding (ValaMethod* self,
+                              ValaMemberBinding value);
 gboolean vala_method_get_is_abstract (ValaMethod* self);
-void vala_method_set_is_abstract (ValaMethod* self, gboolean value);
+void vala_method_set_is_abstract (ValaMethod* self,
+                                  gboolean value);
 gboolean vala_method_get_is_virtual (ValaMethod* self);
-void vala_method_set_is_virtual (ValaMethod* self, gboolean value);
+void vala_method_set_is_virtual (ValaMethod* self,
+                                 gboolean value);
 gboolean vala_method_get_overrides (ValaMethod* self);
-void vala_method_set_overrides (ValaMethod* self, gboolean value);
+void vala_method_set_overrides (ValaMethod* self,
+                                gboolean value);
 gboolean vala_method_get_is_inline (ValaMethod* self);
-void vala_method_set_is_inline (ValaMethod* self, gboolean value);
+void vala_method_set_is_inline (ValaMethod* self,
+                                gboolean value);
 gboolean vala_method_get_returns_floating_reference (ValaMethod* self);
-void vala_method_set_returns_floating_reference (ValaMethod* self, gboolean value);
+void vala_method_set_returns_floating_reference (ValaMethod* self,
+                                                 gboolean value);
 gboolean vala_method_get_returns_modified_pointer (ValaMethod* self);
-void vala_method_set_returns_modified_pointer (ValaMethod* self, gboolean value);
+void vala_method_set_returns_modified_pointer (ValaMethod* self,
+                                               gboolean value);
 ValaMethod* vala_method_get_base_method (ValaMethod* self);
 ValaMethod* vala_method_get_base_interface_method (ValaMethod* self);
 ValaDataType* vala_method_get_base_interface_type (ValaMethod* self);
-void vala_method_set_base_interface_type (ValaMethod* self, ValaDataType* value);
+void vala_method_set_base_interface_type (ValaMethod* self,
+                                          ValaDataType* value);
 gboolean vala_method_get_entry_point (ValaMethod* self);
 ValaParameter* vala_method_get_this_parameter (ValaMethod* self);
-void vala_method_set_this_parameter (ValaMethod* self, ValaParameter* value);
+void vala_method_set_this_parameter (ValaMethod* self,
+                                     ValaParameter* value);
 gboolean vala_method_get_printf_format (ValaMethod* self);
-void vala_method_set_printf_format (ValaMethod* self, gboolean value);
+void vala_method_set_printf_format (ValaMethod* self,
+                                    gboolean value);
 gboolean vala_method_get_scanf_format (ValaMethod* self);
-void vala_method_set_scanf_format (ValaMethod* self, gboolean value);
+void vala_method_set_scanf_format (ValaMethod* self,
+                                   gboolean value);
 gboolean vala_method_get_has_construct_function (ValaMethod* self);
-void vala_method_set_has_construct_function (ValaMethod* self, gboolean value);
+void vala_method_set_has_construct_function (ValaMethod* self,
+                                             gboolean value);
 ValaSignal* vala_method_get_signal_reference (ValaMethod* self);
-void vala_method_set_signal_reference (ValaMethod* self, ValaSignal* value);
+void vala_method_set_signal_reference (ValaMethod* self,
+                                       ValaSignal* value);
 gboolean vala_method_get_closure (ValaMethod* self);
-void vala_method_set_closure (ValaMethod* self, gboolean value);
+void vala_method_set_closure (ValaMethod* self,
+                              gboolean value);
 gboolean vala_method_get_coroutine (ValaMethod* self);
-void vala_method_set_coroutine (ValaMethod* self, gboolean value);
+void vala_method_set_coroutine (ValaMethod* self,
+                                gboolean value);
 gboolean vala_method_get_is_async_callback (ValaMethod* self);
-void vala_method_set_is_async_callback (ValaMethod* self, gboolean value);
-gint vala_method_get_yield_count (ValaMethod* self);
-void vala_method_set_yield_count (ValaMethod* self, gint value);
-ValaMethodCall* vala_method_call_new (ValaExpression* call, ValaSourceReference* source_reference);
-ValaMethodCall* vala_method_call_construct (GType object_type, ValaExpression* call, ValaSourceReference* source_reference);
-void vala_method_call_add_argument (ValaMethodCall* self, ValaExpression* arg);
+void vala_method_set_is_async_callback (ValaMethod* self,
+                                        gboolean value);
+ValaMethodCall* vala_method_call_new (ValaExpression* call,
+                                      ValaSourceReference* source_reference);
+ValaMethodCall* vala_method_call_construct (GType object_type,
+                                            ValaExpression* call,
+                                            ValaSourceReference* source_reference);
+void vala_method_call_add_argument (ValaMethodCall* self,
+                                    ValaExpression* arg);
 ValaList* vala_method_call_get_argument_list (ValaMethodCall* self);
+ValaStringLiteral* vala_method_call_get_format_literal (ValaMethodCall* self);
 ValaExpression* vala_method_call_get_call (ValaMethodCall* self);
-void vala_method_call_set_call (ValaMethodCall* self, ValaExpression* value);
+void vala_method_call_set_call (ValaMethodCall* self,
+                                ValaExpression* value);
 gboolean vala_method_call_get_is_yield_expression (ValaMethodCall* self);
-void vala_method_call_set_is_yield_expression (ValaMethodCall* self, gboolean value);
+void vala_method_call_set_is_yield_expression (ValaMethodCall* self,
+                                               gboolean value);
 gboolean vala_method_call_get_is_assert (ValaMethodCall* self);
 gboolean vala_method_call_get_is_constructv_chainup (ValaMethodCall* self);
+gboolean vala_method_call_get_is_chainup (ValaMethodCall* self);
 GType vala_method_type_get_type (void) G_GNUC_CONST;
 ValaMethodType* vala_method_type_new (ValaMethod* method_symbol);
-ValaMethodType* vala_method_type_construct (GType object_type, ValaMethod* method_symbol);
-gchar* vala_method_type_to_prototype_string (ValaMethodType* self, gboolean with_type_parameters);
+ValaMethodType* vala_method_type_construct (GType object_type,
+                                            ValaMethod* method_symbol);
 ValaMethod* vala_method_type_get_method_symbol (ValaMethodType* self);
-void vala_method_type_set_method_symbol (ValaMethodType* self, ValaMethod* value);
-ValaNamedArgument* vala_named_argument_new (const gchar* name, ValaExpression* inner, ValaSourceReference* source_reference);
-ValaNamedArgument* vala_named_argument_construct (GType object_type, const gchar* name, ValaExpression* inner, ValaSourceReference* source_reference);
+void vala_method_type_set_method_symbol (ValaMethodType* self,
+                                         ValaMethod* value);
+ValaNamedArgument* vala_named_argument_new (const gchar* name,
+                                            ValaExpression* inner,
+                                            ValaSourceReference* source_reference);
+ValaNamedArgument* vala_named_argument_construct (GType object_type,
+                                                  const gchar* name,
+                                                  ValaExpression* inner,
+                                                  ValaSourceReference* source_reference);
 const gchar* vala_named_argument_get_name (ValaNamedArgument* self);
-void vala_named_argument_set_name (ValaNamedArgument* self, const gchar* value);
+void vala_named_argument_set_name (ValaNamedArgument* self,
+                                   const gchar* value);
 ValaExpression* vala_named_argument_get_inner (ValaNamedArgument* self);
-void vala_named_argument_set_inner (ValaNamedArgument* self, ValaExpression* value);
-ValaNamespace* vala_namespace_new (const gchar* name, ValaSourceReference* source_reference);
-ValaNamespace* vala_namespace_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference);
-void vala_namespace_add_using_directive (ValaNamespace* self, ValaUsingDirective* ns);
-void vala_namespace_add_comment (ValaNamespace* self, ValaComment* comment);
+void vala_named_argument_set_inner (ValaNamedArgument* self,
+                                    ValaExpression* value);
+ValaNamespace* vala_namespace_new (const gchar* name,
+                                   ValaSourceReference* source_reference);
+ValaNamespace* vala_namespace_construct (GType object_type,
+                                         const gchar* name,
+                                         ValaSourceReference* source_reference);
+void vala_namespace_add_using_directive (ValaNamespace* self,
+                                         ValaUsingDirective* ns);
+void vala_namespace_add_comment (ValaNamespace* self,
+                                 ValaComment* comment);
 ValaList* vala_namespace_get_comments (ValaNamespace* self);
 ValaList* vala_namespace_get_namespaces (ValaNamespace* self);
-void vala_namespace_remove_struct (ValaNamespace* self, ValaStruct* st);
+void vala_namespace_remove_struct (ValaNamespace* self,
+                                   ValaStruct* st);
 ValaList* vala_namespace_get_structs (ValaNamespace* self);
 ValaList* vala_namespace_get_classes (ValaNamespace* self);
 ValaList* vala_namespace_get_interfaces (ValaNamespace* self);
@@ -4626,212 +5564,387 @@ ValaList* vala_namespace_get_constants (ValaNamespace* self);
 ValaList* vala_namespace_get_delegates (ValaNamespace* self);
 ValaList* vala_namespace_get_methods (ValaNamespace* self);
 ValaNullLiteral* vala_null_literal_new (ValaSourceReference* source);
-ValaNullLiteral* vala_null_literal_construct (GType object_type, ValaSourceReference* source);
+ValaNullLiteral* vala_null_literal_construct (GType object_type,
+                                              ValaSourceReference* source);
 GType vala_null_type_get_type (void) G_GNUC_CONST;
 ValaNullType* vala_null_type_new (ValaSourceReference* source_reference);
-ValaNullType* vala_null_type_construct (GType object_type, ValaSourceReference* source_reference);
-ValaObjectCreationExpression* vala_object_creation_expression_new (ValaMemberAccess* member_name, ValaSourceReference* source_reference);
-ValaObjectCreationExpression* vala_object_creation_expression_construct (GType object_type, ValaMemberAccess* member_name, ValaSourceReference* source_reference);
-void vala_object_creation_expression_add_argument (ValaObjectCreationExpression* self, ValaExpression* arg);
+ValaNullType* vala_null_type_construct (GType object_type,
+                                        ValaSourceReference* source_reference);
+ValaObjectCreationExpression* vala_object_creation_expression_new (ValaMemberAccess* member_name,
+                                                                   ValaSourceReference* source_reference);
+ValaObjectCreationExpression* vala_object_creation_expression_construct (GType object_type,
+                                                                         ValaMemberAccess* member_name,
+                                                                         ValaSourceReference* source_reference);
+void vala_object_creation_expression_add_argument (ValaObjectCreationExpression* self,
+                                                   ValaExpression* arg);
 ValaList* vala_object_creation_expression_get_argument_list (ValaObjectCreationExpression* self);
-void vala_object_creation_expression_add_member_initializer (ValaObjectCreationExpression* self, ValaMemberInitializer* init);
+void vala_object_creation_expression_add_member_initializer (ValaObjectCreationExpression* self,
+                                                             ValaMemberInitializer* init);
 ValaList* vala_object_creation_expression_get_object_initializer (ValaObjectCreationExpression* self);
 ValaDataType* vala_object_creation_expression_get_type_reference (ValaObjectCreationExpression* self);
-void vala_object_creation_expression_set_type_reference (ValaObjectCreationExpression* self, ValaDataType* value);
+void vala_object_creation_expression_set_type_reference (ValaObjectCreationExpression* self,
+                                                         ValaDataType* value);
 ValaMemberAccess* vala_object_creation_expression_get_member_name (ValaObjectCreationExpression* self);
-void vala_object_creation_expression_set_member_name (ValaObjectCreationExpression* self, ValaMemberAccess* value);
+void vala_object_creation_expression_set_member_name (ValaObjectCreationExpression* self,
+                                                      ValaMemberAccess* value);
 gboolean vala_object_creation_expression_get_is_yield_expression (ValaObjectCreationExpression* self);
-void vala_object_creation_expression_set_is_yield_expression (ValaObjectCreationExpression* self, gboolean value);
+void vala_object_creation_expression_set_is_yield_expression (ValaObjectCreationExpression* self,
+                                                              gboolean value);
 gboolean vala_object_creation_expression_get_struct_creation (ValaObjectCreationExpression* self);
-void vala_object_creation_expression_set_struct_creation (ValaObjectCreationExpression* self, gboolean value);
+void vala_object_creation_expression_set_struct_creation (ValaObjectCreationExpression* self,
+                                                          gboolean value);
 GType vala_object_type_get_type (void) G_GNUC_CONST;
 ValaObjectType* vala_object_type_new (ValaObjectTypeSymbol* type_symbol);
-ValaObjectType* vala_object_type_construct (GType object_type, ValaObjectTypeSymbol* type_symbol);
+ValaObjectType* vala_object_type_construct (GType object_type,
+                                            ValaObjectTypeSymbol* type_symbol);
 ValaObjectTypeSymbol* vala_object_type_get_type_symbol (ValaObjectType* self);
-void vala_object_type_set_type_symbol (ValaObjectType* self, ValaObjectTypeSymbol* value);
-ValaObjectTypeSymbol* vala_object_type_symbol_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
+void vala_object_type_set_type_symbol (ValaObjectType* self,
+                                       ValaObjectTypeSymbol* value);
+ValaObjectTypeSymbol* vala_object_type_symbol_construct (GType object_type,
+                                                         const gchar* name,
+                                                         ValaSourceReference* source_reference,
+                                                         ValaComment* comment);
+ValaList* vala_object_type_symbol_get_members (ValaObjectTypeSymbol* self);
+ValaList* vala_object_type_symbol_get_fields (ValaObjectTypeSymbol* self);
 ValaList* vala_object_type_symbol_get_methods (ValaObjectTypeSymbol* self);
-ValaList* vala_object_type_symbol_get_signals (ValaObjectTypeSymbol* self);
 ValaList* vala_object_type_symbol_get_properties (ValaObjectTypeSymbol* self);
-void vala_object_type_symbol_add_type_parameter (ValaObjectTypeSymbol* self, ValaTypeParameter* p);
+ValaList* vala_object_type_symbol_get_signals (ValaObjectTypeSymbol* self);
+ValaList* vala_object_type_symbol_get_classes (ValaObjectTypeSymbol* self);
+ValaList* vala_object_type_symbol_get_structs (ValaObjectTypeSymbol* self);
+ValaList* vala_object_type_symbol_get_enums (ValaObjectTypeSymbol* self);
+ValaList* vala_object_type_symbol_get_delegates (ValaObjectTypeSymbol* self);
+ValaList* vala_object_type_symbol_get_constants (ValaObjectTypeSymbol* self);
+void vala_object_type_symbol_add_type_parameter (ValaObjectTypeSymbol* self,
+                                                 ValaTypeParameter* p);
 ValaList* vala_object_type_symbol_get_type_parameters (ValaObjectTypeSymbol* self);
 ValaObjectType* vala_object_type_symbol_get_this_type (ValaObjectTypeSymbol* self);
-void vala_object_type_symbol_add_hidden_method (ValaObjectTypeSymbol* self, ValaMethod* m);
-ValaParameter* vala_parameter_new (const gchar* name, ValaDataType* variable_type, ValaSourceReference* source_reference);
-ValaParameter* vala_parameter_construct (GType object_type, const gchar* name, ValaDataType* variable_type, ValaSourceReference* source_reference);
+void vala_object_type_symbol_add_hidden_method (ValaObjectTypeSymbol* self,
+                                                ValaMethod* m);
+ValaParameter* vala_parameter_new (const gchar* name,
+                                   ValaDataType* variable_type,
+                                   ValaSourceReference* source_reference);
+ValaParameter* vala_parameter_construct (GType object_type,
+                                         const gchar* name,
+                                         ValaDataType* variable_type,
+                                         ValaSourceReference* source_reference);
 ValaParameter* vala_parameter_new_with_ellipsis (ValaSourceReference* source_reference);
-ValaParameter* vala_parameter_construct_with_ellipsis (GType object_type, ValaSourceReference* source_reference);
+ValaParameter* vala_parameter_construct_with_ellipsis (GType object_type,
+                                                       ValaSourceReference* source_reference);
 ValaParameter* vala_parameter_copy (ValaParameter* self);
 GType vala_parameter_direction_get_type (void) G_GNUC_CONST;
 ValaParameterDirection vala_parameter_get_direction (ValaParameter* self);
-void vala_parameter_set_direction (ValaParameter* self, ValaParameterDirection value);
+void vala_parameter_set_direction (ValaParameter* self,
+                                   ValaParameterDirection value);
 gboolean vala_parameter_get_ellipsis (ValaParameter* self);
-void vala_parameter_set_ellipsis (ValaParameter* self, gboolean value);
+void vala_parameter_set_ellipsis (ValaParameter* self,
+                                  gboolean value);
 gboolean vala_parameter_get_params_array (ValaParameter* self);
-void vala_parameter_set_params_array (ValaParameter* self, gboolean value);
+void vala_parameter_set_params_array (ValaParameter* self,
+                                      gboolean value);
 gboolean vala_parameter_get_captured (ValaParameter* self);
-void vala_parameter_set_captured (ValaParameter* self, gboolean value);
+void vala_parameter_set_captured (ValaParameter* self,
+                                  gboolean value);
+gboolean vala_parameter_get_format_arg (ValaParameter* self);
 ValaParameter* vala_parameter_get_base_parameter (ValaParameter* self);
-void vala_parameter_set_base_parameter (ValaParameter* self, ValaParameter* value);
+void vala_parameter_set_base_parameter (ValaParameter* self,
+                                        ValaParameter* value);
 GType vala_parser_get_type (void) G_GNUC_CONST;
 ValaParser* vala_parser_new (void);
 ValaParser* vala_parser_construct (GType object_type);
-void vala_parser_parse (ValaParser* self, ValaCodeContext* context);
-void vala_parser_parse_file (ValaParser* self, ValaSourceFile* source_file);
+void vala_parser_parse (ValaParser* self,
+                        ValaCodeContext* context);
+void vala_parser_parse_file (ValaParser* self,
+                             ValaSourceFile* source_file);
 GQuark vala_parse_error_quark (void);
-ValaPhiFunction* vala_phi_function_new (ValaVariable* variable, gint num_of_ops);
-ValaPhiFunction* vala_phi_function_construct (GType object_type, ValaVariable* variable, gint num_of_ops);
+ValaPhiFunction* vala_phi_function_new (ValaVariable* variable,
+                                        gint num_of_ops);
+ValaPhiFunction* vala_phi_function_construct (GType object_type,
+                                              ValaVariable* variable,
+                                              gint num_of_ops);
 ValaVariable* vala_phi_function_get_original_variable (ValaPhiFunction* self);
 ValaList* vala_phi_function_get_operands (ValaPhiFunction* self);
-ValaPointerIndirection* vala_pointer_indirection_new (ValaExpression* inner, ValaSourceReference* source_reference);
-ValaPointerIndirection* vala_pointer_indirection_construct (GType object_type, ValaExpression* inner, ValaSourceReference* source_reference);
+ValaPointerIndirection* vala_pointer_indirection_new (ValaExpression* inner,
+                                                      ValaSourceReference* source_reference);
+ValaPointerIndirection* vala_pointer_indirection_construct (GType object_type,
+                                                            ValaExpression* inner,
+                                                            ValaSourceReference* source_reference);
 ValaExpression* vala_pointer_indirection_get_inner (ValaPointerIndirection* self);
-void vala_pointer_indirection_set_inner (ValaPointerIndirection* self, ValaExpression* value);
+void vala_pointer_indirection_set_inner (ValaPointerIndirection* self,
+                                         ValaExpression* value);
 GType vala_pointer_type_get_type (void) G_GNUC_CONST;
-ValaPointerType* vala_pointer_type_new (ValaDataType* base_type, ValaSourceReference* source_reference);
-ValaPointerType* vala_pointer_type_construct (GType object_type, ValaDataType* base_type, ValaSourceReference* source_reference);
+ValaPointerType* vala_pointer_type_new (ValaDataType* base_type,
+                                        ValaSourceReference* source_reference);
+ValaPointerType* vala_pointer_type_construct (GType object_type,
+                                              ValaDataType* base_type,
+                                              ValaSourceReference* source_reference);
 ValaDataType* vala_pointer_type_get_base_type (ValaPointerType* self);
-void vala_pointer_type_set_base_type (ValaPointerType* self, ValaDataType* value);
-ValaPostfixExpression* vala_postfix_expression_new (ValaExpression* _inner, gboolean inc, ValaSourceReference* source);
-ValaPostfixExpression* vala_postfix_expression_construct (GType object_type, ValaExpression* _inner, gboolean inc, ValaSourceReference* source);
+void vala_pointer_type_set_base_type (ValaPointerType* self,
+                                      ValaDataType* value);
+ValaPostfixExpression* vala_postfix_expression_new (ValaExpression* _inner,
+                                                    gboolean inc,
+                                                    ValaSourceReference* source);
+ValaPostfixExpression* vala_postfix_expression_construct (GType object_type,
+                                                          ValaExpression* _inner,
+                                                          gboolean inc,
+                                                          ValaSourceReference* source);
 ValaExpression* vala_postfix_expression_get_inner (ValaPostfixExpression* self);
-void vala_postfix_expression_set_inner (ValaPostfixExpression* self, ValaExpression* value);
+void vala_postfix_expression_set_inner (ValaPostfixExpression* self,
+                                        ValaExpression* value);
 gboolean vala_postfix_expression_get_increment (ValaPostfixExpression* self);
-void vala_postfix_expression_set_increment (ValaPostfixExpression* self, gboolean value);
-ValaPropertyAccessor* vala_property_accessor_new (gboolean readable, gboolean writable, gboolean construction, ValaDataType* value_type, ValaBlock* body, ValaSourceReference* source_reference, ValaComment* comment);
-ValaPropertyAccessor* vala_property_accessor_construct (GType object_type, gboolean readable, gboolean writable, gboolean construction, ValaDataType* value_type, ValaBlock* body, ValaSourceReference* source_reference, ValaComment* comment);
+void vala_postfix_expression_set_increment (ValaPostfixExpression* self,
+                                            gboolean value);
+ValaPropertyAccessor* vala_property_accessor_new (gboolean readable,
+                                                  gboolean writable,
+                                                  gboolean construction,
+                                                  ValaDataType* value_type,
+                                                  ValaBlock* body,
+                                                  ValaSourceReference* source_reference,
+                                                  ValaComment* comment);
+ValaPropertyAccessor* vala_property_accessor_construct (GType object_type,
+                                                        gboolean readable,
+                                                        gboolean writable,
+                                                        gboolean construction,
+                                                        ValaDataType* value_type,
+                                                        ValaBlock* body,
+                                                        ValaSourceReference* source_reference,
+                                                        ValaComment* comment);
 ValaMethod* vala_property_accessor_get_method (ValaPropertyAccessor* self);
 ValaProperty* vala_property_accessor_get_prop (ValaPropertyAccessor* self);
 ValaDataType* vala_property_accessor_get_value_type (ValaPropertyAccessor* self);
-void vala_property_accessor_set_value_type (ValaPropertyAccessor* self, ValaDataType* value);
 gboolean vala_property_accessor_get_readable (ValaPropertyAccessor* self);
-void vala_property_accessor_set_readable (ValaPropertyAccessor* self, gboolean value);
 gboolean vala_property_accessor_get_writable (ValaPropertyAccessor* self);
-void vala_property_accessor_set_writable (ValaPropertyAccessor* self, gboolean value);
 gboolean vala_property_accessor_get_construction (ValaPropertyAccessor* self);
-void vala_property_accessor_set_construction (ValaPropertyAccessor* self, gboolean value);
 gboolean vala_property_accessor_get_automatic_body (ValaPropertyAccessor* self);
-void vala_property_accessor_set_automatic_body (ValaPropertyAccessor* self, gboolean value);
 ValaParameter* vala_property_accessor_get_value_parameter (ValaPropertyAccessor* self);
-void vala_property_accessor_set_value_parameter (ValaPropertyAccessor* self, ValaParameter* value);
-ValaProperty* vala_property_new (const gchar* name, ValaDataType* property_type, ValaPropertyAccessor* get_accessor, ValaPropertyAccessor* set_accessor, ValaSourceReference* source_reference, ValaComment* comment);
-ValaProperty* vala_property_construct (GType object_type, const gchar* name, ValaDataType* property_type, ValaPropertyAccessor* get_accessor, ValaPropertyAccessor* set_accessor, ValaSourceReference* source_reference, ValaComment* comment);
-gboolean vala_property_compatible (ValaProperty* self, ValaProperty* base_property, gchar** invalid_match);
+ValaProperty* vala_property_new (const gchar* name,
+                                 ValaDataType* property_type,
+                                 ValaPropertyAccessor* get_accessor,
+                                 ValaPropertyAccessor* set_accessor,
+                                 ValaSourceReference* source_reference,
+                                 ValaComment* comment);
+ValaProperty* vala_property_construct (GType object_type,
+                                       const gchar* name,
+                                       ValaDataType* property_type,
+                                       ValaPropertyAccessor* get_accessor,
+                                       ValaPropertyAccessor* set_accessor,
+                                       ValaSourceReference* source_reference,
+                                       ValaComment* comment);
+gboolean vala_property_compatible (ValaProperty* self,
+                                   ValaProperty* base_property,
+                                   gchar* * invalid_match);
 ValaDataType* vala_property_get_property_type (ValaProperty* self);
-void vala_property_set_property_type (ValaProperty* self, ValaDataType* value);
+void vala_property_set_property_type (ValaProperty* self,
+                                      ValaDataType* value);
 ValaPropertyAccessor* vala_property_get_get_accessor (ValaProperty* self);
-void vala_property_set_get_accessor (ValaProperty* self, ValaPropertyAccessor* value);
+void vala_property_set_get_accessor (ValaProperty* self,
+                                     ValaPropertyAccessor* value);
 ValaPropertyAccessor* vala_property_get_set_accessor (ValaProperty* self);
-void vala_property_set_set_accessor (ValaProperty* self, ValaPropertyAccessor* value);
+void vala_property_set_set_accessor (ValaProperty* self,
+                                     ValaPropertyAccessor* value);
 ValaParameter* vala_property_get_this_parameter (ValaProperty* self);
-void vala_property_set_this_parameter (ValaProperty* self, ValaParameter* value);
+void vala_property_set_this_parameter (ValaProperty* self,
+                                       ValaParameter* value);
 gboolean vala_property_get_interface_only (ValaProperty* self);
-void vala_property_set_interface_only (ValaProperty* self, gboolean value);
+void vala_property_set_interface_only (ValaProperty* self,
+                                       gboolean value);
 gboolean vala_property_get_is_abstract (ValaProperty* self);
-void vala_property_set_is_abstract (ValaProperty* self, gboolean value);
+void vala_property_set_is_abstract (ValaProperty* self,
+                                    gboolean value);
 gboolean vala_property_get_is_virtual (ValaProperty* self);
-void vala_property_set_is_virtual (ValaProperty* self, gboolean value);
+void vala_property_set_is_virtual (ValaProperty* self,
+                                   gboolean value);
 gboolean vala_property_get_overrides (ValaProperty* self);
-void vala_property_set_overrides (ValaProperty* self, gboolean value);
+void vala_property_set_overrides (ValaProperty* self,
+                                  gboolean value);
 ValaField* vala_property_get_field (ValaProperty* self);
-void vala_property_set_field (ValaProperty* self, ValaField* value);
+void vala_property_set_field (ValaProperty* self,
+                              ValaField* value);
 ValaMemberBinding vala_property_get_binding (ValaProperty* self);
-void vala_property_set_binding (ValaProperty* self, ValaMemberBinding value);
+void vala_property_set_binding (ValaProperty* self,
+                                ValaMemberBinding value);
+const gchar* vala_property_get_nick (ValaProperty* self);
+const gchar* vala_property_get_blurb (ValaProperty* self);
+gboolean vala_property_get_notify (ValaProperty* self);
 ValaProperty* vala_property_get_base_property (ValaProperty* self);
 ValaProperty* vala_property_get_base_interface_property (ValaProperty* self);
 ValaExpression* vala_property_get_initializer (ValaProperty* self);
-void vala_property_set_initializer (ValaProperty* self, ValaExpression* value);
-ValaRealLiteral* vala_real_literal_new (const gchar* r, ValaSourceReference* source);
-ValaRealLiteral* vala_real_literal_construct (GType object_type, const gchar* r, ValaSourceReference* source);
+void vala_property_set_initializer (ValaProperty* self,
+                                    ValaExpression* value);
+ValaRealLiteral* vala_real_literal_new (const gchar* r,
+                                        ValaSourceReference* source);
+ValaRealLiteral* vala_real_literal_construct (GType object_type,
+                                              const gchar* r,
+                                              ValaSourceReference* source);
 gchar* vala_real_literal_get_type_name (ValaRealLiteral* self);
 const gchar* vala_real_literal_get_value (ValaRealLiteral* self);
-void vala_real_literal_set_value (ValaRealLiteral* self, const gchar* value);
-ValaReferenceTransferExpression* vala_reference_transfer_expression_new (ValaExpression* inner, ValaSourceReference* source_reference);
-ValaReferenceTransferExpression* vala_reference_transfer_expression_construct (GType object_type, ValaExpression* inner, ValaSourceReference* source_reference);
+void vala_real_literal_set_value (ValaRealLiteral* self,
+                                  const gchar* value);
+ValaReferenceTransferExpression* vala_reference_transfer_expression_new (ValaExpression* inner,
+                                                                         ValaSourceReference* source_reference);
+ValaReferenceTransferExpression* vala_reference_transfer_expression_construct (GType object_type,
+                                                                               ValaExpression* inner,
+                                                                               ValaSourceReference* source_reference);
 ValaExpression* vala_reference_transfer_expression_get_inner (ValaReferenceTransferExpression* self);
-void vala_reference_transfer_expression_set_inner (ValaReferenceTransferExpression* self, ValaExpression* value);
+void vala_reference_transfer_expression_set_inner (ValaReferenceTransferExpression* self,
+                                                   ValaExpression* value);
 ValaReferenceType* vala_reference_type_construct (GType object_type);
-ValaRegexLiteral* vala_regex_literal_new (const gchar* value, ValaSourceReference* source_reference);
-ValaRegexLiteral* vala_regex_literal_construct (GType object_type, const gchar* value, ValaSourceReference* source_reference);
+ValaRegexLiteral* vala_regex_literal_new (const gchar* value,
+                                          ValaSourceReference* source_reference);
+ValaRegexLiteral* vala_regex_literal_construct (GType object_type,
+                                                const gchar* value,
+                                                ValaSourceReference* source_reference);
 const gchar* vala_regex_literal_get_value (ValaRegexLiteral* self);
-void vala_regex_literal_set_value (ValaRegexLiteral* self, const gchar* value);
-gboolean vala_report_set_colors (ValaReport* self, const gchar* str);
-void vala_report_set_verbose_errors (ValaReport* self, gboolean verbose);
+void vala_regex_literal_set_value (ValaRegexLiteral* self,
+                                   const gchar* value);
+GType vala_report_colored_get_type (void) G_GNUC_CONST;
+gboolean vala_report_set_colors (ValaReport* self,
+                                 const gchar* str,
+                                 ValaReportColored colored_output);
+void vala_report_set_verbose_errors (ValaReport* self,
+                                     gboolean verbose);
 gint vala_report_get_warnings (ValaReport* self);
 gint vala_report_get_errors (ValaReport* self);
-void vala_report_note (ValaReport* self, ValaSourceReference* source, const gchar* message);
-void vala_report_depr (ValaReport* self, ValaSourceReference* source, const gchar* message);
-void vala_report_warn (ValaReport* self, ValaSourceReference* source, const gchar* message);
-void vala_report_err (ValaReport* self, ValaSourceReference* source, const gchar* message);
-void vala_report_notice (ValaSourceReference* source, const gchar* message);
-void vala_report_deprecated (ValaSourceReference* source, const gchar* message);
-void vala_report_experimental (ValaSourceReference* source, const gchar* message);
-void vala_report_warning (ValaSourceReference* source, const gchar* message);
-void vala_report_error (ValaSourceReference* source, const gchar* message);
+void vala_report_note (ValaReport* self,
+                       ValaSourceReference* source,
+                       const gchar* message);
+void vala_report_depr (ValaReport* self,
+                       ValaSourceReference* source,
+                       const gchar* message);
+void vala_report_warn (ValaReport* self,
+                       ValaSourceReference* source,
+                       const gchar* message);
+void vala_report_err (ValaReport* self,
+                      ValaSourceReference* source,
+                      const gchar* message);
+void vala_report_notice (ValaSourceReference* source,
+                         const gchar* message);
+void vala_report_deprecated (ValaSourceReference* source,
+                             const gchar* message);
+void vala_report_experimental (ValaSourceReference* source,
+                               const gchar* message);
+void vala_report_warning (ValaSourceReference* source,
+                          const gchar* message);
+void vala_report_error (ValaSourceReference* source,
+                        const gchar* message);
 ValaReport* vala_report_new (void);
 ValaReport* vala_report_construct (GType object_type);
 gboolean vala_report_get_enable_warnings (ValaReport* self);
-void vala_report_set_enable_warnings (ValaReport* self, gboolean value);
-ValaReturnStatement* vala_return_statement_new (ValaExpression* return_expression, ValaSourceReference* source_reference);
-ValaReturnStatement* vala_return_statement_construct (GType object_type, ValaExpression* return_expression, ValaSourceReference* source_reference);
+void vala_report_set_enable_warnings (ValaReport* self,
+                                      gboolean value);
+ValaReturnStatement* vala_return_statement_new (ValaExpression* return_expression,
+                                                ValaSourceReference* source_reference);
+ValaReturnStatement* vala_return_statement_construct (GType object_type,
+                                                      ValaExpression* return_expression,
+                                                      ValaSourceReference* source_reference);
 ValaExpression* vala_return_statement_get_return_expression (ValaReturnStatement* self);
-void vala_return_statement_set_return_expression (ValaReturnStatement* self, ValaExpression* value);
+void vala_return_statement_set_return_expression (ValaReturnStatement* self,
+                                                  ValaExpression* value);
 gpointer vala_scanner_ref (gpointer instance);
 void vala_scanner_unref (gpointer instance);
-GParamSpec* vala_param_spec_scanner (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_scanner (GValue* value, gpointer v_object);
-void vala_value_take_scanner (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_scanner (const gchar* name,
+                                     const gchar* nick,
+                                     const gchar* blurb,
+                                     GType object_type,
+                                     GParamFlags flags);
+void vala_value_set_scanner (GValue* value,
+                             gpointer v_object);
+void vala_value_take_scanner (GValue* value,
+                              gpointer v_object);
 gpointer vala_value_get_scanner (const GValue* value);
 GType vala_scanner_get_type (void) G_GNUC_CONST;
 ValaScanner* vala_scanner_new (ValaSourceFile* source_file);
-ValaScanner* vala_scanner_construct (GType object_type, ValaSourceFile* source_file);
-void vala_scanner_seek (ValaScanner* self, ValaSourceLocation* location);
+ValaScanner* vala_scanner_construct (GType object_type,
+                                     ValaSourceFile* source_file);
+void vala_scanner_seek (ValaScanner* self,
+                        ValaSourceLocation* location);
 GType vala_token_type_get_type (void) G_GNUC_CONST;
-ValaTokenType vala_scanner_read_regex_token (ValaScanner* self, ValaSourceLocation* token_begin, ValaSourceLocation* token_end);
-ValaTokenType vala_scanner_get_identifier_or_keyword (gchar* begin, gint len);
-ValaTokenType vala_scanner_read_template_token (ValaScanner* self, ValaSourceLocation* token_begin, ValaSourceLocation* token_end);
-ValaTokenType vala_scanner_read_token (ValaScanner* self, ValaSourceLocation* token_begin, ValaSourceLocation* token_end);
+ValaTokenType vala_scanner_read_regex_token (ValaScanner* self,
+                                             ValaSourceLocation* token_begin,
+                                             ValaSourceLocation* token_end);
+ValaTokenType vala_scanner_get_identifier_or_keyword (gchar* begin,
+                                                      gint len);
+ValaTokenType vala_scanner_read_template_token (ValaScanner* self,
+                                                ValaSourceLocation* token_begin,
+                                                ValaSourceLocation* token_end);
+ValaTokenType vala_scanner_read_token (ValaScanner* self,
+                                       ValaSourceLocation* token_begin,
+                                       ValaSourceLocation* token_end);
 void vala_scanner_parse_file_comments (ValaScanner* self);
 ValaComment* vala_scanner_pop_comment (ValaScanner* self);
 ValaSourceFile* vala_scanner_get_source_file (ValaScanner* self);
 ValaScope* vala_scope_new (ValaSymbol* owner);
-ValaScope* vala_scope_construct (GType object_type, ValaSymbol* owner);
-void vala_scope_add (ValaScope* self, const gchar* name, ValaSymbol* sym);
-void vala_scope_remove (ValaScope* self, const gchar* name);
-ValaSymbol* vala_scope_lookup (ValaScope* self, const gchar* name);
-gboolean vala_scope_is_subscope_of (ValaScope* self, ValaScope* scope);
+ValaScope* vala_scope_construct (GType object_type,
+                                 ValaSymbol* owner);
+void vala_scope_add (ValaScope* self,
+                     const gchar* name,
+                     ValaSymbol* sym);
+void vala_scope_remove (ValaScope* self,
+                        const gchar* name);
+ValaSymbol* vala_scope_lookup (ValaScope* self,
+                               const gchar* name);
+gboolean vala_scope_is_subscope_of (ValaScope* self,
+                                    ValaScope* scope);
 ValaMap* vala_scope_get_symbol_table (ValaScope* self);
 ValaSymbol* vala_scope_get_owner (ValaScope* self);
-void vala_scope_set_owner (ValaScope* self, ValaSymbol* value);
+void vala_scope_set_owner (ValaScope* self,
+                           ValaSymbol* value);
 ValaScope* vala_scope_get_parent_scope (ValaScope* self);
-void vala_scope_set_parent_scope (ValaScope* self, ValaScope* value);
+void vala_scope_set_parent_scope (ValaScope* self,
+                                  ValaScope* value);
 GType vala_struct_value_type_get_type (void) G_GNUC_CONST;
 ValaSemanticAnalyzer* vala_semantic_analyzer_new (void);
 ValaSemanticAnalyzer* vala_semantic_analyzer_construct (GType object_type);
-void vala_semantic_analyzer_analyze (ValaSemanticAnalyzer* self, ValaCodeContext* context);
-gboolean vala_semantic_analyzer_is_type_accessible (ValaSemanticAnalyzer* self, ValaSymbol* sym, ValaDataType* type);
-ValaDataType* vala_semantic_analyzer_get_value_type_for_symbol (ValaSemanticAnalyzer* self, ValaSymbol* sym, gboolean lvalue);
-ValaSymbol* vala_semantic_analyzer_symbol_lookup_inherited (ValaSymbol* sym, const gchar* name);
-ValaDataType* vala_semantic_analyzer_get_data_type_for_symbol (ValaTypeSymbol* sym);
-gboolean vala_semantic_analyzer_check_arguments (ValaSemanticAnalyzer* self, ValaExpression* expr, ValaDataType* mtype, ValaList* params, ValaList* args);
-gboolean vala_semantic_analyzer_check_variadic_arguments (ValaSemanticAnalyzer* self, ValaIterator* arg_it, gint i, ValaSourceReference* source_reference);
-gboolean vala_semantic_analyzer_check_print_format (ValaSemanticAnalyzer* self, const gchar* format, ValaIterator* arg_it, ValaSourceReference* source_reference);
-ValaDataType* vala_semantic_analyzer_get_actual_type (ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaGenericType* generic_type, ValaCodeNode* node_reference);
+void vala_semantic_analyzer_analyze (ValaSemanticAnalyzer* self,
+                                     ValaCodeContext* context);
+gboolean vala_semantic_analyzer_is_type_accessible (ValaSemanticAnalyzer* self,
+                                                    ValaSymbol* sym,
+                                                    ValaDataType* type);
+ValaDataType* vala_semantic_analyzer_get_value_type_for_symbol (ValaSemanticAnalyzer* self,
+                                                                ValaSymbol* sym,
+                                                                gboolean lvalue);
+ValaSymbol* vala_semantic_analyzer_symbol_lookup_inherited (ValaSymbol* sym,
+                                                            const gchar* name);
+ValaDataType* vala_semantic_analyzer_get_data_type_for_symbol (ValaSymbol* sym);
+ValaSymbol* vala_semantic_analyzer_get_symbol_for_data_type (ValaDataType* type);
+gboolean vala_semantic_analyzer_check_arguments (ValaSemanticAnalyzer* self,
+                                                 ValaExpression* expr,
+                                                 ValaDataType* mtype,
+                                                 ValaList* params,
+                                                 ValaList* args);
+gboolean vala_semantic_analyzer_check_variadic_arguments (ValaSemanticAnalyzer* self,
+                                                          ValaIterator* arg_it,
+                                                          gint i,
+                                                          ValaSourceReference* source_reference);
+gboolean vala_semantic_analyzer_check_print_format (ValaSemanticAnalyzer* self,
+                                                    const gchar* format,
+                                                    ValaIterator* arg_it,
+                                                    ValaSourceReference* source_reference);
+ValaDataType* vala_semantic_analyzer_get_actual_type (ValaDataType* derived_instance_type,
+                                                      ValaList* method_type_arguments,
+                                                      ValaGenericType* generic_type,
+                                                      ValaCodeNode* node_reference);
 gboolean vala_semantic_analyzer_is_in_instance_method (ValaSemanticAnalyzer* self);
-ValaExpression* vala_semantic_analyzer_create_temp_access (ValaLocalVariable* local, ValaDataType* target_type);
-void vala_semantic_analyzer_visit_member_initializer (ValaSemanticAnalyzer* self, ValaMemberInitializer* init, ValaDataType* type);
-ValaDataType* vala_semantic_analyzer_get_arithmetic_result_type (ValaSemanticAnalyzer* self, ValaDataType* left_type, ValaDataType* right_type);
+ValaExpression* vala_semantic_analyzer_create_temp_access (ValaLocalVariable* local,
+                                                           ValaDataType* target_type);
+void vala_semantic_analyzer_visit_member_initializer (ValaSemanticAnalyzer* self,
+                                                      ValaMemberInitializer* init,
+                                                      ValaDataType* type);
+ValaDataType* vala_semantic_analyzer_get_arithmetic_result_type (ValaSemanticAnalyzer* self,
+                                                                 ValaDataType* left_type,
+                                                                 ValaDataType* right_type);
 ValaMethod* vala_semantic_analyzer_find_current_method (ValaSemanticAnalyzer* self);
-ValaMethod* vala_semantic_analyzer_find_parent_method (ValaSemanticAnalyzer* self, ValaSymbol* sym);
-ValaSymbol* vala_semantic_analyzer_find_parent_method_or_property_accessor (ValaSemanticAnalyzer* self, ValaSymbol* sym);
+ValaMethod* vala_semantic_analyzer_find_parent_method (ValaSemanticAnalyzer* self,
+                                                       ValaSymbol* sym);
+ValaSymbol* vala_semantic_analyzer_find_parent_method_or_property_accessor (ValaSemanticAnalyzer* self,
+                                                                            ValaSymbol* sym);
 gboolean vala_semantic_analyzer_is_in_constructor (ValaSemanticAnalyzer* self);
 gboolean vala_semantic_analyzer_is_in_destructor (ValaSemanticAnalyzer* self);
-ValaCodeContext* vala_semantic_analyzer_get_context (ValaSemanticAnalyzer* self);
-void vala_semantic_analyzer_set_context (ValaSemanticAnalyzer* self, ValaCodeContext* value);
 ValaSymbol* vala_semantic_analyzer_get_current_symbol (ValaSemanticAnalyzer* self);
-void vala_semantic_analyzer_set_current_symbol (ValaSemanticAnalyzer* self, ValaSymbol* value);
+void vala_semantic_analyzer_set_current_symbol (ValaSemanticAnalyzer* self,
+                                                ValaSymbol* value);
 ValaSourceFile* vala_semantic_analyzer_get_current_source_file (ValaSemanticAnalyzer* self);
-void vala_semantic_analyzer_set_current_source_file (ValaSemanticAnalyzer* self, ValaSourceFile* value);
+void vala_semantic_analyzer_set_current_source_file (ValaSemanticAnalyzer* self,
+                                                     ValaSourceFile* value);
 ValaTypeSymbol* vala_semantic_analyzer_get_current_type_symbol (ValaSemanticAnalyzer* self);
 ValaClass* vala_semantic_analyzer_get_current_class (ValaSemanticAnalyzer* self);
 ValaStruct* vala_semantic_analyzer_get_current_struct (ValaSemanticAnalyzer* self);
@@ -4840,104 +5953,190 @@ ValaMethod* vala_semantic_analyzer_get_current_async_method (ValaSemanticAnalyze
 ValaPropertyAccessor* vala_semantic_analyzer_get_current_property_accessor (ValaSemanticAnalyzer* self);
 ValaSymbol* vala_semantic_analyzer_get_current_method_or_property_accessor (ValaSemanticAnalyzer* self);
 ValaDataType* vala_semantic_analyzer_get_current_return_type (ValaSemanticAnalyzer* self);
-ValaSignal* vala_signal_new (const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment);
-ValaSignal* vala_signal_construct (GType object_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment);
-void vala_signal_add_parameter (ValaSignal* self, ValaParameter* param);
-ValaList* vala_signal_get_parameters (ValaSignal* self);
-ValaDelegate* vala_signal_get_delegate (ValaSignal* self, ValaDataType* sender_type, ValaCodeNode* node_reference);
-ValaDataType* vala_signal_get_return_type (ValaSignal* self);
-void vala_signal_set_return_type (ValaSignal* self, ValaDataType* value);
+ValaSignal* vala_signal_new (const gchar* name,
+                             ValaDataType* return_type,
+                             ValaSourceReference* source_reference,
+                             ValaComment* comment);
+ValaSignal* vala_signal_construct (GType object_type,
+                                   const gchar* name,
+                                   ValaDataType* return_type,
+                                   ValaSourceReference* source_reference,
+                                   ValaComment* comment);
+ValaDelegate* vala_signal_get_delegate (ValaSignal* self,
+                                        ValaDataType* sender_type,
+                                        ValaCodeNode* node_reference);
 ValaBlock* vala_signal_get_body (ValaSignal* self);
-void vala_signal_set_body (ValaSignal* self, ValaBlock* value);
+void vala_signal_set_body (ValaSignal* self,
+                           ValaBlock* value);
 gboolean vala_signal_get_is_virtual (ValaSignal* self);
-void vala_signal_set_is_virtual (ValaSignal* self, gboolean value);
+void vala_signal_set_is_virtual (ValaSignal* self,
+                                 gboolean value);
 ValaMethod* vala_signal_get_default_handler (ValaSignal* self);
+ValaMethod* vala_signal_get_emitter (ValaSignal* self);
 GType vala_signal_type_get_type (void) G_GNUC_CONST;
 ValaSignalType* vala_signal_type_new (ValaSignal* signal_symbol);
-ValaSignalType* vala_signal_type_construct (GType object_type, ValaSignal* signal_symbol);
+ValaSignalType* vala_signal_type_construct (GType object_type,
+                                            ValaSignal* signal_symbol);
 ValaDelegateType* vala_signal_type_get_handler_type (ValaSignalType* self);
 ValaSignal* vala_signal_type_get_signal_symbol (ValaSignalType* self);
-void vala_signal_type_set_signal_symbol (ValaSignalType* self, ValaSignal* value);
-ValaSizeofExpression* vala_sizeof_expression_new (ValaDataType* type, ValaSourceReference* source);
-ValaSizeofExpression* vala_sizeof_expression_construct (GType object_type, ValaDataType* type, ValaSourceReference* source);
+void vala_signal_type_set_signal_symbol (ValaSignalType* self,
+                                         ValaSignal* value);
+ValaSizeofExpression* vala_sizeof_expression_new (ValaDataType* type,
+                                                  ValaSourceReference* source);
+ValaSizeofExpression* vala_sizeof_expression_construct (GType object_type,
+                                                        ValaDataType* type,
+                                                        ValaSourceReference* source);
 ValaDataType* vala_sizeof_expression_get_type_reference (ValaSizeofExpression* self);
-void vala_sizeof_expression_set_type_reference (ValaSizeofExpression* self, ValaDataType* value);
-ValaSliceExpression* vala_slice_expression_new (ValaExpression* container, ValaExpression* start, ValaExpression* stop, ValaSourceReference* source_reference);
-ValaSliceExpression* vala_slice_expression_construct (GType object_type, ValaExpression* container, ValaExpression* start, ValaExpression* stop, ValaSourceReference* source_reference);
+void vala_sizeof_expression_set_type_reference (ValaSizeofExpression* self,
+                                                ValaDataType* value);
+ValaSliceExpression* vala_slice_expression_new (ValaExpression* container,
+                                                ValaExpression* start,
+                                                ValaExpression* stop,
+                                                ValaSourceReference* source_reference);
+ValaSliceExpression* vala_slice_expression_construct (GType object_type,
+                                                      ValaExpression* container,
+                                                      ValaExpression* start,
+                                                      ValaExpression* stop,
+                                                      ValaSourceReference* source_reference);
 ValaExpression* vala_slice_expression_get_container (ValaSliceExpression* self);
-void vala_slice_expression_set_container (ValaSliceExpression* self, ValaExpression* value);
+void vala_slice_expression_set_container (ValaSliceExpression* self,
+                                          ValaExpression* value);
 ValaExpression* vala_slice_expression_get_start (ValaSliceExpression* self);
 ValaExpression* vala_slice_expression_get_stop (ValaSliceExpression* self);
 GType vala_source_file_type_get_type (void) G_GNUC_CONST;
-ValaSourceFile* vala_source_file_new (ValaCodeContext* context, ValaSourceFileType type, const gchar* filename, const gchar* content, gboolean cmdline);
-ValaSourceFile* vala_source_file_construct (GType object_type, ValaCodeContext* context, ValaSourceFileType type, const gchar* filename, const gchar* content, gboolean cmdline);
-void vala_source_file_add_comment (ValaSourceFile* self, ValaComment* comment);
+ValaSourceFile* vala_source_file_new (ValaCodeContext* context,
+                                      ValaSourceFileType type,
+                                      const gchar* filename,
+                                      const gchar* content,
+                                      gboolean cmdline);
+ValaSourceFile* vala_source_file_construct (GType object_type,
+                                            ValaCodeContext* context,
+                                            ValaSourceFileType type,
+                                            const gchar* filename,
+                                            const gchar* content,
+                                            gboolean cmdline);
+void vala_source_file_add_comment (ValaSourceFile* self,
+                                   ValaComment* comment);
 ValaList* vala_source_file_get_comments (ValaSourceFile* self);
-void vala_source_file_add_using_directive (ValaSourceFile* self, ValaUsingDirective* ns);
-void vala_source_file_add_node (ValaSourceFile* self, ValaCodeNode* node);
-void vala_source_file_remove_node (ValaSourceFile* self, ValaCodeNode* node);
+void vala_source_file_add_using_directive (ValaSourceFile* self,
+                                           ValaUsingDirective* ns);
+void vala_source_file_add_node (ValaSourceFile* self,
+                                ValaCodeNode* node);
+void vala_source_file_remove_node (ValaSourceFile* self,
+                                   ValaCodeNode* node);
 ValaList* vala_source_file_get_nodes (ValaSourceFile* self);
-void vala_source_file_accept (ValaSourceFile* self, ValaCodeVisitor* visitor);
-void vala_source_file_accept_children (ValaSourceFile* self, ValaCodeVisitor* visitor);
+void vala_source_file_accept (ValaSourceFile* self,
+                              ValaCodeVisitor* visitor);
+void vala_source_file_accept_children (ValaSourceFile* self,
+                                       ValaCodeVisitor* visitor);
 gchar* vala_source_file_get_relative_filename (ValaSourceFile* self);
 gchar* vala_source_file_get_csource_filename (ValaSourceFile* self);
 gchar* vala_source_file_get_cinclude_filename (ValaSourceFile* self);
-gchar* vala_source_file_get_source_line (ValaSourceFile* self, gint lineno);
+gchar* vala_source_file_get_source_line (ValaSourceFile* self,
+                                         gint lineno);
 gchar* vala_source_file_get_mapped_contents (ValaSourceFile* self);
 gsize vala_source_file_get_mapped_length (ValaSourceFile* self);
-gboolean vala_source_file_check (ValaSourceFile* self, ValaCodeContext* context);
+gboolean vala_source_file_check (ValaSourceFile* self,
+                                 ValaCodeContext* context);
 const gchar* vala_source_file_get_filename (ValaSourceFile* self);
-void vala_source_file_set_filename (ValaSourceFile* self, const gchar* value);
-void vala_source_file_set_relative_filename (ValaSourceFile* self, const gchar* value);
+void vala_source_file_set_filename (ValaSourceFile* self,
+                                    const gchar* value);
+void vala_source_file_set_relative_filename (ValaSourceFile* self,
+                                             const gchar* value);
 const gchar* vala_source_file_get_package_name (ValaSourceFile* self);
-void vala_source_file_set_package_name (ValaSourceFile* self, const gchar* value);
+void vala_source_file_set_package_name (ValaSourceFile* self,
+                                        const gchar* value);
 const gchar* vala_source_file_get_installed_version (ValaSourceFile* self);
-void vala_source_file_set_installed_version (ValaSourceFile* self, const gchar* value);
+void vala_source_file_set_installed_version (ValaSourceFile* self,
+                                             const gchar* value);
 ValaSourceFileType vala_source_file_get_file_type (ValaSourceFile* self);
-void vala_source_file_set_file_type (ValaSourceFile* self, ValaSourceFileType value);
+void vala_source_file_set_file_type (ValaSourceFile* self,
+                                     ValaSourceFileType value);
 gboolean vala_source_file_get_from_commandline (ValaSourceFile* self);
-void vala_source_file_set_from_commandline (ValaSourceFile* self, gboolean value);
+void vala_source_file_set_from_commandline (ValaSourceFile* self,
+                                            gboolean value);
 const gchar* vala_source_file_get_gir_namespace (ValaSourceFile* self);
-void vala_source_file_set_gir_namespace (ValaSourceFile* self, const gchar* value);
+void vala_source_file_set_gir_namespace (ValaSourceFile* self,
+                                         const gchar* value);
 const gchar* vala_source_file_get_gir_version (ValaSourceFile* self);
-void vala_source_file_set_gir_version (ValaSourceFile* self, const gchar* value);
+void vala_source_file_set_gir_version (ValaSourceFile* self,
+                                       const gchar* value);
 ValaCodeContext* vala_source_file_get_context (ValaSourceFile* self);
-void vala_source_file_set_context (ValaSourceFile* self, ValaCodeContext* value);
+void vala_source_file_set_context (ValaSourceFile* self,
+                                   ValaCodeContext* value);
 const gchar* vala_source_file_get_content (ValaSourceFile* self);
-void vala_source_file_set_content (ValaSourceFile* self, const gchar* value);
+void vala_source_file_set_content (ValaSourceFile* self,
+                                   const gchar* value);
 gboolean vala_source_file_get_used (ValaSourceFile* self);
-void vala_source_file_set_used (ValaSourceFile* self, gboolean value);
+void vala_source_file_set_used (ValaSourceFile* self,
+                                gboolean value);
+gboolean vala_source_file_get_explicit (ValaSourceFile* self);
+void vala_source_file_set_explicit (ValaSourceFile* self,
+                                    gboolean value);
 ValaList* vala_source_file_get_current_using_directives (ValaSourceFile* self);
-void vala_source_file_set_current_using_directives (ValaSourceFile* self, ValaList* value);
-void vala_source_location_init (ValaSourceLocation *self, gchar* _pos, gint _line, gint _column);
-ValaSourceReference* vala_source_reference_new (ValaSourceFile* _file, ValaSourceLocation* begin, ValaSourceLocation* end);
-ValaSourceReference* vala_source_reference_construct (GType object_type, ValaSourceFile* _file, ValaSourceLocation* begin, ValaSourceLocation* end);
+void vala_source_file_set_current_using_directives (ValaSourceFile* self,
+                                                    ValaList* value);
+void vala_source_location_init (ValaSourceLocation *self,
+                                gchar* _pos,
+                                gint _line,
+                                gint _column);
+ValaSourceReference* vala_source_reference_new (ValaSourceFile* _file,
+                                                ValaSourceLocation* begin,
+                                                ValaSourceLocation* end);
+ValaSourceReference* vala_source_reference_construct (GType object_type,
+                                                      ValaSourceFile* _file,
+                                                      ValaSourceLocation* begin,
+                                                      ValaSourceLocation* end);
 gchar* vala_source_reference_to_string (ValaSourceReference* self);
 ValaSourceFile* vala_source_reference_get_file (ValaSourceReference* self);
-void vala_source_reference_set_file (ValaSourceReference* self, ValaSourceFile* value);
-void vala_source_reference_get_begin (ValaSourceReference* self, ValaSourceLocation* result);
-void vala_source_reference_set_begin (ValaSourceReference* self, ValaSourceLocation* value);
-void vala_source_reference_get_end (ValaSourceReference* self, ValaSourceLocation* result);
-void vala_source_reference_set_end (ValaSourceReference* self, ValaSourceLocation* value);
+void vala_source_reference_set_file (ValaSourceReference* self,
+                                     ValaSourceFile* value);
+void vala_source_reference_get_begin (ValaSourceReference* self,
+                                      ValaSourceLocation * result);
+void vala_source_reference_set_begin (ValaSourceReference* self,
+                                      ValaSourceLocation * value);
+void vala_source_reference_get_end (ValaSourceReference* self,
+                                    ValaSourceLocation * result);
+void vala_source_reference_set_end (ValaSourceReference* self,
+                                    ValaSourceLocation * value);
 ValaList* vala_source_reference_get_using_directives (ValaSourceReference* self);
 GType vala_statement_list_get_type (void) G_GNUC_CONST;
 ValaStatementList* vala_statement_list_new (ValaSourceReference* source_reference);
-ValaStatementList* vala_statement_list_construct (GType object_type, ValaSourceReference* source_reference);
-ValaStatement* vala_statement_list_get (ValaStatementList* self, gint index);
-void vala_statement_list_set (ValaStatementList* self, gint index, ValaStatement* stmt);
-void vala_statement_list_add (ValaStatementList* self, ValaStatement* stmt);
-void vala_statement_list_insert (ValaStatementList* self, gint index, ValaStatement* stmt);
+ValaStatementList* vala_statement_list_construct (GType object_type,
+                                                  ValaSourceReference* source_reference);
+ValaStatement* vala_statement_list_get (ValaStatementList* self,
+                                        gint index);
+void vala_statement_list_set (ValaStatementList* self,
+                              gint index,
+                              ValaStatement* stmt);
+void vala_statement_list_add (ValaStatementList* self,
+                              ValaStatement* stmt);
+void vala_statement_list_insert (ValaStatementList* self,
+                                 gint index,
+                                 ValaStatement* stmt);
 gint vala_statement_list_get_length (ValaStatementList* self);
-ValaStringLiteral* vala_string_literal_new (const gchar* value, ValaSourceReference* source_reference);
-ValaStringLiteral* vala_string_literal_construct (GType object_type, const gchar* value, ValaSourceReference* source_reference);
+ValaStringLiteral* vala_string_literal_new (const gchar* value,
+                                            ValaSourceReference* source_reference);
+ValaStringLiteral* vala_string_literal_construct (GType object_type,
+                                                  const gchar* value,
+                                                  ValaSourceReference* source_reference);
 gchar* vala_string_literal_eval (ValaStringLiteral* self);
+ValaStringLiteral* vala_string_literal_get_format_literal (ValaExpression* expr);
 const gchar* vala_string_literal_get_value (ValaStringLiteral* self);
-void vala_string_literal_set_value (ValaStringLiteral* self, const gchar* value);
+void vala_string_literal_set_value (ValaStringLiteral* self,
+                                    const gchar* value);
 gboolean vala_string_literal_get_translate (ValaStringLiteral* self);
-void vala_string_literal_set_translate (ValaStringLiteral* self, gboolean value);
-ValaStruct* vala_struct_new (const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-ValaStruct* vala_struct_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
-void vala_struct_add_type_parameter (ValaStruct* self, ValaTypeParameter* p);
+void vala_string_literal_set_translate (ValaStringLiteral* self,
+                                        gboolean value);
+ValaStruct* vala_struct_new (const gchar* name,
+                             ValaSourceReference* source_reference,
+                             ValaComment* comment);
+ValaStruct* vala_struct_construct (GType object_type,
+                                   const gchar* name,
+                                   ValaSourceReference* source_reference,
+                                   ValaComment* comment);
+void vala_struct_add_type_parameter (ValaStruct* self,
+                                     ValaTypeParameter* p);
 ValaList* vala_struct_get_type_parameters (ValaStruct* self);
 ValaList* vala_struct_get_fields (ValaStruct* self);
 ValaList* vala_struct_get_constants (ValaStruct* self);
@@ -4948,233 +6147,400 @@ gboolean vala_struct_is_integer_type (ValaStruct* self);
 gboolean vala_struct_is_floating_type (ValaStruct* self);
 gboolean vala_struct_is_decimal_floating_type (ValaStruct* self);
 gint vala_struct_get_rank (ValaStruct* self);
-void vala_struct_set_rank (ValaStruct* self, gint rank);
+void vala_struct_set_rank (ValaStruct* self,
+                           gint rank);
 gboolean vala_struct_is_simple_type (ValaStruct* self);
-void vala_struct_set_simple_type (ValaStruct* self, gboolean simple_type);
+void vala_struct_set_simple_type (ValaStruct* self,
+                                  gboolean simple_type);
 gboolean vala_struct_is_disposable (ValaStruct* self);
 ValaDataType* vala_struct_get_base_type (ValaStruct* self);
-void vala_struct_set_base_type (ValaStruct* self, ValaDataType* value);
+void vala_struct_set_base_type (ValaStruct* self,
+                                ValaDataType* value);
 ValaStruct* vala_struct_get_base_struct (ValaStruct* self);
 ValaMethod* vala_struct_get_default_construction_method (ValaStruct* self);
-void vala_struct_set_default_construction_method (ValaStruct* self, ValaMethod* value);
+void vala_struct_set_default_construction_method (ValaStruct* self,
+                                                  ValaMethod* value);
 gboolean vala_struct_get_is_immutable (ValaStruct* self);
-void vala_struct_set_is_immutable (ValaStruct* self, gboolean value);
+void vala_struct_set_is_immutable (ValaStruct* self,
+                                   gboolean value);
 gint vala_struct_get_width (ValaStruct* self);
-void vala_struct_set_width (ValaStruct* self, gint value);
+void vala_struct_set_width (ValaStruct* self,
+                            gint value);
 gboolean vala_struct_get_signed (ValaStruct* self);
-void vala_struct_set_signed (ValaStruct* self, gboolean value);
+void vala_struct_set_signed (ValaStruct* self,
+                             gboolean value);
 ValaStructValueType* vala_struct_value_type_new (ValaStruct* type_symbol);
-ValaStructValueType* vala_struct_value_type_construct (GType object_type, ValaStruct* type_symbol);
-ValaSubroutine* vala_subroutine_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
+ValaStructValueType* vala_struct_value_type_construct (GType object_type,
+                                                       ValaStruct* type_symbol);
+ValaSubroutine* vala_subroutine_construct (GType object_type,
+                                           const gchar* name,
+                                           ValaSourceReference* source_reference,
+                                           ValaComment* comment);
 ValaBasicBlock* vala_subroutine_get_entry_block (ValaSubroutine* self);
-void vala_subroutine_set_entry_block (ValaSubroutine* self, ValaBasicBlock* value);
+void vala_subroutine_set_entry_block (ValaSubroutine* self,
+                                      ValaBasicBlock* value);
 ValaBasicBlock* vala_subroutine_get_return_block (ValaSubroutine* self);
-void vala_subroutine_set_return_block (ValaSubroutine* self, ValaBasicBlock* value);
+void vala_subroutine_set_return_block (ValaSubroutine* self,
+                                       ValaBasicBlock* value);
 ValaBasicBlock* vala_subroutine_get_exit_block (ValaSubroutine* self);
-void vala_subroutine_set_exit_block (ValaSubroutine* self, ValaBasicBlock* value);
+void vala_subroutine_set_exit_block (ValaSubroutine* self,
+                                     ValaBasicBlock* value);
 ValaLocalVariable* vala_subroutine_get_result_var (ValaSubroutine* self);
-void vala_subroutine_set_result_var (ValaSubroutine* self, ValaLocalVariable* value);
+void vala_subroutine_set_result_var (ValaSubroutine* self,
+                                     ValaLocalVariable* value);
 gboolean vala_subroutine_get_has_result (ValaSubroutine* self);
 ValaBlock* vala_subroutine_get_body (ValaSubroutine* self);
-void vala_subroutine_set_body (ValaSubroutine* self, ValaBlock* value);
-ValaSwitchLabel* vala_switch_label_new (ValaExpression* expr, ValaSourceReference* source);
-ValaSwitchLabel* vala_switch_label_construct (GType object_type, ValaExpression* expr, ValaSourceReference* source);
+void vala_subroutine_set_body (ValaSubroutine* self,
+                               ValaBlock* value);
+ValaSwitchLabel* vala_switch_label_new (ValaExpression* expr,
+                                        ValaSourceReference* source);
+ValaSwitchLabel* vala_switch_label_construct (GType object_type,
+                                              ValaExpression* expr,
+                                              ValaSourceReference* source);
 ValaSwitchLabel* vala_switch_label_new_with_default (ValaSourceReference* source);
-ValaSwitchLabel* vala_switch_label_construct_with_default (GType object_type, ValaSourceReference* source);
+ValaSwitchLabel* vala_switch_label_construct_with_default (GType object_type,
+                                                           ValaSourceReference* source);
 ValaExpression* vala_switch_label_get_expression (ValaSwitchLabel* self);
-void vala_switch_label_set_expression (ValaSwitchLabel* self, ValaExpression* value);
+void vala_switch_label_set_expression (ValaSwitchLabel* self,
+                                       ValaExpression* value);
 ValaSwitchSection* vala_switch_label_get_section (ValaSwitchLabel* self);
-void vala_switch_label_set_section (ValaSwitchLabel* self, ValaSwitchSection* value);
+void vala_switch_label_set_section (ValaSwitchLabel* self,
+                                    ValaSwitchSection* value);
 ValaSwitchSection* vala_switch_section_new (ValaSourceReference* source_reference);
-ValaSwitchSection* vala_switch_section_construct (GType object_type, ValaSourceReference* source_reference);
-void vala_switch_section_add_label (ValaSwitchSection* self, ValaSwitchLabel* label);
+ValaSwitchSection* vala_switch_section_construct (GType object_type,
+                                                  ValaSourceReference* source_reference);
+void vala_switch_section_add_label (ValaSwitchSection* self,
+                                    ValaSwitchLabel* label);
 ValaList* vala_switch_section_get_labels (ValaSwitchSection* self);
 gboolean vala_switch_section_has_default_label (ValaSwitchSection* self);
-ValaSwitchStatement* vala_switch_statement_new (ValaExpression* expression, ValaSourceReference* source_reference);
-ValaSwitchStatement* vala_switch_statement_construct (GType object_type, ValaExpression* expression, ValaSourceReference* source_reference);
-void vala_switch_statement_add_section (ValaSwitchStatement* self, ValaSwitchSection* section);
+ValaSwitchStatement* vala_switch_statement_new (ValaExpression* expression,
+                                                ValaSourceReference* source_reference);
+ValaSwitchStatement* vala_switch_statement_construct (GType object_type,
+                                                      ValaExpression* expression,
+                                                      ValaSourceReference* source_reference);
+void vala_switch_statement_add_section (ValaSwitchStatement* self,
+                                        ValaSwitchSection* section);
 ValaList* vala_switch_statement_get_sections (ValaSwitchStatement* self);
 ValaExpression* vala_switch_statement_get_expression (ValaSwitchStatement* self);
-void vala_switch_statement_set_expression (ValaSwitchStatement* self, ValaExpression* value);
+void vala_switch_statement_set_expression (ValaSwitchStatement* self,
+                                           ValaExpression* value);
 gboolean vala_symbol_is_internal_symbol (ValaSymbol* self);
 gboolean vala_symbol_is_private_symbol (ValaSymbol* self);
-ValaSymbol* vala_symbol_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
+ValaSymbol* vala_symbol_construct (GType object_type,
+                                   const gchar* name,
+                                   ValaSourceReference* source_reference,
+                                   ValaComment* comment);
 gchar* vala_symbol_get_full_name (ValaSymbol* self);
 gchar* vala_symbol_camel_case_to_lower_case (const gchar* camel_case);
 gchar* vala_symbol_lower_case_to_camel_case (const gchar* lower_case);
-ValaScope* vala_symbol_get_top_accessible_scope (ValaSymbol* self, gboolean is_internal);
+ValaScope* vala_symbol_get_top_accessible_scope (ValaSymbol* self,
+                                                 gboolean is_internal);
 gboolean vala_symbol_is_instance_member (ValaSymbol* self);
 gboolean vala_symbol_is_class_member (ValaSymbol* self);
 ValaSymbol* vala_symbol_get_hidden_member (ValaSymbol* self);
-gboolean vala_symbol_is_accessible (ValaSymbol* self, ValaSymbol* sym);
-void vala_symbol_add_namespace (ValaSymbol* self, ValaNamespace* ns);
-void vala_symbol_add_class (ValaSymbol* self, ValaClass* cl);
-void vala_symbol_add_interface (ValaSymbol* self, ValaInterface* iface);
-void vala_symbol_add_struct (ValaSymbol* self, ValaStruct* st);
-void vala_symbol_add_enum (ValaSymbol* self, ValaEnum* en);
-void vala_symbol_add_error_domain (ValaSymbol* self, ValaErrorDomain* edomain);
-void vala_symbol_add_delegate (ValaSymbol* self, ValaDelegate* d);
-void vala_symbol_add_constant (ValaSymbol* self, ValaConstant* constant);
-void vala_symbol_add_field (ValaSymbol* self, ValaField* f);
-void vala_symbol_add_method (ValaSymbol* self, ValaMethod* m);
-void vala_symbol_add_property (ValaSymbol* self, ValaProperty* prop);
-void vala_symbol_add_signal (ValaSymbol* self, ValaSignal* sig);
-void vala_symbol_add_constructor (ValaSymbol* self, ValaConstructor* c);
-void vala_symbol_add_destructor (ValaSymbol* self, ValaDestructor* d);
+gboolean vala_symbol_is_accessible (ValaSymbol* self,
+                                    ValaSymbol* sym);
+void vala_symbol_add_namespace (ValaSymbol* self,
+                                ValaNamespace* ns);
+void vala_symbol_add_class (ValaSymbol* self,
+                            ValaClass* cl);
+void vala_symbol_add_interface (ValaSymbol* self,
+                                ValaInterface* iface);
+void vala_symbol_add_struct (ValaSymbol* self,
+                             ValaStruct* st);
+void vala_symbol_add_enum (ValaSymbol* self,
+                           ValaEnum* en);
+void vala_symbol_add_error_domain (ValaSymbol* self,
+                                   ValaErrorDomain* edomain);
+void vala_symbol_add_delegate (ValaSymbol* self,
+                               ValaDelegate* d);
+void vala_symbol_add_constant (ValaSymbol* self,
+                               ValaConstant* constant);
+void vala_symbol_add_field (ValaSymbol* self,
+                            ValaField* f);
+void vala_symbol_add_method (ValaSymbol* self,
+                             ValaMethod* m);
+void vala_symbol_add_property (ValaSymbol* self,
+                               ValaProperty* prop);
+void vala_symbol_add_signal (ValaSymbol* self,
+                             ValaSignal* sig);
+void vala_symbol_add_constructor (ValaSymbol* self,
+                                  ValaConstructor* c);
+void vala_symbol_add_destructor (ValaSymbol* self,
+                                 ValaDestructor* d);
 ValaSymbol* vala_symbol_get_parent_symbol (ValaSymbol* self);
 ValaScope* vala_symbol_get_owner (ValaSymbol* self);
-void vala_symbol_set_owner (ValaSymbol* self, ValaScope* value);
+void vala_symbol_set_owner (ValaSymbol* self,
+                            ValaScope* value);
 const gchar* vala_symbol_get_name (ValaSymbol* self);
-void vala_symbol_set_name (ValaSymbol* self, const gchar* value);
+void vala_symbol_set_name (ValaSymbol* self,
+                           const gchar* value);
 gboolean vala_symbol_get_active (ValaSymbol* self);
-void vala_symbol_set_active (ValaSymbol* self, gboolean value);
+void vala_symbol_set_active (ValaSymbol* self,
+                             gboolean value);
 gboolean vala_symbol_get_used (ValaSymbol* self);
-void vala_symbol_set_used (ValaSymbol* self, gboolean value);
+void vala_symbol_set_used (ValaSymbol* self,
+                           gboolean value);
 GType vala_symbol_accessibility_get_type (void) G_GNUC_CONST;
 ValaSymbolAccessibility vala_symbol_get_access (ValaSymbol* self);
-void vala_symbol_set_access (ValaSymbol* self, ValaSymbolAccessibility value);
+void vala_symbol_set_access (ValaSymbol* self,
+                             ValaSymbolAccessibility value);
 ValaComment* vala_symbol_get_comment (ValaSymbol* self);
-void vala_symbol_set_comment (ValaSymbol* self, ValaComment* value);
+void vala_symbol_set_comment (ValaSymbol* self,
+                              ValaComment* value);
 gpointer vala_version_attribute_ref (gpointer instance);
 void vala_version_attribute_unref (gpointer instance);
-GParamSpec* vala_param_spec_version_attribute (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_version_attribute (GValue* value, gpointer v_object);
-void vala_value_take_version_attribute (GValue* value, gpointer v_object);
+GParamSpec* vala_param_spec_version_attribute (const gchar* name,
+                                               const gchar* nick,
+                                               const gchar* blurb,
+                                               GType object_type,
+                                               GParamFlags flags);
+void vala_value_set_version_attribute (GValue* value,
+                                       gpointer v_object);
+void vala_value_take_version_attribute (GValue* value,
+                                        gpointer v_object);
 gpointer vala_value_get_version_attribute (const GValue* value);
 GType vala_version_attribute_get_type (void) G_GNUC_CONST;
 ValaVersionAttribute* vala_symbol_get_version (ValaSymbol* self);
 gboolean vala_symbol_get_hides (ValaSymbol* self);
-void vala_symbol_set_hides (ValaSymbol* self, gboolean value);
+void vala_symbol_set_hides (ValaSymbol* self,
+                            gboolean value);
 ValaScope* vala_symbol_get_scope (ValaSymbol* self);
 gboolean vala_symbol_get_external (ValaSymbol* self);
-void vala_symbol_set_external (ValaSymbol* self, gboolean value);
+void vala_symbol_set_external (ValaSymbol* self,
+                               gboolean value);
 gboolean vala_symbol_get_external_package (ValaSymbol* self);
 gboolean vala_symbol_get_from_commandline (ValaSymbol* self);
 ValaSourceFileType vala_symbol_get_source_type (ValaSymbol* self);
-void vala_symbol_resolver_resolve (ValaSymbolResolver* self, ValaCodeContext* context);
+void vala_symbol_resolver_resolve (ValaSymbolResolver* self,
+                                   ValaCodeContext* context);
 ValaSymbolResolver* vala_symbol_resolver_new (void);
 ValaSymbolResolver* vala_symbol_resolver_construct (GType object_type);
-ValaTargetValue* vala_target_value_construct (GType object_type, ValaDataType* value_type);
+ValaTargetValue* vala_target_value_construct (GType object_type,
+                                              ValaDataType* value_type);
 ValaDataType* vala_target_value_get_value_type (ValaTargetValue* self);
-void vala_target_value_set_value_type (ValaTargetValue* self, ValaDataType* value);
+void vala_target_value_set_value_type (ValaTargetValue* self,
+                                       ValaDataType* value);
 ValaDataType* vala_target_value_get_actual_value_type (ValaTargetValue* self);
-void vala_target_value_set_actual_value_type (ValaTargetValue* self, ValaDataType* value);
+void vala_target_value_set_actual_value_type (ValaTargetValue* self,
+                                              ValaDataType* value);
 ValaTemplate* vala_template_new (ValaSourceReference* source_reference);
-ValaTemplate* vala_template_construct (GType object_type, ValaSourceReference* source_reference);
-void vala_template_add_expression (ValaTemplate* self, ValaExpression* expr);
+ValaTemplate* vala_template_construct (GType object_type,
+                                       ValaSourceReference* source_reference);
+void vala_template_add_expression (ValaTemplate* self,
+                                   ValaExpression* expr);
 ValaList* vala_template_get_expressions (ValaTemplate* self);
-ValaThrowStatement* vala_throw_statement_new (ValaExpression* error_expression, ValaSourceReference* source_reference);
-ValaThrowStatement* vala_throw_statement_construct (GType object_type, ValaExpression* error_expression, ValaSourceReference* source_reference);
+ValaThrowStatement* vala_throw_statement_new (ValaExpression* error_expression,
+                                              ValaSourceReference* source_reference);
+ValaThrowStatement* vala_throw_statement_construct (GType object_type,
+                                                    ValaExpression* error_expression,
+                                                    ValaSourceReference* source_reference);
 ValaExpression* vala_throw_statement_get_error_expression (ValaThrowStatement* self);
-void vala_throw_statement_set_error_expression (ValaThrowStatement* self, ValaExpression* value);
+void vala_throw_statement_set_error_expression (ValaThrowStatement* self,
+                                                ValaExpression* value);
 const gchar* vala_token_type_to_string (ValaTokenType self);
-ValaTryStatement* vala_try_statement_new (ValaBlock* body, ValaBlock* finally_body, ValaSourceReference* source_reference);
-ValaTryStatement* vala_try_statement_construct (GType object_type, ValaBlock* body, ValaBlock* finally_body, ValaSourceReference* source_reference);
-void vala_try_statement_add_catch_clause (ValaTryStatement* self, ValaCatchClause* clause);
+ValaTryStatement* vala_try_statement_new (ValaBlock* body,
+                                          ValaBlock* finally_body,
+                                          ValaSourceReference* source_reference);
+ValaTryStatement* vala_try_statement_construct (GType object_type,
+                                                ValaBlock* body,
+                                                ValaBlock* finally_body,
+                                                ValaSourceReference* source_reference);
+void vala_try_statement_add_catch_clause (ValaTryStatement* self,
+                                          ValaCatchClause* clause);
 ValaList* vala_try_statement_get_catch_clauses (ValaTryStatement* self);
 ValaBlock* vala_try_statement_get_body (ValaTryStatement* self);
-void vala_try_statement_set_body (ValaTryStatement* self, ValaBlock* value);
+void vala_try_statement_set_body (ValaTryStatement* self,
+                                  ValaBlock* value);
 ValaBlock* vala_try_statement_get_finally_body (ValaTryStatement* self);
-void vala_try_statement_set_finally_body (ValaTryStatement* self, ValaBlock* value);
+void vala_try_statement_set_finally_body (ValaTryStatement* self,
+                                          ValaBlock* value);
 gboolean vala_try_statement_get_after_try_block_reachable (ValaTryStatement* self);
-void vala_try_statement_set_after_try_block_reachable (ValaTryStatement* self, gboolean value);
+void vala_try_statement_set_after_try_block_reachable (ValaTryStatement* self,
+                                                       gboolean value);
 ValaTuple* vala_tuple_new (ValaSourceReference* source_reference);
-ValaTuple* vala_tuple_construct (GType object_type, ValaSourceReference* source_reference);
-void vala_tuple_add_expression (ValaTuple* self, ValaExpression* expr);
+ValaTuple* vala_tuple_construct (GType object_type,
+                                 ValaSourceReference* source_reference);
+void vala_tuple_add_expression (ValaTuple* self,
+                                ValaExpression* expr);
 ValaList* vala_tuple_get_expressions (ValaTuple* self);
-ValaTypeCheck* vala_typecheck_new (ValaExpression* expr, ValaDataType* type, ValaSourceReference* source);
-ValaTypeCheck* vala_typecheck_construct (GType object_type, ValaExpression* expr, ValaDataType* type, ValaSourceReference* source);
+ValaTypeCheck* vala_typecheck_new (ValaExpression* expr,
+                                   ValaDataType* type,
+                                   ValaSourceReference* source);
+ValaTypeCheck* vala_typecheck_construct (GType object_type,
+                                         ValaExpression* expr,
+                                         ValaDataType* type,
+                                         ValaSourceReference* source);
 ValaExpression* vala_typecheck_get_expression (ValaTypeCheck* self);
-void vala_typecheck_set_expression (ValaTypeCheck* self, ValaExpression* value);
+void vala_typecheck_set_expression (ValaTypeCheck* self,
+                                    ValaExpression* value);
 ValaDataType* vala_typecheck_get_type_reference (ValaTypeCheck* self);
-void vala_typecheck_set_type_reference (ValaTypeCheck* self, ValaDataType* value);
-ValaTypeofExpression* vala_typeof_expression_new (ValaDataType* type, ValaSourceReference* source);
-ValaTypeofExpression* vala_typeof_expression_construct (GType object_type, ValaDataType* type, ValaSourceReference* source);
+void vala_typecheck_set_type_reference (ValaTypeCheck* self,
+                                        ValaDataType* value);
+ValaTypeofExpression* vala_typeof_expression_new (ValaDataType* type,
+                                                  ValaSourceReference* source);
+ValaTypeofExpression* vala_typeof_expression_construct (GType object_type,
+                                                        ValaDataType* type,
+                                                        ValaSourceReference* source);
 ValaDataType* vala_typeof_expression_get_type_reference (ValaTypeofExpression* self);
-void vala_typeof_expression_set_type_reference (ValaTypeofExpression* self, ValaDataType* value);
-ValaTypeParameter* vala_typeparameter_new (const gchar* name, ValaSourceReference* source_reference);
-ValaTypeParameter* vala_typeparameter_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference);
-gboolean vala_typeparameter_equals (ValaTypeParameter* self, ValaTypeParameter* param2);
-ValaTypeSymbol* vala_typesymbol_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment);
+void vala_typeof_expression_set_type_reference (ValaTypeofExpression* self,
+                                                ValaDataType* value);
+ValaTypeParameter* vala_typeparameter_new (const gchar* name,
+                                           ValaSourceReference* source_reference);
+ValaTypeParameter* vala_typeparameter_construct (GType object_type,
+                                                 const gchar* name,
+                                                 ValaSourceReference* source_reference);
+gboolean vala_typeparameter_equals (ValaTypeParameter* self,
+                                    ValaTypeParameter* param2);
+ValaTypeSymbol* vala_typesymbol_construct (GType object_type,
+                                           const gchar* name,
+                                           ValaSourceReference* source_reference,
+                                           ValaComment* comment);
 gboolean vala_typesymbol_is_reference_type (ValaTypeSymbol* self);
-gboolean vala_typesymbol_is_subtype_of (ValaTypeSymbol* self, ValaTypeSymbol* t);
-gint vala_typesymbol_get_type_parameter_index (ValaTypeSymbol* self, const gchar* name);
+gboolean vala_typesymbol_is_subtype_of (ValaTypeSymbol* self,
+                                        ValaTypeSymbol* t);
+gint vala_typesymbol_get_type_parameter_index (ValaTypeSymbol* self,
+                                               const gchar* name);
 GType vala_unary_operator_get_type (void) G_GNUC_CONST;
-ValaUnaryExpression* vala_unary_expression_new (ValaUnaryOperator op, ValaExpression* _inner, ValaSourceReference* source);
-ValaUnaryExpression* vala_unary_expression_construct (GType object_type, ValaUnaryOperator op, ValaExpression* _inner, ValaSourceReference* source);
+ValaUnaryExpression* vala_unary_expression_new (ValaUnaryOperator op,
+                                                ValaExpression* _inner,
+                                                ValaSourceReference* source);
+ValaUnaryExpression* vala_unary_expression_construct (GType object_type,
+                                                      ValaUnaryOperator op,
+                                                      ValaExpression* _inner,
+                                                      ValaSourceReference* source);
 ValaUnaryOperator vala_unary_expression_get_operator (ValaUnaryExpression* self);
-void vala_unary_expression_set_operator (ValaUnaryExpression* self, ValaUnaryOperator value);
+void vala_unary_expression_set_operator (ValaUnaryExpression* self,
+                                         ValaUnaryOperator value);
 ValaExpression* vala_unary_expression_get_inner (ValaUnaryExpression* self);
-void vala_unary_expression_set_inner (ValaUnaryExpression* self, ValaExpression* value);
-ValaUnlockStatement* vala_unlock_statement_new (ValaExpression* resource, ValaSourceReference* source_reference);
-ValaUnlockStatement* vala_unlock_statement_construct (GType object_type, ValaExpression* resource, ValaSourceReference* source_reference);
+void vala_unary_expression_set_inner (ValaUnaryExpression* self,
+                                      ValaExpression* value);
+ValaUnlockStatement* vala_unlock_statement_new (ValaExpression* resource,
+                                                ValaSourceReference* source_reference);
+ValaUnlockStatement* vala_unlock_statement_construct (GType object_type,
+                                                      ValaExpression* resource,
+                                                      ValaSourceReference* source_reference);
 ValaExpression* vala_unlock_statement_get_resource (ValaUnlockStatement* self);
-void vala_unlock_statement_set_resource (ValaUnlockStatement* self, ValaExpression* value);
+void vala_unlock_statement_set_resource (ValaUnlockStatement* self,
+                                         ValaExpression* value);
 GType vala_unresolved_symbol_get_type (void) G_GNUC_CONST;
-ValaUnresolvedSymbol* vala_unresolved_symbol_new (ValaUnresolvedSymbol* inner, const gchar* name, ValaSourceReference* source_reference);
-ValaUnresolvedSymbol* vala_unresolved_symbol_construct (GType object_type, ValaUnresolvedSymbol* inner, const gchar* name, ValaSourceReference* source_reference);
+ValaUnresolvedSymbol* vala_unresolved_symbol_new (ValaUnresolvedSymbol* inner,
+                                                  const gchar* name,
+                                                  ValaSourceReference* source_reference);
+ValaUnresolvedSymbol* vala_unresolved_symbol_construct (GType object_type,
+                                                        ValaUnresolvedSymbol* inner,
+                                                        const gchar* name,
+                                                        ValaSourceReference* source_reference);
 ValaUnresolvedSymbol* vala_unresolved_symbol_new_from_expression (ValaExpression* expr);
 ValaUnresolvedSymbol* vala_unresolved_symbol_copy (ValaUnresolvedSymbol* self);
 ValaUnresolvedSymbol* vala_unresolved_symbol_get_inner (ValaUnresolvedSymbol* self);
-void vala_unresolved_symbol_set_inner (ValaUnresolvedSymbol* self, ValaUnresolvedSymbol* value);
+void vala_unresolved_symbol_set_inner (ValaUnresolvedSymbol* self,
+                                       ValaUnresolvedSymbol* value);
 gboolean vala_unresolved_symbol_get_qualified (ValaUnresolvedSymbol* self);
-void vala_unresolved_symbol_set_qualified (ValaUnresolvedSymbol* self, gboolean value);
+void vala_unresolved_symbol_set_qualified (ValaUnresolvedSymbol* self,
+                                           gboolean value);
 GType vala_unresolved_type_get_type (void) G_GNUC_CONST;
 ValaUnresolvedType* vala_unresolved_type_new (void);
 ValaUnresolvedType* vala_unresolved_type_construct (GType object_type);
-ValaUnresolvedType* vala_unresolved_type_new_from_symbol (ValaUnresolvedSymbol* symbol, ValaSourceReference* source);
-ValaUnresolvedType* vala_unresolved_type_construct_from_symbol (GType object_type, ValaUnresolvedSymbol* symbol, ValaSourceReference* source);
+ValaUnresolvedType* vala_unresolved_type_new_from_symbol (ValaUnresolvedSymbol* symbol,
+                                                          ValaSourceReference* source);
+ValaUnresolvedType* vala_unresolved_type_construct_from_symbol (GType object_type,
+                                                                ValaUnresolvedSymbol* symbol,
+                                                                ValaSourceReference* source);
 ValaUnresolvedType* vala_unresolved_type_new_from_expression (ValaExpression* expr);
 ValaUnresolvedSymbol* vala_unresolved_type_get_unresolved_symbol (ValaUnresolvedType* self);
-void vala_unresolved_type_set_unresolved_symbol (ValaUnresolvedType* self, ValaUnresolvedSymbol* value);
+void vala_unresolved_type_set_unresolved_symbol (ValaUnresolvedType* self,
+                                                 ValaUnresolvedSymbol* value);
 ValaUsedAttr* vala_used_attr_new (void);
 ValaUsedAttr* vala_used_attr_construct (GType object_type);
-void vala_used_attr_mark (ValaUsedAttr* self, const gchar* attribute, const gchar* argument);
-void vala_used_attr_check_unused (ValaUsedAttr* self, ValaCodeContext* context);
-ValaUsingDirective* vala_using_directive_new (ValaSymbol* namespace_symbol, ValaSourceReference* source_reference);
-ValaUsingDirective* vala_using_directive_construct (GType object_type, ValaSymbol* namespace_symbol, ValaSourceReference* source_reference);
+void vala_used_attr_mark (ValaUsedAttr* self,
+                          const gchar* attribute,
+                          const gchar* argument);
+void vala_used_attr_check_unused (ValaUsedAttr* self,
+                                  ValaCodeContext* context);
+ValaUsingDirective* vala_using_directive_new (ValaSymbol* namespace_symbol,
+                                              ValaSourceReference* source_reference);
+ValaUsingDirective* vala_using_directive_construct (GType object_type,
+                                                    ValaSymbol* namespace_symbol,
+                                                    ValaSourceReference* source_reference);
 ValaSymbol* vala_using_directive_get_namespace_symbol (ValaUsingDirective* self);
-void vala_using_directive_set_namespace_symbol (ValaUsingDirective* self, ValaSymbol* value);
-ValaValueType* vala_value_type_construct (GType object_type, ValaTypeSymbol* type_symbol);
+void vala_using_directive_set_namespace_symbol (ValaUsingDirective* self,
+                                                ValaSymbol* value);
+ValaValueType* vala_value_type_construct (GType object_type,
+                                          ValaTypeSymbol* type_symbol);
 ValaTypeSymbol* vala_value_type_get_type_symbol (ValaValueType* self);
-void vala_value_type_set_type_symbol (ValaValueType* self, ValaTypeSymbol* value);
-ValaVariable* vala_variable_new (ValaDataType* variable_type, const gchar* name, ValaExpression* initializer, ValaSourceReference* source_reference, ValaComment* comment);
-ValaVariable* vala_variable_construct (GType object_type, ValaDataType* variable_type, const gchar* name, ValaExpression* initializer, ValaSourceReference* source_reference, ValaComment* comment);
+void vala_value_type_set_type_symbol (ValaValueType* self,
+                                      ValaTypeSymbol* value);
+ValaVariable* vala_variable_new (ValaDataType* variable_type,
+                                 const gchar* name,
+                                 ValaExpression* initializer,
+                                 ValaSourceReference* source_reference,
+                                 ValaComment* comment);
+ValaVariable* vala_variable_construct (GType object_type,
+                                       ValaDataType* variable_type,
+                                       const gchar* name,
+                                       ValaExpression* initializer,
+                                       ValaSourceReference* source_reference,
+                                       ValaComment* comment);
 ValaExpression* vala_variable_get_initializer (ValaVariable* self);
-void vala_variable_set_initializer (ValaVariable* self, ValaExpression* value);
+void vala_variable_set_initializer (ValaVariable* self,
+                                    ValaExpression* value);
 ValaDataType* vala_variable_get_variable_type (ValaVariable* self);
-void vala_variable_set_variable_type (ValaVariable* self, ValaDataType* value);
+void vala_variable_set_variable_type (ValaVariable* self,
+                                      ValaDataType* value);
 gboolean vala_variable_get_single_assignment (ValaVariable* self);
-void vala_variable_set_single_assignment (ValaVariable* self, gboolean value);
+void vala_variable_set_single_assignment (ValaVariable* self,
+                                          gboolean value);
 ValaVersionAttribute* vala_version_attribute_new (ValaSymbol* symbol);
-ValaVersionAttribute* vala_version_attribute_construct (GType object_type, ValaSymbol* symbol);
-gboolean vala_version_attribute_check (ValaVersionAttribute* self, ValaSourceReference* source_ref);
-gint vala_version_attribute_cmp_versions (const gchar* v1str, const gchar* v2str);
+ValaVersionAttribute* vala_version_attribute_construct (GType object_type,
+                                                        ValaSymbol* symbol);
+gboolean vala_version_attribute_check (ValaVersionAttribute* self,
+                                       ValaSourceReference* source_ref);
+gint vala_version_attribute_cmp_versions (const gchar* v1str,
+                                          const gchar* v2str);
 gboolean vala_version_attribute_get_deprecated (ValaVersionAttribute* self);
-void vala_version_attribute_set_deprecated (ValaVersionAttribute* self, gboolean value);
+void vala_version_attribute_set_deprecated (ValaVersionAttribute* self,
+                                            gboolean value);
 gchar* vala_version_attribute_get_deprecated_since (ValaVersionAttribute* self);
-void vala_version_attribute_set_deprecated_since (ValaVersionAttribute* self, const gchar* value);
+void vala_version_attribute_set_deprecated_since (ValaVersionAttribute* self,
+                                                  const gchar* value);
 gchar* vala_version_attribute_get_replacement (ValaVersionAttribute* self);
-void vala_version_attribute_set_replacement (ValaVersionAttribute* self, const gchar* value);
+void vala_version_attribute_set_replacement (ValaVersionAttribute* self,
+                                             const gchar* value);
 gboolean vala_version_attribute_get_experimental (ValaVersionAttribute* self);
-void vala_version_attribute_set_experimental (ValaVersionAttribute* self, gboolean value);
+void vala_version_attribute_set_experimental (ValaVersionAttribute* self,
+                                              gboolean value);
 gchar* vala_version_attribute_get_experimental_until (ValaVersionAttribute* self);
-void vala_version_attribute_set_experimental_until (ValaVersionAttribute* self, const gchar* value);
+void vala_version_attribute_set_experimental_until (ValaVersionAttribute* self,
+                                                    const gchar* value);
 gchar* vala_version_attribute_get_since (ValaVersionAttribute* self);
-void vala_version_attribute_set_since (ValaVersionAttribute* self, const gchar* value);
+void vala_version_attribute_set_since (ValaVersionAttribute* self,
+                                       const gchar* value);
 GType vala_void_type_get_type (void) G_GNUC_CONST;
 ValaVoidType* vala_void_type_new (ValaSourceReference* source_reference);
-ValaVoidType* vala_void_type_construct (GType object_type, ValaSourceReference* source_reference);
-ValaWhileStatement* vala_while_statement_new (ValaExpression* condition, ValaBlock* body, ValaSourceReference* source_reference);
-ValaWhileStatement* vala_while_statement_construct (GType object_type, ValaExpression* condition, ValaBlock* body, ValaSourceReference* source_reference);
+ValaVoidType* vala_void_type_construct (GType object_type,
+                                        ValaSourceReference* source_reference);
+ValaWhileStatement* vala_while_statement_new (ValaExpression* condition,
+                                              ValaBlock* body,
+                                              ValaSourceReference* source_reference);
+ValaWhileStatement* vala_while_statement_construct (GType object_type,
+                                                    ValaExpression* condition,
+                                                    ValaBlock* body,
+                                                    ValaSourceReference* source_reference);
 ValaExpression* vala_while_statement_get_condition (ValaWhileStatement* self);
-void vala_while_statement_set_condition (ValaWhileStatement* self, ValaExpression* value);
+void vala_while_statement_set_condition (ValaWhileStatement* self,
+                                         ValaExpression* value);
 ValaBlock* vala_while_statement_get_body (ValaWhileStatement* self);
-void vala_while_statement_set_body (ValaWhileStatement* self, ValaBlock* value);
-ValaYieldStatement* vala_yield_statement_new (ValaExpression* yield_expression, ValaSourceReference* source_reference);
-ValaYieldStatement* vala_yield_statement_construct (GType object_type, ValaExpression* yield_expression, ValaSourceReference* source_reference);
+void vala_while_statement_set_body (ValaWhileStatement* self,
+                                    ValaBlock* value);
+ValaYieldStatement* vala_yield_statement_new (ValaExpression* yield_expression,
+                                              ValaSourceReference* source_reference);
+ValaYieldStatement* vala_yield_statement_construct (GType object_type,
+                                                    ValaExpression* yield_expression,
+                                                    ValaSourceReference* source_reference);
 ValaExpression* vala_yield_statement_get_yield_expression (ValaYieldStatement* self);
-void vala_yield_statement_set_yield_expression (ValaYieldStatement* self, ValaExpression* value);
+void vala_yield_statement_set_yield_expression (ValaYieldStatement* self,
+                                                ValaExpression* value);
 
 
 G_END_DECLS

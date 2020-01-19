@@ -5278,7 +5278,7 @@ namespace Gdk {
 		public double dx;
 		public double dy;
 		public int8 n_fingers;
-		public Gdk.TouchpadGesturePhase phase;
+		public int8 phase;
 		public double scale;
 		public int8 send_event;
 		public Gdk.ModifierType state;
@@ -5296,7 +5296,7 @@ namespace Gdk {
 		public double dx;
 		public double dy;
 		public int8 n_fingers;
-		public Gdk.TouchpadGesturePhase phase;
+		public int8 phase;
 		public int8 send_event;
 		public Gdk.ModifierType state;
 		public uint32 time;
@@ -5342,7 +5342,7 @@ namespace Gdk {
 		[Version (since = "3.8")]
 		public int64 get_history_start ();
 		[Version (since = "3.8")]
-		public void get_refresh_info (int64 base_time, int64 refresh_interval_return, int64 presentation_time_return);
+		public void get_refresh_info (int64 base_time, out int64 refresh_interval_return, out int64 presentation_time_return);
 		[Version (since = "3.8")]
 		public Gdk.FrameTimings? get_timings (int64 frame_counter);
 		[Version (since = "3.8")]
@@ -5389,7 +5389,7 @@ namespace Gdk {
 		[Version (since = "3.16")]
 		public bool get_forward_compatible ();
 		[Version (since = "3.16")]
-		public void get_required_version (out int? major, out int? minor);
+		public void get_required_version (out int major, out int minor);
 		[Version (since = "3.16")]
 		public unowned Gdk.GLContext? get_shared_context ();
 		[Version (since = "3.22")]
@@ -5427,6 +5427,7 @@ namespace Gdk {
 		public void add_virtual_modifiers (ref Gdk.ModifierType state);
 		[Version (since = "2.16")]
 		public bool get_caps_lock_state ();
+		[Version (deprecated = true, deprecated_since = "3.22")]
 		public static unowned Gdk.Keymap get_default ();
 		public Pango.Direction get_direction ();
 		public bool get_entries_for_keycode (uint hardware_keycode, [CCode (array_length_cname = "n_entries", array_length_pos = 3.1)] out Gdk.KeymapKey[] keys, [CCode (array_length_cname = "n_entries", array_length_pos = 3.1)] out uint[] keyvals);
@@ -5796,6 +5797,8 @@ namespace Gdk {
 		[Version (since = "2.8")]
 		public void move_region (Cairo.Region region, int dx, int dy);
 		public void move_resize (int x, int y, int width, int height);
+		[Version (since = "3.24")]
+		public void move_to_rect (Gdk.Rectangle rect, Gdk.Gravity rect_anchor, Gdk.Gravity window_anchor, Gdk.AnchorHints anchor_hints, int rect_anchor_dx, int rect_anchor_dy);
 		public unowned GLib.List<Gdk.Window> peek_children ();
 		[Version (deprecated = true, deprecated_since = "3.22")]
 		public static void process_all_updates ();
@@ -6558,7 +6561,15 @@ namespace Gdk {
 		ABOVE,
 		BELOW,
 		FOCUSED,
-		TILED
+		TILED,
+		TOP_TILED,
+		TOP_RESIZABLE,
+		RIGHT_TILED,
+		RIGHT_RESIZABLE,
+		BOTTOM_TILED,
+		BOTTOM_RESIZABLE,
+		LEFT_TILED,
+		LEFT_RESIZABLE
 	}
 	[CCode (cheader_filename = "gdk/gdk.h", cprefix = "GDK_WINDOW_", type_id = "gdk_window_type_get_type ()")]
 	public enum WindowType {

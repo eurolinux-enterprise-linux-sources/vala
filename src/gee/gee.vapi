@@ -3,7 +3,7 @@
 namespace Vala {
 	[CCode (cheader_filename = "valagee.h")]
 	public class ArrayList<G> : Vala.List<G> {
-		public ArrayList (GLib.EqualFunc equal_func = GLib.direct_equal);
+		public ArrayList (GLib.EqualFunc<G> equal_func = GLib.direct_equal);
 		public override bool add (G item);
 		public override void clear ();
 		public override bool contains (G item);
@@ -13,23 +13,26 @@ namespace Vala {
 		public override void insert (int index, G item);
 		public override Vala.Iterator<G> iterator ();
 		public override bool remove (G item);
-		public override void remove_at (int index);
+		public override G remove_at (int index);
 		public override void @set (int index, G item);
-		public GLib.EqualFunc equal_func { set; }
+		public GLib.EqualFunc<G> equal_func { set; }
 		public override int size { get; }
 	}
 	[CCode (cheader_filename = "valagee.h")]
 	public abstract class Collection<G> : Vala.Iterable<G> {
 		public Collection ();
 		public abstract bool add (G item);
+		public virtual bool add_all (Vala.Collection<G> collection);
 		public abstract void clear ();
 		public abstract bool contains (G item);
 		public abstract bool remove (G item);
+		public virtual G[] to_array ();
+		public virtual bool is_empty { get; }
 		public abstract int size { get; }
 	}
 	[CCode (cheader_filename = "valagee.h")]
 	public class HashMap<K,V> : Vala.Map<K,V> {
-		public HashMap (GLib.HashFunc key_hash_func = GLib.direct_hash, GLib.EqualFunc key_equal_func = GLib.direct_equal, GLib.EqualFunc value_equal_func = GLib.direct_equal);
+		public HashMap (GLib.HashFunc<K> key_hash_func = GLib.direct_hash, GLib.EqualFunc<K> key_equal_func = GLib.direct_equal, GLib.EqualFunc<V> value_equal_func = GLib.direct_equal);
 		public override void clear ();
 		public override bool contains (K key);
 		public override V @get (K key);
@@ -38,22 +41,22 @@ namespace Vala {
 		public override Vala.MapIterator<K,V> map_iterator ();
 		public override bool remove (K key);
 		public override void @set (K key, V value);
-		public GLib.EqualFunc key_equal_func { set; }
-		public GLib.HashFunc key_hash_func { set; }
+		public GLib.EqualFunc<K> key_equal_func { set; }
+		public GLib.HashFunc<K> key_hash_func { set; }
 		public override int size { get; }
-		public GLib.EqualFunc value_equal_func { set; }
+		public GLib.EqualFunc<V> value_equal_func { set; }
 	}
 	[CCode (cheader_filename = "valagee.h")]
 	public class HashSet<G> : Vala.Set<G> {
-		public HashSet (GLib.HashFunc hash_func = GLib.direct_hash, GLib.EqualFunc equal_func = GLib.direct_equal);
+		public HashSet (GLib.HashFunc<G> hash_func = GLib.direct_hash, GLib.EqualFunc<G> equal_func = GLib.direct_equal);
 		public override bool add (G key);
 		public override void clear ();
 		public override bool contains (G key);
 		public override GLib.Type get_element_type ();
 		public override Vala.Iterator<G> iterator ();
 		public override bool remove (G key);
-		public GLib.EqualFunc equal_func { set; }
-		public GLib.HashFunc hash_func { set; }
+		public GLib.EqualFunc<G> equal_func { set; }
+		public GLib.HashFunc<G> hash_func { set; }
 		public override int size { get; }
 	}
 	[CCode (cheader_filename = "valagee.h")]
@@ -66,16 +69,23 @@ namespace Vala {
 	public abstract class Iterator<G> {
 		public Iterator ();
 		public abstract G @get ();
+		public abstract bool has_next ();
 		public abstract bool next ();
+		public abstract void remove ();
+		public abstract bool valid { get; }
 	}
 	[CCode (cheader_filename = "valagee.h")]
 	public abstract class List<G> : Vala.Collection<G> {
 		public List ();
+		public virtual G first ();
 		public abstract G @get (int index);
 		public abstract int index_of (G item);
 		public abstract void insert (int index, G item);
-		public abstract void remove_at (int index);
+		public virtual void insert_all (int index, Vala.Collection<G> collection);
+		public virtual G last ();
+		public abstract G remove_at (int index);
 		public abstract void @set (int index, G item);
+		public virtual void sort (owned GLib.CompareDataFunc<G> compare_func);
 	}
 	[CCode (cheader_filename = "valagee.h")]
 	public abstract class Map<K,V> {

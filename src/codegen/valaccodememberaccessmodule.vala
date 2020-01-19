@@ -36,7 +36,7 @@ public abstract class Vala.CCodeMemberAccessModule : CCodeControlFlowModule {
 		if (expr.symbol_reference is Method) {
 			var m = (Method) expr.symbol_reference;
 
-			if (!(m is DynamicMethod || m is ArrayMoveMethod || m is ArrayResizeMethod)) {
+			if (!(m is DynamicMethod || m is ArrayMoveMethod || m is ArrayResizeMethod || m is ArrayCopyMethod)) {
 				generate_method_declaration (m, cfile);
 
 				if (!m.external && m.external_package) {
@@ -100,9 +100,7 @@ public abstract class Vala.CCodeMemberAccessModule : CCodeControlFlowModule {
 					var ref_call = new CCodeFunctionCall (get_dup_func_expression (expr.inner.value_type, expr.source_reference));
 					ref_call.add_argument (delegate_target);
 					delegate_target = ref_call;
-					if (delegate_type != null && delegate_type.is_disposable ()) {
-						set_delegate_target_destroy_notify (expr, get_destroy_func_expression (expr.inner.value_type));
-					}
+					set_delegate_target_destroy_notify (expr, get_destroy_func_expression (expr.inner.value_type));
 				}
 				set_delegate_target (expr, delegate_target);
 			}
@@ -149,9 +147,13 @@ public abstract class Vala.CCodeMemberAccessModule : CCodeControlFlowModule {
 			}
 
 			if (array_type != null) {
-				var ccall = new CCodeFunctionCall (new CCodeIdentifier ("G_N_ELEMENTS"));
-				ccall.add_argument (new CCodeIdentifier (get_ccode_name (c)));
-				append_array_length (expr, ccall);
+				string sub = "";
+				for (int i = 0; i < array_type.rank; i++) {
+					var ccall = new CCodeFunctionCall (new CCodeIdentifier ("G_N_ELEMENTS"));
+					ccall.add_argument (new CCodeIdentifier (get_ccode_name (c) + sub));
+					append_array_length (expr, ccall);
+					sub += "[0]";
+				}
 			}
 		} else if (expr.symbol_reference is Property) {
 			var prop = (Property) expr.symbol_reference;
@@ -182,14 +184,30 @@ public abstract class Vala.CCodeMemberAccessModule : CCodeControlFlowModule {
 					
 					var ccall = new CCodeFunctionCall (new CCodeMemberAccess.pointer (vcast, "get_%s".printf (prop.name)));
 					ccall.add_argument (get_cvalue (expr.inner));
-					set_cvalue (expr, ccall);
+					if (prop.property_type.is_real_non_null_struct_type ()) {
+						var temp_value = (GLibValue) create_temp_value (prop.get_accessor.value_type, false, expr);
+						expr.target_value = load_temp_value (temp_value);
+						var ctemp = get_cvalue_ (temp_value);
+						ccall.add_argument (new CCodeUnaryExpression (CCodeUnaryOperator.ADDRESS_OF, ctemp));
+						ccode.add_expression (ccall);
+					} else {
+						set_cvalue (expr, ccall);
+					}
 				} else if (base_prop.parent_symbol is Interface) {
 					var base_iface = (Interface) base_prop.parent_symbol;
 					string parent_iface_var = "%s_%s_parent_iface".printf (get_ccode_lower_case_name (current_class), get_ccode_lower_case_name (base_iface));
 
 					var ccall = new CCodeFunctionCall (new CCodeMemberAccess.pointer (new CCodeIdentifier (parent_iface_var), "get_%s".printf (prop.name)));
 					ccall.add_argument (get_cvalue (expr.inner));
-					set_cvalue (expr, ccall);
+					if (prop.property_type.is_real_non_null_struct_type ()) {
+						var temp_value = (GLibValue) create_temp_value (prop.get_accessor.value_type, false, expr);
+						expr.target_value = load_temp_value (temp_value);
+						var ctemp = get_cvalue_ (temp_value);
+						ccall.add_argument (new CCodeUnaryExpression (CCodeUnaryOperator.ADDRESS_OF, ctemp));
+						ccode.add_expression (ccall);
+					} else {
+						set_cvalue (expr, ccall);
+					}
 				}
 			} else if (prop.binding == MemberBinding.INSTANCE &&
 			    prop.get_accessor.automatic_body &&
@@ -224,13 +242,14 @@ public abstract class Vala.CCodeMemberAccessModule : CCodeControlFlowModule {
 					ccall.add_argument (pub_inst);
 				}
 
-				var temp_value = (GLibValue) create_temp_value (prop.get_accessor.value_type, false, expr);
+				bool prop_is_real_non_null_struct_type = prop.property_type.is_real_non_null_struct_type ();
+				var temp_value = (GLibValue) create_temp_value (prop.get_accessor.value_type, prop_is_real_non_null_struct_type, expr);
 				expr.target_value = load_temp_value (temp_value);
 				var ctemp = get_cvalue_ (temp_value);
 
 				// Property access to real struct types is handled differently
 				// The value is returned by out parameter
-				if (prop.property_type.is_real_non_null_struct_type ()) {
+				if (prop_is_real_non_null_struct_type) {
 					ccall.add_argument (new CCodeUnaryExpression (CCodeUnaryOperator.ADDRESS_OF, ctemp));
 					ccode.add_expression (ccall);
 				} else {
@@ -383,12 +402,12 @@ public abstract class Vala.CCodeMemberAccessModule : CCodeControlFlowModule {
 			} else if (delegate_type != null && delegate_type.delegate_symbol.has_target) {
 				if (is_in_coroutine ()) {
 					result.delegate_target_cvalue = new CCodeMemberAccess.pointer (new CCodeIdentifier ("_data_"), get_delegate_target_cname (get_local_cname (local)));
-					if (local.variable_type.value_owned) {
+					if (local.variable_type.is_disposable ()) {
 						result.delegate_target_destroy_notify_cvalue = new CCodeMemberAccess.pointer (new CCodeIdentifier ("_data_"), get_delegate_target_destroy_notify_cname (get_local_cname (local)));
 					}
 				} else {
 					result.delegate_target_cvalue = new CCodeIdentifier (get_delegate_target_cname (get_local_cname (local)));
-					if (local.variable_type.value_owned) {
+					if (local.variable_type.is_disposable ()) {
 						result.delegate_target_destroy_notify_cvalue = new CCodeIdentifier (get_delegate_target_destroy_notify_cname (get_local_cname (local)));
 					}
 				}
@@ -461,7 +480,7 @@ public abstract class Vala.CCodeMemberAccessModule : CCodeControlFlowModule {
 				var type_as_struct = result.value_type.data_type as Struct;
 
 				if (param.direction == ParameterDirection.OUT) {
-					name = "_vala_" + name;
+					name = "_vala_%s".printf (name);
 				}
 
 				if (param.direction == ParameterDirection.REF ||
@@ -484,7 +503,7 @@ public abstract class Vala.CCodeMemberAccessModule : CCodeControlFlowModule {
 				if (delegate_type != null && delegate_type.delegate_symbol.has_target) {
 					var target_cname = get_ccode_delegate_target_name (param);
 					if (param.direction == ParameterDirection.OUT) {
-						target_cname = "_vala_" + target_cname;
+						target_cname = "_vala_%s".printf (target_cname);
 					}
 					CCodeExpression target_expr = new CCodeIdentifier (target_cname);
 					CCodeExpression delegate_target_destroy_notify = new CCodeIdentifier (get_delegate_target_destroy_notify_cname (get_variable_cname (name)));
@@ -556,6 +575,14 @@ public abstract class Vala.CCodeMemberAccessModule : CCodeControlFlowModule {
 				}
 				inst = pub_inst;
 			}
+
+			if (inst == null) {
+				// FIXME Report this with proper source-reference on the vala side!
+				Report.error (field.source_reference, "Invalid access to instance member `%s'".printf (field.get_full_name ()));
+				result.cvalue = new CCodeInvalidExpression ();
+				return result;
+			}
+
 			if (instance_target_type.data_type.is_reference_type () || (instance != null && instance.value_type is PointerType)) {
 				result.cvalue = new CCodeMemberAccess.pointer (inst, get_ccode_name (field));
 			} else {
@@ -674,7 +701,7 @@ public abstract class Vala.CCodeMemberAccessModule : CCodeControlFlowModule {
 		if (array_type != null) {
 			if (array_type.fixed_length) {
 				result.array_length_cvalues = null;
-				result.append_array_length_cvalue (new CCodeConstant (array_type.length.to_string ()));
+				result.append_array_length_cvalue (get_ccodenode (array_type.length));
 				result.lvalue = false;
 			} else if (get_ccode_array_null_terminated (variable)) {
 				requires_array_length = true;
@@ -719,8 +746,14 @@ public abstract class Vala.CCodeMemberAccessModule : CCodeControlFlowModule {
 			// special handling for types such as va_list
 			use_temp = false;
 		}
-		if (variable is Parameter && variable.name == "this") {
-			use_temp = false;
+		if (variable is Parameter) {
+			var param = (Parameter) variable;
+			if (variable.name == "this") {
+				use_temp = false;
+			} else if ((param.direction != ParameterDirection.OUT)
+			    && !(param.variable_type.is_real_non_null_struct_type ())) {
+				use_temp = false;
+			}
 		}
 		if (variable.single_assignment && !result.value_type.is_real_non_null_struct_type ()) {
 			// no need to copy values from variables that are assigned exactly once

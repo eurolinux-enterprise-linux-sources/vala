@@ -23,101 +23,17 @@
  * 	Jürg Billeter <j@bitron.ch>
  */
 
+
 #include <glib.h>
 #include <glib-object.h>
+#include "valaccode.h"
 #include <stdlib.h>
 #include <string.h>
 #include <valagee.h>
 
-
-#define VALA_TYPE_CCODE_NODE (vala_ccode_node_get_type ())
-#define VALA_CCODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_NODE, ValaCCodeNode))
-#define VALA_CCODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_NODE, ValaCCodeNodeClass))
-#define VALA_IS_CCODE_NODE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_NODE))
-#define VALA_IS_CCODE_NODE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_NODE))
-#define VALA_CCODE_NODE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_NODE, ValaCCodeNodeClass))
-
-typedef struct _ValaCCodeNode ValaCCodeNode;
-typedef struct _ValaCCodeNodeClass ValaCCodeNodeClass;
-typedef struct _ValaCCodeNodePrivate ValaCCodeNodePrivate;
-
-#define VALA_TYPE_CCODE_WRITER (vala_ccode_writer_get_type ())
-#define VALA_CCODE_WRITER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_WRITER, ValaCCodeWriter))
-#define VALA_CCODE_WRITER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_WRITER, ValaCCodeWriterClass))
-#define VALA_IS_CCODE_WRITER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_WRITER))
-#define VALA_IS_CCODE_WRITER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_WRITER))
-#define VALA_CCODE_WRITER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_WRITER, ValaCCodeWriterClass))
-
-typedef struct _ValaCCodeWriter ValaCCodeWriter;
-typedef struct _ValaCCodeWriterClass ValaCCodeWriterClass;
-
-#define VALA_TYPE_CCODE_DECLARATOR (vala_ccode_declarator_get_type ())
-#define VALA_CCODE_DECLARATOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_DECLARATOR, ValaCCodeDeclarator))
-#define VALA_CCODE_DECLARATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_DECLARATOR, ValaCCodeDeclaratorClass))
-#define VALA_IS_CCODE_DECLARATOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_DECLARATOR))
-#define VALA_IS_CCODE_DECLARATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_DECLARATOR))
-#define VALA_CCODE_DECLARATOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_DECLARATOR, ValaCCodeDeclaratorClass))
-
-typedef struct _ValaCCodeDeclarator ValaCCodeDeclarator;
-typedef struct _ValaCCodeDeclaratorClass ValaCCodeDeclaratorClass;
-typedef struct _ValaCCodeDeclaratorPrivate ValaCCodeDeclaratorPrivate;
-
-#define VALA_TYPE_CCODE_FUNCTION_DECLARATOR (vala_ccode_function_declarator_get_type ())
-#define VALA_CCODE_FUNCTION_DECLARATOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_FUNCTION_DECLARATOR, ValaCCodeFunctionDeclarator))
-#define VALA_CCODE_FUNCTION_DECLARATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_FUNCTION_DECLARATOR, ValaCCodeFunctionDeclaratorClass))
-#define VALA_IS_CCODE_FUNCTION_DECLARATOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_FUNCTION_DECLARATOR))
-#define VALA_IS_CCODE_FUNCTION_DECLARATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_FUNCTION_DECLARATOR))
-#define VALA_CCODE_FUNCTION_DECLARATOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_FUNCTION_DECLARATOR, ValaCCodeFunctionDeclaratorClass))
-
-typedef struct _ValaCCodeFunctionDeclarator ValaCCodeFunctionDeclarator;
-typedef struct _ValaCCodeFunctionDeclaratorClass ValaCCodeFunctionDeclaratorClass;
-typedef struct _ValaCCodeFunctionDeclaratorPrivate ValaCCodeFunctionDeclaratorPrivate;
-
-#define VALA_TYPE_CCODE_PARAMETER (vala_ccode_parameter_get_type ())
-#define VALA_CCODE_PARAMETER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_PARAMETER, ValaCCodeParameter))
-#define VALA_CCODE_PARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_PARAMETER, ValaCCodeParameterClass))
-#define VALA_IS_CCODE_PARAMETER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_PARAMETER))
-#define VALA_IS_CCODE_PARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_PARAMETER))
-#define VALA_CCODE_PARAMETER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_PARAMETER, ValaCCodeParameterClass))
-
-typedef struct _ValaCCodeParameter ValaCCodeParameter;
-typedef struct _ValaCCodeParameterClass ValaCCodeParameterClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _vala_iterable_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterable_unref (var), NULL)))
 #define _vala_ccode_node_unref0(var) ((var == NULL) ? NULL : (var = (vala_ccode_node_unref (var), NULL)))
-
-struct _ValaCCodeNode {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	ValaCCodeNodePrivate * priv;
-};
-
-struct _ValaCCodeNodeClass {
-	GTypeClass parent_class;
-	void (*finalize) (ValaCCodeNode *self);
-	void (*write) (ValaCCodeNode* self, ValaCCodeWriter* writer);
-	void (*write_declaration) (ValaCCodeNode* self, ValaCCodeWriter* writer);
-	void (*write_combined) (ValaCCodeNode* self, ValaCCodeWriter* writer);
-};
-
-struct _ValaCCodeDeclarator {
-	ValaCCodeNode parent_instance;
-	ValaCCodeDeclaratorPrivate * priv;
-};
-
-struct _ValaCCodeDeclaratorClass {
-	ValaCCodeNodeClass parent_class;
-	void (*write_initialization) (ValaCCodeDeclarator* self, ValaCCodeWriter* writer);
-};
-
-struct _ValaCCodeFunctionDeclarator {
-	ValaCCodeDeclarator parent_instance;
-	ValaCCodeFunctionDeclaratorPrivate * priv;
-};
-
-struct _ValaCCodeFunctionDeclaratorClass {
-	ValaCCodeDeclaratorClass parent_class;
-};
 
 struct _ValaCCodeFunctionDeclaratorPrivate {
 	gchar* _name;
@@ -127,53 +43,29 @@ struct _ValaCCodeFunctionDeclaratorPrivate {
 
 static gpointer vala_ccode_function_declarator_parent_class = NULL;
 
-gpointer vala_ccode_node_ref (gpointer instance);
-void vala_ccode_node_unref (gpointer instance);
-GParamSpec* vala_param_spec_ccode_node (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_ccode_node (GValue* value, gpointer v_object);
-void vala_value_take_ccode_node (GValue* value, gpointer v_object);
-gpointer vala_value_get_ccode_node (const GValue* value);
-GType vala_ccode_node_get_type (void) G_GNUC_CONST;
-gpointer vala_ccode_writer_ref (gpointer instance);
-void vala_ccode_writer_unref (gpointer instance);
-GParamSpec* vala_param_spec_ccode_writer (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void vala_value_set_ccode_writer (GValue* value, gpointer v_object);
-void vala_value_take_ccode_writer (GValue* value, gpointer v_object);
-gpointer vala_value_get_ccode_writer (const GValue* value);
-GType vala_ccode_writer_get_type (void) G_GNUC_CONST;
-GType vala_ccode_declarator_get_type (void) G_GNUC_CONST;
-GType vala_ccode_function_declarator_get_type (void) G_GNUC_CONST;
-GType vala_ccode_parameter_get_type (void) G_GNUC_CONST;
 #define VALA_CCODE_FUNCTION_DECLARATOR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_CCODE_FUNCTION_DECLARATOR, ValaCCodeFunctionDeclaratorPrivate))
-enum  {
-	VALA_CCODE_FUNCTION_DECLARATOR_DUMMY_PROPERTY
-};
-ValaCCodeFunctionDeclarator* vala_ccode_function_declarator_new (const gchar* name);
-ValaCCodeFunctionDeclarator* vala_ccode_function_declarator_construct (GType object_type, const gchar* name);
-ValaCCodeDeclarator* vala_ccode_declarator_construct (GType object_type);
-void vala_ccode_function_declarator_set_name (ValaCCodeFunctionDeclarator* self, const gchar* value);
-void vala_ccode_function_declarator_add_parameter (ValaCCodeFunctionDeclarator* self, ValaCCodeParameter* param);
-static void vala_ccode_function_declarator_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer);
-void vala_ccode_node_write_declaration (ValaCCodeNode* self, ValaCCodeWriter* writer);
-static void vala_ccode_function_declarator_real_write_declaration (ValaCCodeNode* base, ValaCCodeWriter* writer);
-void vala_ccode_writer_write_string (ValaCCodeWriter* self, const gchar* s);
-const gchar* vala_ccode_function_declarator_get_name (ValaCCodeFunctionDeclarator* self);
-void vala_ccode_node_write (ValaCCodeNode* self, ValaCCodeWriter* writer);
-static void vala_ccode_function_declarator_finalize (ValaCCodeNode* obj);
+static void vala_ccode_function_declarator_real_write (ValaCCodeNode* base,
+                                                ValaCCodeWriter* writer);
+static void vala_ccode_function_declarator_real_write_declaration (ValaCCodeNode* base,
+                                                            ValaCCodeWriter* writer);
+static void vala_ccode_function_declarator_finalize (ValaCCodeNode * obj);
 
 
-ValaCCodeFunctionDeclarator* vala_ccode_function_declarator_construct (GType object_type, const gchar* name) {
+ValaCCodeFunctionDeclarator*
+vala_ccode_function_declarator_construct (GType object_type,
+                                          const gchar* name)
+{
 	ValaCCodeFunctionDeclarator* self = NULL;
-	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	self = (ValaCCodeFunctionDeclarator*) vala_ccode_declarator_construct (object_type);
-	_tmp0_ = name;
-	vala_ccode_function_declarator_set_name (self, _tmp0_);
+	vala_ccode_function_declarator_set_name (self, name);
 	return self;
 }
 
 
-ValaCCodeFunctionDeclarator* vala_ccode_function_declarator_new (const gchar* name) {
+ValaCCodeFunctionDeclarator*
+vala_ccode_function_declarator_new (const gchar* name)
+{
 	return vala_ccode_function_declarator_construct (VALA_TYPE_CCODE_FUNCTION_DECLARATOR, name);
 }
 
@@ -183,112 +75,267 @@ ValaCCodeFunctionDeclarator* vala_ccode_function_declarator_new (const gchar* na
  *
  * @param param a formal parameter
  */
-void vala_ccode_function_declarator_add_parameter (ValaCCodeFunctionDeclarator* self, ValaCCodeParameter* param) {
-	ValaList* _tmp0_ = NULL;
-	ValaCCodeParameter* _tmp1_ = NULL;
+void
+vala_ccode_function_declarator_add_parameter (ValaCCodeFunctionDeclarator* self,
+                                              ValaCCodeParameter* param)
+{
+	ValaList* _tmp0_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (param != NULL);
 	_tmp0_ = self->priv->parameters;
-	_tmp1_ = param;
-	vala_collection_add ((ValaCollection*) _tmp0_, _tmp1_);
+	vala_collection_add ((ValaCollection*) _tmp0_, param);
 }
 
 
-static void vala_ccode_function_declarator_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
+static void
+vala_ccode_function_declarator_real_write (ValaCCodeNode* base,
+                                           ValaCCodeWriter* writer)
+{
 	ValaCCodeFunctionDeclarator * self;
-	ValaCCodeWriter* _tmp0_ = NULL;
 	self = (ValaCCodeFunctionDeclarator*) base;
 	g_return_if_fail (writer != NULL);
-	_tmp0_ = writer;
-	vala_ccode_node_write_declaration ((ValaCCodeNode*) self, _tmp0_);
+	vala_ccode_node_write_declaration ((ValaCCodeNode*) self, writer);
 }
 
 
-static gpointer _vala_iterable_ref0 (gpointer self) {
+static gpointer
+_vala_iterable_ref0 (gpointer self)
+{
 	return self ? vala_iterable_ref (self) : NULL;
 }
 
 
-static void vala_ccode_function_declarator_real_write_declaration (ValaCCodeNode* base, ValaCCodeWriter* writer) {
+static void
+vala_ccode_function_declarator_real_write_declaration (ValaCCodeNode* base,
+                                                       ValaCCodeWriter* writer)
+{
 	ValaCCodeFunctionDeclarator * self;
-	ValaCCodeWriter* _tmp0_ = NULL;
-	ValaCCodeWriter* _tmp1_ = NULL;
-	const gchar* _tmp2_ = NULL;
-	ValaCCodeWriter* _tmp3_ = NULL;
-	gboolean first = FALSE;
-	ValaCCodeWriter* _tmp19_ = NULL;
+	const gchar* _tmp0_;
+	gboolean _tmp1_ = FALSE;
+	ValaCCodeModifiers _tmp2_;
+	ValaCCodeModifiers _tmp3_;
+	gboolean has_args = FALSE;
+	gint i = 0;
+	gint format_arg_index = 0;
+	gint args_index = 0;
+	ValaCCodeModifiers _tmp38_;
+	ValaCCodeModifiers _tmp39_;
+	ValaCCodeModifiers _tmp40_;
+	ValaCCodeModifiers _tmp41_;
 	self = (ValaCCodeFunctionDeclarator*) base;
 	g_return_if_fail (writer != NULL);
-	_tmp0_ = writer;
-	vala_ccode_writer_write_string (_tmp0_, "(*");
-	_tmp1_ = writer;
-	_tmp2_ = self->priv->_name;
-	vala_ccode_writer_write_string (_tmp1_, _tmp2_);
-	_tmp3_ = writer;
-	vala_ccode_writer_write_string (_tmp3_, ") (");
-	first = TRUE;
+	vala_ccode_writer_write_string (writer, "(*");
+	_tmp0_ = self->priv->_name;
+	vala_ccode_writer_write_string (writer, _tmp0_);
+	vala_ccode_writer_write_string (writer, ") (");
+	_tmp2_ = vala_ccode_node_get_modifiers ((ValaCCodeNode*) self);
+	_tmp3_ = _tmp2_;
+	if ((_tmp3_ & VALA_CCODE_MODIFIERS_PRINTF) == VALA_CCODE_MODIFIERS_PRINTF) {
+		_tmp1_ = TRUE;
+	} else {
+		ValaCCodeModifiers _tmp4_;
+		ValaCCodeModifiers _tmp5_;
+		_tmp4_ = vala_ccode_node_get_modifiers ((ValaCCodeNode*) self);
+		_tmp5_ = _tmp4_;
+		_tmp1_ = (_tmp5_ & VALA_CCODE_MODIFIERS_SCANF) == VALA_CCODE_MODIFIERS_SCANF;
+	}
+	has_args = _tmp1_;
+	i = 0;
+	format_arg_index = -1;
+	args_index = -1;
 	{
 		ValaList* _param_list = NULL;
-		ValaList* _tmp4_ = NULL;
-		ValaList* _tmp5_ = NULL;
+		ValaList* _tmp6_;
+		ValaList* _tmp7_;
 		gint _param_size = 0;
-		ValaList* _tmp6_ = NULL;
-		gint _tmp7_ = 0;
-		gint _tmp8_ = 0;
+		ValaList* _tmp8_;
+		gint _tmp9_;
+		gint _tmp10_;
 		gint _param_index = 0;
-		_tmp4_ = self->priv->parameters;
-		_tmp5_ = _vala_iterable_ref0 (_tmp4_);
-		_param_list = _tmp5_;
-		_tmp6_ = _param_list;
-		_tmp7_ = vala_collection_get_size ((ValaCollection*) _tmp6_);
-		_tmp8_ = _tmp7_;
-		_param_size = _tmp8_;
+		_tmp6_ = self->priv->parameters;
+		_tmp7_ = _vala_iterable_ref0 (_tmp6_);
+		_param_list = _tmp7_;
+		_tmp8_ = _param_list;
+		_tmp9_ = vala_collection_get_size ((ValaCollection*) _tmp8_);
+		_tmp10_ = _tmp9_;
+		_param_size = _tmp10_;
 		_param_index = -1;
 		while (TRUE) {
-			gint _tmp9_ = 0;
-			gint _tmp10_ = 0;
-			gint _tmp11_ = 0;
+			gint _tmp11_;
+			gint _tmp12_;
+			gint _tmp13_;
 			ValaCCodeParameter* param = NULL;
-			ValaList* _tmp12_ = NULL;
-			gint _tmp13_ = 0;
-			gpointer _tmp14_ = NULL;
-			gboolean _tmp15_ = FALSE;
-			ValaCCodeParameter* _tmp17_ = NULL;
-			ValaCCodeWriter* _tmp18_ = NULL;
-			_tmp9_ = _param_index;
-			_param_index = _tmp9_ + 1;
-			_tmp10_ = _param_index;
-			_tmp11_ = _param_size;
-			if (!(_tmp10_ < _tmp11_)) {
+			ValaList* _tmp14_;
+			gint _tmp15_;
+			gpointer _tmp16_;
+			gint _tmp17_;
+			ValaCCodeParameter* _tmp18_;
+			ValaCCodeParameter* _tmp19_;
+			ValaCCodeModifiers _tmp20_;
+			ValaCCodeModifiers _tmp21_;
+			gboolean _tmp23_ = FALSE;
+			gboolean _tmp24_;
+			gint _tmp37_;
+			_tmp11_ = _param_index;
+			_param_index = _tmp11_ + 1;
+			_tmp12_ = _param_index;
+			_tmp13_ = _param_size;
+			if (!(_tmp12_ < _tmp13_)) {
 				break;
 			}
-			_tmp12_ = _param_list;
-			_tmp13_ = _param_index;
-			_tmp14_ = vala_list_get (_tmp12_, _tmp13_);
-			param = (ValaCCodeParameter*) _tmp14_;
-			_tmp15_ = first;
-			if (!_tmp15_) {
-				ValaCCodeWriter* _tmp16_ = NULL;
-				_tmp16_ = writer;
-				vala_ccode_writer_write_string (_tmp16_, ", ");
-			} else {
-				first = FALSE;
+			_tmp14_ = _param_list;
+			_tmp15_ = _param_index;
+			_tmp16_ = vala_list_get (_tmp14_, _tmp15_);
+			param = (ValaCCodeParameter*) _tmp16_;
+			_tmp17_ = i;
+			if (_tmp17_ > 0) {
+				vala_ccode_writer_write_string (writer, ", ");
 			}
-			_tmp17_ = param;
-			_tmp18_ = writer;
-			vala_ccode_node_write ((ValaCCodeNode*) _tmp17_, _tmp18_);
+			_tmp18_ = param;
+			vala_ccode_node_write ((ValaCCodeNode*) _tmp18_, writer);
+			_tmp19_ = param;
+			_tmp20_ = vala_ccode_node_get_modifiers ((ValaCCodeNode*) _tmp19_);
+			_tmp21_ = _tmp20_;
+			if ((_tmp21_ & VALA_CCODE_MODIFIERS_FORMAT_ARG) == VALA_CCODE_MODIFIERS_FORMAT_ARG) {
+				gint _tmp22_;
+				_tmp22_ = i;
+				format_arg_index = _tmp22_;
+			}
+			_tmp24_ = has_args;
+			if (_tmp24_) {
+				ValaCCodeParameter* _tmp25_;
+				gboolean _tmp26_;
+				gboolean _tmp27_;
+				_tmp25_ = param;
+				_tmp26_ = vala_ccode_parameter_get_ellipsis (_tmp25_);
+				_tmp27_ = _tmp26_;
+				_tmp23_ = _tmp27_;
+			} else {
+				_tmp23_ = FALSE;
+			}
+			if (_tmp23_) {
+				gint _tmp28_;
+				_tmp28_ = i;
+				args_index = _tmp28_;
+			} else {
+				gboolean _tmp29_ = FALSE;
+				gboolean _tmp30_ = FALSE;
+				gboolean _tmp31_;
+				_tmp31_ = has_args;
+				if (_tmp31_) {
+					ValaCCodeParameter* _tmp32_;
+					const gchar* _tmp33_;
+					const gchar* _tmp34_;
+					_tmp32_ = param;
+					_tmp33_ = vala_ccode_parameter_get_type_name (_tmp32_);
+					_tmp34_ = _tmp33_;
+					_tmp30_ = g_strcmp0 (_tmp34_, "va_list") == 0;
+				} else {
+					_tmp30_ = FALSE;
+				}
+				if (_tmp30_) {
+					gint _tmp35_;
+					_tmp35_ = format_arg_index;
+					_tmp29_ = _tmp35_ < 0;
+				} else {
+					_tmp29_ = FALSE;
+				}
+				if (_tmp29_) {
+					gint _tmp36_;
+					_tmp36_ = i;
+					format_arg_index = _tmp36_ - 1;
+				}
+			}
+			_tmp37_ = i;
+			i = _tmp37_ + 1;
 			_vala_ccode_node_unref0 (param);
 		}
 		_vala_iterable_unref0 (_param_list);
 	}
-	_tmp19_ = writer;
-	vala_ccode_writer_write_string (_tmp19_, ")");
+	vala_ccode_writer_write_string (writer, ")");
+	_tmp38_ = vala_ccode_node_get_modifiers ((ValaCCodeNode*) self);
+	_tmp39_ = _tmp38_;
+	if ((_tmp39_ & VALA_CCODE_MODIFIERS_DEPRECATED) == VALA_CCODE_MODIFIERS_DEPRECATED) {
+		vala_ccode_writer_write_string (writer, " G_GNUC_DEPRECATED");
+	}
+	_tmp40_ = vala_ccode_node_get_modifiers ((ValaCCodeNode*) self);
+	_tmp41_ = _tmp40_;
+	if ((_tmp41_ & VALA_CCODE_MODIFIERS_PRINTF) == VALA_CCODE_MODIFIERS_PRINTF) {
+		gint _tmp42_ = 0;
+		gint _tmp43_;
+		gint _tmp46_;
+		gint _tmp47_;
+		gchar* _tmp48_;
+		gchar* _tmp49_;
+		_tmp43_ = format_arg_index;
+		if (_tmp43_ >= 0) {
+			gint _tmp44_;
+			_tmp44_ = format_arg_index;
+			_tmp42_ = _tmp44_ + 1;
+		} else {
+			gint _tmp45_;
+			_tmp45_ = args_index;
+			_tmp42_ = _tmp45_;
+		}
+		format_arg_index = _tmp42_;
+		_tmp46_ = format_arg_index;
+		_tmp47_ = args_index;
+		_tmp48_ = g_strdup_printf (" G_GNUC_PRINTF(%d,%d)", _tmp46_, _tmp47_ + 1);
+		_tmp49_ = _tmp48_;
+		vala_ccode_writer_write_string (writer, _tmp49_);
+		_g_free0 (_tmp49_);
+	} else {
+		ValaCCodeModifiers _tmp50_;
+		ValaCCodeModifiers _tmp51_;
+		_tmp50_ = vala_ccode_node_get_modifiers ((ValaCCodeNode*) self);
+		_tmp51_ = _tmp50_;
+		if ((_tmp51_ & VALA_CCODE_MODIFIERS_SCANF) == VALA_CCODE_MODIFIERS_SCANF) {
+			gint _tmp52_ = 0;
+			gint _tmp53_;
+			gint _tmp56_;
+			gint _tmp57_;
+			gchar* _tmp58_;
+			gchar* _tmp59_;
+			_tmp53_ = format_arg_index;
+			if (_tmp53_ >= 0) {
+				gint _tmp54_;
+				_tmp54_ = format_arg_index;
+				_tmp52_ = _tmp54_ + 1;
+			} else {
+				gint _tmp55_;
+				_tmp55_ = args_index;
+				_tmp52_ = _tmp55_;
+			}
+			format_arg_index = _tmp52_;
+			_tmp56_ = format_arg_index;
+			_tmp57_ = args_index;
+			_tmp58_ = g_strdup_printf (" G_GNUC_SCANF(%d,%d)", _tmp56_, _tmp57_ + 1);
+			_tmp59_ = _tmp58_;
+			vala_ccode_writer_write_string (writer, _tmp59_);
+			_g_free0 (_tmp59_);
+		} else {
+			gint _tmp60_;
+			_tmp60_ = format_arg_index;
+			if (_tmp60_ >= 0) {
+				gint _tmp61_;
+				gchar* _tmp62_;
+				gchar* _tmp63_;
+				_tmp61_ = format_arg_index;
+				_tmp62_ = g_strdup_printf (" G_GNUC_FORMAT(%d)", _tmp61_ + 1);
+				_tmp63_ = _tmp62_;
+				vala_ccode_writer_write_string (writer, _tmp63_);
+				_g_free0 (_tmp63_);
+			}
+		}
+	}
 }
 
 
-const gchar* vala_ccode_function_declarator_get_name (ValaCCodeFunctionDeclarator* self) {
+const gchar*
+vala_ccode_function_declarator_get_name (ValaCCodeFunctionDeclarator* self)
+{
 	const gchar* result;
-	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_name;
 	result = _tmp0_;
@@ -296,29 +343,34 @@ const gchar* vala_ccode_function_declarator_get_name (ValaCCodeFunctionDeclarato
 }
 
 
-void vala_ccode_function_declarator_set_name (ValaCCodeFunctionDeclarator* self, const gchar* value) {
-	const gchar* _tmp0_ = NULL;
-	gchar* _tmp1_ = NULL;
+void
+vala_ccode_function_declarator_set_name (ValaCCodeFunctionDeclarator* self,
+                                         const gchar* value)
+{
+	gchar* _tmp0_;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	_tmp1_ = g_strdup (_tmp0_);
+	_tmp0_ = g_strdup (value);
 	_g_free0 (self->priv->_name);
-	self->priv->_name = _tmp1_;
+	self->priv->_name = _tmp0_;
 }
 
 
-static void vala_ccode_function_declarator_class_init (ValaCCodeFunctionDeclaratorClass * klass) {
+static void
+vala_ccode_function_declarator_class_init (ValaCCodeFunctionDeclaratorClass * klass)
+{
 	vala_ccode_function_declarator_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_function_declarator_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeFunctionDeclaratorPrivate));
-	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_function_declarator_real_write;
-	((ValaCCodeNodeClass *) klass)->write_declaration = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_function_declarator_real_write_declaration;
+	((ValaCCodeNodeClass *) klass)->write = (void (*) (ValaCCodeNode *, ValaCCodeWriter*)) vala_ccode_function_declarator_real_write;
+	((ValaCCodeNodeClass *) klass)->write_declaration = (void (*) (ValaCCodeNode *, ValaCCodeWriter*)) vala_ccode_function_declarator_real_write_declaration;
 }
 
 
-static void vala_ccode_function_declarator_instance_init (ValaCCodeFunctionDeclarator * self) {
-	GEqualFunc _tmp0_ = NULL;
-	ValaArrayList* _tmp1_ = NULL;
+static void
+vala_ccode_function_declarator_instance_init (ValaCCodeFunctionDeclarator * self)
+{
+	GEqualFunc _tmp0_;
+	ValaArrayList* _tmp1_;
 	self->priv = VALA_CCODE_FUNCTION_DECLARATOR_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_CCODE_PARAMETER, (GBoxedCopyFunc) vala_ccode_node_ref, (GDestroyNotify) vala_ccode_node_unref, _tmp0_);
@@ -326,7 +378,9 @@ static void vala_ccode_function_declarator_instance_init (ValaCCodeFunctionDecla
 }
 
 
-static void vala_ccode_function_declarator_finalize (ValaCCodeNode* obj) {
+static void
+vala_ccode_function_declarator_finalize (ValaCCodeNode * obj)
+{
 	ValaCCodeFunctionDeclarator * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_CCODE_FUNCTION_DECLARATOR, ValaCCodeFunctionDeclarator);
 	_g_free0 (self->priv->_name);
@@ -338,7 +392,9 @@ static void vala_ccode_function_declarator_finalize (ValaCCodeNode* obj) {
 /**
  * Represents a function pointer declarator in the C code.
  */
-GType vala_ccode_function_declarator_get_type (void) {
+GType
+vala_ccode_function_declarator_get_type (void)
+{
 	static volatile gsize vala_ccode_function_declarator_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_ccode_function_declarator_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (ValaCCodeFunctionDeclaratorClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) vala_ccode_function_declarator_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (ValaCCodeFunctionDeclarator), 0, (GInstanceInitFunc) vala_ccode_function_declarator_instance_init, NULL };
