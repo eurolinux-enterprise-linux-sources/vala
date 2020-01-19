@@ -3,7 +3,7 @@
 
 Name:           vala
 Version:        0.20.1
-Release:        1%{?dist}
+Release:        3%{?dist}
 Summary:        A modern programming language for GNOME
 
 # Most files are LGPLv2.1+, curses.vapi is 2-clause BSD
@@ -274,6 +274,12 @@ done
 
 
 %changelog
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 0.20.1-3
+- Mass rebuild 2014-01-24
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 0.20.1-2
+- Mass rebuild 2013-12-27
+
 * Tue Apr  9 2013 Michel Salim <salimma@fedoraproject.org> - 0.20.1-1
 - Update to 0.20.1
 
