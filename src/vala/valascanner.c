@@ -862,6 +862,7 @@ ValaTokenType vala_scanner_read_regex_token (ValaScanner* self, ValaSourceLocati
 							case 'n':
 							case 'r':
 							case 't':
+							case 'v':
 							case 'a':
 							case 'A':
 							case 'p':
@@ -1048,7 +1049,7 @@ ValaTokenType vala_scanner_read_regex_token (ValaScanner* self, ValaSourceLocati
 							_tmp98_ = g_utf8_get_char_validated ((const gchar*) _tmp95_, (gssize) ((glong) (_tmp96_ - _tmp97_)));
 							u = _tmp98_;
 							_tmp99_ = u;
-							if (_tmp99_ != ((gunichar) (-1))) {
+							if (_tmp99_ != ((gunichar) -1)) {
 								gchar* _tmp100_ = NULL;
 								gunichar _tmp101_ = 0U;
 								gint _tmp102_ = 0;
@@ -2854,6 +2855,7 @@ ValaTokenType vala_scanner_read_template_token (ValaScanner* self, ValaSourceLoc
 							case 'n':
 							case 'r':
 							case 't':
+							case 'v':
 							{
 								gchar* _tmp60_ = NULL;
 								gint _tmp61_ = 0;
@@ -3033,7 +3035,7 @@ ValaTokenType vala_scanner_read_template_token (ValaScanner* self, ValaSourceLoc
 							_tmp106_ = g_utf8_get_char_validated ((const gchar*) _tmp103_, (gssize) ((glong) (_tmp104_ - _tmp105_)));
 							u = _tmp106_;
 							_tmp107_ = u;
-							if (_tmp107_ != ((gunichar) (-1))) {
+							if (_tmp107_ != ((gunichar) -1)) {
 								gchar* _tmp108_ = NULL;
 								gunichar _tmp109_ = 0U;
 								gint _tmp110_ = 0;
@@ -4205,7 +4207,7 @@ ValaTokenType vala_scanner_read_token (ValaScanner* self, ValaSourceLocation* to
 												_tmp232_ = g_utf8_get_char_validated ((const gchar*) _tmp229_, (gssize) ((glong) (_tmp230_ - _tmp231_)));
 												u = _tmp232_;
 												_tmp233_ = u;
-												if (_tmp233_ != ((gunichar) (-1))) {
+												if (_tmp233_ != ((gunichar) -1)) {
 													gchar* _tmp234_ = NULL;
 													gunichar _tmp235_ = 0U;
 													gint _tmp236_ = 0;
@@ -4329,6 +4331,7 @@ ValaTokenType vala_scanner_read_token (ValaScanner* self, ValaSourceLocation* to
 										case 'n':
 										case 'r':
 										case 't':
+										case 'v':
 										case '$':
 										{
 											gchar* _tmp269_ = NULL;
@@ -4509,7 +4512,7 @@ ValaTokenType vala_scanner_read_token (ValaScanner* self, ValaSourceLocation* to
 										_tmp315_ = g_utf8_get_char_validated ((const gchar*) _tmp312_, (gssize) ((glong) (_tmp313_ - _tmp314_)));
 										u = _tmp315_;
 										_tmp316_ = u;
-										if (_tmp316_ != ((gunichar) (-1))) {
+										if (_tmp316_ != ((gunichar) -1)) {
 											gchar* _tmp317_ = NULL;
 											gunichar _tmp318_ = 0U;
 											gint _tmp319_ = 0;
@@ -4611,7 +4614,7 @@ ValaTokenType vala_scanner_read_token (ValaScanner* self, ValaSourceLocation* to
 							_tmp349_ = g_utf8_get_char_validated ((const gchar*) _tmp346_, (gssize) ((glong) (_tmp347_ - _tmp348_)));
 							u = _tmp349_;
 							_tmp350_ = u;
-							if (_tmp350_ != ((gunichar) (-1))) {
+							if (_tmp350_ != ((gunichar) -1)) {
 								gchar* _tmp351_ = NULL;
 								gunichar _tmp352_ = 0U;
 								gint _tmp353_ = 0;

@@ -145,6 +145,12 @@ public class Vala.Assignment : Expression {
 		if (left is MemberAccess) {
 			var ma = (MemberAccess) left;
 
+			if (ma.symbol_reference is Constant) {
+				error = true;
+				Report.error (source_reference, "Assignment to constant after initialization");
+				return false;
+			}
+
 			if ((!(ma.symbol_reference is Signal || ma.symbol_reference is DynamicProperty) && ma.value_type == null) ||
 			    (ma.inner == null && ma.member_name == "this" && context.analyzer.is_in_instance_method ())) {
 				error = true;
@@ -174,6 +180,8 @@ public class Vala.Assignment : Expression {
 				}
 				var sig = (Signal) ma.symbol_reference;
 				right.target_type = new DelegateType (sig.get_delegate (ma.inner.value_type, this));
+			} else if (ma.symbol_reference is DynamicProperty) {
+				// target_type not available for dynamic properties
 			} else {
 				right.formal_target_type = ma.formal_value_type.copy ();
 				right.target_type = ma.value_type.copy ();

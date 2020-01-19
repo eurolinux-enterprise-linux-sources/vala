@@ -1352,9 +1352,9 @@ static void vala_regex_literal_finalize (ValaCodeNode* obj);
 /**
  * Creates a new regular expression literal.
  *
- * @param s      the literal value
- * @param source reference to source code
- * @return       newly created string literal
+ * @param value             the literal value
+ * @param source_reference  reference to source code
+ * @return                  newly created string literal
  */
 ValaRegexLiteral* vala_regex_literal_construct (GType object_type, const gchar* value, ValaSourceReference* source_reference) {
 	ValaRegexLiteral* self = NULL;
@@ -1424,14 +1424,14 @@ static gboolean vala_regex_literal_real_check (ValaCodeNode* base, ValaCodeConte
 	gboolean result = FALSE;
 	gboolean _tmp0_ = FALSE;
 	gboolean _tmp1_ = FALSE;
-	ValaCodeContext* _tmp12_ = NULL;
-	ValaSemanticAnalyzer* _tmp13_ = NULL;
-	ValaSemanticAnalyzer* _tmp14_ = NULL;
-	ValaDataType* _tmp15_ = NULL;
-	ValaDataType* _tmp16_ = NULL;
+	ValaCodeContext* _tmp14_ = NULL;
+	ValaSemanticAnalyzer* _tmp15_ = NULL;
+	ValaSemanticAnalyzer* _tmp16_ = NULL;
 	ValaDataType* _tmp17_ = NULL;
-	gboolean _tmp18_ = FALSE;
-	gboolean _tmp19_ = FALSE;
+	ValaDataType* _tmp18_ = NULL;
+	ValaDataType* _tmp19_ = NULL;
+	gboolean _tmp20_ = FALSE;
+	gboolean _tmp21_ = FALSE;
 	GError * _inner_error_ = NULL;
 	self = (ValaRegexLiteral*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
@@ -1450,20 +1450,21 @@ static gboolean vala_regex_literal_real_check (ValaCodeNode* base, ValaCodeConte
 		GRegex* regex = NULL;
 		const gchar* _tmp4_ = NULL;
 		GRegex* _tmp5_ = NULL;
-		GRegex* _tmp6_ = NULL;
+		GRegex* _tmp7_ = NULL;
 		_tmp4_ = self->priv->_value;
 		_tmp5_ = g_regex_new (_tmp4_, 0, 0, &_inner_error_);
 		regex = _tmp5_;
 		if (G_UNLIKELY (_inner_error_ != NULL)) {
+			gboolean _tmp6_ = FALSE;
 			if (_inner_error_->domain == G_REGEX_ERROR) {
 				goto __catch15_g_regex_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
-			return FALSE;
+			return _tmp6_;
 		}
-		_tmp6_ = regex;
-		if (_tmp6_ != NULL) {
+		_tmp7_ = regex;
+		if (_tmp7_ != NULL) {
 		}
 		_g_regex_unref0 (regex);
 	}
@@ -1471,42 +1472,43 @@ static gboolean vala_regex_literal_real_check (ValaCodeNode* base, ValaCodeConte
 	__catch15_g_regex_error:
 	{
 		GError* err = NULL;
-		ValaSourceReference* _tmp7_ = NULL;
 		ValaSourceReference* _tmp8_ = NULL;
-		const gchar* _tmp9_ = NULL;
-		gchar* _tmp10_ = NULL;
+		ValaSourceReference* _tmp9_ = NULL;
+		const gchar* _tmp10_ = NULL;
 		gchar* _tmp11_ = NULL;
+		gchar* _tmp12_ = NULL;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		vala_code_node_set_error ((ValaCodeNode*) self, TRUE);
-		_tmp7_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
-		_tmp8_ = _tmp7_;
-		_tmp9_ = self->priv->_value;
-		_tmp10_ = g_strdup_printf ("Invalid regular expression `%s'.", _tmp9_);
-		_tmp11_ = _tmp10_;
-		vala_report_error (_tmp8_, _tmp11_);
-		_g_free0 (_tmp11_);
+		_tmp8_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+		_tmp9_ = _tmp8_;
+		_tmp10_ = self->priv->_value;
+		_tmp11_ = g_strdup_printf ("Invalid regular expression `%s'.", _tmp10_);
+		_tmp12_ = _tmp11_;
+		vala_report_error (_tmp9_, _tmp12_);
+		_g_free0 (_tmp12_);
 		result = FALSE;
 		_g_error_free0 (err);
 		return result;
 	}
 	__finally15:
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
+		gboolean _tmp13_ = FALSE;
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
-		return FALSE;
+		return _tmp13_;
 	}
-	_tmp12_ = context;
-	_tmp13_ = vala_code_context_get_analyzer (_tmp12_);
-	_tmp14_ = _tmp13_;
-	_tmp15_ = _tmp14_->regex_type;
-	_tmp16_ = vala_data_type_copy (_tmp15_);
-	_tmp17_ = _tmp16_;
-	vala_expression_set_value_type ((ValaExpression*) self, _tmp17_);
-	_vala_code_node_unref0 (_tmp17_);
-	_tmp18_ = vala_code_node_get_error ((ValaCodeNode*) self);
+	_tmp14_ = context;
+	_tmp15_ = vala_code_context_get_analyzer (_tmp14_);
+	_tmp16_ = _tmp15_;
+	_tmp17_ = _tmp16_->regex_type;
+	_tmp18_ = vala_data_type_copy (_tmp17_);
 	_tmp19_ = _tmp18_;
-	result = !_tmp19_;
+	vala_expression_set_value_type ((ValaExpression*) self, _tmp19_);
+	_vala_code_node_unref0 (_tmp19_);
+	_tmp20_ = vala_code_node_get_error ((ValaCodeNode*) self);
+	_tmp21_ = _tmp20_;
+	result = !_tmp21_;
 	return result;
 }
 
@@ -1549,12 +1551,12 @@ static void vala_regex_literal_class_init (ValaRegexLiteralClass * klass) {
 	vala_regex_literal_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_regex_literal_finalize;
 	g_type_class_add_private (klass, sizeof (ValaRegexLiteralPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_regex_literal_real_accept;
-	((ValaExpressionClass *) klass)->is_pure = vala_regex_literal_real_is_pure;
-	((ValaExpressionClass *) klass)->is_non_null = vala_regex_literal_real_is_non_null;
-	((ValaCodeNodeClass *) klass)->to_string = vala_regex_literal_real_to_string;
-	((ValaCodeNodeClass *) klass)->check = vala_regex_literal_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_regex_literal_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_regex_literal_real_accept;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_regex_literal_real_is_pure;
+	((ValaExpressionClass *) klass)->is_non_null = (gboolean (*)(ValaExpression*)) vala_regex_literal_real_is_non_null;
+	((ValaCodeNodeClass *) klass)->to_string = (gchar* (*)(ValaCodeNode*)) vala_regex_literal_real_to_string;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_regex_literal_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_regex_literal_real_emit;
 }
 
 

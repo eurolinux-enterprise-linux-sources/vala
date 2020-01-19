@@ -221,8 +221,9 @@ namespace Vala {
 		public override bool check (Vala.CodeContext context);
 		public override bool compatible (Vala.DataType target_type);
 		public override Vala.DataType copy ();
-		public override Vala.DataType get_actual_type (Vala.DataType? derived_instance_type, Vala.MemberAccess? method_access, Vala.CodeNode node_reference);
+		public override Vala.DataType get_actual_type (Vala.DataType? derived_instance_type, Vala.List<Vala.DataType>? method_type_arguments, Vala.CodeNode node_reference);
 		public override Vala.Symbol? get_member (string member_name);
+		public override Vala.DataType? infer_type_argument (Vala.TypeParameter type_param, Vala.DataType value_type);
 		public override bool is_accessible (Vala.Symbol sym);
 		public override bool is_array ();
 		public override bool is_disposable ();
@@ -516,12 +517,14 @@ namespace Vala {
 		public bool run_output { get; set; }
 		public bool save_csources { get; }
 		public bool save_temps { get; set; }
+		public bool since_check { get; set; }
 		public string? symbols_filename { get; set; }
 		public int target_glib_major { get; set; }
 		public int target_glib_minor { get; set; }
 		public bool thread { get; set; }
 		public bool use_fast_vapi { get; set; }
 		public bool use_header { get; set; }
+		public Vala.UsedAttr used_attr { get; set; }
 		public bool vapi_comments { get; set; }
 		public bool verbose_mode { get; set; }
 		public bool version_header { get; set; }
@@ -795,13 +798,14 @@ namespace Vala {
 		public virtual bool compatible (Vala.DataType target_type);
 		public abstract Vala.DataType copy ();
 		public virtual bool equals (Vala.DataType type2);
-		public virtual Vala.DataType get_actual_type (Vala.DataType? derived_instance_type, Vala.MemberAccess? method_access, Vala.CodeNode node_reference);
+		public virtual Vala.DataType get_actual_type (Vala.DataType? derived_instance_type, Vala.List<Vala.DataType>? method_type_arguments, Vala.CodeNode node_reference);
 		public virtual Vala.Symbol? get_member (string member_name);
 		public virtual Vala.List<Vala.Parameter>? get_parameters ();
 		public virtual Vala.Symbol? get_pointer_member (string member_name);
 		public virtual Vala.DataType? get_return_type ();
 		public Vala.List<Vala.DataType> get_type_arguments ();
 		public bool has_type_arguments ();
+		public virtual Vala.DataType? infer_type_argument (Vala.TypeParameter type_param, Vala.DataType value_type);
 		public virtual bool is_accessible (Vala.Symbol sym);
 		public virtual bool is_array ();
 		public virtual bool is_disposable ();
@@ -1125,6 +1129,7 @@ namespace Vala {
 		public GenericType (Vala.TypeParameter type_parameter);
 		public override Vala.DataType copy ();
 		public override Vala.Symbol? get_member (string member_name);
+		public override Vala.DataType? infer_type_argument (Vala.TypeParameter type_param, Vala.DataType value_type);
 		public override string to_qualified_string (Vala.Scope? scope = null);
 	}
 	[CCode (cheader_filename = "vala.h")]
@@ -1565,9 +1570,10 @@ namespace Vala {
 		public override bool check (Vala.CodeContext context);
 		public override bool compatible (Vala.DataType target_type);
 		public override Vala.DataType copy ();
-		public override Vala.DataType get_actual_type (Vala.DataType? derived_instance_type, Vala.MemberAccess? method_access, Vala.CodeNode node_reference);
+		public override Vala.DataType get_actual_type (Vala.DataType? derived_instance_type, Vala.List<Vala.DataType>? method_type_arguments, Vala.CodeNode node_reference);
 		public override Vala.Symbol? get_member (string member_name);
 		public override Vala.Symbol? get_pointer_member (string member_name);
+		public override Vala.DataType? infer_type_argument (Vala.TypeParameter type_param, Vala.DataType value_type);
 		public override bool is_accessible (Vala.Symbol sym);
 		public override bool is_disposable ();
 		public override void replace_type (Vala.DataType old_type, Vala.DataType new_type);
@@ -1680,6 +1686,7 @@ namespace Vala {
 		public int get_warnings ();
 		public virtual void note (Vala.SourceReference? source, string message);
 		public static void notice (Vala.SourceReference? source, string message);
+		public bool set_colors (string str);
 		public void set_verbose_errors (bool verbose);
 		public virtual void warn (Vala.SourceReference? source, string message);
 		public static void warning (Vala.SourceReference? source, string message);
@@ -1765,7 +1772,7 @@ namespace Vala {
 		public Vala.Method? find_current_method ();
 		public Vala.Method? find_parent_method (Vala.Symbol sym);
 		public Vala.Symbol? find_parent_method_or_property_accessor (Vala.Symbol sym);
-		public static Vala.DataType? get_actual_type (Vala.DataType? derived_instance_type, Vala.MemberAccess? method_access, Vala.GenericType generic_type, Vala.CodeNode node_reference);
+		public static Vala.DataType? get_actual_type (Vala.DataType? derived_instance_type, Vala.List<Vala.DataType>? method_type_arguments, Vala.GenericType generic_type, Vala.CodeNode node_reference);
 		public Vala.DataType? get_arithmetic_result_type (Vala.DataType left_type, Vala.DataType right_type);
 		public static Vala.DataType get_data_type_for_symbol (Vala.TypeSymbol sym);
 		public Vala.DataType? get_value_type_for_symbol (Vala.Symbol sym, bool lvalue);
@@ -1870,6 +1877,8 @@ namespace Vala {
 		public bool from_commandline { get; set; }
 		public string gir_namespace { get; set; }
 		public string gir_version { get; set; }
+		public string? installed_version { get; set; }
+		public string? package_name { get; set; }
 		public string? relative_filename { set; }
 		public bool used { get; set; }
 	}
@@ -2011,8 +2020,6 @@ namespace Vala {
 		public virtual void add_signal (Vala.Signal sig);
 		public virtual void add_struct (Vala.Struct st);
 		public static string camel_case_to_lower_case (string camel_case);
-		public bool check_deprecated (Vala.SourceReference? source_ref = null);
-		public bool check_experimental (Vala.SourceReference? source_ref = null);
 		public string get_full_name ();
 		public Vala.Symbol? get_hidden_member ();
 		public Vala.Scope? get_top_accessible_scope (bool is_internal = false);
@@ -2025,9 +2032,6 @@ namespace Vala {
 		public Vala.SymbolAccessibility access { get; set; }
 		public bool active { get; set; }
 		public Vala.Comment? comment { get; set; }
-		public bool deprecated { get; set; }
-		public string? deprecated_since { owned get; set; }
-		public bool experimental { get; set; }
 		public bool external { get; set; }
 		public bool external_package { get; }
 		public bool from_commandline { get; }
@@ -2035,10 +2039,10 @@ namespace Vala {
 		public string? name { get; set; }
 		public Vala.Scope owner { get; set; }
 		public Vala.Symbol? parent_symbol { get; }
-		public string? replacement { owned get; set; }
 		public Vala.Scope scope { get; }
 		public Vala.SourceFileType source_type { get; }
 		public bool used { get; set; }
+		public Vala.VersionAttribute version { get; }
 	}
 	[CCode (cheader_filename = "vala.h")]
 	public class SymbolResolver : Vala.CodeVisitor {
@@ -2239,6 +2243,27 @@ namespace Vala {
 		public Vala.UnresolvedSymbol unresolved_symbol { get; set; }
 	}
 	[CCode (cheader_filename = "vala.h")]
+	public class UsedAttr : Vala.CodeVisitor {
+		public Vala.Map<string,Vala.Set<string>> marked;
+		public UsedAttr ();
+		public void check_unused (Vala.CodeContext context);
+		public void mark (string attribute, string? argument);
+		public override void visit_class (Vala.Class cl);
+		public override void visit_constant (Vala.Constant c);
+		public override void visit_creation_method (Vala.CreationMethod m);
+		public override void visit_delegate (Vala.Delegate cb);
+		public override void visit_enum (Vala.Enum en);
+		public override void visit_error_domain (Vala.ErrorDomain ed);
+		public override void visit_field (Vala.Field f);
+		public override void visit_formal_parameter (Vala.Parameter p);
+		public override void visit_interface (Vala.Interface iface);
+		public override void visit_method (Vala.Method m);
+		public override void visit_namespace (Vala.Namespace ns);
+		public override void visit_property (Vala.Property prop);
+		public override void visit_signal (Vala.Signal sig);
+		public override void visit_struct (Vala.Struct st);
+	}
+	[CCode (cheader_filename = "vala.h")]
 	public class UsingDirective : Vala.CodeNode {
 		public UsingDirective (Vala.Symbol namespace_symbol, Vala.SourceReference? source_reference = null);
 		public override void accept (Vala.CodeVisitor visitor);
@@ -2257,6 +2282,18 @@ namespace Vala {
 		public Vala.Expression? initializer { get; set; }
 		public bool single_assignment { get; set; }
 		public Vala.DataType? variable_type { get; set; }
+	}
+	[CCode (cheader_filename = "vala.h")]
+	public class VersionAttribute {
+		public VersionAttribute (Vala.Symbol symbol);
+		public bool check (Vala.SourceReference? source_ref = null);
+		public static int cmp_versions (string v1str, string v2str);
+		public bool deprecated { get; set; }
+		public string? deprecated_since { owned get; set; }
+		public bool experimental { get; set; }
+		public string? experimental_until { owned get; set; }
+		public string? replacement { owned get; set; }
+		public string? since { owned get; set; }
 	}
 	[CCode (cheader_filename = "vala.h")]
 	public class VoidType : Vala.DataType {

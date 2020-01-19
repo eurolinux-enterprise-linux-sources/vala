@@ -30,6 +30,7 @@ public class Vala.GIRWriter : CodeVisitor {
 	private string directory;
 	private string gir_namespace;
 	private string gir_version;
+	private string gir_shared_library;
 
 	protected virtual string? get_interface_comment (Interface iface) {
 		return null;
@@ -138,14 +139,15 @@ public class Vala.GIRWriter : CodeVisitor {
 	 * Writes the public interface of the specified code context into the
 	 * specified file.
 	 *
-	 * @param context  a code context
-	 * @param filename a relative or absolute filename
+	 * @param context      a code context
+	 * @param gir_filename a relative or absolute filename
 	 */
-	public void write_file (CodeContext context, string directory, string gir_filename, string gir_namespace, string gir_version, string package) {
+	public void write_file (CodeContext context, string directory, string gir_filename, string gir_namespace, string gir_version, string package, string? gir_shared_library = null) {
 		this.context = context;
 		this.directory = directory;
 		this.gir_namespace = gir_namespace;
 		this.gir_version = gir_version;
+		this.gir_shared_library = gir_shared_library;
 
 		var root_symbol = context.root;
 		var glib_ns = root_symbol.scope.lookup ("GLib");
@@ -256,6 +258,9 @@ public class Vala.GIRWriter : CodeVisitor {
 		write_indent ();
 		buffer.append_printf ("<namespace name=\"%s\" version=\"%s\"", gir_namespace, gir_version);
 		string? cprefix = CCodeBaseModule.get_ccode_prefix (ns);
+		if (gir_shared_library != null) {
+			buffer.append_printf(" shared-library=\"%s\"", gir_shared_library);
+		}
 		if (cprefix != null) {
 			buffer.append_printf (" c:prefix=\"%s\"", cprefix);
 		}
@@ -277,11 +282,14 @@ public class Vala.GIRWriter : CodeVisitor {
 	}
 
 	private void write_symbol_attributes (Symbol symbol) {
-		if (symbol.deprecated) {
-			buffer.append_printf (" deprecated=\"%s\"", (symbol.replacement == null) ? "" : "Use %s".printf (symbol.replacement));
-			if (symbol.deprecated_since != null) {
-				buffer.append_printf (" deprecated-version=\"%s\"", symbol.deprecated_since);
+		if (symbol.version.deprecated) {
+			buffer.append_printf (" deprecated=\"%s\"", (symbol.version.replacement == null) ? "" : "Use %s".printf (symbol.version.replacement));
+			if (symbol.version.deprecated_since != null) {
+				buffer.append_printf (" deprecated-version=\"%s\"", symbol.version.deprecated_since);
 			}
+		}
+		if (symbol.version.since != null) {
+			buffer.append_printf (" version=\"%s\"", symbol.version.since);
 		}
 	}
 
@@ -1268,7 +1276,7 @@ public class Vala.GIRWriter : CodeVisitor {
 		if (has_array_length) {
 			length_param_index = is_parameter ? index + 1 : index;
 		}
-		write_type (type, length_param_index);
+		write_type (type, length_param_index, direction);
 
 		indent--;
 		write_indent ();
@@ -1286,7 +1294,7 @@ public class Vala.GIRWriter : CodeVisitor {
 		buffer.append_printf (" glib:get-type=\"%sget_type\"", CCodeBaseModule.get_ccode_lower_case_prefix (symbol));
 	}
 
-	private void write_type (DataType type, int index = -1) {
+	private void write_type (DataType type, int index = -1, ParameterDirection direction = ParameterDirection.IN) {
 		if (type is ArrayType) {
 			var array_type = (ArrayType) type;
 
@@ -1319,7 +1327,7 @@ public class Vala.GIRWriter : CodeVisitor {
 			if ((type_name == "GLib.Array") || (type_name == "GLib.PtrArray")) {
 				is_array = true;
 			}
-			buffer.append_printf ("<%s name=\"%s\" c:type=\"%s\"", is_array ? "array" : "type", gi_type_name (type.data_type), CCodeBaseModule.get_ccode_name (type));
+			buffer.append_printf ("<%s name=\"%s\" c:type=\"%s%s\"", is_array ? "array" : "type", gi_type_name (type.data_type), CCodeBaseModule.get_ccode_name (type), direction == ParameterDirection.IN ? "" : "*");
 
 			List<DataType> type_arguments = type.get_type_arguments ();
 			if (type_arguments.size == 0) {
@@ -1361,13 +1369,18 @@ public class Vala.GIRWriter : CodeVisitor {
 				}
 
 				write_indent ();
-				buffer.append_printf ("<annotation key=\"%s.%s\" value=\"%s\"/>\n",
+				buffer.append_printf ("<attribute name=\"%s.%s\" value=\"%s\"/>\n",
 					name, camel_case_to_canonical (arg_name), value);
 			}
 		}
 	}
 
 	private string? get_full_gir_name (Symbol sym) {
+		string? gir_fullname = sym.get_attribute_string ("GIR", "fullname");
+		if (gir_fullname != null) {
+			return gir_fullname;
+		}
+
 		string? gir_name = sym.get_attribute_string ("GIR", "name");
 
 		if (gir_name == null && sym is Namespace) {
@@ -1408,6 +1421,10 @@ public class Vala.GIRWriter : CodeVisitor {
 					GIRNamespace external = GIRNamespace (type_symbol.source_reference.file.gir_namespace, type_symbol.source_reference.file.gir_version);
 					if (!externals.contains (external)) {
 						externals.add (external);
+					}
+					string? gir_fullname = type_symbol.get_attribute_string ("GIR", "fullname");
+					if (gir_fullname != null) {
+						return gir_fullname;
 					}
 					var type_name = type_symbol.get_attribute_string ("GIR", "name") ?? type_symbol.name;
 					return "%s.%s".printf (type_symbol.source_reference.file.gir_namespace, type_name);

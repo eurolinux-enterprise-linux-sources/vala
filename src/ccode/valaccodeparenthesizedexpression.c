@@ -208,7 +208,7 @@ static void vala_ccode_parenthesized_expression_class_init (ValaCCodeParenthesiz
 	vala_ccode_parenthesized_expression_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_parenthesized_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeParenthesizedExpressionPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_parenthesized_expression_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_parenthesized_expression_real_write;
 }
 
 

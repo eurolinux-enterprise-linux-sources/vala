@@ -244,7 +244,7 @@ static void vala_ccode_element_access_class_init (ValaCCodeElementAccessClass * 
 	vala_ccode_element_access_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_element_access_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeElementAccessPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_element_access_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_element_access_real_write;
 }
 
 

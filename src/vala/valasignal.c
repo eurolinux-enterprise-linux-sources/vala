@@ -353,16 +353,6 @@ typedef struct _ValaCommentClass ValaCommentClass;
 typedef struct _ValaScope ValaScope;
 typedef struct _ValaScopeClass ValaScopeClass;
 
-#define VALA_TYPE_MEMBER_ACCESS (vala_member_access_get_type ())
-#define VALA_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccess))
-#define VALA_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
-#define VALA_IS_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_IS_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_MEMBER_ACCESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
-
-typedef struct _ValaMemberAccess ValaMemberAccess;
-typedef struct _ValaMemberAccessClass ValaMemberAccessClass;
-
 #define VALA_TYPE_SYMBOL_ACCESSIBILITY (vala_symbol_accessibility_get_type ())
 
 #define VALA_TYPE_GENERIC_TYPE (vala_generic_type_get_type ())
@@ -550,8 +540,7 @@ const gchar* vala_symbol_get_name (ValaSymbol* self);
 ValaList* vala_signal_get_parameters (ValaSignal* self);
 ValaDelegate* vala_signal_get_delegate (ValaSignal* self, ValaDataType* sender_type, ValaCodeNode* node_reference);
 ValaDataType* vala_signal_get_return_type (ValaSignal* self);
-GType vala_member_access_get_type (void) G_GNUC_CONST;
-ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
+ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
 ValaDelegate* vala_delegate_new (const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment);
 ValaDelegate* vala_delegate_construct (GType object_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment);
 GType vala_symbol_accessibility_get_type (void) G_GNUC_CONST;
@@ -622,10 +611,10 @@ static void vala_signal_finalize (ValaCodeNode* obj);
 /**
  * Creates a new signal.
  *
- * @param name        signal name
- * @param return_type signal return type
- * @param source      reference to source code
- * @return            newly created signal
+ * @param name              signal name
+ * @param return_type       signal return type
+ * @param source_reference  reference to source code
+ * @return                  newly created signal
  */
 ValaSignal* vala_signal_construct (GType object_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaSignal* self = NULL;
@@ -1544,10 +1533,10 @@ static void vala_signal_class_init (ValaSignalClass * klass) {
 	vala_signal_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_signal_finalize;
 	g_type_class_add_private (klass, sizeof (ValaSignalPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_signal_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_signal_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_signal_real_replace_type;
-	((ValaCodeNodeClass *) klass)->check = vala_signal_real_check;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_signal_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_signal_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_signal_real_replace_type;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_signal_real_check;
 }
 
 
@@ -1563,7 +1552,7 @@ static void vala_signal_instance_init (ValaSignal * self) {
 	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_SIGNAL_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->parameters = (ValaList*) _tmp1_;
 	self->priv->lock_used = FALSE;
 }

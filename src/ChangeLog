@@ -1,33 +1,1922 @@
-2014-10-13  Jürg Billeter  <j@bitron.ch>
+2017-03-07  Rico Tzschichholz  <ricotz@ubuntu.com>
 
-	Release 0.26.1
+	Release 0.34.6
+
+	manual: Actually install files into "bookdir" instead of a subfolder
+
+2017-03-07  Alistair Thomas  <astavale@yahoo.co.uk>
+
+	manual: Initial import of manual.xml from wiki.gnome.org
+	https://bugzilla.gnome.org/show_bug.cgi?id=779090
+
+	manual: Switch to using DocBook from wiki.gnome.org as source
+	https://bugzilla.gnome.org/show_bug.cgi?id=779090
+
+	doc: Rename doc/vala to doc/manual
+	Clarify contents of directory with new name
+
+2017-03-07  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	docs: Generate and update manpages
+
+2017-03-06  Daniel Espinosa  <daniel.espinosa@pwmc.mx>
+
+	libxml-2.0: Adding missing API and nullable parameters
+	https://bugzilla.gnome.org/show_bug.cgi?id=779490
+
+2017-03-06  Carlos Garnacho  <carlosg@gnome.org>
+
+	codegen: Check there is a return error location before using it
+	Fixes client-side dbus generation on methods that don't throw any error.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=779652
+
+	tests: Add "use_string_marshalling = true" dbus-test
+	Commit 09e6818d01e introduced the possibility of inserting _error
+	labels at the end of functions, which make C compilers angry.
+	This "test" (no actual tests are run, just compile correctness is
+	checked here) triggers some of these situations.
+
+	the "test3" abstract method is trickier though, it doesn't warn
+	but produces code with early returns, which in practice means
+	possible leaks.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=778540
+
+	codegen: Avoid early return on sync dbus methods returning an error
+	If there are arguments that need freeing, we need to fall through the
+	_error label, if there is any.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=778540
+
+	codegen: Only add _error path if there's parameters that require unref
+	Fixes the _error label from being set at the end of a compound statement
+	if there are no values to unref.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=778540
+
+2017-03-06  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	memberaccess: Don't resolve base_method/property twice
+	https://bugzilla.gnome.org/show_bug.cgi?id=779219
+
+2017-03-02  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	Release 0.34.5
+
+2017-03-02  Niko Tyni  <ntyni@debian.org>
+
+	gtkmodule: Preserve order of required-gtype-classes for reproducibility
+	The elements of current_required_app_classes end up in the generated
+	code in g_type_ensure() statements. The order of these can vary
+	between builds when using a HashSet, breaking reproducibilty.
+
+	See https://wiki.debian.org/ReproducibleBuilds
+
+	https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=802528
+
+2017-03-02  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	glib-2.0: Fix g_bookmark_file_load_from_*/to_file bindings
+	BookmarkFile.load_from_file, load_from_data_dirs and to_file may
+	also throw FileError in addition to BookmarkFileError.
+
+2017-03-01  Carlos Garnacho  <carlosg@gnome.org>
+
+	tests: Add test for dbus fd passing failures
+	The server will exhaust all fds before the fd list in the dbus
+	request is opened. We do expect it to fail in the client.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=778540
+
+	dbus: Move send_message() call before _error label
+	Commit 09e6818d01 changed dbus server paths so requests fell back
+	to freeing allocated memory on errors. However certain kinds of
+	dbus replies issue a final g_dbus_connection_send_message() there.
+
+	In case of errors, _reply_message will be NULL, and the error paths
+	would have already issued g_dbus_method_invocation_return_gerror(),
+	so the g_dbus_connection_send_message() call is both unnecessary and
+	warns on the NULL argument. So  move the DBus reply before the _error
+	label.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=778540
+
+	gdbus: Handle errors when extracting fds from dbus messages
+	On the right situations (eg. fd exhaustion), both
+	g_dbus_message_get_unix_fd_list() and g_unix_fd_list_get() should be
+	considered failable here. Add proper error handling to avoid triggering
+	glib warnings.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=778540
+
+	gdbus: Ensure extracted data from the GVariant is freed on error
+	This will make extracted variables properly freed when extracting those
+	fails at some point.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=778540
+
+	gdbus: Initialize intermediate variables
+	Those may be left uninitialized after error handling paths are introduced,
+	so invalid data might be attempted to be freed later on.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=778540
+
+2017-03-01  Michael James Gratton  <mike@vee.net>
+
+	codegen: Don't return void for non-nullable simple-type structs
+	https://bugzilla.gnome.org/show_bug.cgi?id=778224
+
+2017-03-01  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	codegen: Default to void-return for vfunc pointer cast of *_async methods
+	This make it match vala's generated code of async-module.
+
+	To properly account for non-void *_async methods we require some additional
+	metadata since only the return-type of *_finish method is known.
+
+	codegen: Fix vfunc pointer cast for async method implementation/override
+
+	codegen: Cast destroy_data for g_cclosure_new to GClosureNotify
+
+	codegen: Cast *_destroy_func arg of generic-types calls to GDestroyNotify
+
+	gobject-2.0: Add some missing "array_length_type" annotations
+
+	codegen: Cast vfunc pointer assigns of abstract overrides
+	https://bugzilla.gnome.org/show_bug.cgi?id=777958
+
+2017-03-01  Nikolay Orlyuk  <virkony@gmail.com>
+
+	codegen: Fix instance parameter for property setter in SimpleType structs
+	Add test-case and fix code generator for call to the setter to pass
+	instance as a value rather than as a pointer to value.
+
+	Based on patches by Nathan Summers.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=657346
+
+2017-03-01  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	codegen: Fix memory leak when using object initializer for properties
+	Assigning values to properties this way leads to a ref/copy of the source
+	and therefore requires a unref/destroy afterwards.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=766739
+
+2017-03-01  Richard Wiedenhöft  <richard@wiedenhoeft.xyz>
+
+	Fix broken destruction of null-terminated arrays in async data structs
+	https://bugzilla.gnome.org/show_bug.cgi?id=762819
+
+2017-03-01  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	Fix build with -Werror=switch
+
+	codegen: Reference struct fields with their actual cname
+	https://bugzilla.gnome.org/show_bug.cgi?id=775761
+
+2017-02-04  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gdk-2.0: Include gdk/gdkkeysyms.h for Gdk.Key
+	Required since gdk.h doesn't include gdk/gdkkeysyms.h as gdk-3.0 does.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=778173
+
+	gdk-3.0: Update to 3.22.7
+
+	vapi: "ref" functions must return an unowned value
+	Otherwise vala would automatically add a corresponding "unref" call.
+
+2016-12-29  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.22.5+a1aee460
+
+2016-12-05  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	Release 0.34.4
+
+2016-12-05  Yu Feng  <rainwoodman@gmail.com>
+
+	girwriter: Add fullname GIR attribute, and set fullname of GObject.Type
+	In gir files generated by Vala, members of type GType is referenced
+	with name "GObject.Type", but GObject-introspection expect it to be
+	"GType".
+
+	While there was no way to override the fully qualified GIR name of a
+	member, this patch adds [GIR (fullname = "GType")] to fix the mismatch
+	for GObject.Type.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=775591
+
+2016-11-24  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	girparser: No support for fixed-size array as return-value
+	Due to the special syntax for those arrays it lead to omitting the
+	array-qualifier and therefore generating broken bindings.
+
+2016-11-22  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	Release 0.34.3
+
+2016-11-21  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gstreamer-1.0: Make ElementFactory.get_static_pad_templates fully "unowned"
+	https://bugzilla.gnome.org/show_bug.cgi?id=774791
+
+2016-11-13  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	Fix build with -Werror=enum-compare
+
+	codegen: Don't write declaration of CreationMethod for compact-classes twice
+	https://bugzilla.gnome.org/show_bug.cgi?id=772661
+
+2016-11-06  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	Update bugreport and package urls
+
+2016-11-06  Timm Bäder  <mail@baedert.org>
+
+	method: Print encountered type if return types mismatch
+	If a class overrides a method of a base type, print both the encountered
+	return type and the return type expected by the base class.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=769501
+
+2016-11-06  Andrea Del Signore  <sejerpz@gmail.com>
+
+	girwriter: Use the correct tag- and element-name for an annotation
+	The correct syntax is <attribute name=".." value=".."/>
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=769597
+
+2016-10-30  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gdk-3.0: Update to 3.22.2+0ad5d51d
+
+	gdk-3.0: Update to 3.22.1+a1115c05
+
+2016-10-23  Jürg Billeter  <j@bitron.ch>
+
+	Release 0.34.2
+
+2016-10-19  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	glib-2.0: Some nullable arguments in GLib.Test.*
+	https://bugzilla.gnome.org/show_bug.cgi?id=772964
+
+	gio-unix-2.0: Fix "g_unix_mount_at" binding
+
+	vapi: Update GIR-based bindings
+
+2016-10-19  Alistair Thomas  <astavale@yahoo.co.uk>
+
+	genie: Add empty file check to read_token ()
+	Vala.SourceFile uses GLib.MappedFile.get_contents () to read a source
+	file. This can return null if the file is empty.
+
+	Fixes: https://bugzilla.gnome.org/show_bug.cgi?id=633083
+
+2016-10-15  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	Regenerate GIR-based bindings
+
+	girparser: Use type_id information from gir if not already overridden
+
+	Regenerate for GIR-based bindings including array-related metadata fixes
+	https://bugzilla.gnome.org/show_bug.cgi?id=772902
+
+	girparser: More complete parsing of field information
+	Especially to retrieve available array-length information.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=772902
+
+2016-10-09  Jürg Billeter  <j@bitron.ch>
+
+	Release 0.34.1
+
+2016-10-09  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	clutter-gst-3.0: Fix constructor which wasn't detected as such
+
+2016-10-08  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	polkit-gobject-1: Fix constructors which weren't detected as such
+
+	polkit-gobject-1: Fix constructors which weren't detected as such
+
+	gio-2.0: Fix constructor which wasn't detected as such
+
+	clutter-gst-3.0: Fix constructors which weren't detected as such
+
+	clutter-1.0: Fix constructors which weren't detected as such
+
+	gdk-3.0: Use only metadata for EventKey, Screen, Window, update Rectangle
+
+2016-10-06  Jürg Billeter  <j@bitron.ch>
+
+	Do not report internal error for invalid code with nested generics
+	Reported-by: Matthias Berndt <matthias_berndt@gmx.de>
+
+2016-10-06  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gio-2.0: Use only metadata for IOStream, InputStream, OutputStream
+
+	gio-2.0: Use metadata instead of custom defintions for Initable
+
+	gio-2.0: Use metadata instead of custom definitions for DBusMessage
+
+	vapi: Update GIR-based bindings
+
+	clutter-gst-2.0: Skip VideoTexture.get_audio_streams/get_subtitle_tracks
+	Upstream didn't implement the Player interface correctly, so the types are
+	not matching up.
+
+	clutter-gst-3.0: Fix Playback.audio_streams/subtitle_tracks property-type
+
+	rest-0.7: Fix some ownership problems
+
+2016-09-29  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	Add CCode finish_vfunc_name to used attrs
+
+2016-09-27  George Barrett  <bob@bob131.so>
+
+	gsl.vapi: Fix attribute typos
+	At the moment, the are a few CCode attributes containing typos in the
+	bindings for the GNU Scientific Library. This patch rectifies the ones
+	that valac explicitly complains about.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=772004
+
+2016-09-27  Jürg Billeter  <j@bitron.ch>
+
+	Fix type parameter check for overriding generic methods
+	https://bugzilla.gnome.org/show_bug.cgi?id=771964
+
+	Reported-by: Sebastian Reichel <sre@ring0.de>
+
+2016-09-24  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	tests: Add async constructor test
+	https://bugzilla.gnome.org/show_bug.cgi?id=659886
+
+	gio-2.0: Keep GLib.Socket API compatible with gio < 2.48
+	https://bugzilla.gnome.org/show_bug.cgi?id=769222
+
+	gio-2.0: Fix binding of Resolver.lookup_service*()
+
+2016-09-22  Jens Georg  <mail@jensge.org>
+
+	glib-2.0: Fix binding of Markup.collect_attributes
+	Array parameters don't have an associcated length parameter but are
+	null-terminated.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=771790
+
+2016-09-21  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	glib-2.0: Update Unicode symbols
+
+2016-09-20  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	webkit2gtk: URI*.get_http_headers returns unowned Soup.MessageHeaders
+	Those are actually annotated "transfer none" in the webkit's source.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=741175
+
+	Add support for the \v escape charactor
+	https://bugzilla.gnome.org/show_bug.cgi?id=664689
+
+	glib-2.0: Allow null as argmument for string.escape()
+
+2016-09-19  Jürg Billeter  <j@bitron.ch>
+
+	Release 0.34.0
+
+2016-09-19  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	vapi: Add PolicyKit bindings, polkit-agent-1 and polkit-gobject-1
+	https://bugzilla.gnome.org/show_bug.cgi?id=605465
+
+2016-09-18  Simon Werbeck  <simon.werbeck@gmail.com>
+
+	Check for assignment to constant
+	This simply checks if the left-hand side is a constant and if so raises
+	an error.
+
+	Fixes bug 771626
+
+2016-09-18  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gio-2.0: Force finish_vfunc_name of Volume.mount() to "mount_finish"
+	https://bugzilla.gnome.org/show_bug.cgi?id=677769
+
+	codegen: Add support for finish_vfunc_name in CCode
+
+2016-09-17  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	glib-2.0: Update Unicode symbols
+
+	Revert "valainterface: Don't allow 'type' properties"
+	Breaks build of udisks2.vapi
+
+	This reverts commit 8e4cdfd6488c467a3028831e8d6183286c4f399d.
+
+2016-09-17  Timm Bäder  <mail@baedert.org>
+
+	valainterface: Don't allow 'type' properties
+	https://bugzilla.gnome.org/show_bug.cgi?id=723258
+
+2016-09-17  Jürg Billeter  <j@bitron.ch>
+
+	tests: Add test for nested conditional expression
+
+2016-09-17  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update gobject-introspection-1.0 and libsoup-2.4
+	https://bugzilla.gnome.org/show_bug.cgi?id=760491
+	https://bugzilla.gnome.org/show_bug.cgi?id=732070
+
+2016-09-17  Michele Dionisio  <michele.dionisio@gmail.com>
+
+	D-Bus: Support DBus.timeout attribute for client methods
+	https://bugzilla.gnome.org/show_bug.cgi?id=737913
+
+2016-09-16  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	codegen: Distinguish between Enum and Flags for their to_string()
+	This fixes a GLib-critical while using g_enum_get_value() on a GFlagsClass.
+	Therefore use g_flags_get_first_value() if needed.
+
+	Patch by therebedragons111
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=763831
+
+	vala: Don't force array-elements to be owned, unowned ones are supported
+	Passing an (unowned string) array literal to a function causes the array
+	elements to be freed afterwards, even though they should not be. This
+	causes the array elements to be double freed. While assigning the literal
+	to an intermediate variable and passing that to the function masks this
+	error of the ArrayCreationExpression.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=761307
+
+2016-09-15  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	build: Some minor modernizations
+
+2016-09-15  Andreas Henriksson  <andreas.henriksson@endian.se>
+
+	vapigen: Install vapigen*.pc in multiarch compatible location
+	This makes the pkgconfigdir path consistent to what is already used in
+	(toplevel) Makefile.am.
+
+2016-09-15  Steven Oliver  <oliver.steven@gmail.com>
+
+	codegen: Add C11 keywords
+	https://bugzilla.gnome.org/show_bug.cgi?id=724967
+
+2016-09-15  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gobject-2.0: Make FlagsClass.values weak
+	In addition to 950f081bae86a98a7918b5fc4a9c3acd15681c8e
+
+2016-09-14  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-2.0/3.0: Make event nullable for CellRenderer.start_editing()
+	https://bugzilla.gnome.org/show_bug.cgi?id=764493
+
+	clutter-gst-2.0/3.0: Fix init_with_args() binding
+	https://bugzilla.gnome.org/show_bug.cgi?id=764259
+
+	gstreamer-base-1.0: Fix PushSrc.create/alloc() binding
+	https://bugzilla.gnome.org/show_bug.cgi?id=762499
+
+	gdk-3.0: Window.create_similar_image_surface() returns Cairo.ImageSurface
+	https://bugzilla.gnome.org/show_bug.cgi?id=768759
+
+	gstreamer-player-1.0: Add metadata
+
+	gstreamer-player-1.0: Some binding fixes
+	https://bugzilla.gnome.org/show_bug.cgi?id=759865
+
+2016-09-14  Ben  <iofelben+github@gmail.com>
+
+	glib-2.0: Fix SearchFunc argument order for {List,SList,Queue}.search()
+	The function takes two gconstpointer arguments, the List element's data as
+	the first argument and the given user data.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=754137
+
+2016-09-13  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	glib-2.0: Update to 2.49.7
+
+2016-09-12  Jürg Billeter  <j@bitron.ch>
+
+	Release 0.33.1
+
+2016-09-12  Ernestas Kulik  <ernestas.kulik@gmail.com>
+
+	sqlite3: Allow some values to be nullable
+	This fixes Database.get_table() as it throws an error when compiling in
+	strict non-null mode and also features tweaks in Database.{_,}exec and
+	Statement.column_text signatures to accomodate potential null returns.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=754238
+
+2016-09-12  Jee-Yong Um  <conr2d@gmail.com>
+
+	glib-2.0: Fix wrong return type of OptionContext.get_description()
+	OptionContext.get_description() should return 'unowned string', but it
+	does not return any value currently. (void)
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=771123
+
+2016-09-09  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.21.5+4cd8e6c5
+
+	vapi: Update GIR-based bindings
+
+2016-09-01  Evan Nemerson  <evan@nemerson.com>
+
+	gstreamer-0.10: mark as deprecated
+	Apparently the GStreamer people consider 0.10 deprecated, not just in a
+	lower-activity maintenance mode.
+
+	Fixes bug 719597.
+
+	gstreamer-1.0: remove experimental tag
+
+2016-09-01  Arnaud Bonatti  <arnaud.bonatti@gmail.com>
+
+	Mark the icon property of GtkModelButton as nullable.
+	https://bugzilla.gnome.org/show_bug.cgi?id=770180
+
+2016-08-30  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gobject-2.0: Fix and make FlagsValue a struct
+	Based on patch by therebedragons111
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=769903
+
+	gtk+-3.0: Update to 3.21.5
+
+	vapi: Update GIR-based bindings
+
+2016-08-19  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.21.4+edce8f4d
+
+	vapi: Update GIR-based bindings
+
+2016-08-11  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.21.4+64c15545
+
+	vapi: Update GIR-based bindings
+
+2016-08-01  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.21.4+e4c072fc
+
+	vapi: Update GIR-based bindings
+
+2016-07-27  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	glib-2.0: Add new symbols for 2.50
+
+	gtk+-3.0: Update to 3.21.4+0f329195
+
+	gidlparser: Make sure to only handle the needed cairo symbols
+
+	vapi: Update GIR-based bindings
+
+2016-07-21  Guillaume Poirier-Morency  <guillaumepoiriermorency@gmail.com>
+
+	json-glib-1.0: Fix 'Json.Serializable' interface metadata
+	 - mark 'Serializable.find_property' nullable
+	 - mark 'Serializable.default_deserialize_property.value' as 'out'
+	   parameter
+
+	These should be fixed upstream with specific GIR annotations, but in the
+	meantime, it's important to have that interface usable.
+
+	Fix metadata indentation for, it was mixed with space and tabs.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=768380
+
+	libxml-2.0: Fix 'htmlEncodeEntities' and 'UTF8ToHtml' using 'ref' instead of 'out'
+	The passed buffer lengths are updated by these calls to indicate how
+	much has been read and written. Using a 'out' parameter does not let one
+	initialize them with the buffer lenghts.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=768143
+
+2016-07-21  Chris Daley  <chebizarro@gmail.com>
+
+	posix: Correct documentation comment for crypt()
+	https://bugzilla.gnome.org/show_bug.cgi?id=767047
+
+2016-07-21  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gobject-2.0: Fix binding of ParamSpec.get_default_value()
+
+2016-07-18  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	gidlparser: Special handling for some ambiguous cairo symbols
+
+2016-07-15  Jürg Billeter  <j@bitron.ch>
+
+	Report internal error for invalid type parameter comparison
+
+2016-07-15  Matthias Berndt  <matthias_berndt@gmx.de>
+
+	Check type parameters when comparing types
+	Fix the broken implementation of TypeParameter.equals.
+
+	Fixes bug 768823.
+
+2016-07-12  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	cairo: Fix Context.show_text_glyphs() binding
+
+	cairo: Add new symbols for 1.16
+
+	cairo: Pass through vapigen to sort and fully qualify symbols
+
+2016-07-08  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.21.3+25fed034
+
+	gidlparser: Support returns_floating_reference metadata
+
+	gstreamer: Update to 1.9.1
+
+	glib-2.0: Add new symbols for 2.50
+
+	vapi: Update GIR-based bindings
+
+2016-06-26  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2016-06-25  Matthias Berndt  <matthias_berndt@gmx.de>
+
+	Set parent_node for resolved base types
+
+	Check type arguments recursively
+	This fixes error checking for code like this:
+
+	class Foo<T> {}
+	void main(string[] args) {
+	  Foo<Foo<string, string>> foo = null;
+	}
+
+	Fixes bug 767092.
+
+2016-06-25  Jürg Billeter  <j@bitron.ch>
+
+	tests: Support tests with invalid code
+
+2016-06-25  Matthias Berndt  <matthias_berndt@gmx.de>
+
+	Add missing tokens to TokenType.to_string()
+
+2016-06-18  Ting-Wei Lan  <lantw@src.gnome.org>
+
+	vapigen: Call setlocale in main function
+	It is required to correctly show translated messages on some locales.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=760436
+
+2016-06-15  Mario Daniel Ruiz Saavedra  <desiderantes@rocketmail.com>
+
+	glib-2.0: Fix wrong signature for GLib.Regex.check_replacement()
+	The signature was missing the replacement parameter.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=765013
+
+2016-06-13  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+3.0: Fix Gtk.Range.get_range_border()
+
+	gtk+-3.0: Update to 3.21.2+32a37351
+
+	genie: Warn about "const static" declarations where "static" is superfluous
+
+	vapi: Fix "static consts" warnings
+
+	tests: Fix "static const" warning
+
+	valaparser: Warn about "static const" declarations where "static" is superfluous
+
+2016-06-12  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2016-06-01  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	Regenerate GIR-based bindings
+
+	girparser: Respect "fixed-size" of arrays
+
+	girparser: Respect "zero-terminated" annotation for fields
+
+2016-05-31  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gstreamer: Skip private padding fields
+
+2016-05-31  Aurélien Zanelli  <aurelien.zanelli@darkosphere.fr>
+
+	gstreamer-controller-1.0: Rename DirectControlBinding.new_absolue to 'with_absolute'
+	... and fix a fatal syntax error due '..'
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=765785
+
+2016-05-28  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gio-unix-2.0: Fix DesktopAppInfo.get_keywords()
+	Fixes bug 766456
+
+2016-05-25  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2016-05-18  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2016-05-11  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2016-05-09  Jürg Billeter  <j@bitron.ch>
+
+	Bump version suffix
+
+2016-04-28  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.21.1+
+
+	vapi: Add graphene-1.0
+
+	vapi: Update GIR-based bindings
+
+	Regenerate GIR-based bindings
+
+2016-04-24  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	girparser: Respect "transfer container" and support (unowned type)[] arrays
+
+2016-04-23  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gstreamer: Update to 1.8.1
+
+2016-04-14  Steven Oliver  <oliver.steven@gmail.com>
+
+	glib-2.0: Add abs() to float and double
+	https://bugzilla.gnome.org/show_bug.cgi?id=764663
+
+2016-04-11  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	atk: Update from gir
+
+	gtk+-2.0: Mark arguments as 'out' for Entry.get_text_area_size()
+
+	gtk+-3.0: Mark arguments as 'out' for Entry.get_frame_size()
+
+2016-04-07  Maciej Borzecki  <maciej.borzecki@open-rnd.pl>
+
+	libnl-3.0.vapi: extend VAPI
+	The patch extends VAPI of libnl-3.0 with cache
+	manager (nl_cache_mngr_*), additional methods of LinkCache and a helper
+	CachedLink type. The CachedLink type is a wrapper for the Link object,
+	however since the object is obtained from cache, rtnl_link_put() must be
+	used a free function.
+
+
+	Fixes bug 763303
+
+2016-04-07  Luca Bruno  <lucabru@src.gnome.org>
+
+	gtk+-2.0, gtk+-3.0: Make CellEditable.start_editing event parameter nullable
+	Fixes bug 764489
+
+2016-03-21  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2016-03-21  Jürg Billeter  <j@bitron.ch>
+
+	Release 0.32.0
+
+2016-03-18  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	gtk+-3.0: Update to 3.19.12
+
+2016-03-12  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	json-glib-1.0: Keep compatibility with 1.0.x and lower
+
+2016-03-08  Alistair Thomas  <astavale@yahoo.co.uk>
+
+	linux: add dependency on <sys/socket.h> to <linux/if.h> in Linux.Network
+	https://bugzilla.gnome.org/show_bug.cgi?id=763227
+
+2016-03-08  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.19.11+
+
+	json-glib-1.0: Update to 1.1.2
+
+	gstreamer: Update to 1.7.90
+
+2016-03-01  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2016-02-25  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gstreamer: Update to 1.7.2+
+
+2016-02-21  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gstreamer: Update to 1.7.2
+
+2016-02-20  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2016-02-19  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Further syncing from g-i-generated binding
+
+2016-02-17  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gdk-3.0, gtk+-3.0: Update to 3.19.9
+
+2016-02-14  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	gtk+-3.0: Update to 3.19.8+3f4f914f
+
+2016-02-09  Jürg Billeter  <j@bitron.ch>
+
+	Revert "codegen: Create only one vala-array helper function per array-type"
+	This reverts commit fba08583d940af80a0d6b7045294de00c568d6a4.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=761736
+
+	vala: Fix critical warning with dynamic properties
+
+2016-02-08  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gio-2.0: "inbuf" argument of Converter.convert() is not nullable
+
+2016-02-07  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	glib-2.0: Fix wrong Version annotation and really add binding for g_close
+
+2016-02-07  Jürg Billeter  <j@bitron.ch>
+
+	Release 0.31.1
+
+2016-02-07  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Regenerate all bindings due Cond/Mutex changes
+
+	glib-2.0: Add Version annotations and more new symbols
+
+	Require and target GLib >= 2.32
+	The next stable release of vala will happen four years after the
+	release of GLib 2.32.0.
+
+2016-02-06  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update and further syncing with introspection annotations
+
+	glib-2.0: Fix DuplicateFunc
+
+2016-02-05  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	codegen: Properly handle PointerType/VoidType in get_ccode_lower_case_name()
+
+	codegen: Properly handle GenericType in get_ccode_lower_case_name()
+
+	codegen: Properly handle DelegateType in get_ccode_lower_case_name()
+
+2016-02-04  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	codegen: Create only one vala-array helper function per array-type
+
+	gobject-2.0: Add some fixes and information from introspection data
+
+2016-02-03  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gobject-2.0: Pass through vapigen to sort and fully qualify symbols
+
+	glib-2.0: StringBuilder.free_to_bytes() consumes the given instance
+
+	gdk-3.0, gtk+-3.0: Update to 3.19.8+feabf353
+
+2016-02-01  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Further syncing with introspection annotations
+
+2016-01-31  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	girparser: Do not unconditionally make a delegate owned
+	Actually check if there are closure and destroy arguments available.
+
+2016-01-30  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	gdk-3.0, gtk+-3.0: Update to 3.19.8
+
+2016-01-30  Luca Bruno  <lucabru@src.gnome.org>
+
+	glib-2.0: fix Version on some symbols
+
+	glib-2.0: fix Version usage
+
+	Merge branch 'wip/x-version'
+
+	Regenerate all bindings with [Version]
+
+	Always check unused attrs. Add [Version] to known attrs
+
+2016-01-30  Florian Brosch  <flo.brosch@gmail.com>
+
+	gtk-3.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	gtk+-2.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	gdk-2.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	Deprecate [Deprecated] and [Experimental]
+
+	librsvg-2.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	gdk-x11-3.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	gdk-pixbuf-2.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	gio-2.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	clutter-gtk-1.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	mx-1.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	gdk-3.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	pango: Use [Version] instead of [Deprecated] and [Experimental]
+
+	libsoup-2.4: Use [Version] instead of [Deprecated] and [Experimental]
+
+	clutter: Use [Version] instead of [Deprecated] and [Experimental]
+
+	atk-1.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	glib-2.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	xcb: Use [Version] instead of [Deprecated] and [Experimental]
+
+	sqlite3: Use [Version] instead of [Deprecated] and [Experimental]
+
+	libpanelapplet-2.0: Use [Version] instead of [Deprecated] and [Experimental]
+
+	libbonoboui-2.0: Use [Version] instead of [Deprecated]
+
+	gobject-2.0: Add [Version] attributes
+
+	Introduce [Version (...)]
+	Parameters:
+	 since: string, version number
+	 experimental: bool (was: [Experimental])
+	 experimental_until: string, version number
+	 deprecated_since: string, version number (was: [Deprecated (since="")])
+	 replacement: string, symbol name (was: [Deprecated (replacement="")])
+	 deprecated: bool (was: [Deprecated])
+
+	Used symbols labeled with [Version (since = "")] are checked
+	against the locally installed package version.
+
+	Use --disable-since-check to avoid this behaviour.
+
+	Fixes bug 678912.
+
+2016-01-30  Luca Bruno  <lucabru@src.gnome.org>
+
+	codegen: fix criticals when duplicating unowned instnaces
+	Fixes bug 632174
+
+2016-01-28  Corentin Noël  <corentin@elementary.io>
+
+	vala: check for null parent symbol
+
+2016-01-28  Peter Lamby  <peterlamby@web.de>
+
+	Add missing cheader attribute for luaL_loadfile
+
+2016-01-28  Ben Iofel  <iofelben@gmail.com>
+
+	codegen: add code for [Profile] missed in cf193ab75
+
+	Symbol: fix docs for owner and scope
+
+2016-01-20  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gdk-3.0, gtk+-3.0: Update to 3.19.7
+
+2016-01-18  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2016-01-17  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gdk-3.0, gtk+-3.0: Update to 3.19.6+44d94a4a
+
+2016-01-08  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2016-01-04  Ben Iofel  <iofelben+github@gmail.com>
+
+	README: update link to wiki
+
+2015-12-30  Thomas Martitz  <kugel@rockbox.org>
+
+	girparser: add support for gintptr and guintptr types.
+	Modelled after existing size_t/ssize_t support, i.e. map to corresponding
+	types from glib-2.0.vapi.
+
+2015-12-28  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	gdk-3.0, gtk+-3.0: Update to 3.19.5+8bfbb2c1
+
+2015-12-26  Thomas Martitz  <kugel@rockbox.org>
+
+	glib-2.0: add support for gintptr and guintptr types
+	Modelled after existing size_t/ssize_t support, i.e. aliased to long/ulong.
+	Must be fixed for proper win32 support.
+
+	Fixes bug 759437
+
+2015-12-24  Luca Bruno  <lucabru@src.gnome.org>
+
+	manpage: add --no-color
+
+2015-12-21  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Add gio-windows-2.0
+	Includes some more g_win32 bindings and fixes.
+
+	Fixes bug 650052
+
+2015-12-16  Peter Lamby  <peterlamby@web.de>
+
+	Fix typo in valadoc
+
+2015-12-16  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	gdk-3.0, gtk+-3.0: Update to 3.19.5
+
+2015-12-05  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	gtk+-3.0: Update to 3.19.4
+
+2015-11-27  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	Bump version suffix
+
+2015-11-25  nieka@dsv.nl  <nieka@dsv.nl>
+
+	genie: anonymous functions as function return values and assignment to variables
+	Fixes bug 746704
+
+2015-11-24  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	gdk-x11-3.0: Add to GIR_BINDINGS
+
+	gtk+-3.0: Update to 3.19.3
+
+	gstreamer-1.0: Fix bindings of Buffer.new_wrapped_full / Memory.new_wrapped
+
+2015-11-23  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	clutter-gst-1.0: remove from GIR_BINDINGS
+	It is outdated and won't receive updates anyway.
+
+	gtk+-2.0,gtk+-3.0: make list_action_prefixes/list_style_properties transfer container
+	Fixes bug 671748.
+
+	gidlparser: Support transfer_container metadata for arrays
+
+	gio-2.0: Fix Socket.receive_message
+	Fixes bug 749980.
+
+	glib-2.0: Fix g_unix_open_pipes binding
+	Fixes bug 751291.
+
+	gstreamer-1.0: Add Caps.simple, Fix URIHandler interface, Buffer.copy_into
+	Thanks to Pierre Lamot!
+
+	Fixes bug 750836, bug 750837, bug 750839.
+
+2015-11-22  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	clutter-1.0: Fix Clutter*Event bindings
+	ClutterEvent structs have hidden fields and must be exposed as compact
+	classes.
+
+	Fixes bug 618536.
+
+2015-11-22  Florian Brosch  <flo.brosch@gmail.com>
+
+	avahi-clent: Fix a typo
+
+2015-11-22  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.19.2
+
+	gobject-2.0: ObjectClass.list_properties returns unowned elements
+
+	vapi: Update GIR-based bindings
+
+2015-11-11  Ben Iofel  <iofelben@gmail.com>
+
+	Fix parameter names in the documentation for libvala
+	Fixes bug 755917
+
+2015-10-31  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Fix ListBoxUpdateHeaderFunc while making "before" nullable
+
+2015-10-28  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gio-2.0: MemoryIn/OutputStream, use a default destroy-function for uint8[] data
+
+	gtk+-3.0: Update to 3.19.1
+
+2015-10-27  Al Thomas  <astavale@yahoo.co.uk>
+
+	posix: add crypt(), deprecate getpass()
+	Fixes bug 756315
+
+2015-10-27  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gio-2.0: Fix type of ActionEntry.change_state_callback
+
+	glib-2.0: Add bindings for g_hostname_*
+
+	glib-2.0: Add binding for AsyncQueue.timeout_pop/timeout_pop_unlocked
+
+	gtk+-2.0, gtk+-3.0: Make Image.get_gicon.size out
+
+2015-10-26  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2015-10-22  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.19.0~92a136ff
+
+	gobject-2.0: Bind BoxedCopyFunc/BoxedFreeFunc
+
+2015-10-18  Luca Bruno  <lucabru@src.gnome.org>
+
+	gtkmodule: clear out [GtkChild] on properties it not supported
+	Fixes bug 731622
+
+2015-09-30  Ben Iofel  <iofelben@gmail.com>
+
+	girparser: remove dead code
+	Fixes bug 755826
+
+2015-09-23  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-2.0: Update to 2.24.28
+	Drop Ubuntu specific changes which sneaked in here some time ago.
+
+	gtk+-3.0: Update to 3.18.0
+
+2015-09-18  Jürg Billeter  <j@bitron.ch>
+
+	Release 0.30.0
+
+2015-09-14  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.17.8+d5f17549
+
+	vapi: Update GIR-based bindings
+
+	gtk+-3.0: Make callback-scope async according to introspection annoations
+
+2015-09-08  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	glib-2.0: add new symbols for 2.46
+
+	vapi: Update GIR-based bindings
+
+2015-09-07  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-2.0: add scope async to Gtk.Clipboard request/set_with methods
+
+	gtk+-3.0: add scope async to Gtk.Clipboard request/set_with methods
+
+2015-09-07  Luca Bruno  <lucabru@src.gnome.org>
+
+	gtk+-3.0: use wildcard for Gtk.Clipboard request methods
+
+	gtk+-3.0: lt-vapigen -> vapigen
+
+	gtk+-3.0: add scope async to Gtk.Clipboard request methods
+
+2015-08-18  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	webkit2gtk-4.0: Update to 2.9.90
+
+	gtk+-3.0: Update to 3.17.7
+
+2015-08-12  Luca Bruno  <lucabru@src.gnome.org>
+
+	posix: add PrintfFormat to syslog()
+	Fixes bug 752031
+
+2015-08-11  Jürg Billeter  <j@bitron.ch>
+
+	Release 0.29.3
+
+2015-08-11  Luca Bruno  <lucabru@src.gnome.org>
+
+	Set gir_shared_library argument to be null by default, avoid breaking API
+
+2015-08-11  David Lechner  <david@lechnology.com>
+
+	Add --shared-library option for GIR files
+	Fixes bug 585116
+
+2015-08-10  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	webkit2gtk-4.0: Update to 2.9.5
+
+2015-08-05  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.17.5+e34ab356
+
+2015-07-30  Evan Nemerson  <evan@nemerson.com>
+
+	glib-2.0: make DirUtils.mkdtemp transfer ownership
+
+2015-07-23  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	webkit2gtk-4.0: Update to 2.9.4
+
+2015-07-22  Jordan Yelloz  <jordan@yelloz.me>
+
+	glib-2.0: added g_get_user_runtime_dir ()
+	This has been in GLib since 2.28
+
+2015-07-21  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	gtk+-3.0: Update to 3.17.5
+
+2015-07-06  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.17.4+abc47d7f
+
+	gtk+-3.0: Further syncing with introspection annotations
+
+2015-07-03  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gio-unix-2.0: Fix binding of g_desktop_app_info_launch_uris_as_manager
+	https://bugzilla.gnome.org/show_bug.cgi?id=748828
+
+2015-07-01  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+3.0: Properly specify argument of Widget.touch_event as Gdk.EventTouch
+
+2015-06-23  Luca Bruno  <lucabru@src.gnome.org>
+
+	codegen: check for null value before calling g_strv_length
+	Fixes bug 751338
+
+2015-06-22  Jürg Billeter  <j@bitron.ch>
+
+	Release 0.29.2
+
+	Fix 64-bit negative integer literals
+
+2015-06-21  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.17.3+3b43951b
+
+	vapi: Update GIR-based bindings
+
+2015-06-21  Luca Bruno  <lucabru@src.gnome.org>
+
+	gstreamer-1.0: use boxed GValue functions for MiniObject
+	Fixes bug 742734
+
+	add missing test from previous commit
+
+	parser: -val is now parsed as a literal instead of unary expression
+	Fixes bug 643612
+
+	gio-2.0: cleanup, unhide Subprocess.new
+
+2015-06-21  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	codegen: fix generating struct equal function
+	Fixes bug 749952
+
+2015-06-16  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	glib-2.0: Conditionally use boxed OptionGroup since 2.44
+
+	Revert "glib-2.0: Conditionally use boxed OptionContext since 2.44"
+	This reverts commit 559a92b2256835dc6f933733a30cd98d462b33b0.
+
+2015-05-27  Jürg Billeter  <j@bitron.ch>
+
+	Release 0.29.1
+
+2015-05-26  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gio-2.0: Update to 2.45.2
+
+2015-05-22  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.17.1+39f91d7c
+
+	vapi: Update GIR-based bindings
+
+2015-05-09  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2015-04-30  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	gtk+-3.0: Update to 3.17.1
+
+2015-04-23  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2015-04-10  Maciek Borzecki  <maciek.borzecki@gmail.com>
+
+	posix: add tcp constants
+	Fixes bug 747586
+
+2015-04-08  Luca Bruno  <lucabru@src.gnome.org>
+
+	gtk+-3.0: Remove TargetEntry constructor
+	Fixes bug 743271
+
+2015-04-08  Dr. Michael Lauer  <mickey@vanille-media.de>
+
+	posix: add gethostbyname(3) and assorted struct
+
+	Revert "posix: add gethostbyname(3) and assorted struct"
+	This reverts commit 0d8aea145d90ab04a57e2868b0cc56693ddd7e8d.
+
+	(Due to mixed whitespace, nothing functional wrong with the commit)
+
+2015-04-08  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.16.1
+
+2015-04-07  Dr. Michael Lauer  <mickey@vanille-media.de>
+
+	posix: add gethostbyname(3) and assorted struct
+
+	linux.vapi: add missing structs for wireless extension API
+
+	libnl-1.vapi libnl-2.0.vapi libnl-3.0.vapi: fix Netlink.Address.get_label binding
+
+2015-03-25  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2015-03-22  Jürg Billeter  <j@bitron.ch>
+
+	Bump version suffix
+
+	Release 0.28.0
+
+2015-03-20  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	webkit2gtk-4.0: Update to 2.7.92
+
+	gstreamer-1.0: Backport some fixes from gstreamer 1.5/1.6 git
+
+2015-03-18  Jürg Billeter  <j@bitron.ch>
+
+	Release 0.27.2
+
+2015-03-18  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	glib: get_filename_charsets "returns" unowned string[]
+
+	tests: Replace test for bug 743877 using g_get_filename_charsets()
+	Preserve compatibility with glib >= 2.24
+
+2015-03-18  Luca Bruno  <lucabru@src.gnome.org>
+
+	glib-2.0: provide access to original ThreadPool.free()
+	Fixes bug 746262
+
+2015-03-17  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	gio-unix-2.0: Update to 2.43.92
+
+	gtk+-3.0: Update to 3.15.12
+
+2015-03-13  Luca Bruno  <lucabru@src.gnome.org>
+
+	codegen: use real function in set/get property also for ConcreteAccessor
+	Fixes bug 743049
+
+2015-03-04  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gen-introspect: Support the C99 'bool' type
+
+2015-03-04  Luca Bruno  <lucabru@src.gnome.org>
+
+	Fix source filenames having non-utf8 path components
+	Fixes bug 742071
+
+	codegen: handle out param of null-terminated array
+	Fixes bug 743877
+
+2015-02-28  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gio-2.0: Fix one more appearances of void* to GLib.Object
+
+	gio-2.0: Fix some appearances of void* to GLib.Object
+
+	gtksourceview-3.0: Update to 3.15.90
+
+2015-02-27  Luca Bruno  <lucabru@src.gnome.org>
+
+	x11: make WindowAttributes.screen unowned
+	Fixes bug 745133
+
+2015-02-26  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+	gtk+-3.0: Update to 3.15.9
+
+2015-02-24  Luca Bruno  <lucabru@src.gnome.org>
+
+	codegen: Return a default value in delegate wrappers
+	Fixes bug 744639
+
+2015-02-17  Evan Nemerson  <evan@nemerson.com>
+
+	gio-2.0: fix ListModel.get_item binding
+
+2015-02-16  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	glib-2.0: Conditionally use boxed OptionContext since 2.44
+
+	vapi: Update GIR-based bindings
+
+	gtk+-3.0: Fix model argument type for ListBox.bind_model()
+
+	gtk+-3.0: Update to 3.15.7
+
+2015-02-15  Luca Bruno  <lucabru@src.gnome.org>
+
+	glib-2.0: Fix VariantDict.insert
+	Fixes bug 744542
+
+2015-02-10  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.15.5~4dee1646
+
+	vapi: Update GIR-based bindings
+
+2015-01-29  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-2.0,gtk+-3.0: Gtk.tree_get_row_drag_data does not pass ownership of tree_model
+
+2015-01-28  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.15.4+f3d95d05
+
+	gtk+-2.0,gtk+-3.0: Gtk.MenuPositionFunc, x and y are inout, not just out.
+	https://bugzilla.gnome.org/show_bug.cgi?id=674537
+
+2015-01-20  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2015-01-13  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	clutter-1.0: Update to 1.21.3+7eb1a3d3
+
+	gtk+-3.0: Update to 3.15.3+0d85e265
+
+2015-01-13  Jürg Billeter  <j@bitron.ch>
+
+	Use GLib.Environment instead of GLib.Environ
+	GLib.Environ is not available in GLib < 2.32.
+
+2015-01-12  Jürg Billeter  <j@bitron.ch>
+
+	Release 0.27.1
+
+2015-01-12  Luca Bruno  <lucabru@src.gnome.org>
+
+	codegen: Fix detailed signal disconnect in async methods
+	Fixes bug 742621
+
+2015-01-03  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	vapi: Update GIR-based bindings
+
+2014-12-28  Luca Bruno  <lucabru@src.gnome.org>
+
+	girparser: Take in account base property for ConcreteAccessor
+	Property had NoAccessorMethod when the overridden
+	interface property had ConcreteAccessor.
+	Now we lookup the base interface property to fix ownership
+	according to the base accessors and remove NoAccessorMethod.
+
+	Fixes bug 742012
+
+2014-12-25  Daiki Ueno  <dueno@src.gnome.org>
+
+	gtkmodule: Respect "alias" attribute in gresource
+	Though undocumented, glib-compile-resources looks at "alias" attribute
+	of "file" element and maps the physical file name to a logical path
+	name.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=741743
+
+2014-12-24  Luca Bruno  <lucabru@src.gnome.org>
+
+	codegen: allow "type" property if it's NoAccessorMethod
+	Fixes bug 741862
+
+2014-12-22  Luca Bruno  <lucabru@src.gnome.org>
+
+	Add DBus visible to used attrs
+
+	Regenerate all the bindings with ConcreteAccessor
+
+	Support concrete accessors for abstract properties in bindings
+	Fixes bug 730744
+
+	Fix test of previous commit a6df1b9
+
+2014-12-21  Luca Bruno  <lucabru@src.gnome.org>
+
+	codegen: Fix (unowned foo)[] to foo[] array copy
+	Fixes bug 731017
+
+	Allow SimpleType object initializer without a default constructor
+	Fixes bug 740600
+
+2014-12-17  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	Add clutter-gst-3.0 bindings
+
+	gtk+-3.0: Mark gtk_scrollable_get_border as virtual
+
+	vapi: Update GIR-based bindings
+
+	gtk+-3.0: Update to 3.15.3
+
+2014-12-16  Garrett Regier  <garrett.regier@riftio.com>
+
+	girwriter: Fix writing type for out params
+	The extra '*' is required for g_type_info_is_pointer() to
+	return TRUE. This fixes PyGObject marshaling for an interface
+	vfunc with a Boxed out param.
+
+	https://bugzilla.gnome.org/show_bug.cgi?id=741604
+
+2014-12-13  Luca Bruno  <lucabru@src.gnome.org>
+
+	Add CCode notify to known attrs
+
+2014-12-12  Luca Bruno  <lucabru@src.gnome.org>
+
+	Add trivial test for the previous commit
+
+	codegen: Support constant unary expressions in field initializers
+
+2014-12-09  Luca Bruno  <lucabru@src.gnome.org>
+
+	Add Description to known attrs
+
+	Add Signal to known attrs
+
+2014-12-08  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	bindings: Update GIR-based bindings
+
+	gtk+-3.0: Update to 3.15.2+8c3f04e7
+
+2014-12-06  Luca Bruno  <lucabru@src.gnome.org>
+
+	Add used DBus attribute and fix UnixMountEntry lower_case_cprefix
+	Fixes bug 741089
+
+2014-12-05  Evan Nemerson  <evan@nemerson.com>
+
+	glib-2.0: add default values for setlocale arguments
+
+2014-12-05  Luca Bruno  <lucabru@src.gnome.org>
+
+	Support XOR operation for booleans
+	Fixes bug 729907
+
+2014-12-05  Simon Werbeck  <simon.werbeck@gmail.com>
+
+	Set array lengths for result variable
+	These where missing when generating postconditions
+
+	Fixes bug 737222
+
+	Improve pre/postcondition messages
+
+2014-12-04  Luca Bruno  <lucabru@src.gnome.org>
+
+	Error when lambda parameter has incompatible direction with the delegate
+	Fixes bug 740894
+
+	Add other missing CCode arguments, NoWrapper and DestroysInstance
+
+	Add more used attributes
+	Fixes bug 741089
+
+2014-12-03  Luca Bruno  <lucabru@src.gnome.org>
+
+	Add ScanfFormat to used attributes
+
+	Add more default attributes
+
+	Fix recent syntax errors with older valac
+
+	Warn about unused attributes
+	This may not be the best approach, but it's a start
+
+2014-12-02  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gen-introspect: Merge some lexer changes taken from g-i
+
+	gio-unix-2.0: Fix g_desktop_app_info_search binding
+	Add binding for g_strfreev in addition for conveniently free'ing the
+	returned array elements.
+
+2014-12-01  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gen-introspect: Increase lexer buffer size to 1048576, taken from g-i
+
+	glib-2.0: unowned array-elements are supported since 0.26, so use it
+
+	glib-2.0: Add binding for g_strv_contains, g_option_context_?et_strict_posix
+
+	gobject-2.0: Add binding for g_type_get_instance_count
+
+2014-11-30  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.15.2
+
+	bindings: Update GIR-based bindings
+
+	bindings: Update GIR-based bindings
+
+2014-11-24  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	bindings: Update GIR-based bindings
+
+2014-11-17  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	glib2.0: Fix string.tokenize_and_fold binding
+
+2014-11-17  Simon Werbeck  <simon.werbeck@gmail.com>
+
+	Recursively infer generic type arguments
+	Slightly changed by Luca Bruno.
+
+	Fixes bug 626783
+
+2014-11-16  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	bindings: Update GIR-based bindings
+
+	gtk+-3.0: Update to 3.15.1+ecfcb3e2
+
+2014-11-15  Marc-André Lureau  <marcandre.lureau@gmail.com>
+
+	vapigen: add delegate_target_cname
+	Fixes bug 740154
+
+2014-11-15  Luca Bruno  <lucabru@src.gnome.org>
+
+	Update gio vapi after vala-girs update
+
+2014-11-14  Luca Bruno  <luca.bruno@immobiliare.it>
+
+	gobject-2.0: Add DestroysInstance to Binding.unbind()
+	Fixes bug 740117
+
+2014-11-14  Zeeshan Ali (Khattak)  <zeeshanak@gnome.org>
+
+	gtk+-3.0: Mark gtk_popover_bind_model args as nullable
+	Fixes bug 740116
+
+2014-11-10  Evan Nemerson  <evan@nemerson.com>
+
+	gstreamer-1.0: fix MapInfo.data array length
+
+2014-11-08  Luca Bruno  <lucabru@src.gnome.org>
+
+	gtk+-2.0, gtk+-3.0: make TextBuffer insert methods ref the iter
+	Yes, this breaks users of this api. Can't do better, sorry.
+
+	Fixes bug 736198
+
+2014-11-03  Evan Nemerson  <evan@nemerson.com>
+
+	gio-2.0: mark many methods in GFile as virtual
+
+	posix: add IPPROTO_* bindings
+
+2014-10-31  Luca Bruno  <lucabru@src.gnome.org>
+
+	Use .ascii_up() instead of .up()
+	Fixes bug 739393
+
+2014-10-31  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gtk+-3.0: Update to 3.15.1+89e12495
+
+	bindings: Update GIR-based bindings
+
+	webkit2gtk-4.0: Update to 2.7.1
+
+2014-10-25  Luca Bruno  <lucabru@src.gnome.org>
+
+	Add test for commit 0f0bca7e0519
+
+2014-10-25  Florian Brosch  <flo.brosch@gmail.com>
+
+	Infer array length of inline allocated arrays
+	Fixes bug 644046.
+
+2014-10-25  Luca Bruno  <lucabru@src.gnome.org>
+
+	fix typo for non-constant field initializers
+
+2014-10-22  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	bindings: Update GIR-based bindings
+
+	gtk+-3.0: Update to 3.15.0
+
+2014-10-21  Evan Nemerson  <evan@nemerson.com>
+
+	gtksourceview-3.0: remove from GIR_BINDINGS
+	gtksourceview distributes bindings upstream these days, no need to
+	keep the deprecated copy in the Vala repository updated.
+
+2014-10-16  Evan Nemerson  <evan@nemerson.com>
+
+	pango, pangocairo: update to git master
+	This adds a lot of nullability fixes from bug #731022
+
+	glib-2.0: set cname for SearchFunc
+
+	gtk+-3.0: add some default values
+
+	webkit2gtk-web-extension-4.0: add missing *-custom.vala
+
+	webkit2gtk-web-extension-4.0: add delegate for EventTarget listener
+
+2014-10-16  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	gio-2.0: Update from 2.42 branch
+
+2014-10-13  Luca Bruno  <luca.bruno@immobiliare.it>
+
+	gstreamer-1.0: remove owned to floating reference parameters
+	Commit 6296d34707 (bug 730983) added the owned
+	keyword back without any reason.
+
+	Fixes bug 738012
+
+	gtk+-3.0: Add a11y.h header to accessible objects
+	Based on patch by Peter Vagner
+
+	Fixes bug 735265
 
 2014-10-06  Rico Tzschichholz  <ricotz@ubuntu.com>
 
 	cairo: Add some missing 1.12.x and pre 1.13.x bindings
-	(cherry picked from commit b2255376ab99c2947f86555a895fe6727d92ccad)
 
 2014-10-03  Rico Tzschichholz  <ricotz@ubuntu.com>
 
 	gtk+-3.0: Fix lost special includes for GtkIMContext/GtkPlug/GtkSocket
-	(cherry picked from commit 68f670a6cef5355227854b6dfdfd52a87d5c58dc)
+
+2014-10-02  Rico Tzschichholz  <ricotz@ubuntu.com>
+
+	Add clutter-gdk-1.0, clutter-x11-1.0 bindings
+
+2014-10-01  Florian Brosch  <flo.brosch@gmail.com>
+
+	Add ownership-checks for field initializers
+
+	Do not report errors for automatic interface properties twice
+
+2014-09-30  Rico Tzschichholz  <ricotz@ubuntu.com>
 
 	gtk+-3.0: Update to 3.14.1
-	(cherry picked from commit 08254c8d82b0c9bc58716ccb5440461e4d806100)
+
+2014-09-26  Rico Tzschichholz  <ricotz@ubuntu.com>
 
 	gtk+-2.0, gtk+-3.0: Further syncing with introspection annotations
-	(cherry picked from commit 370cd5b6eccbe884457b42557b9b647c914f7c2f)
 
 2014-09-25  Rico Tzschichholz  <ricotz@ubuntu.com>
 
 	webkit2gtk-web-extension-4.0: Add libsoup-2.4 dependency
-	(cherry picked from commit e0dc209e355ae3a1dce8ba895ea68383ab688aec)
+
+2014-09-23  Rico Tzschichholz  <ricotz@ubuntu.com>
 
 	rest-0.7: Add libsoup-2.4 dependency
-	(cherry picked from commit a47fe16d0fee8e4e27dec9467a84f1b658765519)
+
+	vapi: Actually build and install rest-extras-0.7 bindings
+
+	Add rest-extras-0.7 bindings
 
 	gee: Fix HashMap destructor name
-	(cherry picked from commit d9ed3e03a634a546c89d4ca6349ed4821020a3a7)
+
+2014-09-23  Florian Brosch  <flo.brosch@gmail.com>
+
+	Improve error message for virtual/override/abstract class methods
+
+	Add additional checks for main methods
+	Fixes bug 708391.
+
+	parser: Do not accept "static class"-members instead of ignoring "class"
+
+	parser: Warn on if/else/lock without body
+	Fixes bug 682906.
+
+	Check destructor names
+	Edit: make it an error instead of warning
+
+	Fixes bug 655343.
+
+	Add colored output
+	Use --no-color to disable colors
+	Use VALA_COLORS to change colors
+
+	E.g. VALA_COLORS = "error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"
+
+	Fixes bug 734627.
+
+2014-09-23  Jürg Billeter  <j@bitron.ch>
+
+	Bump version suffix
 
 2014-09-22  Jürg Billeter  <j@bitron.ch>
 

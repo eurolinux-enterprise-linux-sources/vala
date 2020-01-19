@@ -289,8 +289,8 @@ static void vala_ccode_type_definition_class_init (ValaCCodeTypeDefinitionClass 
 	vala_ccode_type_definition_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_type_definition_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeTypeDefinitionPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_type_definition_real_write;
-	((ValaCCodeNodeClass *) klass)->write_declaration = vala_ccode_type_definition_real_write_declaration;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_type_definition_real_write;
+	((ValaCCodeNodeClass *) klass)->write_declaration = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_type_definition_real_write_declaration;
 }
 
 

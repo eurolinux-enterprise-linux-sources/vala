@@ -134,7 +134,7 @@ ValaCCodeNewline* vala_ccode_newline_new (void) {
 
 static void vala_ccode_newline_class_init (ValaCCodeNewlineClass * klass) {
 	vala_ccode_newline_parent_class = g_type_class_peek_parent (klass);
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_newline_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_newline_real_write;
 }
 
 

@@ -1007,10 +1007,10 @@ static void vala_object_type_symbol_class_init (ValaObjectTypeSymbolClass * klas
 	vala_object_type_symbol_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_object_type_symbol_finalize;
 	g_type_class_add_private (klass, sizeof (ValaObjectTypeSymbolPrivate));
-	((ValaObjectTypeSymbolClass *) klass)->get_methods = vala_object_type_symbol_real_get_methods;
-	((ValaObjectTypeSymbolClass *) klass)->get_signals = vala_object_type_symbol_real_get_signals;
-	((ValaObjectTypeSymbolClass *) klass)->get_properties = vala_object_type_symbol_real_get_properties;
-	((ValaTypeSymbolClass *) klass)->get_type_parameter_index = vala_object_type_symbol_real_get_type_parameter_index;
+	((ValaObjectTypeSymbolClass *) klass)->get_methods = (ValaList* (*)(ValaObjectTypeSymbol*)) vala_object_type_symbol_real_get_methods;
+	((ValaObjectTypeSymbolClass *) klass)->get_signals = (ValaList* (*)(ValaObjectTypeSymbol*)) vala_object_type_symbol_real_get_signals;
+	((ValaObjectTypeSymbolClass *) klass)->get_properties = (ValaList* (*)(ValaObjectTypeSymbol*)) vala_object_type_symbol_real_get_properties;
+	((ValaTypeSymbolClass *) klass)->get_type_parameter_index = (gint (*)(ValaTypeSymbol*, const gchar*)) vala_object_type_symbol_real_get_type_parameter_index;
 }
 
 
@@ -1019,7 +1019,7 @@ static void vala_object_type_symbol_instance_init (ValaObjectTypeSymbol * self) 
 	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_OBJECT_TYPE_SYMBOL_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->type_parameters = (ValaList*) _tmp1_;
 }
 

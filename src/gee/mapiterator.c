@@ -97,8 +97,9 @@ static void vala_map_iterator_finalize (ValaMapIterator* obj);
  * @return true if the iterator has a next element
  */
 static gboolean vala_map_iterator_real_next (ValaMapIterator* self) {
+	gboolean _tmp0_ = FALSE;
 	g_critical ("Type `%s' does not implement abstract method `vala_map_iterator_next'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
-	return FALSE;
+	return _tmp0_;
 }
 
 
@@ -269,9 +270,9 @@ static void vala_map_iterator_class_init (ValaMapIteratorClass * klass) {
 	vala_map_iterator_parent_class = g_type_class_peek_parent (klass);
 	((ValaMapIteratorClass *) klass)->finalize = vala_map_iterator_finalize;
 	g_type_class_add_private (klass, sizeof (ValaMapIteratorPrivate));
-	((ValaMapIteratorClass *) klass)->next = vala_map_iterator_real_next;
-	((ValaMapIteratorClass *) klass)->get_key = vala_map_iterator_real_get_key;
-	((ValaMapIteratorClass *) klass)->get_value = vala_map_iterator_real_get_value;
+	((ValaMapIteratorClass *) klass)->next = (gboolean (*)(ValaMapIterator*)) vala_map_iterator_real_next;
+	((ValaMapIteratorClass *) klass)->get_key = (gpointer (*)(ValaMapIterator*)) vala_map_iterator_real_get_key;
+	((ValaMapIteratorClass *) klass)->get_value = (gpointer (*)(ValaMapIterator*)) vala_map_iterator_real_get_value;
 }
 
 

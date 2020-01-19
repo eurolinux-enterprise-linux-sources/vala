@@ -295,7 +295,7 @@ static void vala_using_directive_class_init (ValaUsingDirectiveClass * klass) {
 	vala_using_directive_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_using_directive_finalize;
 	g_type_class_add_private (klass, sizeof (ValaUsingDirectivePrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_using_directive_real_accept;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_using_directive_real_accept;
 }
 
 

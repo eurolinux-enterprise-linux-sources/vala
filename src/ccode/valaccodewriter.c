@@ -70,6 +70,9 @@ typedef struct _ValaCCodeLineDirectiveClass ValaCCodeLineDirectiveClass;
 #define _g_regex_unref0(var) ((var == NULL) ? NULL : (var = (g_regex_unref (var), NULL)))
 typedef struct _ValaParamSpecCCodeWriter ValaParamSpecCCodeWriter;
 #define _vala_assert(expr, msg) if G_LIKELY (expr) ; else g_assertion_message_expr (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
+#define _vala_return_if_fail(expr, msg) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return; }
+#define _vala_return_val_if_fail(expr, msg, val) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return val; }
+#define _vala_warn_if_fail(expr, msg) if G_LIKELY (expr) ; else g_warn_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
 
 struct _ValaCCodeWriter {
 	GTypeInstance parent_instance;
@@ -623,7 +626,7 @@ void vala_ccode_writer_write_comment (ValaCCodeWriter* self, const gchar* text) 
 					}
 					_tmp9_ = regex;
 					_tmp10_ = line;
-					_tmp11_ = g_regex_replace_literal (_tmp9_, _tmp10_, (gssize) (-1), 0, "", 0, &_inner_error_);
+					_tmp11_ = g_regex_replace_literal (_tmp9_, _tmp10_, (gssize) -1, 0, "", 0, &_inner_error_);
 					_tmp8_ = _tmp11_;
 					if (G_UNLIKELY (_inner_error_ != NULL)) {
 						_g_free0 (line);

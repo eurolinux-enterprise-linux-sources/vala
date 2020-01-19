@@ -346,16 +346,6 @@ typedef struct _ValaComment ValaComment;
 typedef struct _ValaCommentClass ValaCommentClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
 
-#define VALA_TYPE_MEMBER_ACCESS (vala_member_access_get_type ())
-#define VALA_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccess))
-#define VALA_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
-#define VALA_IS_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_IS_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_MEMBER_ACCESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
-
-typedef struct _ValaMemberAccess ValaMemberAccess;
-typedef struct _ValaMemberAccessClass ValaMemberAccessClass;
-
 #define VALA_TYPE_SCOPE (vala_scope_get_type ())
 #define VALA_SCOPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SCOPE, ValaScope))
 #define VALA_SCOPE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SCOPE, ValaScopeClass))
@@ -582,8 +572,7 @@ gboolean vala_property_compatible (ValaProperty* self, ValaProperty* base_proper
 ValaDataType* vala_semantic_analyzer_get_data_type_for_symbol (ValaTypeSymbol* sym);
 ValaSymbol* vala_symbol_get_parent_symbol (ValaSymbol* self);
 ValaDataType* vala_property_accessor_get_value_type (ValaPropertyAccessor* self);
-GType vala_member_access_get_type (void) G_GNUC_CONST;
-ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
+ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
 gboolean vala_data_type_equals (ValaDataType* self, ValaDataType* type2);
 gboolean vala_property_accessor_get_writable (ValaPropertyAccessor* self);
 gboolean vala_property_accessor_get_construction (ValaPropertyAccessor* self);
@@ -666,12 +655,12 @@ static void vala_property_finalize (ValaCodeNode* obj);
 /**
  * Creates a new property.
  *
- * @param name         property name
- * @param type         property type
- * @param get_accessor get accessor
- * @param set_accessor set/construct accessor
- * @param source       reference to source code
- * @return             newly created property
+ * @param name              property name
+ * @param property_type     property type
+ * @param get_accessor      get accessor
+ * @param set_accessor      set/construct accessor
+ * @param source_reference  reference to source code
+ * @return                  newly created property
  */
 ValaProperty* vala_property_construct (GType object_type, const gchar* name, ValaDataType* property_type, ValaPropertyAccessor* get_accessor, ValaPropertyAccessor* set_accessor, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaProperty* self = NULL;
@@ -2326,11 +2315,11 @@ static void vala_property_class_init (ValaPropertyClass * klass) {
 	vala_property_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_property_finalize;
 	g_type_class_add_private (klass, sizeof (ValaPropertyPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_property_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_property_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_property_real_replace_type;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_property_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->check = vala_property_real_check;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_property_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_property_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_property_real_replace_type;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_property_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_property_real_check;
 }
 
 

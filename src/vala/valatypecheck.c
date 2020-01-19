@@ -1653,13 +1653,13 @@ static void vala_typecheck_class_init (ValaTypeCheckClass * klass) {
 	vala_typecheck_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_typecheck_finalize;
 	g_type_class_add_private (klass, sizeof (ValaTypeCheckPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_typecheck_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_typecheck_real_accept_children;
-	((ValaExpressionClass *) klass)->is_pure = vala_typecheck_real_is_pure;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_typecheck_real_replace_type;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_typecheck_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->check = vala_typecheck_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_typecheck_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_typecheck_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_typecheck_real_accept_children;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_typecheck_real_is_pure;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_typecheck_real_replace_type;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_typecheck_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_typecheck_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_typecheck_real_emit;
 }
 
 

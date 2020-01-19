@@ -123,18 +123,27 @@ public class Vala.PointerType : DataType {
 		return false;
 	}
 
-	public override DataType get_actual_type (DataType? derived_instance_type, MemberAccess? method_access, CodeNode node_reference) {
+	public override DataType get_actual_type (DataType? derived_instance_type, List<DataType>? method_type_arguments, CodeNode node_reference) {
 		PointerType result = (PointerType) this.copy ();
 
-		if (derived_instance_type == null && method_access == null) {
+		if (derived_instance_type == null && method_type_arguments == null) {
 			return result;
 		}
 
 		if (base_type is GenericType || base_type.has_type_arguments ()) {
-			result.base_type = result.base_type.get_actual_type (derived_instance_type, method_access, node_reference);
+			result.base_type = result.base_type.get_actual_type (derived_instance_type, method_type_arguments, node_reference);
 		}
 
 		return result;
+	}
+
+	public override DataType? infer_type_argument (TypeParameter type_param, DataType value_type) {
+		var pointer_type = value_type as PointerType;
+		if (pointer_type != null) {
+			return base_type.infer_type_argument (type_param, pointer_type.base_type);
+		}
+
+		return null;
 	}
 
 	public override bool check (CodeContext context) {

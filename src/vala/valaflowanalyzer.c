@@ -1795,7 +1795,7 @@ static void vala_flow_analyzer_real_visit_lambda_expression (ValaCodeVisitor* ba
 	old_jump_stack = _tmp4_;
 	vala_flow_analyzer_mark_unreachable (self);
 	_tmp5_ = g_direct_equal;
-	_tmp6_ = vala_array_list_new (VALA_FLOW_ANALYZER_TYPE_JUMP_TARGET, (GBoxedCopyFunc) vala_flow_analyzer_jump_target_ref, vala_flow_analyzer_jump_target_unref, _tmp5_);
+	_tmp6_ = vala_array_list_new (VALA_FLOW_ANALYZER_TYPE_JUMP_TARGET, (GBoxedCopyFunc) vala_flow_analyzer_jump_target_ref, (GDestroyNotify) vala_flow_analyzer_jump_target_unref, _tmp5_);
 	_vala_iterable_unref0 (self->priv->jump_stack);
 	self->priv->jump_stack = (ValaList*) _tmp6_;
 	_tmp7_ = le;
@@ -2235,7 +2235,7 @@ static ValaList* vala_flow_analyzer_get_depth_first_list (ValaFlowAnalyzer* self
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (entry_block != NULL, NULL);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_BASIC_BLOCK, (GBoxedCopyFunc) vala_basic_block_ref, vala_basic_block_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_BASIC_BLOCK, (GBoxedCopyFunc) vala_basic_block_ref, (GDestroyNotify) vala_basic_block_unref, _tmp0_);
 	list = _tmp1_;
 	_tmp2_ = entry_block;
 	vala_flow_analyzer_depth_first_traverse (self, _tmp2_, (ValaList*) list);
@@ -2888,7 +2888,7 @@ static ValaMap* vala_flow_analyzer_get_assignment_map (ValaFlowAnalyzer* self, V
 	_tmp0_ = g_direct_hash;
 	_tmp1_ = g_direct_equal;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_hash_map_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, VALA_TYPE_SET, (GBoxedCopyFunc) vala_iterable_ref, vala_iterable_unref, _tmp0_, _tmp1_, _tmp2_);
+	_tmp3_ = vala_hash_map_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, VALA_TYPE_SET, (GBoxedCopyFunc) vala_iterable_ref, (GDestroyNotify) vala_iterable_unref, _tmp0_, _tmp1_, _tmp2_);
 	map = _tmp3_;
 	{
 		ValaList* _block_list = NULL;
@@ -2930,7 +2930,7 @@ static ValaMap* vala_flow_analyzer_get_assignment_map (ValaFlowAnalyzer* self, V
 			_tmp14_ = vala_list_get (_tmp12_, _tmp13_);
 			block = (ValaBasicBlock*) _tmp14_;
 			_tmp15_ = g_direct_equal;
-			_tmp16_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp15_);
+			_tmp16_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp15_);
 			defined_variables = _tmp16_;
 			{
 				ValaList* _node_list = NULL;
@@ -3034,7 +3034,7 @@ static ValaMap* vala_flow_analyzer_get_assignment_map (ValaFlowAnalyzer* self, V
 						ValaSet* _tmp50_ = NULL;
 						_tmp45_ = g_direct_hash;
 						_tmp46_ = g_direct_equal;
-						_tmp47_ = vala_hash_set_new (VALA_TYPE_BASIC_BLOCK, (GBoxedCopyFunc) vala_basic_block_ref, vala_basic_block_unref, _tmp45_, _tmp46_);
+						_tmp47_ = vala_hash_set_new (VALA_TYPE_BASIC_BLOCK, (GBoxedCopyFunc) vala_basic_block_ref, (GDestroyNotify) vala_basic_block_unref, _tmp45_, _tmp46_);
 						_vala_iterable_unref0 (block_set);
 						block_set = (ValaSet*) _tmp47_;
 						_tmp48_ = map;
@@ -3088,17 +3088,17 @@ static void vala_flow_analyzer_insert_phi_functions (ValaFlowAnalyzer* self, Val
 	assign = _tmp2_;
 	counter = 0;
 	_tmp3_ = g_direct_equal;
-	_tmp4_ = vala_array_list_new (VALA_TYPE_BASIC_BLOCK, (GBoxedCopyFunc) vala_basic_block_ref, vala_basic_block_unref, _tmp3_);
+	_tmp4_ = vala_array_list_new (VALA_TYPE_BASIC_BLOCK, (GBoxedCopyFunc) vala_basic_block_ref, (GDestroyNotify) vala_basic_block_unref, _tmp3_);
 	work_list = _tmp4_;
 	_tmp5_ = g_direct_hash;
 	_tmp6_ = g_direct_equal;
 	_tmp7_ = g_direct_equal;
-	_tmp8_ = vala_hash_map_new (VALA_TYPE_BASIC_BLOCK, (GBoxedCopyFunc) vala_basic_block_ref, vala_basic_block_unref, G_TYPE_INT, NULL, NULL, _tmp5_, _tmp6_, _tmp7_);
+	_tmp8_ = vala_hash_map_new (VALA_TYPE_BASIC_BLOCK, (GBoxedCopyFunc) vala_basic_block_ref, (GDestroyNotify) vala_basic_block_unref, G_TYPE_INT, NULL, NULL, _tmp5_, _tmp6_, _tmp7_);
 	added = _tmp8_;
 	_tmp9_ = g_direct_hash;
 	_tmp10_ = g_direct_equal;
 	_tmp11_ = g_direct_equal;
-	_tmp12_ = vala_hash_map_new (VALA_TYPE_BASIC_BLOCK, (GBoxedCopyFunc) vala_basic_block_ref, vala_basic_block_unref, G_TYPE_INT, NULL, NULL, _tmp9_, _tmp10_, _tmp11_);
+	_tmp12_ = vala_hash_map_new (VALA_TYPE_BASIC_BLOCK, (GBoxedCopyFunc) vala_basic_block_ref, (GDestroyNotify) vala_basic_block_unref, G_TYPE_INT, NULL, NULL, _tmp9_, _tmp10_, _tmp11_);
 	phi = _tmp12_;
 	{
 		ValaList* _block_list = NULL;
@@ -3380,24 +3380,24 @@ static void vala_flow_analyzer_check_variables (ValaFlowAnalyzer* self, ValaBasi
 	_tmp0_ = g_direct_hash;
 	_tmp1_ = g_direct_equal;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_hash_map_new (VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, VALA_TYPE_LIST, (GBoxedCopyFunc) vala_iterable_ref, vala_iterable_unref, _tmp0_, _tmp1_, _tmp2_);
+	_tmp3_ = vala_hash_map_new (VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, VALA_TYPE_LIST, (GBoxedCopyFunc) vala_iterable_ref, (GDestroyNotify) vala_iterable_unref, _tmp0_, _tmp1_, _tmp2_);
 	_vala_map_unref0 (self->priv->var_map);
 	self->priv->var_map = (ValaMap*) _tmp3_;
 	_tmp4_ = g_direct_hash;
 	_tmp5_ = g_direct_equal;
-	_tmp6_ = vala_hash_set_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_, _tmp5_);
+	_tmp6_ = vala_hash_set_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_, _tmp5_);
 	_vala_iterable_unref0 (self->priv->used_vars);
 	self->priv->used_vars = (ValaSet*) _tmp6_;
 	_tmp7_ = g_direct_hash;
 	_tmp8_ = g_direct_equal;
 	_tmp9_ = g_direct_equal;
-	_tmp10_ = vala_hash_map_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, VALA_TYPE_PHI_FUNCTION, (GBoxedCopyFunc) vala_phi_function_ref, vala_phi_function_unref, _tmp7_, _tmp8_, _tmp9_);
+	_tmp10_ = vala_hash_map_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, VALA_TYPE_PHI_FUNCTION, (GBoxedCopyFunc) vala_phi_function_ref, (GDestroyNotify) vala_phi_function_unref, _tmp7_, _tmp8_, _tmp9_);
 	_vala_map_unref0 (self->priv->phi_functions);
 	self->priv->phi_functions = (ValaMap*) _tmp10_;
 	_tmp11_ = entry_block;
 	vala_flow_analyzer_check_block_variables (self, _tmp11_);
 	_tmp12_ = g_direct_equal;
-	_tmp13_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp12_);
+	_tmp13_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp12_);
 	used_vars_queue = _tmp13_;
 	{
 		ValaIterator* _variable_it = NULL;
@@ -3687,7 +3687,7 @@ static void vala_flow_analyzer_check_block_variables (ValaFlowAnalyzer* self, Va
 			_tmp27_ = vala_list_get (_tmp25_, _tmp26_);
 			node = (ValaCodeNode*) _tmp27_;
 			_tmp28_ = g_direct_equal;
-			_tmp29_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp28_);
+			_tmp29_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp28_);
 			used_variables = _tmp29_;
 			_tmp30_ = node;
 			_tmp31_ = used_variables;
@@ -3837,7 +3837,7 @@ static void vala_flow_analyzer_check_block_variables (ValaFlowAnalyzer* self, Va
 				_vala_iterable_unref0 (_var_symbol_list);
 			}
 			_tmp82_ = g_direct_equal;
-			_tmp83_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp82_);
+			_tmp83_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp82_);
 			defined_variables = _tmp83_;
 			_tmp84_ = node;
 			_tmp85_ = defined_variables;
@@ -4216,7 +4216,7 @@ static void vala_flow_analyzer_check_block_variables (ValaFlowAnalyzer* self, Va
 			_tmp197_ = vala_list_get (_tmp195_, _tmp196_);
 			node = (ValaCodeNode*) _tmp197_;
 			_tmp198_ = g_direct_equal;
-			_tmp199_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp198_);
+			_tmp199_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp198_);
 			defined_variables = _tmp199_;
 			_tmp200_ = node;
 			_tmp201_ = defined_variables;
@@ -4314,7 +4314,7 @@ static ValaVariable* vala_flow_analyzer_process_assignment (ValaFlowAnalyzer* se
 		ValaList* _tmp8_ = NULL;
 		ValaVariable* _tmp9_ = NULL;
 		_tmp4_ = g_direct_equal;
-		_tmp5_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+		_tmp5_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 		_vala_iterable_unref0 (variable_stack);
 		variable_stack = (ValaList*) _tmp5_;
 		_tmp6_ = var_map;
@@ -6322,7 +6322,7 @@ static void vala_flow_analyzer_real_visit_try_statement (ValaCodeVisitor* base, 
 		vala_basic_block_connect (_tmp90_, _tmp91_);
 	}
 	_tmp92_ = g_direct_equal;
-	_tmp93_ = vala_array_list_new (VALA_FLOW_ANALYZER_TYPE_JUMP_TARGET, (GBoxedCopyFunc) vala_flow_analyzer_jump_target_ref, vala_flow_analyzer_jump_target_unref, _tmp92_);
+	_tmp93_ = vala_array_list_new (VALA_FLOW_ANALYZER_TYPE_JUMP_TARGET, (GBoxedCopyFunc) vala_flow_analyzer_jump_target_ref, (GDestroyNotify) vala_flow_analyzer_jump_target_unref, _tmp92_);
 	catch_stack = (ValaList*) _tmp93_;
 	{
 		gint i = 0;
@@ -7275,36 +7275,36 @@ static void vala_flow_analyzer_class_init (ValaFlowAnalyzerClass * klass) {
 	vala_flow_analyzer_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeVisitorClass *) klass)->finalize = vala_flow_analyzer_finalize;
 	g_type_class_add_private (klass, sizeof (ValaFlowAnalyzerPrivate));
-	((ValaCodeVisitorClass *) klass)->visit_source_file = vala_flow_analyzer_real_visit_source_file;
-	((ValaCodeVisitorClass *) klass)->visit_class = vala_flow_analyzer_real_visit_class;
-	((ValaCodeVisitorClass *) klass)->visit_struct = vala_flow_analyzer_real_visit_struct;
-	((ValaCodeVisitorClass *) klass)->visit_interface = vala_flow_analyzer_real_visit_interface;
-	((ValaCodeVisitorClass *) klass)->visit_enum = vala_flow_analyzer_real_visit_enum;
-	((ValaCodeVisitorClass *) klass)->visit_error_domain = vala_flow_analyzer_real_visit_error_domain;
-	((ValaCodeVisitorClass *) klass)->visit_field = vala_flow_analyzer_real_visit_field;
-	((ValaCodeVisitorClass *) klass)->visit_lambda_expression = vala_flow_analyzer_real_visit_lambda_expression;
-	((ValaCodeVisitorClass *) klass)->visit_method = vala_flow_analyzer_real_visit_method;
-	((ValaCodeVisitorClass *) klass)->visit_signal = vala_flow_analyzer_real_visit_signal;
-	((ValaCodeVisitorClass *) klass)->visit_creation_method = vala_flow_analyzer_real_visit_creation_method;
-	((ValaCodeVisitorClass *) klass)->visit_property = vala_flow_analyzer_real_visit_property;
-	((ValaCodeVisitorClass *) klass)->visit_property_accessor = vala_flow_analyzer_real_visit_property_accessor;
-	((ValaCodeVisitorClass *) klass)->visit_block = vala_flow_analyzer_real_visit_block;
-	((ValaCodeVisitorClass *) klass)->visit_declaration_statement = vala_flow_analyzer_real_visit_declaration_statement;
-	((ValaCodeVisitorClass *) klass)->visit_local_variable = vala_flow_analyzer_real_visit_local_variable;
-	((ValaCodeVisitorClass *) klass)->visit_expression_statement = vala_flow_analyzer_real_visit_expression_statement;
-	((ValaCodeVisitorClass *) klass)->visit_if_statement = vala_flow_analyzer_real_visit_if_statement;
-	((ValaCodeVisitorClass *) klass)->visit_switch_statement = vala_flow_analyzer_real_visit_switch_statement;
-	((ValaCodeVisitorClass *) klass)->visit_loop = vala_flow_analyzer_real_visit_loop;
-	((ValaCodeVisitorClass *) klass)->visit_foreach_statement = vala_flow_analyzer_real_visit_foreach_statement;
-	((ValaCodeVisitorClass *) klass)->visit_break_statement = vala_flow_analyzer_real_visit_break_statement;
-	((ValaCodeVisitorClass *) klass)->visit_continue_statement = vala_flow_analyzer_real_visit_continue_statement;
-	((ValaCodeVisitorClass *) klass)->visit_return_statement = vala_flow_analyzer_real_visit_return_statement;
-	((ValaCodeVisitorClass *) klass)->visit_yield_statement = vala_flow_analyzer_real_visit_yield_statement;
-	((ValaCodeVisitorClass *) klass)->visit_throw_statement = vala_flow_analyzer_real_visit_throw_statement;
-	((ValaCodeVisitorClass *) klass)->visit_try_statement = vala_flow_analyzer_real_visit_try_statement;
-	((ValaCodeVisitorClass *) klass)->visit_lock_statement = vala_flow_analyzer_real_visit_lock_statement;
-	((ValaCodeVisitorClass *) klass)->visit_unlock_statement = vala_flow_analyzer_real_visit_unlock_statement;
-	((ValaCodeVisitorClass *) klass)->visit_expression = vala_flow_analyzer_real_visit_expression;
+	((ValaCodeVisitorClass *) klass)->visit_source_file = (void (*)(ValaCodeVisitor*, ValaSourceFile*)) vala_flow_analyzer_real_visit_source_file;
+	((ValaCodeVisitorClass *) klass)->visit_class = (void (*)(ValaCodeVisitor*, ValaClass*)) vala_flow_analyzer_real_visit_class;
+	((ValaCodeVisitorClass *) klass)->visit_struct = (void (*)(ValaCodeVisitor*, ValaStruct*)) vala_flow_analyzer_real_visit_struct;
+	((ValaCodeVisitorClass *) klass)->visit_interface = (void (*)(ValaCodeVisitor*, ValaInterface*)) vala_flow_analyzer_real_visit_interface;
+	((ValaCodeVisitorClass *) klass)->visit_enum = (void (*)(ValaCodeVisitor*, ValaEnum*)) vala_flow_analyzer_real_visit_enum;
+	((ValaCodeVisitorClass *) klass)->visit_error_domain = (void (*)(ValaCodeVisitor*, ValaErrorDomain*)) vala_flow_analyzer_real_visit_error_domain;
+	((ValaCodeVisitorClass *) klass)->visit_field = (void (*)(ValaCodeVisitor*, ValaField*)) vala_flow_analyzer_real_visit_field;
+	((ValaCodeVisitorClass *) klass)->visit_lambda_expression = (void (*)(ValaCodeVisitor*, ValaLambdaExpression*)) vala_flow_analyzer_real_visit_lambda_expression;
+	((ValaCodeVisitorClass *) klass)->visit_method = (void (*)(ValaCodeVisitor*, ValaMethod*)) vala_flow_analyzer_real_visit_method;
+	((ValaCodeVisitorClass *) klass)->visit_signal = (void (*)(ValaCodeVisitor*, ValaSignal*)) vala_flow_analyzer_real_visit_signal;
+	((ValaCodeVisitorClass *) klass)->visit_creation_method = (void (*)(ValaCodeVisitor*, ValaCreationMethod*)) vala_flow_analyzer_real_visit_creation_method;
+	((ValaCodeVisitorClass *) klass)->visit_property = (void (*)(ValaCodeVisitor*, ValaProperty*)) vala_flow_analyzer_real_visit_property;
+	((ValaCodeVisitorClass *) klass)->visit_property_accessor = (void (*)(ValaCodeVisitor*, ValaPropertyAccessor*)) vala_flow_analyzer_real_visit_property_accessor;
+	((ValaCodeVisitorClass *) klass)->visit_block = (void (*)(ValaCodeVisitor*, ValaBlock*)) vala_flow_analyzer_real_visit_block;
+	((ValaCodeVisitorClass *) klass)->visit_declaration_statement = (void (*)(ValaCodeVisitor*, ValaDeclarationStatement*)) vala_flow_analyzer_real_visit_declaration_statement;
+	((ValaCodeVisitorClass *) klass)->visit_local_variable = (void (*)(ValaCodeVisitor*, ValaLocalVariable*)) vala_flow_analyzer_real_visit_local_variable;
+	((ValaCodeVisitorClass *) klass)->visit_expression_statement = (void (*)(ValaCodeVisitor*, ValaExpressionStatement*)) vala_flow_analyzer_real_visit_expression_statement;
+	((ValaCodeVisitorClass *) klass)->visit_if_statement = (void (*)(ValaCodeVisitor*, ValaIfStatement*)) vala_flow_analyzer_real_visit_if_statement;
+	((ValaCodeVisitorClass *) klass)->visit_switch_statement = (void (*)(ValaCodeVisitor*, ValaSwitchStatement*)) vala_flow_analyzer_real_visit_switch_statement;
+	((ValaCodeVisitorClass *) klass)->visit_loop = (void (*)(ValaCodeVisitor*, ValaLoop*)) vala_flow_analyzer_real_visit_loop;
+	((ValaCodeVisitorClass *) klass)->visit_foreach_statement = (void (*)(ValaCodeVisitor*, ValaForeachStatement*)) vala_flow_analyzer_real_visit_foreach_statement;
+	((ValaCodeVisitorClass *) klass)->visit_break_statement = (void (*)(ValaCodeVisitor*, ValaBreakStatement*)) vala_flow_analyzer_real_visit_break_statement;
+	((ValaCodeVisitorClass *) klass)->visit_continue_statement = (void (*)(ValaCodeVisitor*, ValaContinueStatement*)) vala_flow_analyzer_real_visit_continue_statement;
+	((ValaCodeVisitorClass *) klass)->visit_return_statement = (void (*)(ValaCodeVisitor*, ValaReturnStatement*)) vala_flow_analyzer_real_visit_return_statement;
+	((ValaCodeVisitorClass *) klass)->visit_yield_statement = (void (*)(ValaCodeVisitor*, ValaYieldStatement*)) vala_flow_analyzer_real_visit_yield_statement;
+	((ValaCodeVisitorClass *) klass)->visit_throw_statement = (void (*)(ValaCodeVisitor*, ValaThrowStatement*)) vala_flow_analyzer_real_visit_throw_statement;
+	((ValaCodeVisitorClass *) klass)->visit_try_statement = (void (*)(ValaCodeVisitor*, ValaTryStatement*)) vala_flow_analyzer_real_visit_try_statement;
+	((ValaCodeVisitorClass *) klass)->visit_lock_statement = (void (*)(ValaCodeVisitor*, ValaLockStatement*)) vala_flow_analyzer_real_visit_lock_statement;
+	((ValaCodeVisitorClass *) klass)->visit_unlock_statement = (void (*)(ValaCodeVisitor*, ValaUnlockStatement*)) vala_flow_analyzer_real_visit_unlock_statement;
+	((ValaCodeVisitorClass *) klass)->visit_expression = (void (*)(ValaCodeVisitor*, ValaExpression*)) vala_flow_analyzer_real_visit_expression;
 }
 
 
@@ -7313,7 +7313,7 @@ static void vala_flow_analyzer_instance_init (ValaFlowAnalyzer * self) {
 	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_FLOW_ANALYZER_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_FLOW_ANALYZER_TYPE_JUMP_TARGET, (GBoxedCopyFunc) vala_flow_analyzer_jump_target_ref, vala_flow_analyzer_jump_target_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_FLOW_ANALYZER_TYPE_JUMP_TARGET, (GBoxedCopyFunc) vala_flow_analyzer_jump_target_ref, (GDestroyNotify) vala_flow_analyzer_jump_target_unref, _tmp0_);
 	self->priv->jump_stack = (ValaList*) _tmp1_;
 }
 

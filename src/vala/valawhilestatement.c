@@ -366,10 +366,10 @@ static void vala_while_statement_finalize (ValaCodeNode* obj);
 /**
  * Creates a new while statement.
  *
- * @param cond   loop condition
- * @param body   loop body
- * @param source reference to source code
- * @return       newly created while statement
+ * @param condition         loop condition
+ * @param body              loop body
+ * @param source_reference  reference to source code
+ * @return                  newly created while statement
  */
 ValaWhileStatement* vala_while_statement_construct (GType object_type, ValaExpression* condition, ValaBlock* body, ValaSourceReference* source_reference) {
 	ValaWhileStatement* self = NULL;
@@ -692,9 +692,9 @@ static void vala_while_statement_class_init (ValaWhileStatementClass * klass) {
 	vala_while_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_while_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaWhileStatementPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_while_statement_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_while_statement_real_accept_children;
-	((ValaCodeNodeClass *) klass)->check = vala_while_statement_real_check;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_while_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_while_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_while_statement_real_check;
 }
 
 

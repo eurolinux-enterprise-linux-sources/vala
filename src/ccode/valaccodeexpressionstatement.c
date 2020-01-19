@@ -359,7 +359,7 @@ static void vala_ccode_expression_statement_class_init (ValaCCodeExpressionState
 	vala_ccode_expression_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_expression_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeExpressionStatementPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_expression_statement_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_expression_statement_real_write;
 }
 
 

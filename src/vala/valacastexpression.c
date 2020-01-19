@@ -1392,9 +1392,9 @@ static void vala_cast_expression_finalize (ValaCodeNode* obj);
 /**
  * Creates a new cast expression.
  *
- * @param inner expression to be cast
- * @param type  target type
- * @return      newly created cast expression
+ * @param inner           expression to be cast
+ * @param type_reference  target type
+ * @return                newly created cast expression
  */
 ValaCastExpression* vala_cast_expression_construct (GType object_type, ValaExpression* inner, ValaDataType* type_reference, ValaSourceReference* source_reference, gboolean is_silent_cast) {
 	ValaCastExpression* self = NULL;
@@ -1956,16 +1956,16 @@ static void vala_cast_expression_class_init (ValaCastExpressionClass * klass) {
 	vala_cast_expression_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_cast_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCastExpressionPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_cast_expression_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_cast_expression_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_cast_expression_real_replace_expression;
-	((ValaExpressionClass *) klass)->is_pure = vala_cast_expression_real_is_pure;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_cast_expression_real_replace_type;
-	((ValaCodeNodeClass *) klass)->check = vala_cast_expression_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_cast_expression_real_emit;
-	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_cast_expression_real_get_defined_variables;
-	((ValaCodeNodeClass *) klass)->get_used_variables = vala_cast_expression_real_get_used_variables;
-	((ValaExpressionClass *) klass)->is_constant = vala_cast_expression_real_is_constant;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_cast_expression_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_cast_expression_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_cast_expression_real_replace_expression;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_cast_expression_real_is_pure;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_cast_expression_real_replace_type;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_cast_expression_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_cast_expression_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_cast_expression_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_cast_expression_real_get_used_variables;
+	((ValaExpressionClass *) klass)->is_constant = (gboolean (*)(ValaExpression*)) vala_cast_expression_real_is_constant;
 }
 
 

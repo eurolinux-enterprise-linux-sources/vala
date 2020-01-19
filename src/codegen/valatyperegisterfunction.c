@@ -2080,25 +2080,25 @@ static void vala_typeregister_function_class_init (ValaTypeRegisterFunctionClass
 	vala_typeregister_function_parent_class = g_type_class_peek_parent (klass);
 	((ValaTypeRegisterFunctionClass *) klass)->finalize = vala_typeregister_function_finalize;
 	g_type_class_add_private (klass, sizeof (ValaTypeRegisterFunctionPrivate));
-	((ValaTypeRegisterFunctionClass *) klass)->get_type_declaration = vala_typeregister_function_real_get_type_declaration;
-	((ValaTypeRegisterFunctionClass *) klass)->get_type_struct_name = vala_typeregister_function_real_get_type_struct_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_base_init_func_name = vala_typeregister_function_real_get_base_init_func_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_class_finalize_func_name = vala_typeregister_function_real_get_class_finalize_func_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_base_finalize_func_name = vala_typeregister_function_real_get_base_finalize_func_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_class_init_func_name = vala_typeregister_function_real_get_class_init_func_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_instance_struct_size = vala_typeregister_function_real_get_instance_struct_size;
-	((ValaTypeRegisterFunctionClass *) klass)->get_instance_init_func_name = vala_typeregister_function_real_get_instance_init_func_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_parent_type_name = vala_typeregister_function_real_get_parent_type_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_init_function_name = vala_typeregister_function_real_get_gtype_value_table_init_function_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_peek_pointer_function_name = vala_typeregister_function_real_get_gtype_value_table_peek_pointer_function_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_free_function_name = vala_typeregister_function_real_get_gtype_value_table_free_function_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_copy_function_name = vala_typeregister_function_real_get_gtype_value_table_copy_function_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_lcopy_value_function_name = vala_typeregister_function_real_get_gtype_value_table_lcopy_value_function_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_collect_value_function_name = vala_typeregister_function_real_get_gtype_value_table_collect_value_function_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_type_flags = vala_typeregister_function_real_get_type_flags;
-	((ValaTypeRegisterFunctionClass *) klass)->get_type_interface_init_declaration = vala_typeregister_function_real_get_type_interface_init_declaration;
-	((ValaTypeRegisterFunctionClass *) klass)->get_type_interface_init_statements = vala_typeregister_function_real_get_type_interface_init_statements;
-	((ValaTypeRegisterFunctionClass *) klass)->get_accessibility = vala_typeregister_function_real_get_accessibility;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_declaration = (ValaTypeSymbol* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_type_declaration;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_struct_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_type_struct_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_base_init_func_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_base_init_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_class_finalize_func_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_class_finalize_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_base_finalize_func_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_base_finalize_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_class_init_func_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_class_init_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_instance_struct_size = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_instance_struct_size;
+	((ValaTypeRegisterFunctionClass *) klass)->get_instance_init_func_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_instance_init_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_parent_type_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_parent_type_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_init_function_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_gtype_value_table_init_function_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_peek_pointer_function_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_gtype_value_table_peek_pointer_function_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_free_function_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_gtype_value_table_free_function_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_copy_function_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_gtype_value_table_copy_function_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_lcopy_value_function_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_gtype_value_table_lcopy_value_function_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_collect_value_function_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_gtype_value_table_collect_value_function_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_flags = (gchar* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_type_flags;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_interface_init_declaration = (ValaCCodeFragment* (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_type_interface_init_declaration;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_interface_init_statements = (void (*)(ValaTypeRegisterFunction*, ValaCCodeBlock*, gboolean)) vala_typeregister_function_real_get_type_interface_init_statements;
+	((ValaTypeRegisterFunctionClass *) klass)->get_accessibility = (ValaSymbolAccessibility (*)(ValaTypeRegisterFunction*)) vala_typeregister_function_real_get_accessibility;
 }
 
 

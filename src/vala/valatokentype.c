@@ -353,9 +353,19 @@ const gchar* vala_token_type_to_string (ValaTokenType self) {
 			result = "`do'";
 			return result;
 		}
+		case VALA_TOKEN_TYPE_DOUBLE_COLON:
+		{
+			result = "`::'";
+			return result;
+		}
 		case VALA_TOKEN_TYPE_DOT:
 		{
 			result = "`.'";
+			return result;
+		}
+		case VALA_TOKEN_TYPE_DYNAMIC:
+		{
+			result = "`dynamic'";
 			return result;
 		}
 		case VALA_TOKEN_TYPE_ELLIPSIS:

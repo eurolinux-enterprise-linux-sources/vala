@@ -204,8 +204,8 @@ static void vala_enum_register_function_class_init (ValaEnumRegisterFunctionClas
 	vala_enum_register_function_parent_class = g_type_class_peek_parent (klass);
 	((ValaTypeRegisterFunctionClass *) klass)->finalize = vala_enum_register_function_finalize;
 	g_type_class_add_private (klass, sizeof (ValaEnumRegisterFunctionPrivate));
-	((ValaTypeRegisterFunctionClass *) klass)->get_type_declaration = vala_enum_register_function_real_get_type_declaration;
-	((ValaTypeRegisterFunctionClass *) klass)->get_accessibility = vala_enum_register_function_real_get_accessibility;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_declaration = (ValaTypeSymbol* (*)(ValaTypeRegisterFunction*)) vala_enum_register_function_real_get_type_declaration;
+	((ValaTypeRegisterFunctionClass *) klass)->get_accessibility = (ValaSymbolAccessibility (*)(ValaTypeRegisterFunction*)) vala_enum_register_function_real_get_accessibility;
 }
 
 

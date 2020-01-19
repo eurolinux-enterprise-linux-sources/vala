@@ -1151,6 +1151,9 @@ typedef struct _ValaMemberInitializerClass ValaMemberInitializerClass;
 
 #define VALA_TYPE_SYMBOL_ACCESSIBILITY (vala_symbol_accessibility_get_type ())
 #define _vala_assert(expr, msg) if G_LIKELY (expr) ; else g_assertion_message_expr (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
+#define _vala_return_if_fail(expr, msg) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return; }
+#define _vala_return_val_if_fail(expr, msg, val) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return val; }
+#define _vala_warn_if_fail(expr, msg) if G_LIKELY (expr) ; else g_warn_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
 
 struct _ValaCodeVisitor {
 	GTypeInstance parent_instance;
@@ -1592,15 +1595,14 @@ ValaPointerType* vala_pointer_type_construct (GType object_type, ValaDataType* b
 void vala_expression_set_target_type (ValaExpression* self, ValaDataType* value);
 static ValaDataType* vala_semantic_analyzer_get_instance_base_type (ValaDataType* instance_type, ValaDataType* base_type, ValaCodeNode* node_reference);
 ValaList* vala_data_type_get_type_arguments (ValaDataType* self);
-ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
+ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
 static ValaDataType* vala_semantic_analyzer_get_instance_base_type_for_member (ValaDataType* derived_instance_type, ValaTypeSymbol* type_symbol, ValaCodeNode* node_reference);
 ValaDataType* vala_pointer_type_get_base_type (ValaPointerType* self);
-ValaDataType* vala_semantic_analyzer_get_actual_type (ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaGenericType* generic_type, ValaCodeNode* node_reference);
+ValaDataType* vala_semantic_analyzer_get_actual_type (ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaGenericType* generic_type, ValaCodeNode* node_reference);
 ValaTypeParameter* vala_data_type_get_type_parameter (ValaDataType* self);
 gint vala_typesymbol_get_type_parameter_index (ValaTypeSymbol* self, const gchar* name);
 const gchar* vala_symbol_get_name (ValaSymbol* self);
 gint vala_method_get_type_parameter_index (ValaMethod* self, const gchar* name);
-ValaList* vala_member_access_get_type_arguments (ValaMemberAccess* self);
 gboolean vala_semantic_analyzer_is_in_instance_method (ValaSemanticAnalyzer* self);
 ValaSymbol* vala_semantic_analyzer_get_current_symbol (ValaSemanticAnalyzer* self);
 GType vala_member_binding_get_type (void) G_GNUC_CONST;
@@ -3558,7 +3560,7 @@ gboolean vala_semantic_analyzer_check_arguments (ValaSemanticAnalyzer* self, Val
 			_tmp173_ = format_arg;
 			_tmp174_ = vala_string_literal_get_value (_tmp173_);
 			_tmp175_ = _tmp174_;
-			_tmp176_ = string_substring (_tmp175_, (glong) 1, (glong) (-1));
+			_tmp176_ = string_substring (_tmp175_, (glong) 1, (glong) -1);
 			_tmp177_ = _tmp176_;
 			_tmp178_ = g_strdup_printf ("\"%s:%d: %s", _tmp166_, _tmp172_, _tmp177_);
 			_tmp179_ = _tmp178_;
@@ -4651,7 +4653,7 @@ gboolean vala_semantic_analyzer_check_print_format (ValaSemanticAnalyzer* self, 
 		if (_tmp65_) {
 			gint _tmp70_ = 0;
 			_tmp70_ = length;
-			if (_tmp70_ == (-2)) {
+			if (_tmp70_ == -2) {
 				ValaCodeContext* _tmp71_ = NULL;
 				ValaSemanticAnalyzer* _tmp72_ = NULL;
 				ValaSemanticAnalyzer* _tmp73_ = NULL;
@@ -4667,7 +4669,7 @@ gboolean vala_semantic_analyzer_check_print_format (ValaSemanticAnalyzer* self, 
 			} else {
 				gint _tmp76_ = 0;
 				_tmp76_ = length;
-				if (_tmp76_ == (-1)) {
+				if (_tmp76_ == -1) {
 					ValaCodeContext* _tmp77_ = NULL;
 					ValaSemanticAnalyzer* _tmp78_ = NULL;
 					ValaSemanticAnalyzer* _tmp79_ = NULL;
@@ -4763,7 +4765,7 @@ gboolean vala_semantic_analyzer_check_print_format (ValaSemanticAnalyzer* self, 
 			if (_tmp100_) {
 				gint _tmp107_ = 0;
 				_tmp107_ = length;
-				if (_tmp107_ == (-2)) {
+				if (_tmp107_ == -2) {
 					ValaCodeContext* _tmp108_ = NULL;
 					ValaSemanticAnalyzer* _tmp109_ = NULL;
 					ValaSemanticAnalyzer* _tmp110_ = NULL;
@@ -4779,7 +4781,7 @@ gboolean vala_semantic_analyzer_check_print_format (ValaSemanticAnalyzer* self, 
 				} else {
 					gint _tmp113_ = 0;
 					_tmp113_ = length;
-					if (_tmp113_ == (-1)) {
+					if (_tmp113_ == -1) {
 						ValaCodeContext* _tmp114_ = NULL;
 						ValaSemanticAnalyzer* _tmp115_ = NULL;
 						ValaSemanticAnalyzer* _tmp116_ = NULL;
@@ -5611,7 +5613,7 @@ static ValaDataType* vala_semantic_analyzer_get_instance_base_type_for_member (V
 }
 
 
-ValaDataType* vala_semantic_analyzer_get_actual_type (ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaGenericType* generic_type, ValaCodeNode* node_reference) {
+ValaDataType* vala_semantic_analyzer_get_actual_type (ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaGenericType* generic_type, ValaCodeNode* node_reference) {
 	ValaDataType* result = NULL;
 	ValaDataType* actual_type = NULL;
 	ValaGenericType* _tmp0_ = NULL;
@@ -5619,14 +5621,14 @@ ValaDataType* vala_semantic_analyzer_get_actual_type (ValaDataType* derived_inst
 	ValaTypeParameter* _tmp2_ = NULL;
 	ValaSymbol* _tmp3_ = NULL;
 	ValaSymbol* _tmp4_ = NULL;
-	ValaDataType* _tmp98_ = NULL;
-	ValaDataType* _tmp101_ = NULL;
-	ValaDataType* _tmp102_ = NULL;
-	gboolean _tmp103_ = FALSE;
-	ValaDataType* _tmp104_ = NULL;
-	gboolean _tmp105_ = FALSE;
-	gboolean _tmp106_ = FALSE;
-	ValaDataType* _tmp110_ = NULL;
+	ValaDataType* _tmp91_ = NULL;
+	ValaDataType* _tmp94_ = NULL;
+	ValaDataType* _tmp95_ = NULL;
+	gboolean _tmp96_ = FALSE;
+	ValaDataType* _tmp97_ = NULL;
+	gboolean _tmp98_ = FALSE;
+	gboolean _tmp99_ = FALSE;
+	ValaDataType* _tmp103_ = NULL;
 	g_return_val_if_fail (generic_type != NULL, NULL);
 	g_return_val_if_fail (node_reference != NULL, NULL);
 	actual_type = NULL;
@@ -5713,7 +5715,7 @@ ValaDataType* vala_semantic_analyzer_get_actual_type (ValaDataType* derived_inst
 				param_index = _tmp33_;
 			}
 			_tmp34_ = param_index;
-			if (_tmp34_ == (-1)) {
+			if (_tmp34_ == -1) {
 				ValaCodeNode* _tmp35_ = NULL;
 				ValaSourceReference* _tmp36_ = NULL;
 				ValaSourceReference* _tmp37_ = NULL;
@@ -5777,23 +5779,16 @@ ValaDataType* vala_semantic_analyzer_get_actual_type (ValaDataType* derived_inst
 		ValaSymbol* _tmp61_ = NULL;
 		ValaSymbol* _tmp62_ = NULL;
 		ValaMethod* _tmp63_ = NULL;
-		ValaMemberAccess* _tmp64_ = NULL;
 		gint param_index = 0;
-		ValaMethod* _tmp67_ = NULL;
-		ValaGenericType* _tmp68_ = NULL;
-		ValaTypeParameter* _tmp69_ = NULL;
-		ValaTypeParameter* _tmp70_ = NULL;
-		const gchar* _tmp71_ = NULL;
-		const gchar* _tmp72_ = NULL;
-		gint _tmp73_ = 0;
-		gint _tmp74_ = 0;
-		gint _tmp86_ = 0;
-		ValaMemberAccess* _tmp87_ = NULL;
-		ValaList* _tmp88_ = NULL;
-		ValaList* _tmp89_ = NULL;
-		gint _tmp90_ = 0;
-		gint _tmp91_ = 0;
-		gboolean _tmp92_ = FALSE;
+		ValaMethod* _tmp64_ = NULL;
+		ValaGenericType* _tmp65_ = NULL;
+		ValaTypeParameter* _tmp66_ = NULL;
+		ValaTypeParameter* _tmp67_ = NULL;
+		const gchar* _tmp68_ = NULL;
+		const gchar* _tmp69_ = NULL;
+		gint _tmp70_ = 0;
+		gint _tmp71_ = 0;
+		ValaList* _tmp83_ = NULL;
 		_tmp58_ = generic_type;
 		_tmp59_ = vala_data_type_get_type_parameter ((ValaDataType*) _tmp58_);
 		_tmp60_ = _tmp59_;
@@ -5801,112 +5796,99 @@ ValaDataType* vala_semantic_analyzer_get_actual_type (ValaDataType* derived_inst
 		_tmp62_ = _tmp61_;
 		_tmp63_ = _vala_code_node_ref0 (G_TYPE_CHECK_INSTANCE_CAST (_tmp62_, VALA_TYPE_METHOD, ValaMethod));
 		m = _tmp63_;
-		_tmp64_ = method_access;
-		if (_tmp64_ == NULL) {
-			ValaGenericType* _tmp65_ = NULL;
-			ValaDataType* _tmp66_ = NULL;
-			_tmp65_ = generic_type;
-			_tmp66_ = _vala_code_node_ref0 ((ValaDataType*) _tmp65_);
-			result = _tmp66_;
-			_vala_code_node_unref0 (m);
-			_vala_code_node_unref0 (actual_type);
-			return result;
-		}
-		_tmp67_ = m;
-		_tmp68_ = generic_type;
-		_tmp69_ = vala_data_type_get_type_parameter ((ValaDataType*) _tmp68_);
-		_tmp70_ = _tmp69_;
-		_tmp71_ = vala_symbol_get_name ((ValaSymbol*) _tmp70_);
-		_tmp72_ = _tmp71_;
-		_tmp73_ = vala_method_get_type_parameter_index (_tmp67_, _tmp72_);
-		param_index = _tmp73_;
-		_tmp74_ = param_index;
-		if (_tmp74_ == (-1)) {
-			ValaCodeNode* _tmp75_ = NULL;
-			ValaSourceReference* _tmp76_ = NULL;
-			ValaSourceReference* _tmp77_ = NULL;
-			ValaGenericType* _tmp78_ = NULL;
-			ValaTypeParameter* _tmp79_ = NULL;
-			ValaTypeParameter* _tmp80_ = NULL;
-			const gchar* _tmp81_ = NULL;
-			const gchar* _tmp82_ = NULL;
-			gchar* _tmp83_ = NULL;
-			gchar* _tmp84_ = NULL;
-			ValaCodeNode* _tmp85_ = NULL;
-			_tmp75_ = node_reference;
-			_tmp76_ = vala_code_node_get_source_reference (_tmp75_);
+		_tmp64_ = m;
+		_tmp65_ = generic_type;
+		_tmp66_ = vala_data_type_get_type_parameter ((ValaDataType*) _tmp65_);
+		_tmp67_ = _tmp66_;
+		_tmp68_ = vala_symbol_get_name ((ValaSymbol*) _tmp67_);
+		_tmp69_ = _tmp68_;
+		_tmp70_ = vala_method_get_type_parameter_index (_tmp64_, _tmp69_);
+		param_index = _tmp70_;
+		_tmp71_ = param_index;
+		if (_tmp71_ == -1) {
+			ValaCodeNode* _tmp72_ = NULL;
+			ValaSourceReference* _tmp73_ = NULL;
+			ValaSourceReference* _tmp74_ = NULL;
+			ValaGenericType* _tmp75_ = NULL;
+			ValaTypeParameter* _tmp76_ = NULL;
+			ValaTypeParameter* _tmp77_ = NULL;
+			const gchar* _tmp78_ = NULL;
+			const gchar* _tmp79_ = NULL;
+			gchar* _tmp80_ = NULL;
+			gchar* _tmp81_ = NULL;
+			ValaCodeNode* _tmp82_ = NULL;
+			_tmp72_ = node_reference;
+			_tmp73_ = vala_code_node_get_source_reference (_tmp72_);
+			_tmp74_ = _tmp73_;
+			_tmp75_ = generic_type;
+			_tmp76_ = vala_data_type_get_type_parameter ((ValaDataType*) _tmp75_);
 			_tmp77_ = _tmp76_;
-			_tmp78_ = generic_type;
-			_tmp79_ = vala_data_type_get_type_parameter ((ValaDataType*) _tmp78_);
-			_tmp80_ = _tmp79_;
-			_tmp81_ = vala_symbol_get_name ((ValaSymbol*) _tmp80_);
-			_tmp82_ = _tmp81_;
-			_tmp83_ = g_strdup_printf ("internal error: unknown type parameter %s", _tmp82_);
-			_tmp84_ = _tmp83_;
-			vala_report_error (_tmp77_, _tmp84_);
-			_g_free0 (_tmp84_);
-			_tmp85_ = node_reference;
-			vala_code_node_set_error (_tmp85_, TRUE);
+			_tmp78_ = vala_symbol_get_name ((ValaSymbol*) _tmp77_);
+			_tmp79_ = _tmp78_;
+			_tmp80_ = g_strdup_printf ("internal error: unknown type parameter %s", _tmp79_);
+			_tmp81_ = _tmp80_;
+			vala_report_error (_tmp74_, _tmp81_);
+			_g_free0 (_tmp81_);
+			_tmp82_ = node_reference;
+			vala_code_node_set_error (_tmp82_, TRUE);
 			result = NULL;
 			_vala_code_node_unref0 (m);
 			_vala_code_node_unref0 (actual_type);
 			return result;
 		}
-		_tmp86_ = param_index;
-		_tmp87_ = method_access;
-		_tmp88_ = vala_member_access_get_type_arguments (_tmp87_);
-		_tmp89_ = _tmp88_;
-		_tmp90_ = vala_collection_get_size ((ValaCollection*) _tmp89_);
-		_tmp91_ = _tmp90_;
-		_tmp92_ = _tmp86_ < _tmp91_;
-		_vala_iterable_unref0 (_tmp89_);
-		if (_tmp92_) {
-			ValaMemberAccess* _tmp93_ = NULL;
-			ValaList* _tmp94_ = NULL;
-			ValaList* _tmp95_ = NULL;
-			gint _tmp96_ = 0;
-			gpointer _tmp97_ = NULL;
-			_tmp93_ = method_access;
-			_tmp94_ = vala_member_access_get_type_arguments (_tmp93_);
-			_tmp95_ = _tmp94_;
-			_tmp96_ = param_index;
-			_tmp97_ = vala_list_get (_tmp95_, _tmp96_);
-			_vala_code_node_unref0 (actual_type);
-			actual_type = G_TYPE_CHECK_INSTANCE_CAST ((ValaDataType*) _tmp97_, VALA_TYPE_DATA_TYPE, ValaDataType);
-			_vala_iterable_unref0 (_tmp95_);
+		_tmp83_ = method_type_arguments;
+		if (_tmp83_ != NULL) {
+			gint _tmp84_ = 0;
+			ValaList* _tmp85_ = NULL;
+			gint _tmp86_ = 0;
+			gint _tmp87_ = 0;
+			_tmp84_ = param_index;
+			_tmp85_ = method_type_arguments;
+			_tmp86_ = vala_collection_get_size ((ValaCollection*) _tmp85_);
+			_tmp87_ = _tmp86_;
+			if (_tmp84_ < _tmp87_) {
+				ValaList* _tmp88_ = NULL;
+				gint _tmp89_ = 0;
+				gpointer _tmp90_ = NULL;
+				_tmp88_ = method_type_arguments;
+				_tmp89_ = param_index;
+				_tmp90_ = vala_list_get (_tmp88_, _tmp89_);
+				_vala_code_node_unref0 (actual_type);
+				actual_type = G_TYPE_CHECK_INSTANCE_CAST ((ValaDataType*) _tmp90_, VALA_TYPE_DATA_TYPE, ValaDataType);
+			}
 		}
 		_vala_code_node_unref0 (m);
 	}
-	_tmp98_ = actual_type;
-	if (_tmp98_ == NULL) {
-		ValaGenericType* _tmp99_ = NULL;
-		ValaDataType* _tmp100_ = NULL;
-		_tmp99_ = generic_type;
-		_tmp100_ = _vala_code_node_ref0 ((ValaDataType*) _tmp99_);
-		result = _tmp100_;
+	_tmp91_ = actual_type;
+	if (_tmp91_ == NULL) {
+		ValaGenericType* _tmp92_ = NULL;
+		ValaDataType* _tmp93_ = NULL;
+		_tmp92_ = generic_type;
+		_tmp93_ = _vala_code_node_ref0 ((ValaDataType*) _tmp92_);
+		result = _tmp93_;
 		_vala_code_node_unref0 (actual_type);
 		return result;
 	}
-	_tmp101_ = actual_type;
-	_tmp102_ = vala_data_type_copy (_tmp101_);
+	_tmp94_ = actual_type;
+	_tmp95_ = vala_data_type_copy (_tmp94_);
 	_vala_code_node_unref0 (actual_type);
-	actual_type = _tmp102_;
-	_tmp104_ = actual_type;
-	_tmp105_ = vala_data_type_get_value_owned (_tmp104_);
-	_tmp106_ = _tmp105_;
-	if (_tmp106_) {
-		ValaGenericType* _tmp107_ = NULL;
-		gboolean _tmp108_ = FALSE;
-		gboolean _tmp109_ = FALSE;
-		_tmp107_ = generic_type;
-		_tmp108_ = vala_data_type_get_value_owned ((ValaDataType*) _tmp107_);
-		_tmp109_ = _tmp108_;
-		_tmp103_ = _tmp109_;
+	actual_type = _tmp95_;
+	_tmp97_ = actual_type;
+	_tmp98_ = vala_data_type_get_value_owned (_tmp97_);
+	_tmp99_ = _tmp98_;
+	if (_tmp99_) {
+		ValaGenericType* _tmp100_ = NULL;
+		gboolean _tmp101_ = FALSE;
+		gboolean _tmp102_ = FALSE;
+		_tmp100_ = generic_type;
+		_tmp101_ = vala_data_type_get_value_owned ((ValaDataType*) _tmp100_);
+		_tmp102_ = _tmp101_;
+		_tmp96_ = _tmp102_;
 	} else {
-		_tmp103_ = FALSE;
+		_tmp96_ = FALSE;
 	}
-	_tmp110_ = actual_type;
-	vala_data_type_set_value_owned (_tmp110_, _tmp103_);
+	_tmp103_ = actual_type;
+	vala_data_type_set_value_owned (_tmp103_, _tmp96_);
 	result = actual_type;
 	return result;
 }
@@ -7253,7 +7235,7 @@ static void vala_semantic_analyzer_class_init (ValaSemanticAnalyzerClass * klass
 	vala_semantic_analyzer_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeVisitorClass *) klass)->finalize = vala_semantic_analyzer_finalize;
 	g_type_class_add_private (klass, sizeof (ValaSemanticAnalyzerPrivate));
-	((ValaCodeVisitorClass *) klass)->visit_source_file = vala_semantic_analyzer_real_visit_source_file;
+	((ValaCodeVisitorClass *) klass)->visit_source_file = (void (*)(ValaCodeVisitor*, ValaSourceFile*)) vala_semantic_analyzer_real_visit_source_file;
 }
 
 
@@ -7266,7 +7248,7 @@ static void vala_semantic_analyzer_instance_init (ValaSemanticAnalyzer * self) {
 	self->void_type = (ValaDataType*) _tmp0_;
 	self->next_lambda_id = 0;
 	_tmp1_ = g_direct_equal;
-	_tmp2_ = vala_array_list_new (VALA_TYPE_CODE_NODE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp1_);
+	_tmp2_ = vala_array_list_new (VALA_TYPE_CODE_NODE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp1_);
 	self->replaced_nodes = (ValaList*) _tmp2_;
 }
 

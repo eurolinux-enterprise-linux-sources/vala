@@ -301,9 +301,9 @@ static void vala_declaration_statement_finalize (ValaCodeNode* obj);
 /**
  * Creates a new declaration statement.
  *
- * @param decl   local variable declaration
- * @param source reference to source code
- * @return       newly created declaration statement
+ * @param declaration       local variable declaration
+ * @param source_reference  reference to source code
+ * @return                  newly created declaration statement
  */
 ValaDeclarationStatement* vala_declaration_statement_construct (GType object_type, ValaSymbol* declaration, ValaSourceReference* source_reference) {
 	ValaDeclarationStatement* self = NULL;
@@ -637,12 +637,12 @@ static void vala_declaration_statement_class_init (ValaDeclarationStatementClass
 	vala_declaration_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_declaration_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaDeclarationStatementPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_declaration_statement_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_declaration_statement_real_accept_children;
-	((ValaCodeNodeClass *) klass)->check = vala_declaration_statement_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_declaration_statement_real_emit;
-	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_declaration_statement_real_get_defined_variables;
-	((ValaCodeNodeClass *) klass)->get_used_variables = vala_declaration_statement_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_declaration_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_declaration_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_declaration_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_declaration_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_declaration_statement_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_declaration_statement_real_get_used_variables;
 }
 
 

@@ -242,7 +242,7 @@ static void vala_ccode_include_directive_class_init (ValaCCodeIncludeDirectiveCl
 	vala_ccode_include_directive_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_include_directive_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeIncludeDirectivePrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_include_directive_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_include_directive_real_write;
 }
 
 

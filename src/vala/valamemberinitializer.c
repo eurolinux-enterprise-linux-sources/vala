@@ -427,11 +427,11 @@ static void vala_member_initializer_class_init (ValaMemberInitializerClass * kla
 	vala_member_initializer_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_member_initializer_finalize;
 	g_type_class_add_private (klass, sizeof (ValaMemberInitializerPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_member_initializer_real_accept;
-	((ValaCodeNodeClass *) klass)->check = vala_member_initializer_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_member_initializer_real_emit;
-	((ValaCodeNodeClass *) klass)->get_used_variables = vala_member_initializer_real_get_used_variables;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_member_initializer_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_member_initializer_real_accept;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_member_initializer_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_member_initializer_real_emit;
+	((ValaCodeNodeClass *) klass)->get_used_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_member_initializer_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_member_initializer_real_replace_expression;
 }
 
 

@@ -252,7 +252,7 @@ ValaMap* vala_markup_reader_get_attributes (ValaMarkupReader* self) {
 	_tmp0_ = g_str_hash;
 	_tmp1_ = g_str_equal;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp0_, _tmp1_, _tmp2_);
+	_tmp3_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, _tmp0_, _tmp1_, _tmp2_);
 	_result_ = _tmp3_;
 	{
 		ValaIterator* _key_it = NULL;
@@ -497,7 +497,7 @@ static gchar* vala_markup_reader_read_name (ValaMarkupReader* self) {
 		_tmp23_ = g_utf8_get_char_validated ((const gchar*) _tmp20_, (gssize) ((glong) (_tmp21_ - _tmp22_)));
 		u = _tmp23_;
 		_tmp24_ = u;
-		if (_tmp24_ != ((gunichar) (-1))) {
+		if (_tmp24_ != ((gunichar) -1)) {
 			gchar* _tmp25_ = NULL;
 			gunichar _tmp26_ = 0U;
 			gint _tmp27_ = 0;
@@ -1012,7 +1012,7 @@ static gchar* vala_markup_reader_text (ValaMarkupReader* self, gchar end_char, g
 		_tmp12_ = g_utf8_get_char_validated ((const gchar*) _tmp9_, (gssize) ((glong) (_tmp10_ - _tmp11_)));
 		u = _tmp12_;
 		_tmp13_ = u;
-		if (_tmp13_ == ((gunichar) (-1))) {
+		if (_tmp13_ == ((gunichar) -1)) {
 			vala_report_error (NULL, "invalid UTF-8 character");
 		} else {
 			gunichar _tmp14_ = 0U;
@@ -1286,7 +1286,7 @@ static gchar* vala_markup_reader_text (ValaMarkupReader* self, gchar end_char, g
 		_tmp110_ = str_pos;
 		_tmp111_ = content;
 		_tmp112_ = _tmp111_->str;
-		g_string_erase (_tmp109_, (gssize) ((_tmp110_ - ((gchar*) _tmp112_)) + 1), (gssize) (-1));
+		g_string_erase (_tmp109_, (gssize) ((_tmp110_ - ((gchar*) _tmp112_)) + 1), (gssize) -1);
 	}
 	_tmp113_ = content;
 	_tmp114_ = _tmp113_->str;
@@ -1426,7 +1426,7 @@ static void vala_markup_reader_instance_init (ValaMarkupReader * self) {
 	_tmp0_ = g_str_hash;
 	_tmp1_ = g_str_equal;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp0_, _tmp1_, _tmp2_);
+	_tmp3_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, _tmp0_, _tmp1_, _tmp2_);
 	self->priv->attributes = (ValaMap*) _tmp3_;
 }
 

@@ -1793,8 +1793,6 @@ gint vala_struct_get_rank (ValaStruct* self) {
 
 /**
  * Sets the rank of this integer or floating point type.
- *
- * @return the rank if this is an integer or floating point type
  */
 void vala_struct_set_rank (ValaStruct* self, gint rank) {
 	gint _tmp0_ = 0;
@@ -3055,16 +3053,16 @@ static void vala_struct_class_init (ValaStructClass * klass) {
 	vala_struct_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_struct_finalize;
 	g_type_class_add_private (klass, sizeof (ValaStructPrivate));
-	((ValaSymbolClass *) klass)->add_constant = vala_struct_real_add_constant;
-	((ValaSymbolClass *) klass)->add_field = vala_struct_real_add_field;
-	((ValaSymbolClass *) klass)->add_method = vala_struct_real_add_method;
-	((ValaSymbolClass *) klass)->add_property = vala_struct_real_add_property;
-	((ValaCodeNodeClass *) klass)->accept = vala_struct_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_struct_real_accept_children;
-	((ValaTypeSymbolClass *) klass)->get_type_parameter_index = vala_struct_real_get_type_parameter_index;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_struct_real_replace_type;
-	((ValaTypeSymbolClass *) klass)->is_subtype_of = vala_struct_real_is_subtype_of;
-	((ValaCodeNodeClass *) klass)->check = vala_struct_real_check;
+	((ValaSymbolClass *) klass)->add_constant = (void (*)(ValaSymbol*, ValaConstant*)) vala_struct_real_add_constant;
+	((ValaSymbolClass *) klass)->add_field = (void (*)(ValaSymbol*, ValaField*)) vala_struct_real_add_field;
+	((ValaSymbolClass *) klass)->add_method = (void (*)(ValaSymbol*, ValaMethod*)) vala_struct_real_add_method;
+	((ValaSymbolClass *) klass)->add_property = (void (*)(ValaSymbol*, ValaProperty*)) vala_struct_real_add_property;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_struct_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_struct_real_accept_children;
+	((ValaTypeSymbolClass *) klass)->get_type_parameter_index = (gint (*)(ValaTypeSymbol*, const gchar*)) vala_struct_real_get_type_parameter_index;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_struct_real_replace_type;
+	((ValaTypeSymbolClass *) klass)->is_subtype_of = (gboolean (*)(ValaTypeSymbol*, ValaTypeSymbol*)) vala_struct_real_is_subtype_of;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_struct_real_check;
 }
 
 
@@ -3081,19 +3079,19 @@ static void vala_struct_instance_init (ValaStruct * self) {
 	ValaArrayList* _tmp9_ = NULL;
 	self->priv = VALA_STRUCT_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->type_parameters = (ValaList*) _tmp1_;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_array_list_new (VALA_TYPE_CONSTANT, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_);
+	_tmp3_ = vala_array_list_new (VALA_TYPE_CONSTANT, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_);
 	self->priv->constants = (ValaList*) _tmp3_;
 	_tmp4_ = g_direct_equal;
-	_tmp5_ = vala_array_list_new (VALA_TYPE_FIELD, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+	_tmp5_ = vala_array_list_new (VALA_TYPE_FIELD, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 	self->priv->fields = (ValaList*) _tmp5_;
 	_tmp6_ = g_direct_equal;
-	_tmp7_ = vala_array_list_new (VALA_TYPE_METHOD, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp6_);
+	_tmp7_ = vala_array_list_new (VALA_TYPE_METHOD, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp6_);
 	self->priv->methods = (ValaList*) _tmp7_;
 	_tmp8_ = g_direct_equal;
-	_tmp9_ = vala_array_list_new (VALA_TYPE_PROPERTY, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp8_);
+	_tmp9_ = vala_array_list_new (VALA_TYPE_PROPERTY, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp8_);
 	self->priv->properties = (ValaList*) _tmp9_;
 	self->priv->_base_type = NULL;
 }

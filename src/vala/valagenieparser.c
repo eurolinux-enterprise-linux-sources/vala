@@ -1070,6 +1070,7 @@ typedef struct _ValaStatementIface ValaStatementIface;
 
 typedef struct _ValaReport ValaReport;
 typedef struct _ValaReportClass ValaReportClass;
+#define _vala_iterator_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterator_unref (var), NULL)))
 
 #define VALA_TYPE_ATTRIBUTE (vala_attribute_get_type ())
 #define VALA_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_ATTRIBUTE, ValaAttribute))
@@ -1096,6 +1097,9 @@ typedef struct _ValaCodeGeneratorClass ValaCodeGeneratorClass;
 
 #define VALA_TYPE_SOURCE_FILE_TYPE (vala_source_file_type_get_type ())
 #define _vala_assert(expr, msg) if G_LIKELY (expr) ; else g_assertion_message_expr (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
+#define _vala_return_if_fail(expr, msg) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return; }
+#define _vala_return_val_if_fail(expr, msg, val) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return val; }
+#define _vala_warn_if_fail(expr, msg) if G_LIKELY (expr) ; else g_warn_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
 
 struct _ValaCodeVisitor {
 	GTypeInstance parent_instance;
@@ -1876,6 +1880,7 @@ ValaLambdaExpression* vala_lambda_expression_construct (GType object_type, ValaE
 void vala_lambda_expression_add_parameter (ValaLambdaExpression* self, ValaParameter* param);
 GType vala_assignment_operator_get_type (void) G_GNUC_CONST;
 static ValaAssignmentOperator vala_genie_parser_get_assignment_operator (ValaGenieParser* self, ValaGenieTokenType token_type);
+static ValaExpression* vala_genie_parser_parse_expression_with_terminator (ValaGenieParser* self, GError** error);
 ValaAssignment* vala_assignment_new (ValaExpression* left, ValaExpression* right, ValaAssignmentOperator operator, ValaSourceReference* source_reference);
 ValaAssignment* vala_assignment_construct (GType object_type, ValaExpression* left, ValaExpression* right, ValaAssignmentOperator operator, ValaSourceReference* source_reference);
 GType vala_statement_get_type (void) G_GNUC_CONST;
@@ -1899,9 +1904,10 @@ static ValaStatement* vala_genie_parser_parse_throw_statement (ValaGenieParser* 
 static ValaStatement* vala_genie_parser_parse_try_statement (ValaGenieParser* self, GError** error);
 static ValaStatement* vala_genie_parser_parse_lock_statement (ValaGenieParser* self, GError** error);
 static ValaStatement* vala_genie_parser_parse_delete_statement (ValaGenieParser* self, GError** error);
-static void vala_genie_parser_parse_local_variable_declarations (ValaGenieParser* self, ValaBlock* block, GError** error);
+static void vala_genie_parser_parse_type_inference_declaration (ValaGenieParser* self, ValaBlock* block, GError** error);
 static ValaStatement* vala_genie_parser_parse_yield_statement (ValaGenieParser* self, GError** error);
 static gboolean vala_genie_parser_is_expression (ValaGenieParser* self, GError** error);
+static void vala_genie_parser_parse_local_variable_declarations (ValaGenieParser* self, ValaBlock* block, GError** error);
 void vala_block_add_statement (ValaBlock* self, ValaStatement* stmt);
 static ValaGenieParserRecoveryState vala_genie_parser_recover (ValaGenieParser* self);
 static ValaBlock* vala_genie_parser_parse_embedded_statement (ValaGenieParser* self, GError** error);
@@ -1913,15 +1919,14 @@ ValaReport* vala_code_context_get_report (ValaCodeContext* self);
 gint vala_report_get_errors (ValaReport* self);
 void vala_source_reference_get_end (ValaSourceReference* self, ValaSourceLocation* result);
 void vala_source_reference_set_end (ValaSourceReference* self, ValaSourceLocation* value);
-static void vala_genie_parser_add_local_var_variable (ValaGenieParser* self, ValaBlock* block, const gchar* id, GError** error);
-static ValaLocalVariable* vala_genie_parser_parse_local_variable (ValaGenieParser* self, ValaDataType* variable_type, const gchar* id, GError** error);
+static ValaLocalVariable* vala_genie_parser_parse_local_variable (ValaGenieParser* self, ValaDataType* variable_type, const gchar* id, gboolean expect_terminator, GError** error);
 ValaDeclarationStatement* vala_declaration_statement_new (ValaSymbol* declaration, ValaSourceReference* source_reference);
 ValaDeclarationStatement* vala_declaration_statement_construct (GType object_type, ValaSymbol* declaration, ValaSourceReference* source_reference);
 ValaLocalVariable* vala_local_variable_new (ValaDataType* variable_type, const gchar* name, ValaExpression* initializer, ValaSourceReference* source_reference);
 ValaLocalVariable* vala_local_variable_construct (GType object_type, ValaDataType* variable_type, const gchar* name, ValaExpression* initializer, ValaSourceReference* source_reference);
-static ValaExpression* vala_genie_parser_parse_statement_expression (ValaGenieParser* self, GError** error);
 ValaExpressionStatement* vala_expression_statement_new (ValaExpression* expression, ValaSourceReference* source_reference);
 ValaExpressionStatement* vala_expression_statement_construct (GType object_type, ValaExpression* expression, ValaSourceReference* source_reference);
+static ValaExpression* vala_genie_parser_parse_statement_expression (ValaGenieParser* self, GError** error);
 ValaIfStatement* vala_if_statement_new (ValaExpression* cond, ValaBlock* true_stmt, ValaBlock* false_stmt, ValaSourceReference* source);
 ValaIfStatement* vala_if_statement_construct (GType object_type, ValaExpression* cond, ValaBlock* true_stmt, ValaBlock* false_stmt, ValaSourceReference* source);
 ValaSwitchStatement* vala_switch_statement_new (ValaExpression* expression, ValaSourceReference* source_reference);
@@ -2486,12 +2491,14 @@ static inline gboolean vala_genie_parser_expect (ValaGenieParser* self, ValaGeni
 	_g_free0 (_tmp14_);
 	_inner_error_ = _tmp18_;
 	if (_inner_error_->domain == VALA_PARSE_ERROR) {
+		gboolean _tmp19_ = FALSE;
 		g_propagate_error (error, _inner_error_);
-		return FALSE;
+		return _tmp19_;
 	} else {
+		gboolean _tmp20_ = FALSE;
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
-		return FALSE;
+		return _tmp20_;
 	}
 }
 
@@ -2530,12 +2537,14 @@ static inline gboolean vala_genie_parser_expect_terminator (ValaGenieParser* sel
 	_g_free0 (_tmp5_);
 	_inner_error_ = _tmp9_;
 	if (_inner_error_->domain == VALA_PARSE_ERROR) {
+		gboolean _tmp10_ = FALSE;
 		g_propagate_error (error, _inner_error_);
-		return FALSE;
+		return _tmp10_;
 	} else {
+		gboolean _tmp11_ = FALSE;
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
-		return FALSE;
+		return _tmp11_;
 	}
 }
 
@@ -4474,7 +4483,7 @@ static ValaList* vala_genie_parser_parse_argument_list (ValaGenieParser* self, G
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	list = _tmp1_;
 	_tmp2_ = vala_genie_parser_current (self);
 	if (_tmp2_ != VALA_GENIE_TOKEN_TYPE_CLOSE_PARENS) {
@@ -5514,7 +5523,7 @@ static ValaExpression* vala_genie_parser_parse_tuple (ValaGenieParser* self, GEr
 		}
 	}
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	expr_list = _tmp1_;
 	_tmp2_ = vala_genie_parser_current (self);
 	if (_tmp2_ != VALA_GENIE_TOKEN_TYPE_CLOSE_PARENS) {
@@ -5883,7 +5892,7 @@ static ValaList* vala_genie_parser_parse_print_argument_list (ValaGenieParser* s
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	list = _tmp1_;
 	i = 0;
 	vala_genie_parser_get_location (self, &_tmp2_);
@@ -6787,7 +6796,7 @@ static ValaList* vala_genie_parser_parse_expression_list (ValaGenieParser* self,
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	list = _tmp1_;
 	{
 		gboolean _tmp2_ = FALSE;
@@ -7280,7 +7289,7 @@ static ValaExpression* vala_genie_parser_parse_object_creation_expression (ValaG
 		GEqualFunc _tmp5_ = NULL;
 		ValaArrayList* _tmp6_ = NULL;
 		_tmp5_ = g_direct_equal;
-		_tmp6_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp5_);
+		_tmp6_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp5_);
 		_vala_iterable_unref0 (arg_list);
 		arg_list = (ValaList*) _tmp6_;
 	}
@@ -7506,7 +7515,7 @@ static ValaExpression* vala_genie_parser_parse_array_creation_expression (ValaGe
 				first = FALSE;
 			}
 			_tmp19_ = g_direct_equal;
-			_tmp20_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp19_);
+			_tmp20_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp19_);
 			_vala_iterable_unref0 (size_specifier_list);
 			size_specifier_list = (ValaList*) _tmp20_;
 			{
@@ -7837,7 +7846,7 @@ static ValaList* vala_genie_parser_parse_object_initializer (ValaGenieParser* se
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_MEMBER_INITIALIZER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_MEMBER_INITIALIZER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	list = _tmp1_;
 	_tmp2_ = vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_OPEN_BRACE);
 	if (_tmp2_) {
@@ -9981,7 +9990,7 @@ static ValaExpression* vala_genie_parser_parse_lambda_expression (ValaGenieParse
 	vala_genie_parser_get_location (self, &_tmp0_);
 	begin = _tmp0_;
 	_tmp1_ = g_direct_equal;
-	_tmp2_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp1_);
+	_tmp2_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp1_);
 	params = (ValaList*) _tmp2_;
 	vala_genie_parser_expect (self, VALA_GENIE_TOKEN_TYPE_DEF, &_inner_error_);
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
@@ -10269,6 +10278,48 @@ static ValaAssignmentOperator vala_genie_parser_get_assignment_operator (ValaGen
 			return result;
 		}
 	}
+}
+
+
+static ValaExpression* vala_genie_parser_parse_expression_with_terminator (ValaGenieParser* self, GError** error) {
+	ValaExpression* result = NULL;
+	ValaExpression* expr = NULL;
+	ValaExpression* _tmp0_ = NULL;
+	gboolean _tmp1_ = FALSE;
+	GError * _inner_error_ = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp0_ = vala_genie_parser_parse_expression (self, &_inner_error_);
+	expr = _tmp0_;
+	if (G_UNLIKELY (_inner_error_ != NULL)) {
+		if (_inner_error_->domain == VALA_PARSE_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			return NULL;
+		} else {
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
+		}
+	}
+	_tmp1_ = self->priv->current_expr_is_lambda;
+	if (_tmp1_) {
+		self->priv->current_expr_is_lambda = FALSE;
+	} else {
+		vala_genie_parser_expect_terminator (self, &_inner_error_);
+		if (G_UNLIKELY (_inner_error_ != NULL)) {
+			if (_inner_error_->domain == VALA_PARSE_ERROR) {
+				g_propagate_error (error, _inner_error_);
+				_vala_code_node_unref0 (expr);
+				return NULL;
+			} else {
+				_vala_code_node_unref0 (expr);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return NULL;
+			}
+		}
+	}
+	result = expr;
+	return result;
 }
 
 
@@ -11014,7 +11065,7 @@ static void vala_genie_parser_parse_statements (ValaGenieParser* self, ValaBlock
 					ValaBlock* _tmp63_ = NULL;
 					is_decl = TRUE;
 					_tmp63_ = block;
-					vala_genie_parser_parse_local_variable_declarations (self, _tmp63_, &_inner_error_);
+					vala_genie_parser_parse_type_inference_declaration (self, _tmp63_, &_inner_error_);
 					if (G_UNLIKELY (_inner_error_ != NULL)) {
 						_vala_code_node_unref0 (stmt);
 						if (_inner_error_->domain == VALA_PARSE_ERROR) {
@@ -11182,7 +11233,7 @@ static gboolean vala_genie_parser_is_expression (ValaGenieParser* self, GError**
 	gboolean result = FALSE;
 	ValaSourceLocation begin = {0};
 	ValaSourceLocation _tmp0_ = {0};
-	ValaGenieTokenType _tmp1_ = 0;
+	ValaGenieTokenType _tmp3_ = 0;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, FALSE);
 	vala_genie_parser_get_location (self, &_tmp0_);
@@ -11190,16 +11241,18 @@ static gboolean vala_genie_parser_is_expression (ValaGenieParser* self, GError**
 	vala_genie_parser_skip_type (self, &_inner_error_);
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
 		if (_inner_error_->domain == VALA_PARSE_ERROR) {
+			gboolean _tmp1_ = FALSE;
 			g_propagate_error (error, _inner_error_);
-			return FALSE;
+			return _tmp1_;
 		} else {
+			gboolean _tmp2_ = FALSE;
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
-			return FALSE;
+			return _tmp2_;
 		}
 	}
-	_tmp1_ = vala_genie_parser_current (self);
-	switch (_tmp1_) {
+	_tmp3_ = vala_genie_parser_current (self);
+	switch (_tmp3_) {
 		case VALA_GENIE_TOKEN_TYPE_OPEN_PARENS:
 		case VALA_GENIE_TOKEN_TYPE_OP_INC:
 		case VALA_GENIE_TOKEN_TYPE_OP_DEC:
@@ -11217,17 +11270,17 @@ static gboolean vala_genie_parser_is_expression (ValaGenieParser* self, GError**
 		case VALA_GENIE_TOKEN_TYPE_DOT:
 		case VALA_GENIE_TOKEN_TYPE_OP_PTR:
 		{
-			ValaSourceLocation _tmp2_ = {0};
-			_tmp2_ = begin;
-			vala_genie_parser_rollback (self, &_tmp2_);
+			ValaSourceLocation _tmp4_ = {0};
+			_tmp4_ = begin;
+			vala_genie_parser_rollback (self, &_tmp4_);
 			result = TRUE;
 			return result;
 		}
 		default:
 		{
-			ValaSourceLocation _tmp3_ = {0};
-			_tmp3_ = begin;
-			vala_genie_parser_rollback (self, &_tmp3_);
+			ValaSourceLocation _tmp5_ = {0};
+			_tmp5_ = begin;
+			vala_genie_parser_rollback (self, &_tmp5_);
 			result = FALSE;
 			return result;
 		}
@@ -11871,413 +11924,357 @@ static ValaStatement* vala_genie_parser_parse_empty_statement (ValaGenieParser* 
 }
 
 
-static void vala_genie_parser_add_local_var_variable (ValaGenieParser* self, ValaBlock* block, const gchar* id, GError** error) {
-	ValaDataType* type_copy = NULL;
-	ValaLocalVariable* local = NULL;
-	const gchar* _tmp0_ = NULL;
-	ValaLocalVariable* _tmp1_ = NULL;
-	ValaBlock* _tmp2_ = NULL;
-	ValaSourceReference* _tmp3_ = NULL;
-	ValaSourceReference* _tmp4_ = NULL;
-	ValaDeclarationStatement* _tmp5_ = NULL;
-	ValaDeclarationStatement* _tmp6_ = NULL;
+static void vala_genie_parser_parse_type_inference_declaration (ValaGenieParser* self, ValaBlock* block, GError** error) {
+	gboolean block_var = FALSE;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	gboolean _tmp17_ = FALSE;
 	GError * _inner_error_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (block != NULL);
-	g_return_if_fail (id != NULL);
-	type_copy = NULL;
-	_tmp0_ = id;
-	_tmp1_ = vala_genie_parser_parse_local_variable (self, type_copy, _tmp0_, &_inner_error_);
-	local = _tmp1_;
+	vala_genie_parser_expect (self, VALA_GENIE_TOKEN_TYPE_VAR, &_inner_error_);
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
 		if (_inner_error_->domain == VALA_PARSE_ERROR) {
 			g_propagate_error (error, _inner_error_);
-			_vala_code_node_unref0 (type_copy);
 			return;
 		} else {
-			_vala_code_node_unref0 (type_copy);
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}
 	}
-	_tmp2_ = block;
-	_tmp3_ = vala_code_node_get_source_reference ((ValaCodeNode*) local);
-	_tmp4_ = _tmp3_;
-	_tmp5_ = vala_declaration_statement_new ((ValaSymbol*) local, _tmp4_);
-	_tmp6_ = _tmp5_;
-	vala_block_add_statement (_tmp2_, (ValaStatement*) _tmp6_);
-	_vala_code_node_unref0 (_tmp6_);
-	_vala_code_node_unref0 (local);
-	_vala_code_node_unref0 (type_copy);
+	block_var = FALSE;
+	_tmp1_ = vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_EOL);
+	if (_tmp1_) {
+		gboolean _tmp2_ = FALSE;
+		_tmp2_ = vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_INDENT);
+		_tmp0_ = _tmp2_;
+	} else {
+		_tmp0_ = FALSE;
+	}
+	if (_tmp0_) {
+		block_var = TRUE;
+	}
+	{
+		gboolean _tmp3_ = FALSE;
+		_tmp3_ = TRUE;
+		while (TRUE) {
+			gchar* s = NULL;
+			gchar* _tmp7_ = NULL;
+			ValaLocalVariable* local = NULL;
+			const gchar* _tmp8_ = NULL;
+			ValaLocalVariable* _tmp9_ = NULL;
+			ValaBlock* _tmp10_ = NULL;
+			ValaLocalVariable* _tmp11_ = NULL;
+			ValaLocalVariable* _tmp12_ = NULL;
+			ValaSourceReference* _tmp13_ = NULL;
+			ValaSourceReference* _tmp14_ = NULL;
+			ValaDeclarationStatement* _tmp15_ = NULL;
+			ValaDeclarationStatement* _tmp16_ = NULL;
+			if (!_tmp3_) {
+				gboolean _tmp4_ = FALSE;
+				gboolean _tmp5_ = FALSE;
+				_tmp5_ = block_var;
+				if (_tmp5_) {
+					ValaGenieTokenType _tmp6_ = 0;
+					_tmp6_ = vala_genie_parser_current (self);
+					_tmp4_ = _tmp6_ != VALA_GENIE_TOKEN_TYPE_DEDENT;
+				} else {
+					_tmp4_ = FALSE;
+				}
+				if (!_tmp4_) {
+					break;
+				}
+			}
+			_tmp3_ = FALSE;
+			_tmp7_ = vala_genie_parser_parse_identifier (self, &_inner_error_);
+			s = _tmp7_;
+			if (G_UNLIKELY (_inner_error_ != NULL)) {
+				if (_inner_error_->domain == VALA_PARSE_ERROR) {
+					g_propagate_error (error, _inner_error_);
+					return;
+				} else {
+					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+					g_clear_error (&_inner_error_);
+					return;
+				}
+			}
+			_tmp8_ = s;
+			_tmp9_ = vala_genie_parser_parse_local_variable (self, NULL, _tmp8_, TRUE, &_inner_error_);
+			local = _tmp9_;
+			if (G_UNLIKELY (_inner_error_ != NULL)) {
+				if (_inner_error_->domain == VALA_PARSE_ERROR) {
+					g_propagate_error (error, _inner_error_);
+					_g_free0 (s);
+					return;
+				} else {
+					_g_free0 (s);
+					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+					g_clear_error (&_inner_error_);
+					return;
+				}
+			}
+			_tmp10_ = block;
+			_tmp11_ = local;
+			_tmp12_ = local;
+			_tmp13_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp12_);
+			_tmp14_ = _tmp13_;
+			_tmp15_ = vala_declaration_statement_new ((ValaSymbol*) _tmp11_, _tmp14_);
+			_tmp16_ = _tmp15_;
+			vala_block_add_statement (_tmp10_, (ValaStatement*) _tmp16_);
+			_vala_code_node_unref0 (_tmp16_);
+			_vala_code_node_unref0 (local);
+			_g_free0 (s);
+		}
+	}
+	_tmp17_ = block_var;
+	if (_tmp17_) {
+		vala_genie_parser_expect (self, VALA_GENIE_TOKEN_TYPE_DEDENT, &_inner_error_);
+		if (G_UNLIKELY (_inner_error_ != NULL)) {
+			if (_inner_error_->domain == VALA_PARSE_ERROR) {
+				g_propagate_error (error, _inner_error_);
+				return;
+			} else {
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return;
+			}
+		}
+	}
 }
 
 
 static void vala_genie_parser_parse_local_variable_declarations (ValaGenieParser* self, ValaBlock* block, GError** error) {
-	gboolean _tmp0_ = FALSE;
 	ValaArrayList* id_list = NULL;
-	GEqualFunc _tmp11_ = NULL;
-	ValaArrayList* _tmp12_ = NULL;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
+	gchar* _tmp2_ = NULL;
+	gchar* _tmp3_ = NULL;
+	ValaArrayList* _tmp4_ = NULL;
 	ValaDataType* variable_type = NULL;
-	ValaDataType* _tmp18_ = NULL;
-	ValaDataType* _tmp19_ = NULL;
-	ValaDataType* _tmp20_ = NULL;
+	ValaDataType* _tmp9_ = NULL;
 	ValaDataType* type = NULL;
-	ValaDataType* _tmp21_ = NULL;
-	ValaDataType* _tmp22_ = NULL;
+	ValaDataType* _tmp10_ = NULL;
+	ValaDataType* _tmp11_ = NULL;
+	ValaIterator* iterator = NULL;
+	ValaArrayList* _tmp12_ = NULL;
+	ValaIterator* _tmp13_ = NULL;
+	ValaIterator* _tmp14_ = NULL;
+	gboolean expect_terminator = FALSE;
 	GError * _inner_error_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (block != NULL);
-	_tmp0_ = vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_VAR);
-	if (_tmp0_) {
-		gboolean _tmp1_ = FALSE;
-		gboolean _tmp2_ = FALSE;
-		_tmp2_ = vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_EOL);
-		if (_tmp2_) {
-			gboolean _tmp3_ = FALSE;
-			_tmp3_ = vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_INDENT);
-			_tmp1_ = _tmp3_;
+	_tmp0_ = g_direct_equal;
+	_tmp1_ = vala_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, _tmp0_);
+	id_list = _tmp1_;
+	_tmp3_ = vala_genie_parser_parse_identifier (self, &_inner_error_);
+	_tmp2_ = _tmp3_;
+	if (G_UNLIKELY (_inner_error_ != NULL)) {
+		if (_inner_error_->domain == VALA_PARSE_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			_vala_iterable_unref0 (id_list);
+			return;
 		} else {
-			_tmp1_ = FALSE;
+			_vala_iterable_unref0 (id_list);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
-		if (_tmp1_) {
-			while (TRUE) {
-				ValaGenieTokenType _tmp4_ = 0;
-				gchar* s = NULL;
-				gchar* _tmp5_ = NULL;
-				ValaBlock* _tmp6_ = NULL;
-				const gchar* _tmp7_ = NULL;
-				_tmp4_ = vala_genie_parser_current (self);
-				if (!(_tmp4_ != VALA_GENIE_TOKEN_TYPE_DEDENT)) {
-					break;
-				}
-				_tmp5_ = vala_genie_parser_parse_identifier (self, &_inner_error_);
-				s = _tmp5_;
-				if (G_UNLIKELY (_inner_error_ != NULL)) {
-					if (_inner_error_->domain == VALA_PARSE_ERROR) {
-						g_propagate_error (error, _inner_error_);
-						return;
-					} else {
-						g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-						g_clear_error (&_inner_error_);
-						return;
-					}
-				}
-				_tmp6_ = block;
-				_tmp7_ = s;
-				vala_genie_parser_add_local_var_variable (self, _tmp6_, _tmp7_, &_inner_error_);
-				if (G_UNLIKELY (_inner_error_ != NULL)) {
-					if (_inner_error_->domain == VALA_PARSE_ERROR) {
-						g_propagate_error (error, _inner_error_);
-						_g_free0 (s);
-						return;
-					} else {
-						_g_free0 (s);
-						g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-						g_clear_error (&_inner_error_);
-						return;
-					}
-				}
-				vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_EOL);
-				vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_SEMICOLON);
-				_g_free0 (s);
-			}
-			vala_genie_parser_expect (self, VALA_GENIE_TOKEN_TYPE_DEDENT, &_inner_error_);
-			if (G_UNLIKELY (_inner_error_ != NULL)) {
-				if (_inner_error_->domain == VALA_PARSE_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					return;
-				} else {
-					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-					g_clear_error (&_inner_error_);
-					return;
-				}
-			}
-		} else {
-			gchar* s = NULL;
-			gchar* _tmp8_ = NULL;
-			ValaBlock* _tmp9_ = NULL;
-			const gchar* _tmp10_ = NULL;
-			_tmp8_ = vala_genie_parser_parse_identifier (self, &_inner_error_);
-			s = _tmp8_;
-			if (G_UNLIKELY (_inner_error_ != NULL)) {
-				if (_inner_error_->domain == VALA_PARSE_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					return;
-				} else {
-					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-					g_clear_error (&_inner_error_);
-					return;
-				}
-			}
-			_tmp9_ = block;
-			_tmp10_ = s;
-			vala_genie_parser_add_local_var_variable (self, _tmp9_, _tmp10_, &_inner_error_);
-			if (G_UNLIKELY (_inner_error_ != NULL)) {
-				if (_inner_error_->domain == VALA_PARSE_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					_g_free0 (s);
-					return;
-				} else {
-					_g_free0 (s);
-					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-					g_clear_error (&_inner_error_);
-					return;
-				}
-			}
-			vala_genie_parser_expect_terminator (self, &_inner_error_);
-			if (G_UNLIKELY (_inner_error_ != NULL)) {
-				if (_inner_error_->domain == VALA_PARSE_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					_g_free0 (s);
-					return;
-				} else {
-					_g_free0 (s);
-					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-					g_clear_error (&_inner_error_);
-					return;
-				}
-			}
-			_g_free0 (s);
-		}
-		return;
 	}
-	_tmp11_ = g_direct_equal;
-	_tmp12_ = vala_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp11_);
-	id_list = _tmp12_;
-	variable_type = NULL;
-	{
-		gboolean _tmp13_ = FALSE;
-		_tmp13_ = TRUE;
-		while (TRUE) {
-			gchar* _tmp15_ = NULL;
-			gchar* _tmp16_ = NULL;
-			ValaArrayList* _tmp17_ = NULL;
-			if (!_tmp13_) {
-				gboolean _tmp14_ = FALSE;
-				_tmp14_ = vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_COMMA);
-				if (!_tmp14_) {
-					break;
-				}
-			}
-			_tmp13_ = FALSE;
-			_tmp16_ = vala_genie_parser_parse_identifier (self, &_inner_error_);
-			_tmp15_ = _tmp16_;
-			if (G_UNLIKELY (_inner_error_ != NULL)) {
-				if (_inner_error_->domain == VALA_PARSE_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					_vala_code_node_unref0 (variable_type);
-					_vala_iterable_unref0 (id_list);
-					return;
-				} else {
-					_vala_code_node_unref0 (variable_type);
-					_vala_iterable_unref0 (id_list);
-					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-					g_clear_error (&_inner_error_);
-					return;
-				}
-			}
-			_tmp17_ = id_list;
-			vala_collection_add ((ValaCollection*) _tmp17_, _tmp15_);
-			_g_free0 (_tmp15_);
+	_tmp4_ = id_list;
+	vala_collection_add ((ValaCollection*) _tmp4_, _tmp2_);
+	while (TRUE) {
+		gboolean _tmp5_ = FALSE;
+		gchar* _tmp6_ = NULL;
+		gchar* _tmp7_ = NULL;
+		ValaArrayList* _tmp8_ = NULL;
+		_tmp5_ = vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_COMMA);
+		if (!_tmp5_) {
+			break;
 		}
+		_tmp7_ = vala_genie_parser_parse_identifier (self, &_inner_error_);
+		_tmp6_ = _tmp7_;
+		if (G_UNLIKELY (_inner_error_ != NULL)) {
+			if (_inner_error_->domain == VALA_PARSE_ERROR) {
+				g_propagate_error (error, _inner_error_);
+				_g_free0 (_tmp2_);
+				_vala_iterable_unref0 (id_list);
+				return;
+			} else {
+				_g_free0 (_tmp2_);
+				_vala_iterable_unref0 (id_list);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return;
+			}
+		}
+		_tmp8_ = id_list;
+		vala_collection_add ((ValaCollection*) _tmp8_, _tmp6_);
+		_g_free0 (_tmp6_);
 	}
 	vala_genie_parser_expect (self, VALA_GENIE_TOKEN_TYPE_COLON, &_inner_error_);
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
 		if (_inner_error_->domain == VALA_PARSE_ERROR) {
 			g_propagate_error (error, _inner_error_);
-			_vala_code_node_unref0 (variable_type);
+			_g_free0 (_tmp2_);
 			_vala_iterable_unref0 (id_list);
 			return;
 		} else {
-			_vala_code_node_unref0 (variable_type);
+			_g_free0 (_tmp2_);
 			_vala_iterable_unref0 (id_list);
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}
 	}
-	_tmp19_ = vala_genie_parser_parse_type (self, TRUE, TRUE, &_inner_error_);
-	_tmp18_ = _tmp19_;
+	_tmp9_ = vala_genie_parser_parse_type (self, TRUE, TRUE, &_inner_error_);
+	variable_type = _tmp9_;
+	if (G_UNLIKELY (_inner_error_ != NULL)) {
+		if (_inner_error_->domain == VALA_PARSE_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			_g_free0 (_tmp2_);
+			_vala_iterable_unref0 (id_list);
+			return;
+		} else {
+			_g_free0 (_tmp2_);
+			_vala_iterable_unref0 (id_list);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
+	}
+	_tmp10_ = variable_type;
+	_tmp11_ = vala_genie_parser_parse_inline_array_type (self, _tmp10_, &_inner_error_);
+	type = _tmp11_;
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
 		if (_inner_error_->domain == VALA_PARSE_ERROR) {
 			g_propagate_error (error, _inner_error_);
 			_vala_code_node_unref0 (variable_type);
+			_g_free0 (_tmp2_);
 			_vala_iterable_unref0 (id_list);
 			return;
 		} else {
 			_vala_code_node_unref0 (variable_type);
+			_g_free0 (_tmp2_);
 			_vala_iterable_unref0 (id_list);
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}
 	}
-	_tmp20_ = _tmp18_;
-	_tmp18_ = NULL;
-	_vala_code_node_unref0 (variable_type);
-	variable_type = _tmp20_;
-	_tmp21_ = variable_type;
-	_tmp22_ = vala_genie_parser_parse_inline_array_type (self, _tmp21_, &_inner_error_);
-	type = _tmp22_;
-	if (G_UNLIKELY (_inner_error_ != NULL)) {
-		if (_inner_error_->domain == VALA_PARSE_ERROR) {
-			g_propagate_error (error, _inner_error_);
-			_vala_code_node_unref0 (_tmp18_);
-			_vala_code_node_unref0 (variable_type);
-			_vala_iterable_unref0 (id_list);
-			return;
-		} else {
-			_vala_code_node_unref0 (_tmp18_);
-			_vala_code_node_unref0 (variable_type);
-			_vala_iterable_unref0 (id_list);
-			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return;
+	_tmp12_ = id_list;
+	_tmp13_ = vala_iterable_iterator ((ValaIterable*) _tmp12_);
+	iterator = _tmp13_;
+	_tmp14_ = iterator;
+	vala_iterator_next (_tmp14_);
+	expect_terminator = FALSE;
+	while (TRUE) {
+		gboolean _tmp15_ = FALSE;
+		gchar* id = NULL;
+		ValaIterator* _tmp16_ = NULL;
+		gpointer _tmp17_ = NULL;
+		ValaDataType* type_copy = NULL;
+		ValaDataType* _tmp18_ = NULL;
+		ValaIterator* _tmp21_ = NULL;
+		gboolean _tmp22_ = FALSE;
+		ValaLocalVariable* local = NULL;
+		ValaDataType* _tmp23_ = NULL;
+		const gchar* _tmp24_ = NULL;
+		gboolean _tmp25_ = FALSE;
+		ValaLocalVariable* _tmp26_ = NULL;
+		ValaBlock* _tmp27_ = NULL;
+		ValaLocalVariable* _tmp28_ = NULL;
+		ValaLocalVariable* _tmp29_ = NULL;
+		ValaSourceReference* _tmp30_ = NULL;
+		ValaSourceReference* _tmp31_ = NULL;
+		ValaDeclarationStatement* _tmp32_ = NULL;
+		ValaDeclarationStatement* _tmp33_ = NULL;
+		_tmp15_ = expect_terminator;
+		if (!(!_tmp15_)) {
+			break;
 		}
-	}
-	{
-		ValaArrayList* _id_list = NULL;
-		ValaArrayList* _tmp23_ = NULL;
-		ValaArrayList* _tmp24_ = NULL;
-		gint _id_size = 0;
-		ValaArrayList* _tmp25_ = NULL;
-		gint _tmp26_ = 0;
-		gint _tmp27_ = 0;
-		gint _id_index = 0;
-		_tmp23_ = id_list;
-		_tmp24_ = _vala_iterable_ref0 (_tmp23_);
-		_id_list = _tmp24_;
-		_tmp25_ = _id_list;
-		_tmp26_ = vala_collection_get_size ((ValaCollection*) _tmp25_);
-		_tmp27_ = _tmp26_;
-		_id_size = _tmp27_;
-		_id_index = -1;
-		while (TRUE) {
-			gint _tmp28_ = 0;
-			gint _tmp29_ = 0;
-			gint _tmp30_ = 0;
-			gchar* id = NULL;
-			ValaArrayList* _tmp31_ = NULL;
-			gint _tmp32_ = 0;
-			gpointer _tmp33_ = NULL;
-			ValaDataType* type_copy = NULL;
-			ValaDataType* _tmp34_ = NULL;
-			ValaLocalVariable* local = NULL;
-			ValaDataType* _tmp37_ = NULL;
-			const gchar* _tmp38_ = NULL;
-			ValaLocalVariable* _tmp39_ = NULL;
-			ValaBlock* _tmp40_ = NULL;
-			ValaLocalVariable* _tmp41_ = NULL;
-			ValaLocalVariable* _tmp42_ = NULL;
-			ValaSourceReference* _tmp43_ = NULL;
-			ValaSourceReference* _tmp44_ = NULL;
-			ValaDeclarationStatement* _tmp45_ = NULL;
-			ValaDeclarationStatement* _tmp46_ = NULL;
-			_tmp28_ = _id_index;
-			_id_index = _tmp28_ + 1;
-			_tmp29_ = _id_index;
-			_tmp30_ = _id_size;
-			if (!(_tmp29_ < _tmp30_)) {
-				break;
-			}
-			_tmp31_ = _id_list;
-			_tmp32_ = _id_index;
-			_tmp33_ = vala_list_get ((ValaList*) _tmp31_, _tmp32_);
-			id = (gchar*) _tmp33_;
-			type_copy = NULL;
-			_tmp34_ = type;
-			if (_tmp34_ != NULL) {
-				ValaDataType* _tmp35_ = NULL;
-				ValaDataType* _tmp36_ = NULL;
-				_tmp35_ = type;
-				_tmp36_ = vala_data_type_copy (_tmp35_);
-				_vala_code_node_unref0 (type_copy);
-				type_copy = _tmp36_;
-			}
-			_tmp37_ = type_copy;
-			_tmp38_ = id;
-			_tmp39_ = vala_genie_parser_parse_local_variable (self, _tmp37_, _tmp38_, &_inner_error_);
-			local = _tmp39_;
-			if (G_UNLIKELY (_inner_error_ != NULL)) {
-				if (_inner_error_->domain == VALA_PARSE_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					_vala_code_node_unref0 (type_copy);
-					_g_free0 (id);
-					_vala_iterable_unref0 (_id_list);
-					_vala_code_node_unref0 (type);
-					_vala_code_node_unref0 (_tmp18_);
-					_vala_code_node_unref0 (variable_type);
-					_vala_iterable_unref0 (id_list);
-					return;
-				} else {
-					_vala_code_node_unref0 (type_copy);
-					_g_free0 (id);
-					_vala_iterable_unref0 (_id_list);
-					_vala_code_node_unref0 (type);
-					_vala_code_node_unref0 (_tmp18_);
-					_vala_code_node_unref0 (variable_type);
-					_vala_iterable_unref0 (id_list);
-					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-					g_clear_error (&_inner_error_);
-					return;
-				}
-			}
-			_tmp40_ = block;
-			_tmp41_ = local;
-			_tmp42_ = local;
-			_tmp43_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp42_);
-			_tmp44_ = _tmp43_;
-			_tmp45_ = vala_declaration_statement_new ((ValaSymbol*) _tmp41_, _tmp44_);
-			_tmp46_ = _tmp45_;
-			vala_block_add_statement (_tmp40_, (ValaStatement*) _tmp46_);
-			_vala_code_node_unref0 (_tmp46_);
-			_vala_code_node_unref0 (local);
+		_tmp16_ = iterator;
+		_tmp17_ = vala_iterator_get (_tmp16_);
+		id = (gchar*) _tmp17_;
+		type_copy = NULL;
+		_tmp18_ = type;
+		if (_tmp18_ != NULL) {
+			ValaDataType* _tmp19_ = NULL;
+			ValaDataType* _tmp20_ = NULL;
+			_tmp19_ = type;
+			_tmp20_ = vala_data_type_copy (_tmp19_);
 			_vala_code_node_unref0 (type_copy);
-			_g_free0 (id);
+			type_copy = _tmp20_;
 		}
-		_vala_iterable_unref0 (_id_list);
-	}
-	vala_genie_parser_expect_terminator (self, &_inner_error_);
-	if (G_UNLIKELY (_inner_error_ != NULL)) {
-		if (_inner_error_->domain == VALA_PARSE_ERROR) {
-			g_propagate_error (error, _inner_error_);
-			_vala_code_node_unref0 (type);
-			_vala_code_node_unref0 (_tmp18_);
-			_vala_code_node_unref0 (variable_type);
-			_vala_iterable_unref0 (id_list);
-			return;
-		} else {
-			_vala_code_node_unref0 (type);
-			_vala_code_node_unref0 (_tmp18_);
-			_vala_code_node_unref0 (variable_type);
-			_vala_iterable_unref0 (id_list);
-			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return;
+		_tmp21_ = iterator;
+		_tmp22_ = vala_iterator_next (_tmp21_);
+		if (!_tmp22_) {
+			expect_terminator = TRUE;
 		}
+		_tmp23_ = type_copy;
+		_tmp24_ = id;
+		_tmp25_ = expect_terminator;
+		_tmp26_ = vala_genie_parser_parse_local_variable (self, _tmp23_, _tmp24_, _tmp25_, &_inner_error_);
+		local = _tmp26_;
+		if (G_UNLIKELY (_inner_error_ != NULL)) {
+			if (_inner_error_->domain == VALA_PARSE_ERROR) {
+				g_propagate_error (error, _inner_error_);
+				_vala_code_node_unref0 (type_copy);
+				_g_free0 (id);
+				_vala_iterator_unref0 (iterator);
+				_vala_code_node_unref0 (type);
+				_vala_code_node_unref0 (variable_type);
+				_g_free0 (_tmp2_);
+				_vala_iterable_unref0 (id_list);
+				return;
+			} else {
+				_vala_code_node_unref0 (type_copy);
+				_g_free0 (id);
+				_vala_iterator_unref0 (iterator);
+				_vala_code_node_unref0 (type);
+				_vala_code_node_unref0 (variable_type);
+				_g_free0 (_tmp2_);
+				_vala_iterable_unref0 (id_list);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return;
+			}
+		}
+		_tmp27_ = block;
+		_tmp28_ = local;
+		_tmp29_ = local;
+		_tmp30_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp29_);
+		_tmp31_ = _tmp30_;
+		_tmp32_ = vala_declaration_statement_new ((ValaSymbol*) _tmp28_, _tmp31_);
+		_tmp33_ = _tmp32_;
+		vala_block_add_statement (_tmp27_, (ValaStatement*) _tmp33_);
+		_vala_code_node_unref0 (_tmp33_);
+		_vala_code_node_unref0 (local);
+		_vala_code_node_unref0 (type_copy);
+		_g_free0 (id);
 	}
+	_vala_iterator_unref0 (iterator);
 	_vala_code_node_unref0 (type);
-	_vala_code_node_unref0 (_tmp18_);
 	_vala_code_node_unref0 (variable_type);
+	_g_free0 (_tmp2_);
 	_vala_iterable_unref0 (id_list);
 }
 
 
-static ValaLocalVariable* vala_genie_parser_parse_local_variable (ValaGenieParser* self, ValaDataType* variable_type, const gchar* id, GError** error) {
+static ValaLocalVariable* vala_genie_parser_parse_local_variable (ValaGenieParser* self, ValaDataType* variable_type, const gchar* id, gboolean expect_terminator, GError** error) {
 	ValaLocalVariable* result = NULL;
 	ValaSourceLocation begin = {0};
 	ValaSourceLocation _tmp0_ = {0};
 	ValaExpression* initializer = NULL;
 	gboolean _tmp1_ = FALSE;
-	ValaDataType* _tmp5_ = NULL;
-	const gchar* _tmp6_ = NULL;
-	ValaExpression* _tmp7_ = NULL;
-	ValaSourceLocation _tmp8_ = {0};
-	ValaSourceReference* _tmp9_ = NULL;
-	ValaSourceReference* _tmp10_ = NULL;
-	ValaLocalVariable* _tmp11_ = NULL;
-	ValaLocalVariable* _tmp12_ = NULL;
+	ValaDataType* _tmp10_ = NULL;
+	const gchar* _tmp11_ = NULL;
+	ValaExpression* _tmp12_ = NULL;
+	ValaSourceLocation _tmp13_ = {0};
+	ValaSourceReference* _tmp14_ = NULL;
+	ValaSourceReference* _tmp15_ = NULL;
+	ValaLocalVariable* _tmp16_ = NULL;
+	ValaLocalVariable* _tmp17_ = NULL;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (id != NULL, NULL);
@@ -12286,39 +12283,84 @@ static ValaLocalVariable* vala_genie_parser_parse_local_variable (ValaGenieParse
 	initializer = NULL;
 	_tmp1_ = vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_ASSIGN);
 	if (_tmp1_) {
-		ValaExpression* _tmp2_ = NULL;
-		ValaExpression* _tmp3_ = NULL;
-		ValaExpression* _tmp4_ = NULL;
-		_tmp3_ = vala_genie_parser_parse_expression (self, &_inner_error_);
-		_tmp2_ = _tmp3_;
-		if (G_UNLIKELY (_inner_error_ != NULL)) {
-			if (_inner_error_->domain == VALA_PARSE_ERROR) {
-				g_propagate_error (error, _inner_error_);
-				_vala_code_node_unref0 (initializer);
-				return NULL;
-			} else {
-				_vala_code_node_unref0 (initializer);
-				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-				g_clear_error (&_inner_error_);
-				return NULL;
+		gboolean _tmp2_ = FALSE;
+		_tmp2_ = expect_terminator;
+		if (_tmp2_) {
+			ValaExpression* _tmp3_ = NULL;
+			ValaExpression* _tmp4_ = NULL;
+			ValaExpression* _tmp5_ = NULL;
+			_tmp4_ = vala_genie_parser_parse_expression_with_terminator (self, &_inner_error_);
+			_tmp3_ = _tmp4_;
+			if (G_UNLIKELY (_inner_error_ != NULL)) {
+				if (_inner_error_->domain == VALA_PARSE_ERROR) {
+					g_propagate_error (error, _inner_error_);
+					_vala_code_node_unref0 (initializer);
+					return NULL;
+				} else {
+					_vala_code_node_unref0 (initializer);
+					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+					g_clear_error (&_inner_error_);
+					return NULL;
+				}
+			}
+			_tmp5_ = _tmp3_;
+			_tmp3_ = NULL;
+			_vala_code_node_unref0 (initializer);
+			initializer = _tmp5_;
+			_vala_code_node_unref0 (_tmp3_);
+		} else {
+			ValaExpression* _tmp6_ = NULL;
+			ValaExpression* _tmp7_ = NULL;
+			ValaExpression* _tmp8_ = NULL;
+			_tmp7_ = vala_genie_parser_parse_expression (self, &_inner_error_);
+			_tmp6_ = _tmp7_;
+			if (G_UNLIKELY (_inner_error_ != NULL)) {
+				if (_inner_error_->domain == VALA_PARSE_ERROR) {
+					g_propagate_error (error, _inner_error_);
+					_vala_code_node_unref0 (initializer);
+					return NULL;
+				} else {
+					_vala_code_node_unref0 (initializer);
+					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+					g_clear_error (&_inner_error_);
+					return NULL;
+				}
+			}
+			_tmp8_ = _tmp6_;
+			_tmp6_ = NULL;
+			_vala_code_node_unref0 (initializer);
+			initializer = _tmp8_;
+			_vala_code_node_unref0 (_tmp6_);
+		}
+	} else {
+		gboolean _tmp9_ = FALSE;
+		_tmp9_ = expect_terminator;
+		if (_tmp9_) {
+			vala_genie_parser_expect_terminator (self, &_inner_error_);
+			if (G_UNLIKELY (_inner_error_ != NULL)) {
+				if (_inner_error_->domain == VALA_PARSE_ERROR) {
+					g_propagate_error (error, _inner_error_);
+					_vala_code_node_unref0 (initializer);
+					return NULL;
+				} else {
+					_vala_code_node_unref0 (initializer);
+					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+					g_clear_error (&_inner_error_);
+					return NULL;
+				}
 			}
 		}
-		_tmp4_ = _tmp2_;
-		_tmp2_ = NULL;
-		_vala_code_node_unref0 (initializer);
-		initializer = _tmp4_;
-		_vala_code_node_unref0 (_tmp2_);
 	}
-	_tmp5_ = variable_type;
-	_tmp6_ = id;
-	_tmp7_ = initializer;
-	_tmp8_ = begin;
-	_tmp9_ = vala_genie_parser_get_src (self, &_tmp8_);
-	_tmp10_ = _tmp9_;
-	_tmp11_ = vala_local_variable_new (_tmp5_, _tmp6_, _tmp7_, _tmp10_);
-	_tmp12_ = _tmp11_;
-	_vala_source_reference_unref0 (_tmp10_);
-	result = _tmp12_;
+	_tmp10_ = variable_type;
+	_tmp11_ = id;
+	_tmp12_ = initializer;
+	_tmp13_ = begin;
+	_tmp14_ = vala_genie_parser_get_src (self, &_tmp13_);
+	_tmp15_ = _tmp14_;
+	_tmp16_ = vala_local_variable_new (_tmp10_, _tmp11_, _tmp12_, _tmp15_);
+	_tmp17_ = _tmp16_;
+	_vala_source_reference_unref0 (_tmp15_);
+	result = _tmp17_;
 	_vala_code_node_unref0 (initializer);
 	return result;
 }
@@ -12330,18 +12372,16 @@ static ValaStatement* vala_genie_parser_parse_expression_statement (ValaGeniePar
 	ValaSourceLocation _tmp0_ = {0};
 	ValaExpression* expr = NULL;
 	ValaExpression* _tmp1_ = NULL;
-	gboolean _tmp2_ = FALSE;
-	ValaExpression* _tmp3_ = NULL;
-	ValaSourceLocation _tmp4_ = {0};
-	ValaSourceReference* _tmp5_ = NULL;
-	ValaSourceReference* _tmp6_ = NULL;
-	ValaExpressionStatement* _tmp7_ = NULL;
-	ValaStatement* _tmp8_ = NULL;
+	ValaSourceLocation _tmp2_ = {0};
+	ValaSourceReference* _tmp3_ = NULL;
+	ValaSourceReference* _tmp4_ = NULL;
+	ValaExpressionStatement* _tmp5_ = NULL;
+	ValaStatement* _tmp6_ = NULL;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	vala_genie_parser_get_location (self, &_tmp0_);
 	begin = _tmp0_;
-	_tmp1_ = vala_genie_parser_parse_statement_expression (self, &_inner_error_);
+	_tmp1_ = vala_genie_parser_parse_expression_with_terminator (self, &_inner_error_);
 	expr = _tmp1_;
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
 		if (_inner_error_->domain == VALA_PARSE_ERROR) {
@@ -12353,32 +12393,13 @@ static ValaStatement* vala_genie_parser_parse_expression_statement (ValaGeniePar
 			return NULL;
 		}
 	}
-	_tmp2_ = self->priv->current_expr_is_lambda;
-	if (_tmp2_) {
-		self->priv->current_expr_is_lambda = FALSE;
-	} else {
-		vala_genie_parser_expect_terminator (self, &_inner_error_);
-		if (G_UNLIKELY (_inner_error_ != NULL)) {
-			if (_inner_error_->domain == VALA_PARSE_ERROR) {
-				g_propagate_error (error, _inner_error_);
-				_vala_code_node_unref0 (expr);
-				return NULL;
-			} else {
-				_vala_code_node_unref0 (expr);
-				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-				g_clear_error (&_inner_error_);
-				return NULL;
-			}
-		}
-	}
-	_tmp3_ = expr;
-	_tmp4_ = begin;
-	_tmp5_ = vala_genie_parser_get_src (self, &_tmp4_);
-	_tmp6_ = _tmp5_;
-	_tmp7_ = vala_expression_statement_new (_tmp3_, _tmp6_);
-	_tmp8_ = (ValaStatement*) _tmp7_;
-	_vala_source_reference_unref0 (_tmp6_);
-	result = _tmp8_;
+	_tmp2_ = begin;
+	_tmp3_ = vala_genie_parser_get_src (self, &_tmp2_);
+	_tmp4_ = _tmp3_;
+	_tmp5_ = vala_expression_statement_new (expr, _tmp4_);
+	_tmp6_ = (ValaStatement*) _tmp5_;
+	_vala_source_reference_unref0 (_tmp4_);
+	result = _tmp6_;
 	_vala_code_node_unref0 (expr);
 	return result;
 }
@@ -13373,7 +13394,7 @@ static ValaStatement* vala_genie_parser_parse_for_statement (ValaGenieParser* se
 		}
 		_tmp30_ = type_copy;
 		_tmp31_ = id;
-		_tmp32_ = vala_genie_parser_parse_local_variable (self, _tmp30_, _tmp31_, &_inner_error_);
+		_tmp32_ = vala_genie_parser_parse_local_variable (self, _tmp30_, _tmp31_, FALSE, &_inner_error_);
 		local = _tmp32_;
 		if (G_UNLIKELY (_inner_error_ != NULL)) {
 			if (_inner_error_->domain == VALA_PARSE_ERROR) {
@@ -14023,7 +14044,7 @@ static ValaStatement* vala_genie_parser_parse_return_statement (ValaGenieParser*
 		ValaExpression* _tmp4_ = NULL;
 		ValaExpression* _tmp5_ = NULL;
 		ValaExpression* _tmp6_ = NULL;
-		_tmp5_ = vala_genie_parser_parse_expression (self, &_inner_error_);
+		_tmp5_ = vala_genie_parser_parse_expression_with_terminator (self, &_inner_error_);
 		_tmp4_ = _tmp5_;
 		if (G_UNLIKELY (_inner_error_ != NULL)) {
 			if (_inner_error_->domain == VALA_PARSE_ERROR) {
@@ -14042,18 +14063,19 @@ static ValaStatement* vala_genie_parser_parse_return_statement (ValaGenieParser*
 		_vala_code_node_unref0 (expr);
 		expr = _tmp6_;
 		_vala_code_node_unref0 (_tmp4_);
-	}
-	vala_genie_parser_expect_terminator (self, &_inner_error_);
-	if (G_UNLIKELY (_inner_error_ != NULL)) {
-		if (_inner_error_->domain == VALA_PARSE_ERROR) {
-			g_propagate_error (error, _inner_error_);
-			_vala_code_node_unref0 (expr);
-			return NULL;
-		} else {
-			_vala_code_node_unref0 (expr);
-			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
+	} else {
+		vala_genie_parser_expect_terminator (self, &_inner_error_);
+		if (G_UNLIKELY (_inner_error_ != NULL)) {
+			if (_inner_error_->domain == VALA_PARSE_ERROR) {
+				g_propagate_error (error, _inner_error_);
+				_vala_code_node_unref0 (expr);
+				return NULL;
+			} else {
+				_vala_code_node_unref0 (expr);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return NULL;
+			}
 		}
 	}
 	_tmp7_ = expr;
@@ -14313,7 +14335,7 @@ static ValaStatement* vala_genie_parser_parse_try_statement (ValaGenieParser* se
 	}
 	finally_clause = NULL;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_array_list_new (VALA_TYPE_CATCH_CLAUSE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_);
+	_tmp3_ = vala_array_list_new (VALA_TYPE_CATCH_CLAUSE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_);
 	catch_clauses = _tmp3_;
 	_tmp4_ = vala_genie_parser_current (self);
 	if (_tmp4_ == VALA_GENIE_TOKEN_TYPE_EXCEPT) {
@@ -14910,7 +14932,7 @@ static ValaList* vala_genie_parser_parse_attributes (ValaGenieParser* self, gboo
 		return result;
 	}
 	_tmp1_ = g_direct_equal;
-	_tmp2_ = vala_array_list_new (VALA_TYPE_ATTRIBUTE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp1_);
+	_tmp2_ = vala_array_list_new (VALA_TYPE_ATTRIBUTE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp1_);
 	attrs = _tmp2_;
 	while (TRUE) {
 		gboolean _tmp3_ = FALSE;
@@ -16560,7 +16582,7 @@ static ValaSymbol* vala_genie_parser_parse_class_declaration (ValaGenieParser* s
 		}
 	}
 	_tmp4_ = g_direct_equal;
-	_tmp5_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+	_tmp5_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 	base_types = _tmp5_;
 	_tmp6_ = vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_COLON);
 	if (_tmp6_) {
@@ -17217,6 +17239,7 @@ static ValaConstant* vala_genie_parser_parse_constant_declaration (ValaGeniePars
 	ValaGenieParserModifierFlags _tmp38_ = 0;
 	ValaConstant* _tmp40_ = NULL;
 	ValaList* _tmp41_ = NULL;
+	ValaGenieParserModifierFlags _tmp42_ = 0;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	vala_genie_parser_get_location (self, &_tmp0_);
@@ -17403,6 +17426,16 @@ static ValaConstant* vala_genie_parser_parse_constant_declaration (ValaGeniePars
 	_tmp40_ = c;
 	_tmp41_ = attrs;
 	vala_genie_parser_set_attributes (self, (ValaCodeNode*) _tmp40_, _tmp41_);
+	_tmp42_ = flags;
+	if ((_tmp42_ & VALA_GENIE_PARSER_MODIFIER_FLAGS_STATIC) == VALA_GENIE_PARSER_MODIFIER_FLAGS_STATIC) {
+		ValaConstant* _tmp43_ = NULL;
+		ValaSourceReference* _tmp44_ = NULL;
+		ValaSourceReference* _tmp45_ = NULL;
+		_tmp43_ = c;
+		_tmp44_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp43_);
+		_tmp45_ = _tmp44_;
+		vala_report_warning (_tmp45_, "the modifier `static' is not applicable to constants");
+	}
 	result = c;
 	_vala_code_node_unref0 (array_type);
 	_vala_code_node_unref0 (initializer);
@@ -18027,7 +18060,7 @@ static ValaMethod* vala_genie_parser_parse_method_declaration (ValaGenieParser* 
 		}
 	}
 	_tmp4_ = g_direct_equal;
-	_tmp5_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+	_tmp5_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 	params = _tmp5_;
 	vala_genie_parser_expect (self, VALA_GENIE_TOKEN_TYPE_OPEN_PARENS, &_inner_error_);
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
@@ -19866,7 +19899,7 @@ static ValaSignal* vala_genie_parser_parse_signal_declaration (ValaGenieParser* 
 		}
 	}
 	_tmp3_ = g_direct_equal;
-	_tmp4_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp3_);
+	_tmp4_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp3_);
 	params = _tmp4_;
 	vala_genie_parser_expect (self, VALA_GENIE_TOKEN_TYPE_OPEN_PARENS, &_inner_error_);
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
@@ -20721,7 +20754,7 @@ static ValaSymbol* vala_genie_parser_parse_interface_declaration (ValaGenieParse
 		}
 	}
 	_tmp4_ = g_direct_equal;
-	_tmp5_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+	_tmp5_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 	base_types = _tmp5_;
 	_tmp6_ = vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_COLON);
 	if (_tmp6_) {
@@ -22654,7 +22687,7 @@ static ValaSymbol* vala_genie_parser_parse_delegate_declaration (ValaGenieParser
 		}
 	}
 	_tmp9_ = g_direct_equal;
-	_tmp10_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp9_);
+	_tmp10_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp9_);
 	params = _tmp10_;
 	vala_genie_parser_expect (self, VALA_GENIE_TOKEN_TYPE_OPEN_PARENS, &_inner_error_);
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
@@ -23074,7 +23107,7 @@ static ValaList* vala_genie_parser_parse_type_parameter_list (ValaGenieParser* s
 		GEqualFunc _tmp1_ = NULL;
 		ValaArrayList* _tmp2_ = NULL;
 		_tmp1_ = g_direct_equal;
-		_tmp2_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp1_);
+		_tmp2_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp1_);
 		list = _tmp2_;
 		{
 			gboolean _tmp3_ = FALSE;
@@ -23139,7 +23172,7 @@ static ValaList* vala_genie_parser_parse_type_parameter_list (ValaGenieParser* s
 			GEqualFunc _tmp15_ = NULL;
 			ValaArrayList* _tmp16_ = NULL;
 			_tmp15_ = g_direct_equal;
-			_tmp16_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp15_);
+			_tmp16_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp15_);
 			_vala_iterable_unref0 (vala_genie_parser__empty_type_parameter_list);
 			vala_genie_parser__empty_type_parameter_list = (ValaList*) _tmp16_;
 		}
@@ -23245,7 +23278,7 @@ static ValaList* vala_genie_parser_parse_type_argument_list (ValaGenieParser* se
 		gboolean _tmp4_ = FALSE;
 		gboolean _tmp12_ = FALSE;
 		_tmp2_ = g_direct_equal;
-		_tmp3_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_);
+		_tmp3_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_);
 		list = _tmp3_;
 		inParens = FALSE;
 		_tmp4_ = vala_genie_parser_accept (self, VALA_GENIE_TOKEN_TYPE_OPEN_PARENS);
@@ -23500,7 +23533,7 @@ static void vala_genie_parser_class_init (ValaGenieParserClass * klass) {
 	vala_genie_parser_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeVisitorClass *) klass)->finalize = vala_genie_parser_finalize;
 	g_type_class_add_private (klass, sizeof (ValaGenieParserPrivate));
-	((ValaCodeVisitorClass *) klass)->visit_source_file = vala_genie_parser_real_visit_source_file;
+	((ValaCodeVisitorClass *) klass)->visit_source_file = (void (*)(ValaCodeVisitor*, ValaSourceFile*)) vala_genie_parser_real_visit_source_file;
 }
 
 

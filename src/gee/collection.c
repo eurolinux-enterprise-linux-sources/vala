@@ -135,8 +135,9 @@ gint vala_collection_get_size (ValaCollection* self);
  * @return     true if item is found, false otherwise
  */
 static gboolean vala_collection_real_contains (ValaCollection* self, gconstpointer item) {
+	gboolean _tmp0_ = FALSE;
 	g_critical ("Type `%s' does not implement abstract method `vala_collection_contains'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
-	return FALSE;
+	return _tmp0_;
 }
 
 
@@ -155,8 +156,9 @@ gboolean vala_collection_contains (ValaCollection* self, gconstpointer item) {
  * @return     true if the collection has been changed, false otherwise
  */
 static gboolean vala_collection_real_add (ValaCollection* self, gconstpointer item) {
+	gboolean _tmp0_ = FALSE;
 	g_critical ("Type `%s' does not implement abstract method `vala_collection_add'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
-	return FALSE;
+	return _tmp0_;
 }
 
 
@@ -175,8 +177,9 @@ gboolean vala_collection_add (ValaCollection* self, gconstpointer item) {
  * @return     true if the collection has been changed, false otherwise
  */
 static gboolean vala_collection_real_remove (ValaCollection* self, gconstpointer item) {
+	gboolean _tmp0_ = FALSE;
 	g_critical ("Type `%s' does not implement abstract method `vala_collection_remove'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
-	return FALSE;
+	return _tmp0_;
 }
 
 
@@ -204,7 +207,7 @@ void vala_collection_clear (ValaCollection* self) {
 
 ValaCollection* vala_collection_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func) {
 	ValaCollection* self = NULL;
-	self = (ValaCollection*) vala_iterable_construct (object_type, g_type, (GBoxedCopyFunc) g_dup_func, g_destroy_func);
+	self = (ValaCollection*) vala_iterable_construct (object_type, g_type, (GBoxedCopyFunc) g_dup_func, (GDestroyNotify) g_destroy_func);
 	self->priv->g_type = g_type;
 	self->priv->g_dup_func = g_dup_func;
 	self->priv->g_destroy_func = g_destroy_func;
@@ -221,10 +224,10 @@ gint vala_collection_get_size (ValaCollection* self) {
 static void vala_collection_class_init (ValaCollectionClass * klass) {
 	vala_collection_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (ValaCollectionPrivate));
-	((ValaCollectionClass *) klass)->contains = vala_collection_real_contains;
-	((ValaCollectionClass *) klass)->add = vala_collection_real_add;
-	((ValaCollectionClass *) klass)->remove = vala_collection_real_remove;
-	((ValaCollectionClass *) klass)->clear = vala_collection_real_clear;
+	((ValaCollectionClass *) klass)->contains = (gboolean (*)(ValaCollection*, gconstpointer)) vala_collection_real_contains;
+	((ValaCollectionClass *) klass)->add = (gboolean (*)(ValaCollection*, gconstpointer)) vala_collection_real_add;
+	((ValaCollectionClass *) klass)->remove = (gboolean (*)(ValaCollection*, gconstpointer)) vala_collection_real_remove;
+	((ValaCollectionClass *) klass)->clear = (void (*)(ValaCollection*)) vala_collection_real_clear;
 }
 
 

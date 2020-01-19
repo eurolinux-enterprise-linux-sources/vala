@@ -688,7 +688,7 @@ static void vala_unresolved_symbol_class_init (ValaUnresolvedSymbolClass * klass
 	vala_unresolved_symbol_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_unresolved_symbol_finalize;
 	g_type_class_add_private (klass, sizeof (ValaUnresolvedSymbolPrivate));
-	((ValaCodeNodeClass *) klass)->to_string = vala_unresolved_symbol_real_to_string;
+	((ValaCodeNodeClass *) klass)->to_string = (gchar* (*)(ValaCodeNode*)) vala_unresolved_symbol_real_to_string;
 }
 
 

@@ -584,13 +584,13 @@ static void vala_pointer_indirection_class_init (ValaPointerIndirectionClass * k
 	vala_pointer_indirection_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_pointer_indirection_finalize;
 	g_type_class_add_private (klass, sizeof (ValaPointerIndirectionPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_pointer_indirection_real_accept;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_pointer_indirection_real_replace_expression;
-	((ValaExpressionClass *) klass)->is_pure = vala_pointer_indirection_real_is_pure;
-	((ValaCodeNodeClass *) klass)->check = vala_pointer_indirection_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_pointer_indirection_real_emit;
-	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_pointer_indirection_real_get_defined_variables;
-	((ValaCodeNodeClass *) klass)->get_used_variables = vala_pointer_indirection_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_pointer_indirection_real_accept;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_pointer_indirection_real_replace_expression;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_pointer_indirection_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_pointer_indirection_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_pointer_indirection_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_pointer_indirection_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_pointer_indirection_real_get_used_variables;
 }
 
 

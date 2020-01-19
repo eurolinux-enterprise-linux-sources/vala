@@ -131,6 +131,9 @@ typedef enum  {
 
 struct _ValaSourceFilePrivate {
 	gchar* _filename;
+	gchar* _package_name;
+	gchar* _installed_version;
+	gboolean _version_requested;
 	ValaSourceFileType _file_type;
 	gboolean _from_commandline;
 	gchar* _gir_namespace;
@@ -248,7 +251,11 @@ gsize vala_source_file_get_mapped_length (ValaSourceFile* self);
 gboolean vala_source_file_check (ValaSourceFile* self, ValaCodeContext* context);
 gboolean vala_code_node_check (ValaCodeNode* self, ValaCodeContext* context);
 void vala_source_file_set_relative_filename (ValaSourceFile* self, const gchar* value);
+const gchar* vala_source_file_get_package_name (ValaSourceFile* self);
 ValaSourceFileType vala_source_file_get_file_type (ValaSourceFile* self);
+void vala_source_file_set_package_name (ValaSourceFile* self, const gchar* value);
+const gchar* vala_source_file_get_installed_version (ValaSourceFile* self);
+void vala_source_file_set_installed_version (ValaSourceFile* self, const gchar* value);
 gboolean vala_source_file_get_from_commandline (ValaSourceFile* self);
 const gchar* vala_source_file_get_gir_namespace (ValaSourceFile* self);
 void vala_source_file_set_gir_namespace (ValaSourceFile* self, const gchar* value);
@@ -266,7 +273,6 @@ static gint _vala_array_length (gpointer array);
  * Creates a new source file.
  *
  * @param filename source file name
- * @param pkg      true if this is a VAPI package file
  * @return         newly created source file
  */
 ValaSourceFile* vala_source_file_construct (GType object_type, ValaCodeContext* context, ValaSourceFileType type, const gchar* filename, const gchar* content, gboolean cmdline) {
@@ -354,7 +360,7 @@ void vala_source_file_add_using_directive (ValaSourceFile* self, ValaUsingDirect
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
 	old_using_directives = _tmp1_;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_array_list_new (VALA_TYPE_USING_DIRECTIVE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_);
+	_tmp3_ = vala_array_list_new (VALA_TYPE_USING_DIRECTIVE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_);
 	_tmp4_ = _tmp3_;
 	vala_source_file_set_current_using_directives (self, (ValaList*) _tmp4_);
 	_vala_iterable_unref0 (_tmp4_);
@@ -717,7 +723,7 @@ static gchar* vala_source_file_get_subdir (ValaSourceFile* self) {
 				break;
 			}
 			_tmp34_ = subdir;
-			_tmp35_ = string_substring (_tmp34_, (glong) 1, (glong) (-1));
+			_tmp35_ = string_substring (_tmp34_, (glong) 1, (glong) -1);
 			_g_free0 (subdir);
 			subdir = _tmp35_;
 		}
@@ -776,7 +782,7 @@ static gint string_last_index_of_char (const gchar* self, gunichar c, gint start
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = start_index;
 	_tmp1_ = c;
-	_tmp2_ = g_utf8_strrchr (((gchar*) self) + _tmp0_, (gssize) (-1), _tmp1_);
+	_tmp2_ = g_utf8_strrchr (((gchar*) self) + _tmp0_, (gssize) -1, _tmp1_);
 	_result_ = _tmp2_;
 	_tmp3_ = _result_;
 	if (_tmp3_ != NULL) {
@@ -1092,7 +1098,7 @@ static void vala_source_file_read_source_file (ValaSourceFile* self) {
 		cont = _tmp1_;
 		if (G_UNLIKELY (_inner_error_ != NULL)) {
 			if (_inner_error_->domain == G_FILE_ERROR) {
-				goto __catch16_g_file_error;
+				goto __catch17_g_file_error;
 			}
 			_g_free0 (cont);
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -1100,8 +1106,8 @@ static void vala_source_file_read_source_file (ValaSourceFile* self) {
 			return;
 		}
 	}
-	goto __finally16;
-	__catch16_g_file_error:
+	goto __finally17;
+	__catch17_g_file_error:
 	{
 		GError* fe = NULL;
 		fe = _inner_error_;
@@ -1110,7 +1116,7 @@ static void vala_source_file_read_source_file (ValaSourceFile* self) {
 		_g_free0 (cont);
 		return;
 	}
-	__finally16:
+	__finally17:
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
 		_g_free0 (cont);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -1136,7 +1142,7 @@ static void vala_source_file_read_source_lines (ValaSourceFile* self, const gcha
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (cont != NULL);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp0_);
+	_tmp1_ = vala_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, _tmp0_);
 	_vala_iterable_unref0 (self->priv->source_array);
 	self->priv->source_array = _tmp1_;
 	_tmp2_ = cont;
@@ -1214,7 +1220,7 @@ gchar* vala_source_file_get_mapped_contents (ValaSourceFile* self) {
 			_tmp5_ = _tmp7_;
 			if (G_UNLIKELY (_inner_error_ != NULL)) {
 				if (_inner_error_->domain == G_FILE_ERROR) {
-					goto __catch17_g_file_error;
+					goto __catch18_g_file_error;
 				}
 				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
@@ -1226,8 +1232,8 @@ gchar* vala_source_file_get_mapped_contents (ValaSourceFile* self) {
 			self->priv->mapped_file = _tmp8_;
 			_g_mapped_file_unref0 (_tmp5_);
 		}
-		goto __finally17;
-		__catch17_g_file_error:
+		goto __finally18;
+		__catch18_g_file_error:
 		{
 			GError* e = NULL;
 			const gchar* _tmp9_ = NULL;
@@ -1248,7 +1254,7 @@ gchar* vala_source_file_get_mapped_contents (ValaSourceFile* self) {
 			_g_error_free0 (e);
 			return result;
 		}
-		__finally17:
+		__finally18:
 		if (G_UNLIKELY (_inner_error_ != NULL)) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
@@ -1373,6 +1379,245 @@ void vala_source_file_set_relative_filename (ValaSourceFile* self, const gchar* 
 	_tmp1_ = g_strdup (_tmp0_);
 	_g_free0 (self->priv->_relative_filename);
 	self->priv->_relative_filename = _tmp1_;
+}
+
+
+static gchar* string_slice (const gchar* self, glong start, glong end) {
+	gchar* result = NULL;
+	glong string_length = 0L;
+	gint _tmp0_ = 0;
+	gint _tmp1_ = 0;
+	glong _tmp2_ = 0L;
+	glong _tmp5_ = 0L;
+	gboolean _tmp8_ = FALSE;
+	glong _tmp9_ = 0L;
+	gboolean _tmp12_ = FALSE;
+	glong _tmp13_ = 0L;
+	glong _tmp16_ = 0L;
+	glong _tmp17_ = 0L;
+	glong _tmp18_ = 0L;
+	glong _tmp19_ = 0L;
+	glong _tmp20_ = 0L;
+	gchar* _tmp21_ = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp0_ = strlen (self);
+	_tmp1_ = _tmp0_;
+	string_length = (glong) _tmp1_;
+	_tmp2_ = start;
+	if (_tmp2_ < ((glong) 0)) {
+		glong _tmp3_ = 0L;
+		glong _tmp4_ = 0L;
+		_tmp3_ = string_length;
+		_tmp4_ = start;
+		start = _tmp3_ + _tmp4_;
+	}
+	_tmp5_ = end;
+	if (_tmp5_ < ((glong) 0)) {
+		glong _tmp6_ = 0L;
+		glong _tmp7_ = 0L;
+		_tmp6_ = string_length;
+		_tmp7_ = end;
+		end = _tmp6_ + _tmp7_;
+	}
+	_tmp9_ = start;
+	if (_tmp9_ >= ((glong) 0)) {
+		glong _tmp10_ = 0L;
+		glong _tmp11_ = 0L;
+		_tmp10_ = start;
+		_tmp11_ = string_length;
+		_tmp8_ = _tmp10_ <= _tmp11_;
+	} else {
+		_tmp8_ = FALSE;
+	}
+	g_return_val_if_fail (_tmp8_, NULL);
+	_tmp13_ = end;
+	if (_tmp13_ >= ((glong) 0)) {
+		glong _tmp14_ = 0L;
+		glong _tmp15_ = 0L;
+		_tmp14_ = end;
+		_tmp15_ = string_length;
+		_tmp12_ = _tmp14_ <= _tmp15_;
+	} else {
+		_tmp12_ = FALSE;
+	}
+	g_return_val_if_fail (_tmp12_, NULL);
+	_tmp16_ = start;
+	_tmp17_ = end;
+	g_return_val_if_fail (_tmp16_ <= _tmp17_, NULL);
+	_tmp18_ = start;
+	_tmp19_ = end;
+	_tmp20_ = start;
+	_tmp21_ = g_strndup (((gchar*) self) + _tmp18_, (gsize) (_tmp19_ - _tmp20_));
+	result = _tmp21_;
+	return result;
+}
+
+
+const gchar* vala_source_file_get_package_name (ValaSourceFile* self) {
+	const gchar* result;
+	ValaSourceFileType _tmp0_ = 0;
+	const gchar* _tmp1_ = NULL;
+	const gchar* _tmp8_ = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp0_ = self->priv->_file_type;
+	if (_tmp0_ != VALA_SOURCE_FILE_TYPE_PACKAGE) {
+		result = NULL;
+		return result;
+	}
+	_tmp1_ = self->priv->_package_name;
+	if (_tmp1_ == NULL) {
+		const gchar* _tmp2_ = NULL;
+		const gchar* _tmp3_ = NULL;
+		gint _tmp4_ = 0;
+		gchar* _tmp5_ = NULL;
+		gchar* _tmp6_ = NULL;
+		gchar* _tmp7_ = NULL;
+		_tmp2_ = self->priv->_filename;
+		_tmp3_ = self->priv->_filename;
+		_tmp4_ = string_last_index_of_char (_tmp3_, (gunichar) '.', 0);
+		_tmp5_ = string_slice (_tmp2_, (glong) 0, (glong) _tmp4_);
+		_tmp6_ = _tmp5_;
+		_tmp7_ = g_path_get_basename (_tmp6_);
+		_g_free0 (self->priv->_package_name);
+		self->priv->_package_name = _tmp7_;
+		_g_free0 (_tmp6_);
+	}
+	_tmp8_ = self->priv->_package_name;
+	result = _tmp8_;
+	return result;
+}
+
+
+void vala_source_file_set_package_name (ValaSourceFile* self, const gchar* value) {
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
+	g_return_if_fail (self != NULL);
+	_tmp0_ = value;
+	_tmp1_ = g_strdup (_tmp0_);
+	_g_free0 (self->priv->_package_name);
+	self->priv->_package_name = _tmp1_;
+}
+
+
+const gchar* vala_source_file_get_installed_version (ValaSourceFile* self) {
+	const gchar* result;
+	gboolean _tmp0_ = FALSE;
+	gchar* pkg_config_name = NULL;
+	const gchar* _tmp2_ = NULL;
+	const gchar* _tmp3_ = NULL;
+	gchar* _tmp4_ = NULL;
+	const gchar* _tmp5_ = NULL;
+	gchar* standard_output = NULL;
+	gint exit_status = 0;
+	const gchar* _tmp12_ = NULL;
+	gchar* _tmp13_ = NULL;
+	const gchar* _tmp14_ = NULL;
+	const gchar* _tmp17_ = NULL;
+	GError * _inner_error_ = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp0_ = self->priv->_version_requested;
+	if (_tmp0_) {
+		const gchar* _tmp1_ = NULL;
+		_tmp1_ = self->priv->_installed_version;
+		result = _tmp1_;
+		return result;
+	}
+	self->priv->_version_requested = TRUE;
+	_tmp2_ = vala_source_file_get_package_name (self);
+	_tmp3_ = _tmp2_;
+	_tmp4_ = g_strdup (_tmp3_);
+	pkg_config_name = _tmp4_;
+	_tmp5_ = pkg_config_name;
+	if (_tmp5_ == NULL) {
+		result = NULL;
+		_g_free0 (pkg_config_name);
+		return result;
+	}
+	{
+		const gchar* _tmp6_ = NULL;
+		gchar* _tmp7_ = NULL;
+		gchar* _tmp8_ = NULL;
+		gchar* _tmp9_ = NULL;
+		gint _tmp10_ = 0;
+		gint _tmp11_ = 0;
+		_tmp6_ = pkg_config_name;
+		_tmp7_ = g_strdup_printf ("pkg-config --silence-errors --modversion %s", _tmp6_);
+		_tmp8_ = _tmp7_;
+		g_spawn_command_line_sync (_tmp8_, &_tmp9_, NULL, &_tmp10_, &_inner_error_);
+		_g_free0 (standard_output);
+		standard_output = _tmp9_;
+		exit_status = _tmp10_;
+		_g_free0 (_tmp8_);
+		if (G_UNLIKELY (_inner_error_ != NULL)) {
+			if (_inner_error_->domain == G_SPAWN_ERROR) {
+				goto __catch19_g_spawn_error;
+			}
+			_g_free0 (standard_output);
+			_g_free0 (pkg_config_name);
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
+		}
+		_tmp11_ = exit_status;
+		if (_tmp11_ != 0) {
+			result = NULL;
+			_g_free0 (standard_output);
+			_g_free0 (pkg_config_name);
+			return result;
+		}
+	}
+	goto __finally19;
+	__catch19_g_spawn_error:
+	{
+		GError* err = NULL;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		result = NULL;
+		_g_error_free0 (err);
+		_g_free0 (standard_output);
+		_g_free0 (pkg_config_name);
+		return result;
+	}
+	__finally19:
+	if (G_UNLIKELY (_inner_error_ != NULL)) {
+		_g_free0 (standard_output);
+		_g_free0 (pkg_config_name);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+		g_clear_error (&_inner_error_);
+		return NULL;
+	}
+	_tmp12_ = standard_output;
+	_tmp13_ = string_slice (_tmp12_, (glong) 0, (glong) -1);
+	_g_free0 (standard_output);
+	standard_output = _tmp13_;
+	_tmp14_ = standard_output;
+	if (g_strcmp0 (_tmp14_, "") != 0) {
+		const gchar* _tmp15_ = NULL;
+		gchar* _tmp16_ = NULL;
+		_tmp15_ = standard_output;
+		_tmp16_ = g_strdup (_tmp15_);
+		_g_free0 (self->priv->_installed_version);
+		self->priv->_installed_version = _tmp16_;
+	}
+	_tmp17_ = self->priv->_installed_version;
+	result = _tmp17_;
+	_g_free0 (standard_output);
+	_g_free0 (pkg_config_name);
+	return result;
+}
+
+
+void vala_source_file_set_installed_version (ValaSourceFile* self, const gchar* value) {
+	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
+	gchar* _tmp2_ = NULL;
+	g_return_if_fail (self != NULL);
+	_tmp0_ = value;
+	self->priv->_version_requested = _tmp0_ != NULL;
+	_tmp1_ = value;
+	_tmp2_ = g_strdup (_tmp1_);
+	_g_free0 (self->priv->_installed_version);
+	self->priv->_installed_version = _tmp2_;
 }
 
 
@@ -1659,14 +1904,16 @@ static void vala_source_file_instance_init (ValaSourceFile * self) {
 	GEqualFunc _tmp4_ = NULL;
 	ValaArrayList* _tmp5_ = NULL;
 	self->priv = VALA_SOURCE_FILE_GET_PRIVATE (self);
+	self->priv->_installed_version = NULL;
+	self->priv->_version_requested = FALSE;
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_COMMENT, (GBoxedCopyFunc) vala_comment_ref, vala_comment_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_COMMENT, (GBoxedCopyFunc) vala_comment_ref, (GDestroyNotify) vala_comment_unref, _tmp0_);
 	self->priv->comments = _tmp1_;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_array_list_new (VALA_TYPE_USING_DIRECTIVE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_);
+	_tmp3_ = vala_array_list_new (VALA_TYPE_USING_DIRECTIVE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_);
 	self->priv->_current_using_directives = (ValaList*) _tmp3_;
 	_tmp4_ = g_direct_equal;
-	_tmp5_ = vala_array_list_new (VALA_TYPE_CODE_NODE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+	_tmp5_ = vala_array_list_new (VALA_TYPE_CODE_NODE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 	self->priv->nodes = (ValaList*) _tmp5_;
 	self->priv->csource_filename = NULL;
 	self->priv->cinclude_filename = NULL;
@@ -1682,6 +1929,8 @@ static void vala_source_file_finalize (ValaSourceFile* obj) {
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_SOURCE_FILE, ValaSourceFile);
 	g_signal_handlers_destroy (self);
 	_g_free0 (self->priv->_filename);
+	_g_free0 (self->priv->_package_name);
+	_g_free0 (self->priv->_installed_version);
 	_g_free0 (self->priv->_gir_namespace);
 	_g_free0 (self->priv->_gir_version);
 	_vala_iterable_unref0 (self->priv->comments);

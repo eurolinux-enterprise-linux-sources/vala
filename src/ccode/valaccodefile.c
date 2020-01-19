@@ -415,7 +415,7 @@ ValaList* vala_ccode_file_get_symbols (ValaCCodeFile* self) {
 	ValaCCodeFragment* _tmp2_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp0_);
+	_tmp1_ = vala_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, _tmp0_);
 	symbols = _tmp1_;
 	_tmp2_ = self->priv->type_member_declaration;
 	vala_ccode_file_get_symbols_from_fragment (self, (ValaList*) symbols, _tmp2_);
@@ -1026,11 +1026,11 @@ static void vala_ccode_file_instance_init (ValaCCodeFile * self) {
 	self->priv = VALA_CCODE_FILE_GET_PRIVATE (self);
 	_tmp0_ = g_str_hash;
 	_tmp1_ = g_str_equal;
-	_tmp2_ = vala_hash_set_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp0_, _tmp1_);
+	_tmp2_ = vala_hash_set_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, _tmp0_, _tmp1_);
 	self->priv->declarations = (ValaSet*) _tmp2_;
 	_tmp3_ = g_str_hash;
 	_tmp4_ = g_str_equal;
-	_tmp5_ = vala_hash_set_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp3_, _tmp4_);
+	_tmp5_ = vala_hash_set_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, _tmp3_, _tmp4_);
 	self->priv->includes = (ValaSet*) _tmp5_;
 	_tmp6_ = vala_ccode_fragment_new ();
 	self->priv->comments = _tmp6_;

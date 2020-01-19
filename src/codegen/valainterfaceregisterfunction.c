@@ -456,17 +456,17 @@ static void vala_interface_register_function_class_init (ValaInterfaceRegisterFu
 	vala_interface_register_function_parent_class = g_type_class_peek_parent (klass);
 	((ValaTypeRegisterFunctionClass *) klass)->finalize = vala_interface_register_function_finalize;
 	g_type_class_add_private (klass, sizeof (ValaInterfaceRegisterFunctionPrivate));
-	((ValaTypeRegisterFunctionClass *) klass)->get_type_declaration = vala_interface_register_function_real_get_type_declaration;
-	((ValaTypeRegisterFunctionClass *) klass)->get_type_struct_name = vala_interface_register_function_real_get_type_struct_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_base_init_func_name = vala_interface_register_function_real_get_base_init_func_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_class_finalize_func_name = vala_interface_register_function_real_get_class_finalize_func_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_base_finalize_func_name = vala_interface_register_function_real_get_base_finalize_func_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_class_init_func_name = vala_interface_register_function_real_get_class_init_func_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_instance_struct_size = vala_interface_register_function_real_get_instance_struct_size;
-	((ValaTypeRegisterFunctionClass *) klass)->get_instance_init_func_name = vala_interface_register_function_real_get_instance_init_func_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_parent_type_name = vala_interface_register_function_real_get_parent_type_name;
-	((ValaTypeRegisterFunctionClass *) klass)->get_accessibility = vala_interface_register_function_real_get_accessibility;
-	((ValaTypeRegisterFunctionClass *) klass)->get_type_interface_init_statements = vala_interface_register_function_real_get_type_interface_init_statements;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_declaration = (ValaTypeSymbol* (*)(ValaTypeRegisterFunction*)) vala_interface_register_function_real_get_type_declaration;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_struct_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_interface_register_function_real_get_type_struct_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_base_init_func_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_interface_register_function_real_get_base_init_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_class_finalize_func_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_interface_register_function_real_get_class_finalize_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_base_finalize_func_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_interface_register_function_real_get_base_finalize_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_class_init_func_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_interface_register_function_real_get_class_init_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_instance_struct_size = (gchar* (*)(ValaTypeRegisterFunction*)) vala_interface_register_function_real_get_instance_struct_size;
+	((ValaTypeRegisterFunctionClass *) klass)->get_instance_init_func_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_interface_register_function_real_get_instance_init_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_parent_type_name = (gchar* (*)(ValaTypeRegisterFunction*)) vala_interface_register_function_real_get_parent_type_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_accessibility = (ValaSymbolAccessibility (*)(ValaTypeRegisterFunction*)) vala_interface_register_function_real_get_accessibility;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_interface_init_statements = (void (*)(ValaTypeRegisterFunction*, ValaCCodeBlock*, gboolean)) vala_interface_register_function_real_get_type_interface_init_statements;
 }
 
 

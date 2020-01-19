@@ -480,7 +480,7 @@ static gboolean vala_try_statement_real_check (ValaCodeNode* base, ValaCodeConte
 	_tmp6_ = context;
 	vala_code_node_check ((ValaCodeNode*) _tmp5_, _tmp6_);
 	_tmp7_ = g_direct_equal;
-	_tmp8_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp7_);
+	_tmp8_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp7_);
 	error_types = _tmp8_;
 	{
 		ValaList* _body_error_type_list = NULL;
@@ -530,7 +530,7 @@ static gboolean vala_try_statement_real_check (ValaCodeNode* base, ValaCodeConte
 		_vala_iterable_unref0 (_body_error_type_list);
 	}
 	_tmp23_ = g_direct_equal;
-	_tmp24_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp23_);
+	_tmp24_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp23_);
 	handled_error_types = _tmp24_;
 	{
 		ValaList* _clause_list = NULL;
@@ -901,10 +901,10 @@ static void vala_try_statement_class_init (ValaTryStatementClass * klass) {
 	vala_try_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_try_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaTryStatementPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_try_statement_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_try_statement_real_accept_children;
-	((ValaCodeNodeClass *) klass)->check = vala_try_statement_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_try_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_try_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_try_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_try_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_try_statement_real_emit;
 }
 
 
@@ -919,7 +919,7 @@ static void vala_try_statement_instance_init (ValaTryStatement * self) {
 	self->priv = VALA_TRY_STATEMENT_GET_PRIVATE (self);
 	self->priv->_after_try_block_reachable = TRUE;
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_CATCH_CLAUSE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_CATCH_CLAUSE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->catch_clauses = (ValaList*) _tmp1_;
 }
 

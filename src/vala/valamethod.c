@@ -402,16 +402,6 @@ typedef struct _ValaObjectTypeClass ValaObjectTypeClass;
 
 typedef struct _ValaGenericType ValaGenericType;
 typedef struct _ValaGenericTypeClass ValaGenericTypeClass;
-
-#define VALA_TYPE_MEMBER_ACCESS (vala_member_access_get_type ())
-#define VALA_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccess))
-#define VALA_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
-#define VALA_IS_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_IS_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_MEMBER_ACCESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
-
-typedef struct _ValaMemberAccess ValaMemberAccess;
-typedef struct _ValaMemberAccessClass ValaMemberAccessClass;
 #define _vala_iterator_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterator_unref (var), NULL)))
 
 #define VALA_TYPE_PARAMETER_DIRECTION (vala_parameter_direction_get_type ())
@@ -827,6 +817,16 @@ typedef struct _ValaTupleClass ValaTupleClass;
 typedef struct _ValaNullLiteral ValaNullLiteral;
 typedef struct _ValaNullLiteralClass ValaNullLiteralClass;
 
+#define VALA_TYPE_MEMBER_ACCESS (vala_member_access_get_type ())
+#define VALA_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccess))
+#define VALA_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
+#define VALA_IS_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_MEMBER_ACCESS))
+#define VALA_IS_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_MEMBER_ACCESS))
+#define VALA_MEMBER_ACCESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
+
+typedef struct _ValaMemberAccess ValaMemberAccess;
+typedef struct _ValaMemberAccessClass ValaMemberAccessClass;
+
 #define VALA_TYPE_METHOD_CALL (vala_method_call_get_type ())
 #define VALA_METHOD_CALL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_METHOD_CALL, ValaMethodCall))
 #define VALA_METHOD_CALL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_METHOD_CALL, ValaMethodCallClass))
@@ -1094,6 +1094,9 @@ typedef struct _ValaBooleanTypeClass ValaBooleanTypeClass;
 typedef struct _ValaDelegateType ValaDelegateType;
 typedef struct _ValaDelegateTypeClass ValaDelegateTypeClass;
 #define _vala_assert(expr, msg) if G_LIKELY (expr) ; else g_assertion_message_expr (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
+#define _vala_return_if_fail(expr, msg) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return; }
+#define _vala_return_val_if_fail(expr, msg, val) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return val; }
+#define _vala_warn_if_fail(expr, msg) if G_LIKELY (expr) ; else g_warn_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
 
 struct _ValaCodeNode {
 	GTypeInstance parent_instance;
@@ -1464,9 +1467,9 @@ ValaGenericType* vala_generic_type_new (ValaTypeParameter* type_parameter);
 ValaGenericType* vala_generic_type_construct (GType object_type, ValaTypeParameter* type_parameter);
 void vala_data_type_set_value_owned (ValaDataType* self, gboolean value);
 void vala_data_type_add_type_argument (ValaDataType* self, ValaDataType* arg);
-GType vala_member_access_get_type (void) G_GNUC_CONST;
-ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
+ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
 gboolean vala_data_type_equals (ValaDataType* self, ValaDataType* type2);
+gchar* vala_data_type_to_qualified_string (ValaDataType* self, ValaScope* scope);
 GType vala_parameter_direction_get_type (void) G_GNUC_CONST;
 ValaParameterDirection vala_parameter_get_direction (ValaParameter* self);
 ValaDataType* vala_variable_get_variable_type (ValaVariable* self);
@@ -1555,6 +1558,7 @@ GType vala_string_literal_get_type (void) G_GNUC_CONST;
 GType vala_template_get_type (void) G_GNUC_CONST;
 GType vala_tuple_get_type (void) G_GNUC_CONST;
 GType vala_null_literal_get_type (void) G_GNUC_CONST;
+GType vala_member_access_get_type (void) G_GNUC_CONST;
 GType vala_method_call_get_type (void) G_GNUC_CONST;
 GType vala_element_access_get_type (void) G_GNUC_CONST;
 GType vala_slice_expression_get_type (void) G_GNUC_CONST;
@@ -1607,6 +1611,7 @@ ValaMethod* vala_code_context_get_entry_point (ValaCodeContext* self);
 static void vala_method_set_entry_point (ValaMethod* self, gboolean value);
 void vala_code_context_set_entry_point (ValaCodeContext* self, ValaMethod* value);
 gboolean vala_code_node_get_tree_can_fail (ValaCodeNode* self);
+gboolean vala_method_get_is_inline (ValaMethod* self);
 void vala_symbol_set_used (ValaSymbol* self, gboolean value);
 const gchar* vala_code_context_get_entry_point_name (ValaCodeContext* self);
 GType vala_void_type_get_type (void) G_GNUC_CONST;
@@ -1646,7 +1651,6 @@ static void vala_method_real_get_defined_variables (ValaCodeNode* base, ValaColl
 void vala_method_set_is_abstract (ValaMethod* self, gboolean value);
 void vala_method_set_is_virtual (ValaMethod* self, gboolean value);
 void vala_method_set_overrides (ValaMethod* self, gboolean value);
-gboolean vala_method_get_is_inline (ValaMethod* self);
 void vala_method_set_is_inline (ValaMethod* self, gboolean value);
 gboolean vala_method_get_returns_floating_reference (ValaMethod* self);
 gboolean vala_code_node_get_attribute_bool (ValaCodeNode* self, const gchar* attribute, const gchar* argument, gboolean default_value);
@@ -1676,10 +1680,10 @@ static void vala_method_finalize (ValaCodeNode* obj);
 /**
  * Creates a new method.
  *
- * @param name        method name
- * @param return_type method return type
- * @param source      reference to source code
- * @return            newly created method
+ * @param name              method name
+ * @param return_type       method return type
+ * @param source_reference  reference to source code
+ * @return                  newly created method
  */
 ValaMethod* vala_method_construct (GType object_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaMethod* self = NULL;
@@ -2194,25 +2198,42 @@ gboolean vala_method_compatible (ValaMethod* self, ValaMethod* base_method, gcha
 	ValaObjectType* object_type = NULL;
 	ValaSymbol* _tmp4_ = NULL;
 	ValaSymbol* _tmp5_ = NULL;
+	ValaList* _tmp27_ = NULL;
+	ValaList* _tmp28_ = NULL;
+	gint _tmp29_ = 0;
+	gint _tmp30_ = 0;
+	ValaMethod* _tmp31_ = NULL;
+	ValaList* _tmp32_ = NULL;
+	ValaList* _tmp33_ = NULL;
+	gint _tmp34_ = 0;
+	gint _tmp35_ = 0;
+	gboolean _tmp36_ = FALSE;
+	ValaList* method_type_args = NULL;
+	ValaList* _tmp49_ = NULL;
+	ValaList* _tmp50_ = NULL;
+	gint _tmp51_ = 0;
+	gint _tmp52_ = 0;
+	gboolean _tmp53_ = FALSE;
 	ValaDataType* actual_base_type = NULL;
-	ValaMethod* _tmp27_ = NULL;
-	ValaDataType* _tmp28_ = NULL;
-	ValaDataType* _tmp29_ = NULL;
-	ValaObjectType* _tmp30_ = NULL;
-	ValaDataType* _tmp31_ = NULL;
-	ValaDataType* _tmp32_ = NULL;
-	ValaDataType* _tmp33_ = NULL;
-	ValaDataType* _tmp34_ = NULL;
-	gboolean _tmp35_ = FALSE;
+	ValaMethod* _tmp71_ = NULL;
+	ValaDataType* _tmp72_ = NULL;
+	ValaDataType* _tmp73_ = NULL;
+	ValaObjectType* _tmp74_ = NULL;
+	ValaList* _tmp75_ = NULL;
+	ValaDataType* _tmp76_ = NULL;
+	ValaDataType* _tmp77_ = NULL;
+	ValaDataType* _tmp78_ = NULL;
+	ValaDataType* _tmp79_ = NULL;
+	gboolean _tmp80_ = FALSE;
 	ValaIterator* method_params_it = NULL;
-	ValaList* _tmp37_ = NULL;
-	ValaIterator* _tmp38_ = NULL;
+	ValaList* _tmp89_ = NULL;
+	ValaIterator* _tmp90_ = NULL;
 	gint param_index = 0;
-	ValaIterator* _tmp87_ = NULL;
-	gboolean _tmp88_ = FALSE;
-	ValaMethod* _tmp119_ = NULL;
-	gboolean _tmp120_ = FALSE;
-	gboolean _tmp121_ = FALSE;
+	ValaIterator* _tmp140_ = NULL;
+	gboolean _tmp141_ = FALSE;
+	ValaMethod* _tmp172_ = NULL;
+	gboolean _tmp173_ = FALSE;
+	gboolean _tmp174_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (base_method != NULL, FALSE);
 	_tmp0_ = self->priv->_binding;
@@ -2303,23 +2324,172 @@ gboolean vala_method_compatible (ValaMethod* self, ValaMethod* base_method, gcha
 			_vala_iterable_unref0 (_type_parameter_list);
 		}
 	}
-	_tmp27_ = base_method;
-	_tmp28_ = vala_method_get_return_type (_tmp27_);
-	_tmp29_ = _tmp28_;
-	_tmp30_ = object_type;
-	_tmp31_ = vala_data_type_get_actual_type (_tmp29_, (ValaDataType*) _tmp30_, NULL, (ValaCodeNode*) self);
-	actual_base_type = _tmp31_;
-	_tmp32_ = vala_method_get_return_type (self);
+	_tmp27_ = vala_method_get_type_parameters (self);
+	_tmp28_ = _tmp27_;
+	_tmp29_ = vala_collection_get_size ((ValaCollection*) _tmp28_);
+	_tmp30_ = _tmp29_;
+	_tmp31_ = base_method;
+	_tmp32_ = vala_method_get_type_parameters (_tmp31_);
 	_tmp33_ = _tmp32_;
-	_tmp34_ = actual_base_type;
-	_tmp35_ = vala_data_type_equals (_tmp33_, _tmp34_);
-	if (!_tmp35_) {
-		gchar* _tmp36_ = NULL;
-		_tmp36_ = g_strdup ("incompatible return type");
+	_tmp34_ = vala_collection_get_size ((ValaCollection*) _tmp33_);
+	_tmp35_ = _tmp34_;
+	_tmp36_ = _tmp30_ < _tmp35_;
+	_vala_iterable_unref0 (_tmp33_);
+	_vala_iterable_unref0 (_tmp28_);
+	if (_tmp36_) {
+		gchar* _tmp37_ = NULL;
+		_tmp37_ = g_strdup ("too few type parameters");
 		_g_free0 (_vala_invalid_match);
-		_vala_invalid_match = _tmp36_;
+		_vala_invalid_match = _tmp37_;
+		result = FALSE;
+		_vala_code_node_unref0 (object_type);
+		if (invalid_match) {
+			*invalid_match = _vala_invalid_match;
+		} else {
+			_g_free0 (_vala_invalid_match);
+		}
+		return result;
+	} else {
+		ValaList* _tmp38_ = NULL;
+		ValaList* _tmp39_ = NULL;
+		gint _tmp40_ = 0;
+		gint _tmp41_ = 0;
+		ValaMethod* _tmp42_ = NULL;
+		ValaList* _tmp43_ = NULL;
+		ValaList* _tmp44_ = NULL;
+		gint _tmp45_ = 0;
+		gint _tmp46_ = 0;
+		gboolean _tmp47_ = FALSE;
+		_tmp38_ = vala_method_get_type_parameters (self);
+		_tmp39_ = _tmp38_;
+		_tmp40_ = vala_collection_get_size ((ValaCollection*) _tmp39_);
+		_tmp41_ = _tmp40_;
+		_tmp42_ = base_method;
+		_tmp43_ = vala_method_get_type_parameters (_tmp42_);
+		_tmp44_ = _tmp43_;
+		_tmp45_ = vala_collection_get_size ((ValaCollection*) _tmp44_);
+		_tmp46_ = _tmp45_;
+		_tmp47_ = _tmp41_ > _tmp46_;
+		_vala_iterable_unref0 (_tmp44_);
+		_vala_iterable_unref0 (_tmp39_);
+		if (_tmp47_) {
+			gchar* _tmp48_ = NULL;
+			_tmp48_ = g_strdup ("too many type parameters");
+			_g_free0 (_vala_invalid_match);
+			_vala_invalid_match = _tmp48_;
+			result = FALSE;
+			_vala_code_node_unref0 (object_type);
+			if (invalid_match) {
+				*invalid_match = _vala_invalid_match;
+			} else {
+				_g_free0 (_vala_invalid_match);
+			}
+			return result;
+		}
+	}
+	method_type_args = NULL;
+	_tmp49_ = vala_method_get_type_parameters (self);
+	_tmp50_ = _tmp49_;
+	_tmp51_ = vala_collection_get_size ((ValaCollection*) _tmp50_);
+	_tmp52_ = _tmp51_;
+	_tmp53_ = _tmp52_ > 0;
+	_vala_iterable_unref0 (_tmp50_);
+	if (_tmp53_) {
+		GEqualFunc _tmp54_ = NULL;
+		ValaArrayList* _tmp55_ = NULL;
+		_tmp54_ = g_direct_equal;
+		_tmp55_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp54_);
+		_vala_iterable_unref0 (method_type_args);
+		method_type_args = (ValaList*) _tmp55_;
+		{
+			ValaList* _type_parameter_list = NULL;
+			ValaList* _tmp56_ = NULL;
+			gint _type_parameter_size = 0;
+			ValaList* _tmp57_ = NULL;
+			gint _tmp58_ = 0;
+			gint _tmp59_ = 0;
+			gint _type_parameter_index = 0;
+			_tmp56_ = vala_method_get_type_parameters (self);
+			_type_parameter_list = _tmp56_;
+			_tmp57_ = _type_parameter_list;
+			_tmp58_ = vala_collection_get_size ((ValaCollection*) _tmp57_);
+			_tmp59_ = _tmp58_;
+			_type_parameter_size = _tmp59_;
+			_type_parameter_index = -1;
+			while (TRUE) {
+				gint _tmp60_ = 0;
+				gint _tmp61_ = 0;
+				gint _tmp62_ = 0;
+				ValaTypeParameter* type_parameter = NULL;
+				ValaList* _tmp63_ = NULL;
+				gint _tmp64_ = 0;
+				gpointer _tmp65_ = NULL;
+				ValaGenericType* type_arg = NULL;
+				ValaTypeParameter* _tmp66_ = NULL;
+				ValaGenericType* _tmp67_ = NULL;
+				ValaGenericType* _tmp68_ = NULL;
+				ValaList* _tmp69_ = NULL;
+				ValaGenericType* _tmp70_ = NULL;
+				_tmp60_ = _type_parameter_index;
+				_type_parameter_index = _tmp60_ + 1;
+				_tmp61_ = _type_parameter_index;
+				_tmp62_ = _type_parameter_size;
+				if (!(_tmp61_ < _tmp62_)) {
+					break;
+				}
+				_tmp63_ = _type_parameter_list;
+				_tmp64_ = _type_parameter_index;
+				_tmp65_ = vala_list_get (_tmp63_, _tmp64_);
+				type_parameter = (ValaTypeParameter*) _tmp65_;
+				_tmp66_ = type_parameter;
+				_tmp67_ = vala_generic_type_new (_tmp66_);
+				type_arg = _tmp67_;
+				_tmp68_ = type_arg;
+				vala_data_type_set_value_owned ((ValaDataType*) _tmp68_, TRUE);
+				_tmp69_ = method_type_args;
+				_tmp70_ = type_arg;
+				vala_collection_add ((ValaCollection*) _tmp69_, (ValaDataType*) _tmp70_);
+				_vala_code_node_unref0 (type_arg);
+				_vala_code_node_unref0 (type_parameter);
+			}
+			_vala_iterable_unref0 (_type_parameter_list);
+		}
+	}
+	_tmp71_ = base_method;
+	_tmp72_ = vala_method_get_return_type (_tmp71_);
+	_tmp73_ = _tmp72_;
+	_tmp74_ = object_type;
+	_tmp75_ = method_type_args;
+	_tmp76_ = vala_data_type_get_actual_type (_tmp73_, (ValaDataType*) _tmp74_, _tmp75_, (ValaCodeNode*) self);
+	actual_base_type = _tmp76_;
+	_tmp77_ = vala_method_get_return_type (self);
+	_tmp78_ = _tmp77_;
+	_tmp79_ = actual_base_type;
+	_tmp80_ = vala_data_type_equals (_tmp78_, _tmp79_);
+	if (!_tmp80_) {
+		ValaDataType* _tmp81_ = NULL;
+		gchar* _tmp82_ = NULL;
+		gchar* _tmp83_ = NULL;
+		ValaDataType* _tmp84_ = NULL;
+		ValaDataType* _tmp85_ = NULL;
+		gchar* _tmp86_ = NULL;
+		gchar* _tmp87_ = NULL;
+		gchar* _tmp88_ = NULL;
+		_tmp81_ = actual_base_type;
+		_tmp82_ = vala_data_type_to_qualified_string (_tmp81_, NULL);
+		_tmp83_ = _tmp82_;
+		_tmp84_ = vala_method_get_return_type (self);
+		_tmp85_ = _tmp84_;
+		_tmp86_ = vala_data_type_to_qualified_string (_tmp85_, NULL);
+		_tmp87_ = _tmp86_;
+		_tmp88_ = g_strdup_printf ("Base method expected return type `%s', but `%s' was provided", _tmp83_, _tmp87_);
+		_g_free0 (_vala_invalid_match);
+		_vala_invalid_match = _tmp88_;
+		_g_free0 (_tmp87_);
+		_g_free0 (_tmp83_);
 		result = FALSE;
 		_vala_code_node_unref0 (actual_base_type);
+		_vala_iterable_unref0 (method_type_args);
 		_vala_code_node_unref0 (object_type);
 		if (invalid_match) {
 			*invalid_match = _vala_invalid_match;
@@ -2328,75 +2498,76 @@ gboolean vala_method_compatible (ValaMethod* self, ValaMethod* base_method, gcha
 		}
 		return result;
 	}
-	_tmp37_ = self->priv->parameters;
-	_tmp38_ = vala_iterable_iterator ((ValaIterable*) _tmp37_);
-	method_params_it = _tmp38_;
+	_tmp89_ = self->priv->parameters;
+	_tmp90_ = vala_iterable_iterator ((ValaIterable*) _tmp89_);
+	method_params_it = _tmp90_;
 	param_index = 1;
 	{
 		ValaList* _base_param_list = NULL;
-		ValaMethod* _tmp39_ = NULL;
-		ValaList* _tmp40_ = NULL;
-		ValaList* _tmp41_ = NULL;
+		ValaMethod* _tmp91_ = NULL;
+		ValaList* _tmp92_ = NULL;
+		ValaList* _tmp93_ = NULL;
 		gint _base_param_size = 0;
-		ValaList* _tmp42_ = NULL;
-		gint _tmp43_ = 0;
-		gint _tmp44_ = 0;
+		ValaList* _tmp94_ = NULL;
+		gint _tmp95_ = 0;
+		gint _tmp96_ = 0;
 		gint _base_param_index = 0;
-		_tmp39_ = base_method;
-		_tmp40_ = _tmp39_->priv->parameters;
-		_tmp41_ = _vala_iterable_ref0 (_tmp40_);
-		_base_param_list = _tmp41_;
-		_tmp42_ = _base_param_list;
-		_tmp43_ = vala_collection_get_size ((ValaCollection*) _tmp42_);
-		_tmp44_ = _tmp43_;
-		_base_param_size = _tmp44_;
+		_tmp91_ = base_method;
+		_tmp92_ = _tmp91_->priv->parameters;
+		_tmp93_ = _vala_iterable_ref0 (_tmp92_);
+		_base_param_list = _tmp93_;
+		_tmp94_ = _base_param_list;
+		_tmp95_ = vala_collection_get_size ((ValaCollection*) _tmp94_);
+		_tmp96_ = _tmp95_;
+		_base_param_size = _tmp96_;
 		_base_param_index = -1;
 		while (TRUE) {
-			gint _tmp45_ = 0;
-			gint _tmp46_ = 0;
-			gint _tmp47_ = 0;
+			gint _tmp97_ = 0;
+			gint _tmp98_ = 0;
+			gint _tmp99_ = 0;
 			ValaParameter* base_param = NULL;
-			ValaList* _tmp48_ = NULL;
-			gint _tmp49_ = 0;
-			gpointer _tmp50_ = NULL;
-			ValaIterator* _tmp51_ = NULL;
-			gboolean _tmp52_ = FALSE;
+			ValaList* _tmp100_ = NULL;
+			gint _tmp101_ = 0;
+			gpointer _tmp102_ = NULL;
+			ValaIterator* _tmp103_ = NULL;
+			gboolean _tmp104_ = FALSE;
 			ValaParameter* param = NULL;
-			ValaIterator* _tmp54_ = NULL;
-			gpointer _tmp55_ = NULL;
-			ValaParameter* _tmp56_ = NULL;
-			gboolean _tmp57_ = FALSE;
-			gboolean _tmp58_ = FALSE;
-			ValaParameter* _tmp59_ = NULL;
-			gboolean _tmp60_ = FALSE;
-			gboolean _tmp61_ = FALSE;
-			ValaParameter* _tmp63_ = NULL;
-			gboolean _tmp64_ = FALSE;
-			gboolean _tmp65_ = FALSE;
-			gint _tmp86_ = 0;
-			_tmp45_ = _base_param_index;
-			_base_param_index = _tmp45_ + 1;
-			_tmp46_ = _base_param_index;
-			_tmp47_ = _base_param_size;
-			if (!(_tmp46_ < _tmp47_)) {
+			ValaIterator* _tmp106_ = NULL;
+			gpointer _tmp107_ = NULL;
+			ValaParameter* _tmp108_ = NULL;
+			gboolean _tmp109_ = FALSE;
+			gboolean _tmp110_ = FALSE;
+			ValaParameter* _tmp111_ = NULL;
+			gboolean _tmp112_ = FALSE;
+			gboolean _tmp113_ = FALSE;
+			ValaParameter* _tmp115_ = NULL;
+			gboolean _tmp116_ = FALSE;
+			gboolean _tmp117_ = FALSE;
+			gint _tmp139_ = 0;
+			_tmp97_ = _base_param_index;
+			_base_param_index = _tmp97_ + 1;
+			_tmp98_ = _base_param_index;
+			_tmp99_ = _base_param_size;
+			if (!(_tmp98_ < _tmp99_)) {
 				break;
 			}
-			_tmp48_ = _base_param_list;
-			_tmp49_ = _base_param_index;
-			_tmp50_ = vala_list_get (_tmp48_, _tmp49_);
-			base_param = (ValaParameter*) _tmp50_;
-			_tmp51_ = method_params_it;
-			_tmp52_ = vala_iterator_next (_tmp51_);
-			if (!_tmp52_) {
-				gchar* _tmp53_ = NULL;
-				_tmp53_ = g_strdup ("too few parameters");
+			_tmp100_ = _base_param_list;
+			_tmp101_ = _base_param_index;
+			_tmp102_ = vala_list_get (_tmp100_, _tmp101_);
+			base_param = (ValaParameter*) _tmp102_;
+			_tmp103_ = method_params_it;
+			_tmp104_ = vala_iterator_next (_tmp103_);
+			if (!_tmp104_) {
+				gchar* _tmp105_ = NULL;
+				_tmp105_ = g_strdup ("too few parameters");
 				_g_free0 (_vala_invalid_match);
-				_vala_invalid_match = _tmp53_;
+				_vala_invalid_match = _tmp105_;
 				result = FALSE;
 				_vala_code_node_unref0 (base_param);
 				_vala_iterable_unref0 (_base_param_list);
 				_vala_iterator_unref0 (method_params_it);
 				_vala_code_node_unref0 (actual_base_type);
+				_vala_iterable_unref0 (method_type_args);
 				_vala_code_node_unref0 (object_type);
 				if (invalid_match) {
 					*invalid_match = _vala_invalid_match;
@@ -2405,26 +2576,27 @@ gboolean vala_method_compatible (ValaMethod* self, ValaMethod* base_method, gcha
 				}
 				return result;
 			}
-			_tmp54_ = method_params_it;
-			_tmp55_ = vala_iterator_get (_tmp54_);
-			param = (ValaParameter*) _tmp55_;
-			_tmp56_ = base_param;
-			_tmp57_ = vala_parameter_get_ellipsis (_tmp56_);
-			_tmp58_ = _tmp57_;
-			_tmp59_ = param;
-			_tmp60_ = vala_parameter_get_ellipsis (_tmp59_);
-			_tmp61_ = _tmp60_;
-			if (_tmp58_ != _tmp61_) {
-				gchar* _tmp62_ = NULL;
-				_tmp62_ = g_strdup ("ellipsis parameter mismatch");
+			_tmp106_ = method_params_it;
+			_tmp107_ = vala_iterator_get (_tmp106_);
+			param = (ValaParameter*) _tmp107_;
+			_tmp108_ = base_param;
+			_tmp109_ = vala_parameter_get_ellipsis (_tmp108_);
+			_tmp110_ = _tmp109_;
+			_tmp111_ = param;
+			_tmp112_ = vala_parameter_get_ellipsis (_tmp111_);
+			_tmp113_ = _tmp112_;
+			if (_tmp110_ != _tmp113_) {
+				gchar* _tmp114_ = NULL;
+				_tmp114_ = g_strdup ("ellipsis parameter mismatch");
 				_g_free0 (_vala_invalid_match);
-				_vala_invalid_match = _tmp62_;
+				_vala_invalid_match = _tmp114_;
 				result = FALSE;
 				_vala_code_node_unref0 (param);
 				_vala_code_node_unref0 (base_param);
 				_vala_iterable_unref0 (_base_param_list);
 				_vala_iterator_unref0 (method_params_it);
 				_vala_code_node_unref0 (actual_base_type);
+				_vala_iterable_unref0 (method_type_args);
 				_vala_code_node_unref0 (object_type);
 				if (invalid_match) {
 					*invalid_match = _vala_invalid_match;
@@ -2433,45 +2605,47 @@ gboolean vala_method_compatible (ValaMethod* self, ValaMethod* base_method, gcha
 				}
 				return result;
 			}
-			_tmp63_ = base_param;
-			_tmp64_ = vala_parameter_get_ellipsis (_tmp63_);
-			_tmp65_ = _tmp64_;
-			if (!_tmp65_) {
-				ValaParameter* _tmp66_ = NULL;
-				ValaParameterDirection _tmp67_ = 0;
-				ValaParameterDirection _tmp68_ = 0;
-				ValaParameter* _tmp69_ = NULL;
-				ValaParameterDirection _tmp70_ = 0;
-				ValaParameterDirection _tmp71_ = 0;
-				ValaParameter* _tmp74_ = NULL;
-				ValaDataType* _tmp75_ = NULL;
-				ValaDataType* _tmp76_ = NULL;
-				ValaObjectType* _tmp77_ = NULL;
-				ValaDataType* _tmp78_ = NULL;
-				ValaDataType* _tmp79_ = NULL;
-				ValaParameter* _tmp80_ = NULL;
-				ValaDataType* _tmp81_ = NULL;
-				ValaDataType* _tmp82_ = NULL;
-				gboolean _tmp83_ = FALSE;
-				_tmp66_ = base_param;
-				_tmp67_ = vala_parameter_get_direction (_tmp66_);
-				_tmp68_ = _tmp67_;
-				_tmp69_ = param;
-				_tmp70_ = vala_parameter_get_direction (_tmp69_);
-				_tmp71_ = _tmp70_;
-				if (_tmp68_ != _tmp71_) {
-					gint _tmp72_ = 0;
-					gchar* _tmp73_ = NULL;
-					_tmp72_ = param_index;
-					_tmp73_ = g_strdup_printf ("incompatible direction of parameter %d", _tmp72_);
+			_tmp115_ = base_param;
+			_tmp116_ = vala_parameter_get_ellipsis (_tmp115_);
+			_tmp117_ = _tmp116_;
+			if (!_tmp117_) {
+				ValaParameter* _tmp118_ = NULL;
+				ValaParameterDirection _tmp119_ = 0;
+				ValaParameterDirection _tmp120_ = 0;
+				ValaParameter* _tmp121_ = NULL;
+				ValaParameterDirection _tmp122_ = 0;
+				ValaParameterDirection _tmp123_ = 0;
+				ValaParameter* _tmp126_ = NULL;
+				ValaDataType* _tmp127_ = NULL;
+				ValaDataType* _tmp128_ = NULL;
+				ValaObjectType* _tmp129_ = NULL;
+				ValaList* _tmp130_ = NULL;
+				ValaDataType* _tmp131_ = NULL;
+				ValaDataType* _tmp132_ = NULL;
+				ValaParameter* _tmp133_ = NULL;
+				ValaDataType* _tmp134_ = NULL;
+				ValaDataType* _tmp135_ = NULL;
+				gboolean _tmp136_ = FALSE;
+				_tmp118_ = base_param;
+				_tmp119_ = vala_parameter_get_direction (_tmp118_);
+				_tmp120_ = _tmp119_;
+				_tmp121_ = param;
+				_tmp122_ = vala_parameter_get_direction (_tmp121_);
+				_tmp123_ = _tmp122_;
+				if (_tmp120_ != _tmp123_) {
+					gint _tmp124_ = 0;
+					gchar* _tmp125_ = NULL;
+					_tmp124_ = param_index;
+					_tmp125_ = g_strdup_printf ("incompatible direction of parameter %d", _tmp124_);
 					_g_free0 (_vala_invalid_match);
-					_vala_invalid_match = _tmp73_;
+					_vala_invalid_match = _tmp125_;
 					result = FALSE;
 					_vala_code_node_unref0 (param);
 					_vala_code_node_unref0 (base_param);
 					_vala_iterable_unref0 (_base_param_list);
 					_vala_iterator_unref0 (method_params_it);
 					_vala_code_node_unref0 (actual_base_type);
+					_vala_iterable_unref0 (method_type_args);
 					_vala_code_node_unref0 (object_type);
 					if (invalid_match) {
 						*invalid_match = _vala_invalid_match;
@@ -2480,31 +2654,33 @@ gboolean vala_method_compatible (ValaMethod* self, ValaMethod* base_method, gcha
 					}
 					return result;
 				}
-				_tmp74_ = base_param;
-				_tmp75_ = vala_variable_get_variable_type ((ValaVariable*) _tmp74_);
-				_tmp76_ = _tmp75_;
-				_tmp77_ = object_type;
-				_tmp78_ = vala_data_type_get_actual_type (_tmp76_, (ValaDataType*) _tmp77_, NULL, (ValaCodeNode*) self);
+				_tmp126_ = base_param;
+				_tmp127_ = vala_variable_get_variable_type ((ValaVariable*) _tmp126_);
+				_tmp128_ = _tmp127_;
+				_tmp129_ = object_type;
+				_tmp130_ = method_type_args;
+				_tmp131_ = vala_data_type_get_actual_type (_tmp128_, (ValaDataType*) _tmp129_, _tmp130_, (ValaCodeNode*) self);
 				_vala_code_node_unref0 (actual_base_type);
-				actual_base_type = _tmp78_;
-				_tmp79_ = actual_base_type;
-				_tmp80_ = param;
-				_tmp81_ = vala_variable_get_variable_type ((ValaVariable*) _tmp80_);
-				_tmp82_ = _tmp81_;
-				_tmp83_ = vala_data_type_equals (_tmp79_, _tmp82_);
-				if (!_tmp83_) {
-					gint _tmp84_ = 0;
-					gchar* _tmp85_ = NULL;
-					_tmp84_ = param_index;
-					_tmp85_ = g_strdup_printf ("incompatible type of parameter %d", _tmp84_);
+				actual_base_type = _tmp131_;
+				_tmp132_ = actual_base_type;
+				_tmp133_ = param;
+				_tmp134_ = vala_variable_get_variable_type ((ValaVariable*) _tmp133_);
+				_tmp135_ = _tmp134_;
+				_tmp136_ = vala_data_type_equals (_tmp132_, _tmp135_);
+				if (!_tmp136_) {
+					gint _tmp137_ = 0;
+					gchar* _tmp138_ = NULL;
+					_tmp137_ = param_index;
+					_tmp138_ = g_strdup_printf ("incompatible type of parameter %d", _tmp137_);
 					_g_free0 (_vala_invalid_match);
-					_vala_invalid_match = _tmp85_;
+					_vala_invalid_match = _tmp138_;
 					result = FALSE;
 					_vala_code_node_unref0 (param);
 					_vala_code_node_unref0 (base_param);
 					_vala_iterable_unref0 (_base_param_list);
 					_vala_iterator_unref0 (method_params_it);
 					_vala_code_node_unref0 (actual_base_type);
+					_vala_iterable_unref0 (method_type_args);
 					_vala_code_node_unref0 (object_type);
 					if (invalid_match) {
 						*invalid_match = _vala_invalid_match;
@@ -2514,23 +2690,24 @@ gboolean vala_method_compatible (ValaMethod* self, ValaMethod* base_method, gcha
 					return result;
 				}
 			}
-			_tmp86_ = param_index;
-			param_index = _tmp86_ + 1;
+			_tmp139_ = param_index;
+			param_index = _tmp139_ + 1;
 			_vala_code_node_unref0 (param);
 			_vala_code_node_unref0 (base_param);
 		}
 		_vala_iterable_unref0 (_base_param_list);
 	}
-	_tmp87_ = method_params_it;
-	_tmp88_ = vala_iterator_next (_tmp87_);
-	if (_tmp88_) {
-		gchar* _tmp89_ = NULL;
-		_tmp89_ = g_strdup ("too many parameters");
+	_tmp140_ = method_params_it;
+	_tmp141_ = vala_iterator_next (_tmp140_);
+	if (_tmp141_) {
+		gchar* _tmp142_ = NULL;
+		_tmp142_ = g_strdup ("too many parameters");
 		_g_free0 (_vala_invalid_match);
-		_vala_invalid_match = _tmp89_;
+		_vala_invalid_match = _tmp142_;
 		result = FALSE;
 		_vala_iterator_unref0 (method_params_it);
 		_vala_code_node_unref0 (actual_base_type);
+		_vala_iterable_unref0 (method_type_args);
 		_vala_code_node_unref0 (object_type);
 		if (invalid_match) {
 			*invalid_match = _vala_invalid_match;
@@ -2541,84 +2718,84 @@ gboolean vala_method_compatible (ValaMethod* self, ValaMethod* base_method, gcha
 	}
 	{
 		ValaList* _method_error_type_list = NULL;
-		ValaList* _tmp90_ = NULL;
+		ValaList* _tmp143_ = NULL;
 		gint _method_error_type_size = 0;
-		ValaList* _tmp91_ = NULL;
-		gint _tmp92_ = 0;
-		gint _tmp93_ = 0;
+		ValaList* _tmp144_ = NULL;
+		gint _tmp145_ = 0;
+		gint _tmp146_ = 0;
 		gint _method_error_type_index = 0;
-		_tmp90_ = vala_code_node_get_error_types ((ValaCodeNode*) self);
-		_method_error_type_list = _tmp90_;
-		_tmp91_ = _method_error_type_list;
-		_tmp92_ = vala_collection_get_size ((ValaCollection*) _tmp91_);
-		_tmp93_ = _tmp92_;
-		_method_error_type_size = _tmp93_;
+		_tmp143_ = vala_code_node_get_error_types ((ValaCodeNode*) self);
+		_method_error_type_list = _tmp143_;
+		_tmp144_ = _method_error_type_list;
+		_tmp145_ = vala_collection_get_size ((ValaCollection*) _tmp144_);
+		_tmp146_ = _tmp145_;
+		_method_error_type_size = _tmp146_;
 		_method_error_type_index = -1;
 		while (TRUE) {
-			gint _tmp94_ = 0;
-			gint _tmp95_ = 0;
-			gint _tmp96_ = 0;
+			gint _tmp147_ = 0;
+			gint _tmp148_ = 0;
+			gint _tmp149_ = 0;
 			ValaDataType* method_error_type = NULL;
-			ValaList* _tmp97_ = NULL;
-			gint _tmp98_ = 0;
-			gpointer _tmp99_ = NULL;
+			ValaList* _tmp150_ = NULL;
+			gint _tmp151_ = 0;
+			gpointer _tmp152_ = NULL;
 			gboolean match = FALSE;
-			gboolean _tmp114_ = FALSE;
-			_tmp94_ = _method_error_type_index;
-			_method_error_type_index = _tmp94_ + 1;
-			_tmp95_ = _method_error_type_index;
-			_tmp96_ = _method_error_type_size;
-			if (!(_tmp95_ < _tmp96_)) {
+			gboolean _tmp167_ = FALSE;
+			_tmp147_ = _method_error_type_index;
+			_method_error_type_index = _tmp147_ + 1;
+			_tmp148_ = _method_error_type_index;
+			_tmp149_ = _method_error_type_size;
+			if (!(_tmp148_ < _tmp149_)) {
 				break;
 			}
-			_tmp97_ = _method_error_type_list;
-			_tmp98_ = _method_error_type_index;
-			_tmp99_ = vala_list_get (_tmp97_, _tmp98_);
-			method_error_type = (ValaDataType*) _tmp99_;
+			_tmp150_ = _method_error_type_list;
+			_tmp151_ = _method_error_type_index;
+			_tmp152_ = vala_list_get (_tmp150_, _tmp151_);
+			method_error_type = (ValaDataType*) _tmp152_;
 			match = FALSE;
 			{
 				ValaList* _base_method_error_type_list = NULL;
-				ValaMethod* _tmp100_ = NULL;
-				ValaList* _tmp101_ = NULL;
+				ValaMethod* _tmp153_ = NULL;
+				ValaList* _tmp154_ = NULL;
 				gint _base_method_error_type_size = 0;
-				ValaList* _tmp102_ = NULL;
-				gint _tmp103_ = 0;
-				gint _tmp104_ = 0;
+				ValaList* _tmp155_ = NULL;
+				gint _tmp156_ = 0;
+				gint _tmp157_ = 0;
 				gint _base_method_error_type_index = 0;
-				_tmp100_ = base_method;
-				_tmp101_ = vala_code_node_get_error_types ((ValaCodeNode*) _tmp100_);
-				_base_method_error_type_list = _tmp101_;
-				_tmp102_ = _base_method_error_type_list;
-				_tmp103_ = vala_collection_get_size ((ValaCollection*) _tmp102_);
-				_tmp104_ = _tmp103_;
-				_base_method_error_type_size = _tmp104_;
+				_tmp153_ = base_method;
+				_tmp154_ = vala_code_node_get_error_types ((ValaCodeNode*) _tmp153_);
+				_base_method_error_type_list = _tmp154_;
+				_tmp155_ = _base_method_error_type_list;
+				_tmp156_ = vala_collection_get_size ((ValaCollection*) _tmp155_);
+				_tmp157_ = _tmp156_;
+				_base_method_error_type_size = _tmp157_;
 				_base_method_error_type_index = -1;
 				while (TRUE) {
-					gint _tmp105_ = 0;
-					gint _tmp106_ = 0;
-					gint _tmp107_ = 0;
+					gint _tmp158_ = 0;
+					gint _tmp159_ = 0;
+					gint _tmp160_ = 0;
 					ValaDataType* base_method_error_type = NULL;
-					ValaList* _tmp108_ = NULL;
-					gint _tmp109_ = 0;
-					gpointer _tmp110_ = NULL;
-					ValaDataType* _tmp111_ = NULL;
-					ValaDataType* _tmp112_ = NULL;
-					gboolean _tmp113_ = FALSE;
-					_tmp105_ = _base_method_error_type_index;
-					_base_method_error_type_index = _tmp105_ + 1;
-					_tmp106_ = _base_method_error_type_index;
-					_tmp107_ = _base_method_error_type_size;
-					if (!(_tmp106_ < _tmp107_)) {
+					ValaList* _tmp161_ = NULL;
+					gint _tmp162_ = 0;
+					gpointer _tmp163_ = NULL;
+					ValaDataType* _tmp164_ = NULL;
+					ValaDataType* _tmp165_ = NULL;
+					gboolean _tmp166_ = FALSE;
+					_tmp158_ = _base_method_error_type_index;
+					_base_method_error_type_index = _tmp158_ + 1;
+					_tmp159_ = _base_method_error_type_index;
+					_tmp160_ = _base_method_error_type_size;
+					if (!(_tmp159_ < _tmp160_)) {
 						break;
 					}
-					_tmp108_ = _base_method_error_type_list;
-					_tmp109_ = _base_method_error_type_index;
-					_tmp110_ = vala_list_get (_tmp108_, _tmp109_);
-					base_method_error_type = (ValaDataType*) _tmp110_;
-					_tmp111_ = method_error_type;
-					_tmp112_ = base_method_error_type;
-					_tmp113_ = vala_data_type_compatible (_tmp111_, _tmp112_);
-					if (_tmp113_) {
+					_tmp161_ = _base_method_error_type_list;
+					_tmp162_ = _base_method_error_type_index;
+					_tmp163_ = vala_list_get (_tmp161_, _tmp162_);
+					base_method_error_type = (ValaDataType*) _tmp163_;
+					_tmp164_ = method_error_type;
+					_tmp165_ = base_method_error_type;
+					_tmp166_ = vala_data_type_compatible (_tmp164_, _tmp165_);
+					if (_tmp166_) {
 						match = TRUE;
 						_vala_code_node_unref0 (base_method_error_type);
 						break;
@@ -2627,24 +2804,25 @@ gboolean vala_method_compatible (ValaMethod* self, ValaMethod* base_method, gcha
 				}
 				_vala_iterable_unref0 (_base_method_error_type_list);
 			}
-			_tmp114_ = match;
-			if (!_tmp114_) {
-				ValaDataType* _tmp115_ = NULL;
-				gchar* _tmp116_ = NULL;
-				gchar* _tmp117_ = NULL;
-				gchar* _tmp118_ = NULL;
-				_tmp115_ = method_error_type;
-				_tmp116_ = vala_code_node_to_string ((ValaCodeNode*) _tmp115_);
-				_tmp117_ = _tmp116_;
-				_tmp118_ = g_strdup_printf ("incompatible error type `%s'", _tmp117_);
+			_tmp167_ = match;
+			if (!_tmp167_) {
+				ValaDataType* _tmp168_ = NULL;
+				gchar* _tmp169_ = NULL;
+				gchar* _tmp170_ = NULL;
+				gchar* _tmp171_ = NULL;
+				_tmp168_ = method_error_type;
+				_tmp169_ = vala_code_node_to_string ((ValaCodeNode*) _tmp168_);
+				_tmp170_ = _tmp169_;
+				_tmp171_ = g_strdup_printf ("incompatible error type `%s'", _tmp170_);
 				_g_free0 (_vala_invalid_match);
-				_vala_invalid_match = _tmp118_;
-				_g_free0 (_tmp117_);
+				_vala_invalid_match = _tmp171_;
+				_g_free0 (_tmp170_);
 				result = FALSE;
 				_vala_code_node_unref0 (method_error_type);
 				_vala_iterable_unref0 (_method_error_type_list);
 				_vala_iterator_unref0 (method_params_it);
 				_vala_code_node_unref0 (actual_base_type);
+				_vala_iterable_unref0 (method_type_args);
 				_vala_code_node_unref0 (object_type);
 				if (invalid_match) {
 					*invalid_match = _vala_invalid_match;
@@ -2657,17 +2835,18 @@ gboolean vala_method_compatible (ValaMethod* self, ValaMethod* base_method, gcha
 		}
 		_vala_iterable_unref0 (_method_error_type_list);
 	}
-	_tmp119_ = base_method;
-	_tmp120_ = _tmp119_->priv->_coroutine;
-	_tmp121_ = self->priv->_coroutine;
-	if (_tmp120_ != _tmp121_) {
-		gchar* _tmp122_ = NULL;
-		_tmp122_ = g_strdup ("async mismatch");
+	_tmp172_ = base_method;
+	_tmp173_ = _tmp172_->priv->_coroutine;
+	_tmp174_ = self->priv->_coroutine;
+	if (_tmp173_ != _tmp174_) {
+		gchar* _tmp175_ = NULL;
+		_tmp175_ = g_strdup ("async mismatch");
 		_g_free0 (_vala_invalid_match);
-		_vala_invalid_match = _tmp122_;
+		_vala_invalid_match = _tmp175_;
 		result = FALSE;
 		_vala_iterator_unref0 (method_params_it);
 		_vala_code_node_unref0 (actual_base_type);
+		_vala_iterable_unref0 (method_type_args);
 		_vala_code_node_unref0 (object_type);
 		if (invalid_match) {
 			*invalid_match = _vala_invalid_match;
@@ -2681,6 +2860,7 @@ gboolean vala_method_compatible (ValaMethod* self, ValaMethod* base_method, gcha
 	result = TRUE;
 	_vala_iterator_unref0 (method_params_it);
 	_vala_code_node_unref0 (actual_base_type);
+	_vala_iterable_unref0 (method_type_args);
 	_vala_code_node_unref0 (object_type);
 	if (invalid_match) {
 		*invalid_match = _vala_invalid_match;
@@ -2713,7 +2893,7 @@ void vala_method_add_type_parameter (ValaMethod* self, ValaTypeParameter* p) {
 		GEqualFunc _tmp1_ = NULL;
 		ValaArrayList* _tmp2_ = NULL;
 		_tmp1_ = g_direct_equal;
-		_tmp2_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp1_);
+		_tmp2_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp1_);
 		_vala_iterable_unref0 (self->priv->type_parameters);
 		self->priv->type_parameters = (ValaList*) _tmp2_;
 	}
@@ -2756,7 +2936,7 @@ ValaList* vala_method_get_type_parameters (ValaMethod* self) {
 		GEqualFunc _tmp4_ = NULL;
 		ValaArrayList* _tmp5_ = NULL;
 		_tmp4_ = g_direct_equal;
-		_tmp5_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+		_tmp5_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 		_vala_iterable_unref0 (vala_method__empty_type_parameter_list);
 		vala_method__empty_type_parameter_list = (ValaList*) _tmp5_;
 	}
@@ -2858,7 +3038,7 @@ void vala_method_add_precondition (ValaMethod* self, ValaExpression* preconditio
 		GEqualFunc _tmp1_ = NULL;
 		ValaArrayList* _tmp2_ = NULL;
 		_tmp1_ = g_direct_equal;
-		_tmp2_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp1_);
+		_tmp2_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp1_);
 		_vala_iterable_unref0 (self->priv->preconditions);
 		self->priv->preconditions = (ValaList*) _tmp2_;
 	}
@@ -2896,7 +3076,7 @@ ValaList* vala_method_get_preconditions (ValaMethod* self) {
 		GEqualFunc _tmp4_ = NULL;
 		ValaArrayList* _tmp5_ = NULL;
 		_tmp4_ = g_direct_equal;
-		_tmp5_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+		_tmp5_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 		_vala_iterable_unref0 (vala_method__empty_expression_list);
 		vala_method__empty_expression_list = (ValaList*) _tmp5_;
 	}
@@ -2924,7 +3104,7 @@ void vala_method_add_postcondition (ValaMethod* self, ValaExpression* postcondit
 		GEqualFunc _tmp1_ = NULL;
 		ValaArrayList* _tmp2_ = NULL;
 		_tmp1_ = g_direct_equal;
-		_tmp2_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp1_);
+		_tmp2_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp1_);
 		_vala_iterable_unref0 (self->priv->postconditions);
 		self->priv->postconditions = (ValaList*) _tmp2_;
 	}
@@ -2962,7 +3142,7 @@ ValaList* vala_method_get_postconditions (ValaMethod* self) {
 		GEqualFunc _tmp4_ = NULL;
 		ValaArrayList* _tmp5_ = NULL;
 		_tmp4_ = g_direct_equal;
-		_tmp5_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+		_tmp5_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 		_vala_iterable_unref0 (vala_method__empty_expression_list);
 		vala_method__empty_expression_list = (ValaList*) _tmp5_;
 	}
@@ -3661,11 +3841,11 @@ static gboolean vala_method_real_check (ValaCodeNode* base, ValaCodeContext* con
 	ValaBlock* _tmp462_ = NULL;
 	ValaCodeContext* _tmp504_ = NULL;
 	gboolean _tmp505_ = FALSE;
-	ValaAttribute* _tmp523_ = NULL;
-	ValaAttribute* _tmp524_ = NULL;
-	gboolean _tmp525_ = FALSE;
-	gboolean _tmp526_ = FALSE;
-	gboolean _tmp527_ = FALSE;
+	ValaAttribute* _tmp529_ = NULL;
+	ValaAttribute* _tmp530_ = NULL;
+	gboolean _tmp531_ = FALSE;
+	gboolean _tmp532_ = FALSE;
+	gboolean _tmp533_ = FALSE;
 	self = (ValaMethod*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
@@ -5196,6 +5376,8 @@ static gboolean vala_method_real_check (ValaCodeNode* base, ValaCodeContext* con
 		ValaCodeContext* _tmp518_ = NULL;
 		gboolean _tmp519_ = FALSE;
 		gboolean _tmp520_ = FALSE;
+		gboolean _tmp523_ = FALSE;
+		gboolean _tmp526_ = FALSE;
 		_tmp506_ = context;
 		_tmp507_ = vala_code_context_get_entry_point (_tmp506_);
 		_tmp508_ = _tmp507_;
@@ -5240,17 +5422,33 @@ static gboolean vala_method_real_check (ValaCodeNode* base, ValaCodeContext* con
 			_tmp522_ = _tmp521_;
 			vala_report_error (_tmp522_, "\"main\" method cannot throw errors");
 		}
+		_tmp523_ = self->priv->_is_inline;
+		if (_tmp523_) {
+			ValaSourceReference* _tmp524_ = NULL;
+			ValaSourceReference* _tmp525_ = NULL;
+			_tmp524_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+			_tmp525_ = _tmp524_;
+			vala_report_error (_tmp525_, "\"main\" method cannot be inline");
+		}
+		_tmp526_ = self->priv->_coroutine;
+		if (_tmp526_) {
+			ValaSourceReference* _tmp527_ = NULL;
+			ValaSourceReference* _tmp528_ = NULL;
+			_tmp527_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+			_tmp528_ = _tmp527_;
+			vala_report_error (_tmp528_, "\"main\" method cannot be async");
+		}
 	}
-	_tmp523_ = vala_code_node_get_attribute ((ValaCodeNode*) self, "GtkCallback");
-	_tmp524_ = _tmp523_;
-	_tmp525_ = _tmp524_ != NULL;
-	_vala_code_node_unref0 (_tmp524_);
-	if (_tmp525_) {
+	_tmp529_ = vala_code_node_get_attribute ((ValaCodeNode*) self, "GtkCallback");
+	_tmp530_ = _tmp529_;
+	_tmp531_ = _tmp530_ != NULL;
+	_vala_code_node_unref0 (_tmp530_);
+	if (_tmp531_) {
 		vala_symbol_set_used ((ValaSymbol*) self, TRUE);
 	}
-	_tmp526_ = vala_code_node_get_error ((ValaCodeNode*) self);
-	_tmp527_ = _tmp526_;
-	result = !_tmp527_;
+	_tmp532_ = vala_code_node_get_error ((ValaCodeNode*) self);
+	_tmp533_ = _tmp532_;
+	result = !_tmp533_;
 	_vala_code_node_unref0 (init_attr);
 	_vala_code_node_unref0 (old_symbol);
 	_vala_source_file_unref0 (old_source_file);
@@ -5679,7 +5877,7 @@ ValaList* vala_method_get_async_begin_parameters (ValaMethod* self) {
 	_vala_code_context_unref0 (_tmp2_);
 	glib_ns = _tmp8_;
 	_tmp9_ = g_direct_equal;
-	_tmp10_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp9_);
+	_tmp10_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp9_);
 	params = _tmp10_;
 	ellipsis = NULL;
 	{
@@ -5784,7 +5982,7 @@ ValaList* vala_method_get_async_begin_parameters (ValaMethod* self) {
 	vala_expression_set_target_type (_tmp51_, _tmp54_);
 	_vala_code_node_unref0 (_tmp54_);
 	_tmp55_ = callback_param;
-	vala_code_node_set_attribute_double ((ValaCodeNode*) _tmp55_, "CCode", "pos", (gdouble) (-1), NULL);
+	vala_code_node_set_attribute_double ((ValaCodeNode*) _tmp55_, "CCode", "pos", (gdouble) -1, NULL);
 	_tmp56_ = callback_param;
 	vala_code_node_set_attribute_double ((ValaCodeNode*) _tmp56_, "CCode", "delegate_target_pos", -0.9, NULL);
 	_tmp57_ = params;
@@ -5840,7 +6038,7 @@ ValaList* vala_method_get_async_end_parameters (ValaMethod* self) {
 	_tmp0_ = self->priv->_coroutine;
 	_vala_assert (_tmp0_, "this.coroutine");
 	_tmp1_ = g_direct_equal;
-	_tmp2_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp1_);
+	_tmp2_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp1_);
 	params = _tmp2_;
 	_tmp3_ = vala_code_context_get ();
 	_tmp4_ = _tmp3_;
@@ -5944,7 +6142,7 @@ void vala_method_add_captured_variable (ValaMethod* self, ValaLocalVariable* loc
 		GEqualFunc _tmp2_ = NULL;
 		ValaArrayList* _tmp3_ = NULL;
 		_tmp2_ = g_direct_equal;
-		_tmp3_ = vala_array_list_new (VALA_TYPE_LOCAL_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_);
+		_tmp3_ = vala_array_list_new (VALA_TYPE_LOCAL_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_);
 		_vala_iterable_unref0 (self->priv->captured_variables);
 		self->priv->captured_variables = (ValaList*) _tmp3_;
 	}
@@ -6434,11 +6632,11 @@ static void vala_method_class_init (ValaMethodClass * klass) {
 	vala_method_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_method_finalize;
 	g_type_class_add_private (klass, sizeof (ValaMethodPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_method_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_method_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_method_real_replace_type;
-	((ValaCodeNodeClass *) klass)->check = vala_method_real_check;
-	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_method_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_method_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_method_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_method_real_replace_type;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_method_real_check;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_method_real_get_defined_variables;
 	VALA_SUBROUTINE_CLASS (klass)->get_has_result = vala_method_real_get_has_result;
 }
 
@@ -6449,7 +6647,7 @@ static void vala_method_instance_init (ValaMethod * self) {
 	self->priv = VALA_METHOD_GET_PRIVATE (self);
 	self->priv->_binding = VALA_MEMBER_BINDING_INSTANCE;
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->parameters = (ValaList*) _tmp1_;
 }
 

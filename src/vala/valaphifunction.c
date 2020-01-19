@@ -136,7 +136,7 @@ ValaPhiFunction* vala_phi_function_construct (GType object_type, ValaVariable* v
 	_tmp0_ = variable;
 	vala_phi_function_set_original_variable (self, _tmp0_);
 	_tmp1_ = g_direct_equal;
-	_tmp2_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp1_);
+	_tmp2_ = vala_array_list_new (VALA_TYPE_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp1_);
 	_tmp3_ = _tmp2_;
 	vala_phi_function_set_operands (self, (ValaList*) _tmp3_);
 	_vala_iterable_unref0 (_tmp3_);

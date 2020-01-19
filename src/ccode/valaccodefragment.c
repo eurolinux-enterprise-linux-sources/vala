@@ -335,9 +335,9 @@ static void vala_ccode_fragment_class_init (ValaCCodeFragmentClass * klass) {
 	vala_ccode_fragment_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_fragment_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeFragmentPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_fragment_real_write;
-	((ValaCCodeNodeClass *) klass)->write_declaration = vala_ccode_fragment_real_write_declaration;
-	((ValaCCodeNodeClass *) klass)->write_combined = vala_ccode_fragment_real_write_combined;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_fragment_real_write;
+	((ValaCCodeNodeClass *) klass)->write_declaration = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_fragment_real_write_declaration;
+	((ValaCCodeNodeClass *) klass)->write_combined = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_fragment_real_write_combined;
 }
 
 
@@ -346,7 +346,7 @@ static void vala_ccode_fragment_instance_init (ValaCCodeFragment * self) {
 	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_CCODE_FRAGMENT_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_CCODE_NODE, (GBoxedCopyFunc) vala_ccode_node_ref, vala_ccode_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_CCODE_NODE, (GBoxedCopyFunc) vala_ccode_node_ref, (GDestroyNotify) vala_ccode_node_unref, _tmp0_);
 	self->priv->children = (ValaList*) _tmp1_;
 }
 

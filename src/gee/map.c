@@ -206,8 +206,9 @@ ValaCollection* vala_map_get_values (ValaMap* self) {
  * @return    true if key is found, false otherwise
  */
 static gboolean vala_map_real_contains (ValaMap* self, gconstpointer key) {
+	gboolean _tmp0_ = FALSE;
 	g_critical ("Type `%s' does not implement abstract method `vala_map_contains'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
-	return FALSE;
+	return _tmp0_;
 }
 
 
@@ -263,8 +264,9 @@ void vala_map_set (ValaMap* self, gconstpointer key, gconstpointer value) {
  * @return    true if the map has been changed, false otherwise
  */
 static gboolean vala_map_real_remove (ValaMap* self, gconstpointer key) {
+	gboolean _tmp0_ = FALSE;
 	g_critical ("Type `%s' does not implement abstract method `vala_map_remove'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
-	return FALSE;
+	return _tmp0_;
 }
 
 
@@ -442,14 +444,14 @@ static void vala_map_class_init (ValaMapClass * klass) {
 	vala_map_parent_class = g_type_class_peek_parent (klass);
 	((ValaMapClass *) klass)->finalize = vala_map_finalize;
 	g_type_class_add_private (klass, sizeof (ValaMapPrivate));
-	((ValaMapClass *) klass)->get_keys = vala_map_real_get_keys;
-	((ValaMapClass *) klass)->get_values = vala_map_real_get_values;
-	((ValaMapClass *) klass)->contains = vala_map_real_contains;
-	((ValaMapClass *) klass)->get = vala_map_real_get;
-	((ValaMapClass *) klass)->set = vala_map_real_set;
-	((ValaMapClass *) klass)->remove = vala_map_real_remove;
-	((ValaMapClass *) klass)->clear = vala_map_real_clear;
-	((ValaMapClass *) klass)->map_iterator = vala_map_real_map_iterator;
+	((ValaMapClass *) klass)->get_keys = (ValaSet* (*)(ValaMap*)) vala_map_real_get_keys;
+	((ValaMapClass *) klass)->get_values = (ValaCollection* (*)(ValaMap*)) vala_map_real_get_values;
+	((ValaMapClass *) klass)->contains = (gboolean (*)(ValaMap*, gconstpointer)) vala_map_real_contains;
+	((ValaMapClass *) klass)->get = (gpointer (*)(ValaMap*, gconstpointer)) vala_map_real_get;
+	((ValaMapClass *) klass)->set = (void (*)(ValaMap*, gconstpointer, gconstpointer)) vala_map_real_set;
+	((ValaMapClass *) klass)->remove = (gboolean (*)(ValaMap*, gconstpointer)) vala_map_real_remove;
+	((ValaMapClass *) klass)->clear = (void (*)(ValaMap*)) vala_map_real_clear;
+	((ValaMapClass *) klass)->map_iterator = (ValaMapIterator* (*)(ValaMap*)) vala_map_real_map_iterator;
 }
 
 

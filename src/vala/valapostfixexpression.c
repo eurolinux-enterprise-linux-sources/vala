@@ -431,10 +431,10 @@ static void vala_postfix_expression_finalize (ValaCodeNode* obj);
 /**
  * Creates a new postfix expression.
  *
- * @param inner  operand expression
- * @param inc    true for increment, false for decrement
- * @param source reference to source code
- * @return newly created postfix expression
+ * @param _inner  operand expression
+ * @param inc     true for increment, false for decrement
+ * @param source  reference to source code
+ * @return newly  created postfix expression
  */
 ValaPostfixExpression* vala_postfix_expression_construct (GType object_type, ValaExpression* _inner, gboolean inc, ValaSourceReference* source) {
 	ValaPostfixExpression* self = NULL;
@@ -953,13 +953,13 @@ static void vala_postfix_expression_class_init (ValaPostfixExpressionClass * kla
 	vala_postfix_expression_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_postfix_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaPostfixExpressionPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_postfix_expression_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_postfix_expression_real_accept_children;
-	((ValaExpressionClass *) klass)->is_pure = vala_postfix_expression_real_is_pure;
-	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_postfix_expression_real_get_defined_variables;
-	((ValaCodeNodeClass *) klass)->get_used_variables = vala_postfix_expression_real_get_used_variables;
-	((ValaCodeNodeClass *) klass)->check = vala_postfix_expression_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_postfix_expression_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_postfix_expression_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_postfix_expression_real_accept_children;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_postfix_expression_real_is_pure;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_postfix_expression_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_postfix_expression_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_postfix_expression_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_postfix_expression_real_emit;
 }
 
 

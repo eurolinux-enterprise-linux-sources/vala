@@ -21,15 +21,21 @@ dist_vapi_DATA = \
 	ccss-1.vapi \
 	clutter-1.0.deps \
 	clutter-1.0.vapi \
+	clutter-gdk-1.0.deps \
+	clutter-gdk-1.0.vapi \
 	clutter-gst-1.0.deps \
 	clutter-gst-1.0.vapi \
 	clutter-gst-2.0.deps \
 	clutter-gst-2.0.vapi \
+	clutter-gst-3.0.deps \
+	clutter-gst-3.0.vapi \
 	clutter-gtk-0.10.deps \
 	clutter-gtk-0.10.vapi \
 	clutter-gtk-1.0.deps \
 	clutter-gtk-1.0.vapi \
 	clutter-json-1.0.vapi \
+	clutter-x11-1.0.deps \
+	clutter-x11-1.0.vapi \
 	cogl-1.0.vapi \
 	cogl-1.0.deps \
 	cogl-pango-1.0.vapi \
@@ -68,6 +74,8 @@ dist_vapi_DATA = \
 	gio-2.0.vapi \
 	gio-unix-2.0.deps \
 	gio-unix-2.0.vapi \
+	gio-windows-2.0.deps \
+	gio-windows-2.0.vapi \
 	gmodule-2.0.vapi \
 	gnet-2.0.deps \
 	gnet-2.0.vapi \
@@ -80,6 +88,8 @@ dist_vapi_DATA = \
 	gobject-introspection-1.0.vapi \
 	goocanvas.deps \
 	goocanvas.vapi \
+	graphene-1.0.deps \
+	graphene-1.0.vapi \
 	gsl.vapi \
 	gstreamer-0.10.deps \
 	gstreamer-0.10.vapi \
@@ -138,6 +148,8 @@ dist_vapi_DATA = \
 	gstreamer-net-1.0.deps \
 	gstreamer-pbutils-1.0.vapi \
 	gstreamer-pbutils-1.0.deps \
+	gstreamer-player-1.0.vapi \
+	gstreamer-player-1.0.deps \
 	gstreamer-riff-1.0.deps \
 	gstreamer-riff-1.0.vapi \
 	gstreamer-rtp-1.0.vapi \
@@ -243,6 +255,10 @@ dist_vapi_DATA = \
 	pangocairo.deps \
 	pangocairo.vapi \
 	pixman-1.vapi \
+	polkit-agent-1.deps \
+	polkit-agent-1.vapi \
+	polkit-gobject-1.deps \
+	polkit-gobject-1.vapi \
 	poppler-glib.deps \
 	poppler-glib.vapi \
 	posix.vapi \
@@ -258,6 +274,8 @@ dist_vapi_DATA = \
 	rest-extras-0.6.vapi \
 	rest-0.7.deps \
 	rest-0.7.vapi \
+	rest-extras-0.7.deps \
+	rest-extras-0.7.vapi \
 	sdl.vapi \
 	sdl-gfx.vapi \
 	sdl-gfx.deps \
@@ -377,6 +395,7 @@ GSTREAMER_1_0_BINDINGS = \
 	gstreamer-audio-1.0 \
 	gstreamer-fft-1.0 \
 	gstreamer-pbutils-1.0 \
+	gstreamer-player-1.0 \
 	gstreamer-riff-1.0 \
 	gstreamer-rtp-1.0 \
 	gstreamer-sdp-1.0 \
@@ -390,17 +409,20 @@ GIR_BINDINGS = \
 	atk \
 	atspi-2 \
 	clutter-1.0 \
+	clutter-gdk-1.0 \
 	clutter-gtk-1.0 \
-	clutter-gst-1.0 \
 	clutter-gst-2.0 \
+	clutter-gst-3.0 \
+	clutter-x11-1.0 \
 	cogl-pango-1.0 \
 	gdk-3.0 \
+	gdk-x11-3.0 \
 	gdk-pixbuf-2.0 \
 	gdl-3.0 \
 	geocode-glib-1.0 \
 	gio-2.0 \
 	gobject-introspection-1.0 \
-	gtksourceview-3.0 \
+	graphene-1.0 \
 	gudev-1.0 \
 	json-glib-1.0 \
 	libgdata \
@@ -414,8 +436,11 @@ GIR_BINDINGS = \
 	packagekit-glib2 \
 	pango \
 	pangocairo \
+	polkit-agent-1 \
+	polkit-gobject-1 \
 	poppler-glib \
 	rest-0.7 \
+	rest-extras-0.7 \
 	udisks2 \
 	vte-2.90 \
 	webkit2gtk-4.0 \
@@ -452,6 +477,9 @@ atspi-2:
 clutter-1.0:
 	$(GENVAPI) --library $(srcdir)/clutter-1.0 --metadatadir $(METADATADIR) $(METADATADIR)/Clutter-1.0-custom.vala --pkg atk --pkg cairo --pkg pango --pkg cogl-1.0 --pkg cogl-pango-1.0 --pkg json-glib-1.0 $(GIRDIR)/Clutter-1.0.gir
 
+clutter-gdk-1.0:
+	$(GENVAPI) --library $(srcdir)/clutter-gdk-1.0 --metadatadir $(METADATADIR) --pkg clutter-1.0 --pkg gdk-3.0 $(GIRDIR)/ClutterGdk-1.0.gir
+
 clutter-gtk-0.10:
 	$(GENVAPI) --library $(srcdir)/clutter-gtk-0.10 $(PACKAGESDIR)/clutter-gtk-0.10/clutter-gtk-0.10.gi
 
@@ -463,6 +491,12 @@ clutter-gst-1.0:
 
 clutter-gst-2.0:
 	$(GENVAPI) --library $(srcdir)/clutter-gst-2.0 --metadatadir $(METADATADIR) $(METADATADIR)/ClutterGst-2.0-custom.vala --pkg cogl-1.0 --pkg clutter-1.0 --pkg gstreamer-base-1.0 --pkg gstreamer-video-1.0 $(GIRDIR)/ClutterGst-2.0.gir
+
+clutter-gst-3.0:
+	$(GENVAPI) --library $(srcdir)/clutter-gst-3.0 --metadatadir $(METADATADIR) $(METADATADIR)/ClutterGst-3.0-custom.vala --pkg cogl-1.0 --pkg clutter-1.0 --pkg gdk-pixbuf-2.0 --pkg gstreamer-1.0 --pkg gstreamer-audio-1.0 --pkg gstreamer-base-1.0 --pkg gstreamer-pbutils-1.0 --pkg gstreamer-video-1.0 $(GIRDIR)/ClutterGst-3.0.gir
+
+clutter-x11-1.0:
+	$(GENVAPI) --library $(srcdir)/clutter-x11-1.0 --metadatadir $(METADATADIR) --pkg clutter-1.0 --pkg x11 $(GIRDIR)/ClutterX11-1.0.gir
 
 cogl-1.0:
 	$(GENVAPI) --library $(srcdir)/cogl-1.0 $(PACKAGESDIR)/cogl-1.0/cogl-1.0-custom.vala $(PACKAGESDIR)/cogl-1.0/cogl-1.0.gi
@@ -529,6 +563,9 @@ gobject-introspection-1.0:
 
 goocanvas:
 	$(GENVAPI) --library $(srcdir)/goocanvas $(PACKAGESDIR)/goocanvas/goocanvas-custom.vala $(PACKAGESDIR)/goocanvas/goocanvas.gi
+
+graphene-1.0:
+	$(GENVAPI) --library $(srcdir)/graphene-1.0 --pkg gobject-2.0 --metadatadir $(METADATADIR) $(GIRDIR)/Graphene-1.0.gir
 
 gstreamer-0.10:
 	$(GENVAPI) --library $(srcdir)/gstreamer-0.10 $(PACKAGESDIR)/gstreamer-0.10/gstreamer-0.10-custom.vala $(PACKAGESDIR)/gstreamer-0.10/gstreamer-0.10.gi
@@ -616,6 +653,9 @@ gstreamer-net-1.0:
 
 gstreamer-pbutils-1.0:
 	$(GENVAPI) --library $(srcdir)/gstreamer-pbutils-1.0 --pkg gstreamer-base-1.0 --metadatadir $(METADATADIR) $(GIRDIR)/GstPbutils-1.0.gir
+
+gstreamer-player-1.0:
+	$(GENVAPI) --library $(srcdir)/gstreamer-player-1.0 --pkg gstreamer-1.0 --pkg gstreamer-video-1.0 --metadatadir $(METADATADIR) $(GIRDIR)/GstPlayer-1.0.gir
 
 gstreamer-riff-1.0:
 	$(GENVAPI) --library $(srcdir)/gstreamer-riff-1.0 --pkg gstreamer-1.0 --metadatadir $(METADATADIR) $(GIRDIR)/GstRiff-1.0.gir
@@ -737,6 +777,12 @@ pango:
 pangocairo:
 	$(GENVAPI) --library $(srcdir)/pangocairo --metadatadir $(METADATADIR) $(GIRDIR)/PangoCairo-1.0.gir
 
+polkit-agent-1:
+	$(GENVAPI) --library $(srcdir)/polkit-agent-1 --pkg gio-2.0 --pkg polkit-gobject-1 --metadatadir $(METADATADIR) $(GIRDIR)/PolkitAgent-1.0.gir
+
+polkit-gobject-1:
+	$(GENVAPI) --library $(srcdir)/polkit-gobject-1 --pkg gio-2.0 --metadatadir $(METADATADIR) $(GIRDIR)/Polkit-1.0.gir
+
 poppler-glib:
 	$(GENVAPI) --library $(srcdir)/poppler-glib --pkg cairo --pkg gio-2.0 --metadatadir $(METADATADIR) $(GIRDIR)/Poppler-0.18.gir
 
@@ -751,6 +797,9 @@ rest-extras-0.6:
 
 rest-0.7:
 	$(GENVAPI) --library $(srcdir)/rest-0.7 --metadatadir $(METADATADIR) --pkg gio-2.0 $(GIRDIR)/Rest-0.7.gir
+
+rest-extras-0.7:
+	$(GENVAPI) --library $(srcdir)/rest-extras-0.7 --metadatadir $(METADATADIR) --pkg rest-0.7 $(GIRDIR)/RestExtras-0.7.gir
 
 tracker-indexer-module-1.0:
 	$(GENVAPI) --library $(srcdir)/tracker-indexer-module-1.0 $(PACKAGESDIR)/tracker-indexer-module-1.0/tracker-indexer-module-1.0-custom.vala $(PACKAGESDIR)/tracker-indexer-module-1.0/tracker-indexer-module-1.0.gi
@@ -777,4 +826,4 @@ webkit2gtk-4.0:
 	$(GENVAPI) --library $(srcdir)/webkit2gtk-4.0 --metadatadir $(METADATADIR) --pkg gtk+-3.0 --pkg libsoup-2.4 $(GIRDIR)/WebKit2-4.0.gir
 
 webkit2gtk-web-extension-4.0:
-	$(GENVAPI) --library $(srcdir)/webkit2gtk-web-extension-4.0 --metadatadir $(METADATADIR) --pkg gtk+-3.0 $(GIRDIR)/WebKit2WebExtension-4.0.gir
+	$(GENVAPI) --library $(srcdir)/webkit2gtk-web-extension-4.0 --metadatadir $(METADATADIR) --pkg gtk+-3.0 $(METADATADIR)/WebKit2WebExtension-4.0-custom.vala $(GIRDIR)/WebKit2WebExtension-4.0.gir

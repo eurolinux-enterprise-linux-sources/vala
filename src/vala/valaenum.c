@@ -1399,12 +1399,12 @@ static void vala_enum_class_init (ValaEnumClass * klass) {
 	vala_enum_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_enum_finalize;
 	g_type_class_add_private (klass, sizeof (ValaEnumPrivate));
-	((ValaSymbolClass *) klass)->add_method = vala_enum_real_add_method;
-	((ValaSymbolClass *) klass)->add_constant = vala_enum_real_add_constant;
-	((ValaCodeNodeClass *) klass)->accept = vala_enum_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_enum_real_accept_children;
-	((ValaTypeSymbolClass *) klass)->is_reference_type = vala_enum_real_is_reference_type;
-	((ValaCodeNodeClass *) klass)->check = vala_enum_real_check;
+	((ValaSymbolClass *) klass)->add_method = (void (*)(ValaSymbol*, ValaMethod*)) vala_enum_real_add_method;
+	((ValaSymbolClass *) klass)->add_constant = (void (*)(ValaSymbol*, ValaConstant*)) vala_enum_real_add_constant;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_enum_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_enum_real_accept_children;
+	((ValaTypeSymbolClass *) klass)->is_reference_type = (gboolean (*)(ValaTypeSymbol*)) vala_enum_real_is_reference_type;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_enum_real_check;
 }
 
 
@@ -1417,13 +1417,13 @@ static void vala_enum_instance_init (ValaEnum * self) {
 	ValaArrayList* _tmp5_ = NULL;
 	self->priv = VALA_ENUM_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_ENUM_VALUE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_ENUM_VALUE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->values = (ValaList*) _tmp1_;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_array_list_new (VALA_TYPE_METHOD, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_);
+	_tmp3_ = vala_array_list_new (VALA_TYPE_METHOD, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_);
 	self->priv->methods = (ValaList*) _tmp3_;
 	_tmp4_ = g_direct_equal;
-	_tmp5_ = vala_array_list_new (VALA_TYPE_CONSTANT, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+	_tmp5_ = vala_array_list_new (VALA_TYPE_CONSTANT, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 	self->priv->constants = (ValaList*) _tmp5_;
 }
 

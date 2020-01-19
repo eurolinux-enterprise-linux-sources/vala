@@ -169,7 +169,7 @@ public abstract class Vala.CCodeMethodModule : CCodeStructModule {
 			function.modifiers |= CCodeModifiers.INTERNAL;
 		}
 
-		if (m.deprecated) {
+		if (m.version.deprecated) {
 			function.modifiers |= CCodeModifiers.DEPRECATED;
 		}
 
@@ -188,7 +188,7 @@ public abstract class Vala.CCodeMethodModule : CCodeStructModule {
 			decl_space.add_function_declaration (function);
 		}
 
-		if (m is CreationMethod && cl != null) {
+		if (is_gtypeinstance_creation_method (m)) {
 			// _construct function
 			function = new CCodeFunction (get_ccode_real_name (m));
 
@@ -696,7 +696,8 @@ public abstract class Vala.CCodeMethodModule : CCodeStructModule {
 			m.body.emit (this);
 		}
 
-		if (profile) {
+		// we generate the same code if we see a return statement, this handles the case without returns
+		if (profile && m.return_type is VoidType) {
 			string prefix = "_vala_prof_%s".printf (real_name);
 
 			var level = new CCodeIdentifier (prefix + "_level");
@@ -1121,18 +1122,22 @@ public abstract class Vala.CCodeMethodModule : CCodeStructModule {
 
 		ccheck.add_argument (get_cvalue (precondition));
 
+		string message = ((string) precondition.source_reference.begin.pos).substring (0, (int) (precondition.source_reference.end.pos - precondition.source_reference.begin.pos));
+		ccheck.add_argument (new CCodeConstant ("\"%s\"".printf (message.replace ("\n", " ").escape (""))));
+		requires_assert = true;
+
 		if (method_node is CreationMethod) {
-			ccheck.call = new CCodeIdentifier ("g_return_val_if_fail");
+			ccheck.call = new CCodeIdentifier ("_vala_return_val_if_fail");
 			ccheck.add_argument (new CCodeConstant ("NULL"));
 		} else if (method_node is Method && ((Method) method_node).coroutine) {
 			// _co function
-			ccheck.call = new CCodeIdentifier ("g_return_val_if_fail");
+			ccheck.call = new CCodeIdentifier ("_vala_return_val_if_fail");
 			ccheck.add_argument (new CCodeConstant ("FALSE"));
 		} else if (ret_type is VoidType) {
 			/* void function */
-			ccheck.call = new CCodeIdentifier ("g_return_if_fail");
+			ccheck.call = new CCodeIdentifier ("_vala_return_if_fail");
 		} else {
-			ccheck.call = new CCodeIdentifier ("g_return_val_if_fail");
+			ccheck.call = new CCodeIdentifier ("_vala_return_val_if_fail");
 
 			var cdefault = default_value_for_type (ret_type, false);
 			if (cdefault != null) {

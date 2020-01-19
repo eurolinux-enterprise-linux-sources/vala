@@ -259,6 +259,9 @@ typedef struct _ValaCCodeDeclaratorClass ValaCCodeDeclaratorClass;
 typedef struct _ValaCCodeDeclaration ValaCCodeDeclaration;
 typedef struct _ValaCCodeDeclarationClass ValaCCodeDeclarationClass;
 #define _vala_assert(expr, msg) if G_LIKELY (expr) ; else g_assertion_message_expr (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
+#define _vala_return_if_fail(expr, msg) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return; }
+#define _vala_return_val_if_fail(expr, msg, val) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return val; }
+#define _vala_warn_if_fail(expr, msg) if G_LIKELY (expr) ; else g_warn_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
 
 struct _ValaCCodeNode {
 	GTypeInstance parent_instance;
@@ -1416,7 +1419,7 @@ static void vala_ccode_function_class_init (ValaCCodeFunctionClass * klass) {
 	vala_ccode_function_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_function_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeFunctionPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_function_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_function_real_write;
 }
 
 
@@ -1427,10 +1430,10 @@ static void vala_ccode_function_instance_init (ValaCCodeFunction * self) {
 	ValaArrayList* _tmp3_ = NULL;
 	self->priv = VALA_CCODE_FUNCTION_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_CCODE_PARAMETER, (GBoxedCopyFunc) vala_ccode_node_ref, vala_ccode_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_CCODE_PARAMETER, (GBoxedCopyFunc) vala_ccode_node_ref, (GDestroyNotify) vala_ccode_node_unref, _tmp0_);
 	self->priv->parameters = (ValaList*) _tmp1_;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_array_list_new (VALA_TYPE_CCODE_STATEMENT, (GBoxedCopyFunc) vala_ccode_node_ref, vala_ccode_node_unref, _tmp2_);
+	_tmp3_ = vala_array_list_new (VALA_TYPE_CCODE_STATEMENT, (GBoxedCopyFunc) vala_ccode_node_ref, (GDestroyNotify) vala_ccode_node_unref, _tmp2_);
 	self->priv->statement_stack = (ValaList*) _tmp3_;
 }
 

@@ -1400,10 +1400,10 @@ static void vala_do_statement_finalize (ValaCodeNode* obj);
 /**
  * Creates a new do statement.
  *
- * @param cond   loop condition
- * @param body   loop body
- * @param source reference to source code
- * @return       newly created do statement
+ * @param body              loop body
+ * @param condition         loop condition
+ * @param source_reference  reference to source code
+ * @return                  newly created do statement
  */
 ValaDoStatement* vala_do_statement_construct (GType object_type, ValaBlock* body, ValaExpression* condition, ValaSourceReference* source_reference) {
 	ValaDoStatement* self = NULL;
@@ -1875,9 +1875,9 @@ static void vala_do_statement_class_init (ValaDoStatementClass * klass) {
 	vala_do_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_do_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaDoStatementPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_do_statement_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_do_statement_real_accept_children;
-	((ValaCodeNodeClass *) klass)->check = vala_do_statement_real_check;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_do_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_do_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_do_statement_real_check;
 }
 
 

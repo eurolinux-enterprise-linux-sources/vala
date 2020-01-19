@@ -107,6 +107,7 @@ static gboolean vala_ccode_compiler_package_exists (const gchar* package_name, c
 	gchar* _tmp4_ = NULL;
 	gchar* _tmp5_ = NULL;
 	gint exit_status = 0;
+	gboolean _tmp10_ = FALSE;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (package_name != NULL, FALSE);
 	_tmp0_ = pkg_config_command;
@@ -122,13 +123,14 @@ static gboolean vala_ccode_compiler_package_exists (const gchar* package_name, c
 		g_spawn_command_line_sync (pc, NULL, NULL, &_tmp6_, &_inner_error_);
 		exit_status = _tmp6_;
 		if (G_UNLIKELY (_inner_error_ != NULL)) {
+			gboolean _tmp7_ = FALSE;
 			if (_inner_error_->domain == G_SPAWN_ERROR) {
 				goto __catch1_g_spawn_error;
 			}
 			_g_free0 (pc);
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
-			return FALSE;
+			return _tmp7_;
 		}
 		result = 0 == exit_status;
 		_g_free0 (pc);
@@ -138,13 +140,13 @@ static gboolean vala_ccode_compiler_package_exists (const gchar* package_name, c
 	__catch1_g_spawn_error:
 	{
 		GError* e = NULL;
-		GError* _tmp7_ = NULL;
-		const gchar* _tmp8_ = NULL;
+		GError* _tmp8_ = NULL;
+		const gchar* _tmp9_ = NULL;
 		e = _inner_error_;
 		_inner_error_ = NULL;
-		_tmp7_ = e;
-		_tmp8_ = _tmp7_->message;
-		vala_report_error (NULL, _tmp8_);
+		_tmp8_ = e;
+		_tmp9_ = _tmp8_->message;
+		vala_report_error (NULL, _tmp9_);
 		result = FALSE;
 		_g_error_free0 (e);
 		_g_free0 (pc);
@@ -154,7 +156,7 @@ static gboolean vala_ccode_compiler_package_exists (const gchar* package_name, c
 	_g_free0 (pc);
 	g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 	g_clear_error (&_inner_error_);
-	return FALSE;
+	return _tmp10_;
 }
 
 

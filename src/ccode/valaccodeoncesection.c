@@ -294,8 +294,8 @@ static void vala_ccode_once_section_class_init (ValaCCodeOnceSectionClass * klas
 	vala_ccode_once_section_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_once_section_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeOnceSectionPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_once_section_real_write;
-	((ValaCCodeNodeClass *) klass)->write_declaration = vala_ccode_once_section_real_write_declaration;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_once_section_real_write;
+	((ValaCCodeNodeClass *) klass)->write_declaration = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_once_section_real_write_declaration;
 }
 
 

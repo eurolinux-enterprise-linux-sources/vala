@@ -1620,11 +1620,11 @@ ValaCCodeAssignmentModule* vala_ccode_assignment_module_new (void) {
 
 static void vala_ccode_assignment_module_class_init (ValaCCodeAssignmentModuleClass * klass) {
 	vala_ccode_assignment_module_parent_class = g_type_class_peek_parent (klass);
-	((ValaCodeVisitorClass *) klass)->visit_assignment = vala_ccode_assignment_module_real_visit_assignment;
-	((ValaCCodeBaseModuleClass *) klass)->store_value = vala_ccode_assignment_module_real_store_value;
-	((ValaCodeGeneratorClass *) klass)->store_local = vala_ccode_assignment_module_real_store_local;
-	((ValaCodeGeneratorClass *) klass)->store_parameter = vala_ccode_assignment_module_real_store_parameter;
-	((ValaCodeGeneratorClass *) klass)->store_field = vala_ccode_assignment_module_real_store_field;
+	((ValaCodeVisitorClass *) klass)->visit_assignment = (void (*)(ValaCodeVisitor*, ValaAssignment*)) vala_ccode_assignment_module_real_visit_assignment;
+	((ValaCCodeBaseModuleClass *) klass)->store_value = (void (*)(ValaCCodeBaseModule*, ValaTargetValue*, ValaTargetValue*)) vala_ccode_assignment_module_real_store_value;
+	((ValaCodeGeneratorClass *) klass)->store_local = (void (*)(ValaCodeGenerator*, ValaLocalVariable*, ValaTargetValue*, gboolean)) vala_ccode_assignment_module_real_store_local;
+	((ValaCodeGeneratorClass *) klass)->store_parameter = (void (*)(ValaCodeGenerator*, ValaParameter*, ValaTargetValue*, gboolean)) vala_ccode_assignment_module_real_store_parameter;
+	((ValaCodeGeneratorClass *) klass)->store_field = (void (*)(ValaCodeGenerator*, ValaField*, ValaTargetValue*, ValaTargetValue*)) vala_ccode_assignment_module_real_store_field;
 }
 
 

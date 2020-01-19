@@ -32,7 +32,7 @@ public class Vala.GtkModule : GSignalModule {
 	/* GtkBuilder xml child to Vala class mapping */
 	private HashMap<string, Class> current_child_to_class_map = new HashMap<string, Class>(str_hash, str_equal);
 	/* Required custom application-specific gtype classes to be ref'd before initializing the template */
-	private HashSet<Class> current_required_app_classes = new HashSet<Class>();
+	private List<Class> current_required_app_classes = new ArrayList<Class>();
 
 	private void ensure_cclass_to_vala_map () {
 		// map C name of gtypeinstance classes to Vala classes
@@ -70,16 +70,22 @@ public class Vala.GtkModule : GSignalModule {
 
 			int state = 0;
 			string prefix = null;
+			string alias = null;
 
 			MarkupTokenType current_token = reader.read_token (null, null);
 			while (current_token != MarkupTokenType.EOF) {
 				if (current_token == MarkupTokenType.START_ELEMENT && reader.name == "gresource") {
 					prefix = reader.get_attribute ("prefix");
 				} else if (current_token == MarkupTokenType.START_ELEMENT && reader.name == "file") {
+					alias = reader.get_attribute ("alias");
 					state = 1;
 				} else if (state == 1 && current_token == MarkupTokenType.TEXT) {
 					var name = reader.content;
-					gresource_to_file_map.set (Path.build_filename (prefix, name), Path.build_filename (gresource_dir, name));
+					var filename = Path.build_filename (gresource_dir, name);
+					if (alias != null) {
+						gresource_to_file_map.set (Path.build_filename (prefix, alias), filename);
+					}
+					gresource_to_file_map.set (Path.build_filename (prefix, name), filename);
 					state = 0;
 				}
 				current_token = reader.read_token (null, null);
@@ -208,6 +214,14 @@ public class Vala.GtkModule : GSignalModule {
 		ccode.add_expression (call);
 
 		current_required_app_classes.clear ();
+	}
+
+	public override void visit_property (Property prop) {
+		if (prop.get_attribute ("GtkChild") != null) {
+			Report.error (prop.source_reference, "Annotating properties with [GtkChild] is not yet supported");
+		}
+
+		base.visit_property (prop);
 	}
 
 	public override void visit_field (Field f) {

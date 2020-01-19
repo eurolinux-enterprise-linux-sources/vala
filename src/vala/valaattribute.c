@@ -135,6 +135,7 @@ typedef struct _ValaAttributePrivate ValaAttributePrivate;
 
 typedef struct _ValaSourceReference ValaSourceReference;
 typedef struct _ValaSourceReferenceClass ValaSourceReferenceClass;
+#define _vala_code_context_unref0(var) ((var == NULL) ? NULL : (var = (vala_code_context_unref (var), NULL)))
 
 struct _ValaCodeNode {
 	GTypeInstance parent_instance;
@@ -217,6 +218,9 @@ ValaAttribute* vala_attribute_construct (GType object_type, const gchar* name, V
 ValaCodeNode* vala_code_node_construct (GType object_type);
 void vala_attribute_set_name (ValaAttribute* self, const gchar* value);
 void vala_code_node_set_source_reference (ValaCodeNode* self, ValaSourceReference* value);
+ValaCodeContext* vala_code_context_get (void);
+gboolean vala_code_context_get_deprecated (ValaCodeContext* self);
+void vala_report_deprecated (ValaSourceReference* source, const gchar* message);
 void vala_attribute_add_argument (ValaAttribute* self, const gchar* key, const gchar* value);
 gboolean vala_attribute_has_argument (ValaAttribute* self, const gchar* name);
 gchar* vala_attribute_get_string (ValaAttribute* self, const gchar* name, const gchar* default_value);
@@ -238,12 +242,42 @@ ValaAttribute* vala_attribute_construct (GType object_type, const gchar* name, V
 	ValaAttribute* self = NULL;
 	const gchar* _tmp0_ = NULL;
 	ValaSourceReference* _tmp1_ = NULL;
+	ValaCodeContext* _tmp2_ = NULL;
+	ValaCodeContext* _tmp3_ = NULL;
+	gboolean _tmp4_ = FALSE;
+	gboolean _tmp5_ = FALSE;
+	gboolean _tmp6_ = FALSE;
 	g_return_val_if_fail (name != NULL, NULL);
 	self = (ValaAttribute*) vala_code_node_construct (object_type);
 	_tmp0_ = name;
 	vala_attribute_set_name (self, _tmp0_);
 	_tmp1_ = source_reference;
 	vala_code_node_set_source_reference ((ValaCodeNode*) self, _tmp1_);
+	_tmp2_ = vala_code_context_get ();
+	_tmp3_ = _tmp2_;
+	_tmp4_ = vala_code_context_get_deprecated (_tmp3_);
+	_tmp5_ = _tmp4_;
+	_tmp6_ = !_tmp5_;
+	_vala_code_context_unref0 (_tmp3_);
+	if (_tmp6_) {
+		const gchar* _tmp7_ = NULL;
+		_tmp7_ = name;
+		if (g_strcmp0 (_tmp7_, "Deprecated") == 0) {
+			ValaSourceReference* _tmp8_ = NULL;
+			_tmp8_ = source_reference;
+			vala_report_deprecated (_tmp8_, "[Deprecated] is deprecated. Use [Version (deprecated = true, deprecate" \
+"d_since = \"\", replacement = \"\")]");
+		} else {
+			const gchar* _tmp9_ = NULL;
+			_tmp9_ = name;
+			if (g_strcmp0 (_tmp9_, "Experimental") == 0) {
+				ValaSourceReference* _tmp10_ = NULL;
+				_tmp10_ = source_reference;
+				vala_report_deprecated (_tmp10_, "[Experimental] is deprecated. Use [Version (experimental = true, exper" \
+"imental_until = \"\")]");
+			}
+		}
+	}
 	return self;
 }
 
@@ -256,7 +290,8 @@ ValaAttribute* vala_attribute_new (const gchar* name, ValaSourceReference* sourc
 /**
  * Adds an attribute argument.
  *
- * @param arg named argument
+ * @param key    argument name
+ * @param value  argument value
  */
 void vala_attribute_add_argument (ValaAttribute* self, const gchar* key, const gchar* value) {
 	ValaMap* _tmp0_ = NULL;
@@ -622,7 +657,7 @@ static void vala_attribute_instance_init (ValaAttribute * self) {
 	_tmp0_ = g_str_hash;
 	_tmp1_ = g_str_equal;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp0_, _tmp1_, _tmp2_);
+	_tmp3_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, _tmp0_, _tmp1_, _tmp2_);
 	self->args = (ValaMap*) _tmp3_;
 }
 

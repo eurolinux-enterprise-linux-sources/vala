@@ -639,6 +639,7 @@ ValaList* vala_interface_get_fields (ValaInterface* self);
 static void vala_interface_real_add_constant (ValaSymbol* base, ValaConstant* c);
 ValaList* vala_interface_get_constants (ValaInterface* self);
 static void vala_interface_real_add_property (ValaSymbol* base, ValaProperty* prop);
+ValaField* vala_property_get_field (ValaProperty* self);
 ValaObjectType* vala_object_type_new (ValaObjectTypeSymbol* type_symbol);
 ValaObjectType* vala_object_type_construct (GType object_type, ValaObjectTypeSymbol* type_symbol);
 void vala_property_set_this_parameter (ValaProperty* self, ValaParameter* value);
@@ -770,9 +771,9 @@ ValaList* vala_interface_get_delegates (ValaInterface* self) {
 /**
  * Creates a new interface.
  *
- * @param name   type name
- * @param source reference to source code
- * @return       newly created interface
+ * @param name              type name
+ * @param source_reference  reference to source code
+ * @return                  newly created interface
  */
 ValaInterface* vala_interface_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaInterface* self = NULL;
@@ -1111,62 +1112,81 @@ ValaList* vala_interface_get_constants (ValaInterface* self) {
  */
 static void vala_interface_real_add_property (ValaSymbol* base, ValaProperty* prop) {
 	ValaInterface * self;
-	ValaList* _tmp0_ = NULL;
-	ValaProperty* _tmp1_ = NULL;
-	ValaScope* _tmp2_ = NULL;
-	ValaScope* _tmp3_ = NULL;
-	ValaProperty* _tmp4_ = NULL;
-	const gchar* _tmp5_ = NULL;
-	const gchar* _tmp6_ = NULL;
-	ValaProperty* _tmp7_ = NULL;
+	ValaProperty* _tmp0_ = NULL;
+	ValaField* _tmp1_ = NULL;
+	ValaField* _tmp2_ = NULL;
+	ValaList* _tmp7_ = NULL;
 	ValaProperty* _tmp8_ = NULL;
-	ValaObjectType* _tmp9_ = NULL;
-	ValaObjectType* _tmp10_ = NULL;
-	ValaParameter* _tmp11_ = NULL;
-	ValaParameter* _tmp12_ = NULL;
-	ValaProperty* _tmp13_ = NULL;
-	ValaScope* _tmp14_ = NULL;
-	ValaScope* _tmp15_ = NULL;
-	ValaProperty* _tmp16_ = NULL;
-	ValaParameter* _tmp17_ = NULL;
+	ValaScope* _tmp9_ = NULL;
+	ValaScope* _tmp10_ = NULL;
+	ValaProperty* _tmp11_ = NULL;
+	const gchar* _tmp12_ = NULL;
+	const gchar* _tmp13_ = NULL;
+	ValaProperty* _tmp14_ = NULL;
+	ValaProperty* _tmp15_ = NULL;
+	ValaObjectType* _tmp16_ = NULL;
+	ValaObjectType* _tmp17_ = NULL;
 	ValaParameter* _tmp18_ = NULL;
-	const gchar* _tmp19_ = NULL;
-	const gchar* _tmp20_ = NULL;
-	ValaProperty* _tmp21_ = NULL;
-	ValaParameter* _tmp22_ = NULL;
-	ValaParameter* _tmp23_ = NULL;
+	ValaParameter* _tmp19_ = NULL;
+	ValaProperty* _tmp20_ = NULL;
+	ValaScope* _tmp21_ = NULL;
+	ValaScope* _tmp22_ = NULL;
+	ValaProperty* _tmp23_ = NULL;
+	ValaParameter* _tmp24_ = NULL;
+	ValaParameter* _tmp25_ = NULL;
+	const gchar* _tmp26_ = NULL;
+	const gchar* _tmp27_ = NULL;
+	ValaProperty* _tmp28_ = NULL;
+	ValaParameter* _tmp29_ = NULL;
+	ValaParameter* _tmp30_ = NULL;
 	self = (ValaInterface*) base;
 	g_return_if_fail (prop != NULL);
-	_tmp0_ = self->priv->properties;
-	_tmp1_ = prop;
-	vala_collection_add ((ValaCollection*) _tmp0_, _tmp1_);
-	_tmp2_ = vala_symbol_get_scope ((ValaSymbol*) self);
-	_tmp3_ = _tmp2_;
-	_tmp4_ = prop;
-	_tmp5_ = vala_symbol_get_name ((ValaSymbol*) _tmp4_);
-	_tmp6_ = _tmp5_;
-	_tmp7_ = prop;
-	vala_scope_add (_tmp3_, _tmp6_, (ValaSymbol*) _tmp7_);
+	_tmp0_ = prop;
+	_tmp1_ = vala_property_get_field (_tmp0_);
+	_tmp2_ = _tmp1_;
+	if (_tmp2_ != NULL) {
+		ValaProperty* _tmp3_ = NULL;
+		ValaSourceReference* _tmp4_ = NULL;
+		ValaSourceReference* _tmp5_ = NULL;
+		ValaProperty* _tmp6_ = NULL;
+		_tmp3_ = prop;
+		_tmp4_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp3_);
+		_tmp5_ = _tmp4_;
+		vala_report_error (_tmp5_, "automatic properties are not allowed in interfaces");
+		_tmp6_ = prop;
+		vala_code_node_set_error ((ValaCodeNode*) _tmp6_, TRUE);
+		return;
+	}
+	_tmp7_ = self->priv->properties;
 	_tmp8_ = prop;
-	_tmp9_ = vala_object_type_new ((ValaObjectTypeSymbol*) self);
+	vala_collection_add ((ValaCollection*) _tmp7_, _tmp8_);
+	_tmp9_ = vala_symbol_get_scope ((ValaSymbol*) self);
 	_tmp10_ = _tmp9_;
-	_tmp11_ = vala_parameter_new ("this", (ValaDataType*) _tmp10_, NULL);
-	_tmp12_ = _tmp11_;
-	vala_property_set_this_parameter (_tmp8_, _tmp12_);
-	_vala_code_node_unref0 (_tmp12_);
-	_vala_code_node_unref0 (_tmp10_);
-	_tmp13_ = prop;
-	_tmp14_ = vala_symbol_get_scope ((ValaSymbol*) _tmp13_);
-	_tmp15_ = _tmp14_;
-	_tmp16_ = prop;
-	_tmp17_ = vala_property_get_this_parameter (_tmp16_);
-	_tmp18_ = _tmp17_;
-	_tmp19_ = vala_symbol_get_name ((ValaSymbol*) _tmp18_);
-	_tmp20_ = _tmp19_;
-	_tmp21_ = prop;
-	_tmp22_ = vala_property_get_this_parameter (_tmp21_);
-	_tmp23_ = _tmp22_;
-	vala_scope_add (_tmp15_, _tmp20_, (ValaSymbol*) _tmp23_);
+	_tmp11_ = prop;
+	_tmp12_ = vala_symbol_get_name ((ValaSymbol*) _tmp11_);
+	_tmp13_ = _tmp12_;
+	_tmp14_ = prop;
+	vala_scope_add (_tmp10_, _tmp13_, (ValaSymbol*) _tmp14_);
+	_tmp15_ = prop;
+	_tmp16_ = vala_object_type_new ((ValaObjectTypeSymbol*) self);
+	_tmp17_ = _tmp16_;
+	_tmp18_ = vala_parameter_new ("this", (ValaDataType*) _tmp17_, NULL);
+	_tmp19_ = _tmp18_;
+	vala_property_set_this_parameter (_tmp15_, _tmp19_);
+	_vala_code_node_unref0 (_tmp19_);
+	_vala_code_node_unref0 (_tmp17_);
+	_tmp20_ = prop;
+	_tmp21_ = vala_symbol_get_scope ((ValaSymbol*) _tmp20_);
+	_tmp22_ = _tmp21_;
+	_tmp23_ = prop;
+	_tmp24_ = vala_property_get_this_parameter (_tmp23_);
+	_tmp25_ = _tmp24_;
+	_tmp26_ = vala_symbol_get_name ((ValaSymbol*) _tmp25_);
+	_tmp27_ = _tmp26_;
+	_tmp28_ = prop;
+	_tmp29_ = vala_property_get_this_parameter (_tmp28_);
+	_tmp30_ = _tmp29_;
+	vala_scope_add (_tmp22_, _tmp27_, (ValaSymbol*) _tmp30_);
 }
 
 
@@ -2022,10 +2042,13 @@ static void vala_interface_real_replace_type (ValaCodeNode* base, ValaDataType* 
 					ValaList* _tmp12_ = NULL;
 					gint _tmp13_ = 0;
 					ValaDataType* _tmp14_ = NULL;
+					ValaDataType* _tmp15_ = NULL;
 					_tmp12_ = self->priv->prerequisites;
 					_tmp13_ = i;
 					_tmp14_ = new_type;
 					vala_list_set (_tmp12_, _tmp13_, _tmp14_);
+					_tmp15_ = new_type;
+					vala_code_node_set_parent_node ((ValaCodeNode*) _tmp15_, (ValaCodeNode*) self);
 					return;
 				}
 			}
@@ -2921,7 +2944,7 @@ static gboolean vala_interface_real_check (ValaCodeNode* base, ValaCodeContext* 
 	_tmp258_ = g_direct_hash;
 	_tmp259_ = g_direct_equal;
 	_tmp260_ = g_direct_equal;
-	_tmp261_ = vala_hash_map_new (G_TYPE_INT, NULL, NULL, VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp258_, _tmp259_, _tmp260_);
+	_tmp261_ = vala_hash_map_new (G_TYPE_INT, NULL, NULL, VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp258_, _tmp259_, _tmp260_);
 	positions = (ValaMap*) _tmp261_;
 	ordered_seen = FALSE;
 	unordered_seen = FALSE;
@@ -2983,7 +3006,7 @@ static gboolean vala_interface_real_check (ValaCodeNode* base, ValaCodeContext* 
 			_tmp274_ = vala_code_node_get_attribute_integer ((ValaCodeNode*) _tmp273_, "CCode", "ordering", -1);
 			ordering = _tmp274_;
 			_tmp275_ = ordering;
-			if (_tmp275_ < (-1)) {
+			if (_tmp275_ < -1) {
 				ValaSymbol* _tmp276_ = NULL;
 				ValaSourceReference* _tmp277_ = NULL;
 				ValaSourceReference* _tmp278_ = NULL;
@@ -3010,7 +3033,7 @@ static gboolean vala_interface_real_check (ValaCodeNode* base, ValaCodeContext* 
 				continue;
 			}
 			_tmp284_ = ordering;
-			ordered = _tmp284_ != (-1);
+			ordered = _tmp284_ != -1;
 			_tmp287_ = ordered;
 			if (_tmp287_) {
 				gboolean _tmp288_ = FALSE;
@@ -3266,25 +3289,25 @@ static void vala_interface_class_init (ValaInterfaceClass * klass) {
 	vala_interface_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_interface_finalize;
 	g_type_class_add_private (klass, sizeof (ValaInterfacePrivate));
-	((ValaSymbolClass *) klass)->add_method = vala_interface_real_add_method;
-	((ValaObjectTypeSymbolClass *) klass)->get_methods = vala_interface_real_get_methods;
-	((ValaSymbolClass *) klass)->add_field = vala_interface_real_add_field;
-	((ValaSymbolClass *) klass)->add_constant = vala_interface_real_add_constant;
-	((ValaSymbolClass *) klass)->add_property = vala_interface_real_add_property;
-	((ValaObjectTypeSymbolClass *) klass)->get_properties = vala_interface_real_get_properties;
-	((ValaSymbolClass *) klass)->add_signal = vala_interface_real_add_signal;
-	((ValaObjectTypeSymbolClass *) klass)->get_signals = vala_interface_real_get_signals;
-	((ValaInterfaceClass *) klass)->get_virtuals = vala_interface_real_get_virtuals;
-	((ValaSymbolClass *) klass)->add_class = vala_interface_real_add_class;
-	((ValaSymbolClass *) klass)->add_struct = vala_interface_real_add_struct;
-	((ValaSymbolClass *) klass)->add_enum = vala_interface_real_add_enum;
-	((ValaSymbolClass *) klass)->add_delegate = vala_interface_real_add_delegate;
-	((ValaCodeNodeClass *) klass)->accept = vala_interface_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_interface_real_accept_children;
-	((ValaTypeSymbolClass *) klass)->is_reference_type = vala_interface_real_is_reference_type;
-	((ValaTypeSymbolClass *) klass)->is_subtype_of = vala_interface_real_is_subtype_of;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_interface_real_replace_type;
-	((ValaCodeNodeClass *) klass)->check = vala_interface_real_check;
+	((ValaSymbolClass *) klass)->add_method = (void (*)(ValaSymbol*, ValaMethod*)) vala_interface_real_add_method;
+	((ValaObjectTypeSymbolClass *) klass)->get_methods = (ValaList* (*)(ValaObjectTypeSymbol*)) vala_interface_real_get_methods;
+	((ValaSymbolClass *) klass)->add_field = (void (*)(ValaSymbol*, ValaField*)) vala_interface_real_add_field;
+	((ValaSymbolClass *) klass)->add_constant = (void (*)(ValaSymbol*, ValaConstant*)) vala_interface_real_add_constant;
+	((ValaSymbolClass *) klass)->add_property = (void (*)(ValaSymbol*, ValaProperty*)) vala_interface_real_add_property;
+	((ValaObjectTypeSymbolClass *) klass)->get_properties = (ValaList* (*)(ValaObjectTypeSymbol*)) vala_interface_real_get_properties;
+	((ValaSymbolClass *) klass)->add_signal = (void (*)(ValaSymbol*, ValaSignal*)) vala_interface_real_add_signal;
+	((ValaObjectTypeSymbolClass *) klass)->get_signals = (ValaList* (*)(ValaObjectTypeSymbol*)) vala_interface_real_get_signals;
+	((ValaInterfaceClass *) klass)->get_virtuals = (ValaList* (*)(ValaInterface*)) vala_interface_real_get_virtuals;
+	((ValaSymbolClass *) klass)->add_class = (void (*)(ValaSymbol*, ValaClass*)) vala_interface_real_add_class;
+	((ValaSymbolClass *) klass)->add_struct = (void (*)(ValaSymbol*, ValaStruct*)) vala_interface_real_add_struct;
+	((ValaSymbolClass *) klass)->add_enum = (void (*)(ValaSymbol*, ValaEnum*)) vala_interface_real_add_enum;
+	((ValaSymbolClass *) klass)->add_delegate = (void (*)(ValaSymbol*, ValaDelegate*)) vala_interface_real_add_delegate;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_interface_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_interface_real_accept_children;
+	((ValaTypeSymbolClass *) klass)->is_reference_type = (gboolean (*)(ValaTypeSymbol*)) vala_interface_real_is_reference_type;
+	((ValaTypeSymbolClass *) klass)->is_subtype_of = (gboolean (*)(ValaTypeSymbol*, ValaTypeSymbol*)) vala_interface_real_is_subtype_of;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_interface_real_replace_type;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_interface_real_check;
 }
 
 
@@ -3313,37 +3336,37 @@ static void vala_interface_instance_init (ValaInterface * self) {
 	ValaArrayList* _tmp21_ = NULL;
 	self->priv = VALA_INTERFACE_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->prerequisites = (ValaList*) _tmp1_;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_array_list_new (VALA_TYPE_METHOD, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_);
+	_tmp3_ = vala_array_list_new (VALA_TYPE_METHOD, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_);
 	self->priv->methods = (ValaList*) _tmp3_;
 	_tmp4_ = g_direct_equal;
-	_tmp5_ = vala_array_list_new (VALA_TYPE_FIELD, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+	_tmp5_ = vala_array_list_new (VALA_TYPE_FIELD, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 	self->priv->fields = (ValaList*) _tmp5_;
 	_tmp6_ = g_direct_equal;
-	_tmp7_ = vala_array_list_new (VALA_TYPE_CONSTANT, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp6_);
+	_tmp7_ = vala_array_list_new (VALA_TYPE_CONSTANT, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp6_);
 	self->priv->constants = (ValaList*) _tmp7_;
 	_tmp8_ = g_direct_equal;
-	_tmp9_ = vala_array_list_new (VALA_TYPE_PROPERTY, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp8_);
+	_tmp9_ = vala_array_list_new (VALA_TYPE_PROPERTY, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp8_);
 	self->priv->properties = (ValaList*) _tmp9_;
 	_tmp10_ = g_direct_equal;
-	_tmp11_ = vala_array_list_new (VALA_TYPE_SIGNAL, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp10_);
+	_tmp11_ = vala_array_list_new (VALA_TYPE_SIGNAL, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp10_);
 	self->priv->signals = (ValaList*) _tmp11_;
 	_tmp12_ = g_direct_equal;
-	_tmp13_ = vala_array_list_new (VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp12_);
+	_tmp13_ = vala_array_list_new (VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp12_);
 	self->priv->virtuals = (ValaList*) _tmp13_;
 	_tmp14_ = g_direct_equal;
-	_tmp15_ = vala_array_list_new (VALA_TYPE_CLASS, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp14_);
+	_tmp15_ = vala_array_list_new (VALA_TYPE_CLASS, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp14_);
 	self->priv->classes = (ValaList*) _tmp15_;
 	_tmp16_ = g_direct_equal;
-	_tmp17_ = vala_array_list_new (VALA_TYPE_STRUCT, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp16_);
+	_tmp17_ = vala_array_list_new (VALA_TYPE_STRUCT, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp16_);
 	self->priv->structs = (ValaList*) _tmp17_;
 	_tmp18_ = g_direct_equal;
-	_tmp19_ = vala_array_list_new (VALA_TYPE_ENUM, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp18_);
+	_tmp19_ = vala_array_list_new (VALA_TYPE_ENUM, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp18_);
 	self->priv->enums = (ValaList*) _tmp19_;
 	_tmp20_ = g_direct_equal;
-	_tmp21_ = vala_array_list_new (VALA_TYPE_DELEGATE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp20_);
+	_tmp21_ = vala_array_list_new (VALA_TYPE_DELEGATE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp20_);
 	self->priv->delegates = (ValaList*) _tmp21_;
 }
 

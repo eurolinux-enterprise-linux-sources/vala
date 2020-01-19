@@ -300,7 +300,7 @@ static void vala_ccode_do_statement_class_init (ValaCCodeDoStatementClass * klas
 	vala_ccode_do_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_do_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeDoStatementPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_do_statement_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_do_statement_real_write;
 }
 
 

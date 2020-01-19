@@ -1292,14 +1292,14 @@ ValaCodeGenerator* vala_code_generator_construct (GType object_type) {
 
 static void vala_code_generator_class_init (ValaCodeGeneratorClass * klass) {
 	vala_code_generator_parent_class = g_type_class_peek_parent (klass);
-	((ValaCodeGeneratorClass *) klass)->emit = vala_code_generator_real_emit;
-	((ValaCodeGeneratorClass *) klass)->create_local = vala_code_generator_real_create_local;
-	((ValaCodeGeneratorClass *) klass)->load_local = vala_code_generator_real_load_local;
-	((ValaCodeGeneratorClass *) klass)->store_local = vala_code_generator_real_store_local;
-	((ValaCodeGeneratorClass *) klass)->load_parameter = vala_code_generator_real_load_parameter;
-	((ValaCodeGeneratorClass *) klass)->store_parameter = vala_code_generator_real_store_parameter;
-	((ValaCodeGeneratorClass *) klass)->load_field = vala_code_generator_real_load_field;
-	((ValaCodeGeneratorClass *) klass)->store_field = vala_code_generator_real_store_field;
+	((ValaCodeGeneratorClass *) klass)->emit = (void (*)(ValaCodeGenerator*, ValaCodeContext*)) vala_code_generator_real_emit;
+	((ValaCodeGeneratorClass *) klass)->create_local = (ValaLocalVariable* (*)(ValaCodeGenerator*, ValaDataType*)) vala_code_generator_real_create_local;
+	((ValaCodeGeneratorClass *) klass)->load_local = (ValaTargetValue* (*)(ValaCodeGenerator*, ValaLocalVariable*)) vala_code_generator_real_load_local;
+	((ValaCodeGeneratorClass *) klass)->store_local = (void (*)(ValaCodeGenerator*, ValaLocalVariable*, ValaTargetValue*, gboolean)) vala_code_generator_real_store_local;
+	((ValaCodeGeneratorClass *) klass)->load_parameter = (ValaTargetValue* (*)(ValaCodeGenerator*, ValaParameter*)) vala_code_generator_real_load_parameter;
+	((ValaCodeGeneratorClass *) klass)->store_parameter = (void (*)(ValaCodeGenerator*, ValaParameter*, ValaTargetValue*, gboolean)) vala_code_generator_real_store_parameter;
+	((ValaCodeGeneratorClass *) klass)->load_field = (ValaTargetValue* (*)(ValaCodeGenerator*, ValaField*, ValaTargetValue*)) vala_code_generator_real_load_field;
+	((ValaCodeGeneratorClass *) klass)->store_field = (void (*)(ValaCodeGenerator*, ValaField*, ValaTargetValue*, ValaTargetValue*)) vala_code_generator_real_store_field;
 }
 
 

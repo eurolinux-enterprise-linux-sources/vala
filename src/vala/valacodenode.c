@@ -385,7 +385,7 @@ ValaList* vala_code_node_get_error_types (ValaCodeNode* self) {
 		GEqualFunc _tmp4_ = NULL;
 		ValaArrayList* _tmp5_ = NULL;
 		_tmp4_ = g_direct_equal;
-		_tmp5_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+		_tmp5_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 		_vala_iterable_unref0 (vala_code_node__empty_type_list);
 		vala_code_node__empty_type_list = (ValaList*) _tmp5_;
 	}
@@ -412,7 +412,7 @@ void vala_code_node_add_error_type (ValaCodeNode* self, ValaDataType* error_type
 		GEqualFunc _tmp1_ = NULL;
 		ValaArrayList* _tmp2_ = NULL;
 		_tmp1_ = g_direct_equal;
-		_tmp2_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp1_);
+		_tmp2_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp1_);
 		_vala_iterable_unref0 (self->priv->_error_types);
 		self->priv->_error_types = (ValaList*) _tmp2_;
 	}
@@ -1595,15 +1595,15 @@ static void vala_code_node_class_init (ValaCodeNodeClass * klass) {
 	vala_code_node_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_code_node_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCodeNodePrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_code_node_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_code_node_real_accept_children;
-	((ValaCodeNodeClass *) klass)->check = vala_code_node_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_code_node_real_emit;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_code_node_real_replace_type;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_code_node_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->to_string = vala_code_node_real_to_string;
-	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_code_node_real_get_defined_variables;
-	((ValaCodeNodeClass *) klass)->get_used_variables = vala_code_node_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_code_node_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_code_node_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_code_node_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_code_node_real_emit;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_code_node_real_replace_type;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_code_node_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->to_string = (gchar* (*)(ValaCodeNode*)) vala_code_node_real_to_string;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_code_node_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_code_node_real_get_used_variables;
 }
 
 

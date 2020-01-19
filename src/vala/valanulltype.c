@@ -142,15 +142,15 @@ typedef struct _ValaScopeClass ValaScopeClass;
 typedef struct _ValaParameter ValaParameter;
 typedef struct _ValaParameterClass ValaParameterClass;
 
-#define VALA_TYPE_MEMBER_ACCESS (vala_member_access_get_type ())
-#define VALA_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccess))
-#define VALA_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
-#define VALA_IS_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_IS_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_MEMBER_ACCESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
+#define VALA_TYPE_TYPEPARAMETER (vala_typeparameter_get_type ())
+#define VALA_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameter))
+#define VALA_TYPEPARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_TYPEPARAMETER, ValaTypeParameterClass))
+#define VALA_IS_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_TYPEPARAMETER))
+#define VALA_IS_TYPEPARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_TYPEPARAMETER))
+#define VALA_TYPEPARAMETER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameterClass))
 
-typedef struct _ValaMemberAccess ValaMemberAccess;
-typedef struct _ValaMemberAccessClass ValaMemberAccessClass;
+typedef struct _ValaTypeParameter ValaTypeParameter;
+typedef struct _ValaTypeParameterClass ValaTypeParameterClass;
 
 #define VALA_TYPE_REFERENCE_TYPE (vala_reference_type_get_type ())
 #define VALA_REFERENCE_TYPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_REFERENCE_TYPE, ValaReferenceType))
@@ -204,16 +204,6 @@ typedef struct _ValaPointerTypeClass ValaPointerTypeClass;
 
 typedef struct _ValaTypeSymbol ValaTypeSymbol;
 typedef struct _ValaTypeSymbolClass ValaTypeSymbolClass;
-
-#define VALA_TYPE_TYPEPARAMETER (vala_typeparameter_get_type ())
-#define VALA_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameter))
-#define VALA_TYPEPARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_TYPEPARAMETER, ValaTypeParameterClass))
-#define VALA_IS_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_TYPEPARAMETER))
-#define VALA_IS_TYPEPARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_TYPEPARAMETER))
-#define VALA_TYPEPARAMETER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameterClass))
-
-typedef struct _ValaTypeParameter ValaTypeParameter;
-typedef struct _ValaTypeParameterClass ValaTypeParameterClass;
 #define _vala_code_node_unref0(var) ((var == NULL) ? NULL : (var = (vala_code_node_unref (var), NULL)))
 
 #define VALA_TYPE_ARRAY_TYPE (vala_array_type_get_type ())
@@ -279,7 +269,8 @@ struct _ValaDataTypeClass {
 	ValaSymbol* (*get_pointer_member) (ValaDataType* self, const gchar* member_name);
 	gboolean (*is_real_struct_type) (ValaDataType* self);
 	gboolean (*is_disposable) (ValaDataType* self);
-	ValaDataType* (*get_actual_type) (ValaDataType* self, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
+	ValaDataType* (*get_actual_type) (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
+	ValaDataType* (*infer_type_argument) (ValaDataType* self, ValaTypeParameter* type_param, ValaDataType* value_type);
 };
 
 struct _ValaReferenceType {
@@ -338,7 +329,7 @@ void vala_value_take_scope (GValue* value, gpointer v_object);
 gpointer vala_value_get_scope (const GValue* value);
 GType vala_scope_get_type (void) G_GNUC_CONST;
 GType vala_parameter_get_type (void) G_GNUC_CONST;
-GType vala_member_access_get_type (void) G_GNUC_CONST;
+GType vala_typeparameter_get_type (void) G_GNUC_CONST;
 GType vala_reference_type_get_type (void) G_GNUC_CONST;
 GType vala_null_type_get_type (void) G_GNUC_CONST;
 enum  {
@@ -363,7 +354,6 @@ gboolean vala_data_type_get_nullable (ValaDataType* self);
 GType vala_pointer_type_get_type (void) G_GNUC_CONST;
 GType vala_typesymbol_get_type (void) G_GNUC_CONST;
 ValaTypeSymbol* vala_data_type_get_data_type (ValaDataType* self);
-GType vala_typeparameter_get_type (void) G_GNUC_CONST;
 ValaTypeParameter* vala_data_type_get_type_parameter (ValaDataType* self);
 ValaAttribute* vala_code_node_get_attribute (ValaCodeNode* self, const gchar* name);
 gboolean vala_typesymbol_is_reference_type (ValaTypeSymbol* self);
@@ -572,10 +562,10 @@ static gchar* vala_null_type_real_to_qualified_string (ValaDataType* base, ValaS
 
 static void vala_null_type_class_init (ValaNullTypeClass * klass) {
 	vala_null_type_parent_class = g_type_class_peek_parent (klass);
-	((ValaDataTypeClass *) klass)->compatible = vala_null_type_real_compatible;
-	((ValaDataTypeClass *) klass)->copy = vala_null_type_real_copy;
-	((ValaDataTypeClass *) klass)->is_disposable = vala_null_type_real_is_disposable;
-	((ValaDataTypeClass *) klass)->to_qualified_string = vala_null_type_real_to_qualified_string;
+	((ValaDataTypeClass *) klass)->compatible = (gboolean (*)(ValaDataType*, ValaDataType*)) vala_null_type_real_compatible;
+	((ValaDataTypeClass *) klass)->copy = (ValaDataType* (*)(ValaDataType*)) vala_null_type_real_copy;
+	((ValaDataTypeClass *) klass)->is_disposable = (gboolean (*)(ValaDataType*)) vala_null_type_real_is_disposable;
+	((ValaDataTypeClass *) klass)->to_qualified_string = (gchar* (*)(ValaDataType*, ValaScope*)) vala_null_type_real_to_qualified_string;
 }
 
 

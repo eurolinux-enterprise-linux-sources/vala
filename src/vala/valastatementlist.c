@@ -444,8 +444,8 @@ static void vala_statement_list_class_init (ValaStatementListClass * klass) {
 	vala_statement_list_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_statement_list_finalize;
 	g_type_class_add_private (klass, sizeof (ValaStatementListPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_statement_list_real_accept;
-	((ValaCodeNodeClass *) klass)->emit = vala_statement_list_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_statement_list_real_accept;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_statement_list_real_emit;
 }
 
 
@@ -459,7 +459,7 @@ static void vala_statement_list_instance_init (ValaStatementList * self) {
 	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_STATEMENT_LIST_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_STATEMENT, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_STATEMENT, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->list = (ValaList*) _tmp1_;
 }
 

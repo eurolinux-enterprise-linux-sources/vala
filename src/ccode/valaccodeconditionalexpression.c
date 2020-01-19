@@ -292,8 +292,8 @@ static void vala_ccode_conditional_expression_class_init (ValaCCodeConditionalEx
 	vala_ccode_conditional_expression_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_conditional_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeConditionalExpressionPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_conditional_expression_real_write;
-	((ValaCCodeExpressionClass *) klass)->write_inner = vala_ccode_conditional_expression_real_write_inner;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_conditional_expression_real_write;
+	((ValaCCodeExpressionClass *) klass)->write_inner = (void (*)(ValaCCodeExpression*, ValaCCodeWriter*)) vala_ccode_conditional_expression_real_write_inner;
 }
 
 

@@ -1512,7 +1512,7 @@ static void vala_foreach_statement_set_use_iterator (ValaForeachStatement* self,
 gchar* vala_code_node_to_string (ValaCodeNode* self);
 gchar* vala_symbol_get_full_name (ValaSymbol* self);
 ValaDataType* vala_method_get_return_type (ValaMethod* self);
-ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
+ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
 GType vala_void_type_get_type (void) G_GNUC_CONST;
 gboolean vala_data_type_get_nullable (ValaDataType* self);
 static gboolean vala_foreach_statement_analyze_element_type (ValaForeachStatement* self, ValaDataType* element_type);
@@ -1558,11 +1558,12 @@ static void vala_foreach_statement_finalize (ValaCodeNode* obj);
 /**
  * Creates a new foreach statement.
  *
- * @param type   element type
- * @param id     element variable name
- * @param col    loop body
- * @param source reference to source code
- * @return       newly created foreach statement
+ * @param type_reference    element type
+ * @param variable_name     element variable name
+ * @param collection        container
+ * @param body              loop body
+ * @param source_reference  reference to source code
+ * @return                  newly created foreach statement
  */
 ValaForeachStatement* vala_foreach_statement_construct (GType object_type, ValaDataType* type_reference, const gchar* variable_name, ValaExpression* collection, ValaBlock* body, ValaSourceReference* source_reference) {
 	ValaForeachStatement* self = NULL;
@@ -3764,13 +3765,13 @@ static void vala_foreach_statement_class_init (ValaForeachStatementClass * klass
 	vala_foreach_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_foreach_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaForeachStatementPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_foreach_statement_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_foreach_statement_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_foreach_statement_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_foreach_statement_real_replace_type;
-	((ValaCodeNodeClass *) klass)->check = vala_foreach_statement_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_foreach_statement_real_emit;
-	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_foreach_statement_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_foreach_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_foreach_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_foreach_statement_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_foreach_statement_real_replace_type;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_foreach_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_foreach_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_foreach_statement_real_get_defined_variables;
 }
 
 

@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <glib/gstdio.h>
 #include <valagee.h>
+#include <locale.h>
 #include <version.h>
 
 
@@ -926,14 +927,15 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 
 static gint vala_vapi_gen_main (gchar** args, int args_length1) {
 	gint result = 0;
-	gboolean _tmp10_ = FALSE;
-	gchar** _tmp12_ = NULL;
-	gint _tmp12__length1 = 0;
+	gboolean _tmp12_ = FALSE;
+	gchar** _tmp14_ = NULL;
+	gint _tmp14__length1 = 0;
 	ValaVAPIGen* vapigen = NULL;
-	ValaVAPIGen* _tmp14_ = NULL;
-	ValaVAPIGen* _tmp15_ = NULL;
-	gint _tmp16_ = 0;
+	ValaVAPIGen* _tmp16_ = NULL;
+	ValaVAPIGen* _tmp17_ = NULL;
+	gint _tmp18_ = 0;
 	GError * _inner_error_ = NULL;
+	setlocale (LC_ALL, "");
 	{
 		GOptionContext* opt_context = NULL;
 		GOptionContext* _tmp0_ = NULL;
@@ -949,6 +951,7 @@ static gint vala_vapi_gen_main (gchar** args, int args_length1) {
 		_tmp3_ = opt_context;
 		g_option_context_parse (_tmp3_, &args_length1, &args, &_inner_error_);
 		if (G_UNLIKELY (_inner_error_ != NULL)) {
+			gint _tmp4_ = 0;
 			_g_option_context_free0 (opt_context);
 			if (_inner_error_->domain == G_OPTION_ERROR) {
 				goto __catch3_g_option_error;
@@ -956,7 +959,7 @@ static gint vala_vapi_gen_main (gchar** args, int args_length1) {
 			_g_option_context_free0 (opt_context);
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
-			return 0;
+			return _tmp4_;
 		}
 		_g_option_context_free0 (opt_context);
 	}
@@ -964,56 +967,57 @@ static gint vala_vapi_gen_main (gchar** args, int args_length1) {
 	__catch3_g_option_error:
 	{
 		GError* e = NULL;
-		FILE* _tmp4_ = NULL;
-		GError* _tmp5_ = NULL;
-		const gchar* _tmp6_ = NULL;
-		FILE* _tmp7_ = NULL;
-		gchar** _tmp8_ = NULL;
-		gint _tmp8__length1 = 0;
-		const gchar* _tmp9_ = NULL;
+		FILE* _tmp5_ = NULL;
+		GError* _tmp6_ = NULL;
+		const gchar* _tmp7_ = NULL;
+		FILE* _tmp8_ = NULL;
+		gchar** _tmp9_ = NULL;
+		gint _tmp9__length1 = 0;
+		const gchar* _tmp10_ = NULL;
 		e = _inner_error_;
 		_inner_error_ = NULL;
-		_tmp4_ = stdout;
-		_tmp5_ = e;
-		_tmp6_ = _tmp5_->message;
-		fprintf (_tmp4_, "%s\n", _tmp6_);
-		_tmp7_ = stdout;
-		_tmp8_ = args;
-		_tmp8__length1 = args_length1;
-		_tmp9_ = _tmp8_[0];
-		fprintf (_tmp7_, "Run '%s --help' to see a full list of available command line options.\n", _tmp9_);
+		_tmp5_ = stdout;
+		_tmp6_ = e;
+		_tmp7_ = _tmp6_->message;
+		fprintf (_tmp5_, "%s\n", _tmp7_);
+		_tmp8_ = stdout;
+		_tmp9_ = args;
+		_tmp9__length1 = args_length1;
+		_tmp10_ = _tmp9_[0];
+		fprintf (_tmp8_, "Run '%s --help' to see a full list of available command line options.\n", _tmp10_);
 		result = 1;
 		_g_error_free0 (e);
 		return result;
 	}
 	__finally3:
 	if (G_UNLIKELY (_inner_error_ != NULL)) {
+		gint _tmp11_ = 0;
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
-		return 0;
+		return _tmp11_;
 	}
-	_tmp10_ = vala_vapi_gen_version;
-	if (_tmp10_) {
-		FILE* _tmp11_ = NULL;
-		_tmp11_ = stdout;
-		fprintf (_tmp11_, "Vala API Generator %s\n", BUILD_VERSION);
+	_tmp12_ = vala_vapi_gen_version;
+	if (_tmp12_) {
+		FILE* _tmp13_ = NULL;
+		_tmp13_ = stdout;
+		fprintf (_tmp13_, "Vala API Generator %s\n", BUILD_VERSION);
 		result = 0;
 		return result;
 	}
-	_tmp12_ = vala_vapi_gen_sources;
-	_tmp12__length1 = _vala_array_length (vala_vapi_gen_sources);
-	if (_tmp12_ == NULL) {
-		FILE* _tmp13_ = NULL;
-		_tmp13_ = stderr;
-		fprintf (_tmp13_, "No source file specified.\n");
+	_tmp14_ = vala_vapi_gen_sources;
+	_tmp14__length1 = _vala_array_length (vala_vapi_gen_sources);
+	if (_tmp14_ == NULL) {
+		FILE* _tmp15_ = NULL;
+		_tmp15_ = stderr;
+		fprintf (_tmp15_, "No source file specified.\n");
 		result = 1;
 		return result;
 	}
-	_tmp14_ = vala_vapi_gen_new ();
-	vapigen = _tmp14_;
-	_tmp15_ = vapigen;
-	_tmp16_ = vala_vapi_gen_run (_tmp15_);
-	result = _tmp16_;
+	_tmp16_ = vala_vapi_gen_new ();
+	vapigen = _tmp16_;
+	_tmp17_ = vapigen;
+	_tmp18_ = vala_vapi_gen_run (_tmp17_);
+	result = _tmp18_;
 	_g_object_unref0 (vapigen);
 	return result;
 }

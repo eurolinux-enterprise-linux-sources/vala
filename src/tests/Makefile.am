@@ -28,6 +28,8 @@ TESTS = \
 	basic-types/bug596637.vala \
 	basic-types/bug596785.vala \
 	basic-types/bug632322.vala \
+	basic-types/bug643612.vala \
+	basic-types/bug644046.vala \
 	basic-types/bug647222.vala \
 	basic-types/bug648364.vala \
 	basic-types/bug650993.vala \
@@ -36,6 +38,10 @@ TESTS = \
 	basic-types/bug659975.vala \
 	basic-types/bug678791.vala \
 	basic-types/bug686336.vala \
+	basic-types/bug729907.vala \
+	basic-types/bug731017.vala \
+	basic-types/bug761307.vala \
+	basic-types/bug771626.test \
 	namespaces.vala \
 	methods/lambda.vala \
 	methods/closures.vala \
@@ -49,6 +55,7 @@ TESTS = \
 	methods/bug613483.vala \
 	methods/bug620673.vala \
 	methods/bug622570.vala \
+	methods/bug626783.vala \
 	methods/bug639054.vala \
 	methods/bug642885.vala \
 	methods/bug642899.vala \
@@ -63,11 +70,15 @@ TESTS = \
 	methods/bug723195.vala \
 	methods/bug726347.vala \
 	methods/bug736235.vala \
+	methods/bug737222.vala \
+	methods/bug743877.vala \
+	methods/bug771964.vala \
 	methods/generics.vala \
 	control-flow/break.vala \
 	control-flow/expressions-conditional.vala \
 	control-flow/for.vala \
 	control-flow/foreach.vala \
+	control-flow/nested-conditional.vala \
 	control-flow/switch.vala \
 	control-flow/sideeffects.vala \
 	control-flow/bug639482.vala \
@@ -78,6 +89,7 @@ TESTS = \
 	enums/enums.vala \
 	enums/flags.vala \
 	enums/bug673879.vala \
+	enums/bug763831.vala \
 	structs/structs.vala \
 	structs/gvalue.vala \
 	structs/bug530605.vala \
@@ -106,6 +118,9 @@ TESTS = \
 	structs/bug685177.vala \
 	structs/bug686190.vala \
 	structs/bug690380.vala \
+	structs/bug694140.vala \
+	structs/bug749952.vala \
+	structs/bug775761.vala \
 	delegates/delegates.vala \
 	delegates/bug539166.vala \
 	delegates/bug595610.vala \
@@ -156,6 +171,11 @@ TESTS = \
 	objects/bug701978.vala \
 	objects/bug702736.vala \
 	objects/bug702846.vala \
+	objects/bug751338.vala \
+	objects/bug767092.test \
+	objects/bug768823.test \
+	objects/bug766739.vala \
+	objects/bug779219.vala \
 	errors/errors.vala \
 	errors/bug567181.vala \
 	errors/bug579101.vala \
@@ -163,6 +183,7 @@ TESTS = \
 	errors/bug623049.vala \
 	errors/bug639589.vala \
 	errors/bug651145.vala \
+	errors/bug778224.vala \
 	asynchronous/bug595735.vala \
 	asynchronous/bug595755.vala \
 	asynchronous/bug596177.vala \
@@ -184,7 +205,10 @@ TESTS = \
 	asynchronous/bug653861.vala \
 	asynchronous/bug654336.vala \
 	asynchronous/bug654337.vala \
+	asynchronous/bug659886.vala \
 	asynchronous/bug661961.vala \
+	asynchronous/bug742621.vala \
+	asynchronous/bug762819.vala \
 	asynchronous/closures.vala \
 	dbus/basic-types.test \
 	dbus/arrays.test \
@@ -192,13 +216,16 @@ TESTS = \
 	dbus/errors.test \
 	dbus/async.test \
 	dbus/async-errors.test \
+	dbus/enum-string-marshalling.vala \
 	dbus/signals.test \
 	dbus/filedescriptor.test \
+	dbus/filedescriptor-errors.test \
 	dbus/dicts.test \
 	dbus/bug596862.vala \
 	dbus/bug602003.test \
 	gir/bug651773.test \
 	gir/bug667751.test \
+	gir/bug742012.test \
 	$(NULL)
 
 check-TESTS: $(TESTS)

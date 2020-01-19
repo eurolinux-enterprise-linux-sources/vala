@@ -1408,7 +1408,7 @@ static void vala_for_statement_finalize (ValaCodeNode* obj);
 /**
  * Creates a new for statement.
  *
- * @param cond             loop condition
+ * @param condition        loop condition
  * @param body             loop body
  * @param source_reference reference to source code
  * @return                 newly created for statement
@@ -2208,9 +2208,9 @@ static void vala_for_statement_class_init (ValaForStatementClass * klass) {
 	vala_for_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_for_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaForStatementPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_for_statement_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_for_statement_real_accept_children;
-	((ValaCodeNodeClass *) klass)->check = vala_for_statement_real_check;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_for_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_for_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_for_statement_real_check;
 }
 
 
@@ -2226,10 +2226,10 @@ static void vala_for_statement_instance_init (ValaForStatement * self) {
 	ValaArrayList* _tmp3_ = NULL;
 	self->priv = VALA_FOR_STATEMENT_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->initializer = (ValaList*) _tmp1_;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_);
+	_tmp3_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_);
 	self->priv->iterator = (ValaList*) _tmp3_;
 }
 

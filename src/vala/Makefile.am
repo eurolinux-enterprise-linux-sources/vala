@@ -6,6 +6,7 @@ AM_CPPFLAGS = \
 	$(COVERAGE_CFLAGS) \
 	-I$(top_srcdir)/gee \
 	$(GLIB_CFLAGS) \
+	$(GMODULE_CFLAGS) \
 	-DPACKAGE_DATADIR=\"$(pkgdatadir)\" \
 	$(NULL)
 
@@ -155,9 +156,11 @@ libvalacore_la_VALASOURCES = \
 	valaunlockstatement.vala \
 	valaunresolvedsymbol.vala \
 	valaunresolvedtype.vala \
+	valausedattr.vala \
 	valausingdirective.vala \
 	valavaluetype.vala \
 	valavariable.vala \
+	valaversionattribute.vala \
 	valavoidtype.vala \
 	valawhilestatement.vala \
 	valayieldstatement.vala \
@@ -179,7 +182,7 @@ vala.vapi vala.vala.stamp: $(libvalacore_la_VALASOURCES)
 		$(COVERAGE_VALAFLAGS) \
 		$(VALAFLAGS) \
 		-C \
-		--vapidir $(top_srcdir)/vapi --pkg gobject-2.0 \
+		--vapidir $(top_srcdir)/vapi --pkg gmodule-2.0 --pkg gobject-2.0 \
 		--vapidir $(top_srcdir)/gee --pkg gee \
 		--pkg config \
 		-H vala.h \
@@ -190,6 +193,7 @@ vala.vapi vala.vala.stamp: $(libvalacore_la_VALASOURCES)
 libvalacore_la_LIBADD = \
 	$(COVERAGE_LIBS) \
 	$(GLIB_LIBS) \
+	$(GMODULE_LIBS) \
 	$(top_builddir)/gee/libgee.la \
 	$(NULL)
 

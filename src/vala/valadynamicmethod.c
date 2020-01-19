@@ -581,7 +581,7 @@ static void vala_dynamic_method_class_init (ValaDynamicMethodClass * klass) {
 	vala_dynamic_method_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_dynamic_method_finalize;
 	g_type_class_add_private (klass, sizeof (ValaDynamicMethodPrivate));
-	((ValaCodeNodeClass *) klass)->check = vala_dynamic_method_real_check;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_dynamic_method_real_check;
 }
 
 

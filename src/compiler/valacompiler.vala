@@ -24,6 +24,8 @@
 using GLib;
 
 class Vala.Compiler {
+	private const string DEFAULT_COLORS = "error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01";
+
 	static string basedir;
 	static string directory;
 	static bool version;
@@ -38,6 +40,7 @@ class Vala.Compiler {
 	static string[] metadata_directories;
 	static string vapi_filename;
 	static string library;
+	static string shared_library;
 	static string gir;
 	[CCode (array_length = false, array_null_terminated = true)]
 	static string[] packages;
@@ -68,6 +71,7 @@ class Vala.Compiler {
 	static bool experimental;
 	static bool experimental_non_null;
 	static bool gobject_tracing;
+	static bool disable_since_check;
 	static bool disable_warnings;
 	static string cc_command;
 	[CCode (array_length = false, array_null_terminated = true)]
@@ -84,6 +88,7 @@ class Vala.Compiler {
 	static bool enable_version_header;
 	static bool disable_version_header;
 	static bool fatal_warnings;
+	static bool disable_diagnostic_colors;
 	static string dependencies;
 
 	static string entry_point;
@@ -99,6 +104,7 @@ class Vala.Compiler {
 		{ "pkg", 0, 0, OptionArg.STRING_ARRAY, ref packages, "Include binding for PACKAGE", "PACKAGE..." },
 		{ "vapi", 0, 0, OptionArg.FILENAME, ref vapi_filename, "Output VAPI file name", "FILE" },
 		{ "library", 0, 0, OptionArg.STRING, ref library, "Library name", "NAME" },
+		{ "shared-library", 0, 0, OptionArg.STRING, ref shared_library, "Shared library name used in generated gir", "NAME" },
 		{ "gir", 0, 0, OptionArg.STRING, ref gir, "GObject-Introspection repository file name", "NAME-VERSION.gir" },
 		{ "basedir", 'b', 0, OptionArg.FILENAME, ref basedir, "Base source directory", "DIRECTORY" },
 		{ "directory", 'd', 0, OptionArg.FILENAME, ref directory, "Output directory", "DIRECTORY" },
@@ -130,6 +136,7 @@ class Vala.Compiler {
 		{ "enable-experimental", 0, 0, OptionArg.NONE, ref experimental, "Enable experimental features", null },
 		{ "disable-warnings", 0, 0, OptionArg.NONE, ref disable_warnings, "Disable warnings", null },
 		{ "fatal-warnings", 0, 0, OptionArg.NONE, ref fatal_warnings, "Treat warnings as fatal", null },
+		{ "disable-since-check", 0, 0, OptionArg.NONE, ref disable_since_check, "Do not check whether used symbols exist in local packages", null },
 		{ "enable-experimental-non-null", 0, 0, OptionArg.NONE, ref experimental_non_null, "Enable experimental enhancements for non-null types", null },
 		{ "enable-gobject-tracing", 0, 0, OptionArg.NONE, ref gobject_tracing, "Enable GObject creation tracing", null },
 		{ "cc", 0, 0, OptionArg.STRING, ref cc_command, "Use COMMAND as C compiler command", "COMMAND" },
@@ -140,6 +147,7 @@ class Vala.Compiler {
 		{ "profile", 0, 0, OptionArg.STRING, ref profile, "Use the given profile instead of the default", "PROFILE" },
 		{ "quiet", 'q', 0, OptionArg.NONE, ref quiet_mode, "Do not print messages to the console", null },
 		{ "verbose", 'v', 0, OptionArg.NONE, ref verbose_mode, "Print additional messages to the console", null },
+		{ "no-color", 0, 0, OptionArg.NONE, ref disable_diagnostic_colors, "Disable colored output", null },
 		{ "target-glib", 0, 0, OptionArg.STRING, ref target_glib, "Target version of glib for code generation", "MAJOR.MINOR" },
 		{ "gresources", 0, 0, OptionArg.STRING_ARRAY, ref gresources, "XML of gresources", "FILE..." },
 		{ "enable-version-header", 0, 0, OptionArg.NONE, ref enable_version_header, "Write vala build version in generated files", null },
@@ -147,7 +155,7 @@ class Vala.Compiler {
 		{ "", 0, 0, OptionArg.FILENAME_ARRAY, ref sources, null, "FILE..." },
 		{ null }
 	};
-	
+
 	private int quit () {
 		if (context.report.get_errors () == 0 && context.report.get_warnings () == 0) {
 			return 0;
@@ -169,6 +177,16 @@ class Vala.Compiler {
 		context = new CodeContext ();
 		CodeContext.push (context);
 
+		if (disable_diagnostic_colors == false) {
+			unowned string env_colors = Environment.get_variable ("VALA_COLORS");
+			if (env_colors != null) {
+				context.report.set_colors (env_colors);
+			} else {
+				context.report.set_colors (DEFAULT_COLORS);
+			}
+		}
+
+
 		// default to build executable
 		if (!ccode_only && !compile_only && output == null) {
 			// strip extension if there is one
@@ -182,6 +200,7 @@ class Vala.Compiler {
 		context.assert = !disable_assert;
 		context.checking = enable_checking;
 		context.deprecated = deprecated;
+		context.since_check = !disable_since_check;
 		context.hide_internal = hide_internal;
 		context.experimental = experimental;
 		context.experimental_non_null = experimental_non_null;
@@ -249,12 +268,12 @@ class Vala.Compiler {
 			}
 		}
 
-		for (int i = 2; i <= 26; i += 2) {
+		for (int i = 2; i <= 34; i += 2) {
 			context.add_define ("VALA_0_%d".printf (i));
 		}
 
 		int glib_major = 2;
-		int glib_minor = 24;
+		int glib_minor = 32;
 		if (target_glib != null && target_glib.scanf ("%d.%d", out glib_major, out glib_minor) != 2) {
 			Report.error (null, "Invalid format for --target-glib");
 		}
@@ -292,7 +311,7 @@ class Vala.Compiler {
 		}
 
 		context.gresources = gresources;
-		
+
 		if (context.report.get_errors () > 0 || (fatal_warnings && context.report.get_warnings () > 0)) {
 			return quit ();
 		}
@@ -319,7 +338,7 @@ class Vala.Compiler {
 		if (context.report.get_errors () > 0 || (fatal_warnings && context.report.get_warnings () > 0)) {
 			return quit ();
 		}
-		
+
 		var parser = new Parser ();
 		parser.parse (context);
 
@@ -395,7 +414,7 @@ class Vala.Compiler {
 							gir_directory = context.directory;
 						}
 
-						gir_writer.write_file (context, gir_directory, gir, gir_namespace, gir_version, library);
+						gir_writer.write_file (context, gir_directory, gir, gir_namespace, gir_version, library, shared_library);
 					}
 				}
 
@@ -442,6 +461,10 @@ class Vala.Compiler {
 			context.write_dependencies (dependencies);
 		}
 
+		if (context.report.get_errors () > 0 || (fatal_warnings && context.report.get_warnings () > 0)) {
+			return quit ();
+		}
+		
 		if (!ccode_only) {
 			var ccompiler = new CCodeCompiler ();
 			if (cc_command == null && Environment.get_variable ("CC") != null) {

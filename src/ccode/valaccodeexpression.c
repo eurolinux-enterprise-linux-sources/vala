@@ -134,7 +134,7 @@ ValaCCodeExpression* vala_ccode_expression_construct (GType object_type) {
 
 static void vala_ccode_expression_class_init (ValaCCodeExpressionClass * klass) {
 	vala_ccode_expression_parent_class = g_type_class_peek_parent (klass);
-	((ValaCCodeExpressionClass *) klass)->write_inner = vala_ccode_expression_real_write_inner;
+	((ValaCCodeExpressionClass *) klass)->write_inner = (void (*)(ValaCCodeExpression*, ValaCCodeWriter*)) vala_ccode_expression_real_write_inner;
 }
 
 

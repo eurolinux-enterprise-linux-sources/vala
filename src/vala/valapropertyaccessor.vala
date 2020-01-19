@@ -81,12 +81,12 @@ public class Vala.PropertyAccessor : Subroutine {
 	/**
 	 * Creates a new property accessor.
 	 *
-	 * @param readable     true if get accessor, false otherwise
-	 * @param writable     true if set accessor, false otherwise
-	 * @param construction true if construct accessor, false otherwise
-	 * @param body         accessor body
-	 * @param source       reference to source code
-	 * @return             newly created property accessor
+	 * @param readable           true if get accessor, false otherwise
+	 * @param writable           true if set accessor, false otherwise
+	 * @param construction       true if construct accessor, false otherwise
+	 * @param body               accessor body
+	 * @param source_reference   reference to source code
+	 * @return                   newly created property accessor
 	 */
 	public PropertyAccessor (bool readable, bool writable, bool construction, DataType? value_type, Block? body, SourceReference? source_reference, Comment? comment = null) {
 		base (null, source_reference, comment);
@@ -162,11 +162,6 @@ public class Vala.PropertyAccessor : Subroutine {
 			if (body == null && !prop.interface_only && !prop.is_abstract) {
 				/* no accessor body specified, insert default body */
 
-				if (prop.parent_symbol is Interface) {
-					error = true;
-					Report.error (source_reference, "Automatic properties can't be used in interfaces");
-					return false;
-				}
 				automatic_body = true;
 				body = new Block (source_reference);
 				var ma = new MemberAccess.simple ("_%s".printf (prop.name), source_reference);

@@ -574,7 +574,7 @@ static void vala_dynamic_signal_class_init (ValaDynamicSignalClass * klass) {
 	vala_dynamic_signal_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_dynamic_signal_finalize;
 	g_type_class_add_private (klass, sizeof (ValaDynamicSignalPrivate));
-	((ValaCodeNodeClass *) klass)->check = vala_dynamic_signal_real_check;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_dynamic_signal_real_check;
 }
 
 

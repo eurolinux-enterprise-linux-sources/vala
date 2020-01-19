@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "3.0.4"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -393,7 +393,7 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE YYSTYPE;
+
 union YYSTYPE
 {
 #line 190 "scannerparser.y" /* yacc.c:355  */
@@ -409,6 +409,8 @@ union YYSTYPE
 
 #line 411 "scannerparser.c" /* yacc.c:355  */
 };
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -422,7 +424,7 @@ int yyparse (GIGenerator* igenerator);
 
 /* Copy the second part of user declarations.  */
 
-#line 426 "scannerparser.c" /* yacc.c:358  */
+#line 428 "scannerparser.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -2110,7 +2112,7 @@ yyreduce:
 			(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 		}
 	  }
-#line 2114 "scannerparser.c" /* yacc.c:1646  */
+#line 2116 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 3:
@@ -2126,7 +2128,7 @@ yyreduce:
 			(yyval.symbol)->const_int = atoi (yytext);
 		}
 	  }
-#line 2130 "scannerparser.c" /* yacc.c:1646  */
+#line 2132 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 4:
@@ -2134,7 +2136,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2138 "scannerparser.c" /* yacc.c:1646  */
+#line 2140 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 5:
@@ -2142,7 +2144,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2146 "scannerparser.c" /* yacc.c:1646  */
+#line 2148 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 7:
@@ -2150,7 +2152,7 @@ yyreduce:
     {
 		(yyval.symbol) = (yyvsp[-1].symbol);
 	  }
-#line 2154 "scannerparser.c" /* yacc.c:1646  */
+#line 2156 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 8:
@@ -2160,7 +2162,7 @@ yyreduce:
 		yytext[strlen (yytext) - 1] = '\0';
 		(yyval.symbol)->const_string = g_strcompress (yytext + 1);
 	  }
-#line 2164 "scannerparser.c" /* yacc.c:1646  */
+#line 2166 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 9:
@@ -2175,7 +2177,7 @@ yyreduce:
 		g_free (string2);
 		(yyval.symbol)->const_string = strings;
 	  }
-#line 2179 "scannerparser.c" /* yacc.c:1646  */
+#line 2181 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 10:
@@ -2183,7 +2185,7 @@ yyreduce:
     {
 		(yyval.str) = g_strdup (yytext);
 	  }
-#line 2187 "scannerparser.c" /* yacc.c:1646  */
+#line 2189 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 14:
@@ -2191,7 +2193,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2195 "scannerparser.c" /* yacc.c:1646  */
+#line 2197 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 15:
@@ -2199,7 +2201,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2203 "scannerparser.c" /* yacc.c:1646  */
+#line 2205 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 16:
@@ -2207,7 +2209,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2211 "scannerparser.c" /* yacc.c:1646  */
+#line 2213 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 17:
@@ -2215,7 +2217,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2219 "scannerparser.c" /* yacc.c:1646  */
+#line 2221 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 18:
@@ -2223,7 +2225,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2227 "scannerparser.c" /* yacc.c:1646  */
+#line 2229 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 19:
@@ -2231,7 +2233,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2235 "scannerparser.c" /* yacc.c:1646  */
+#line 2237 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 20:
@@ -2239,7 +2241,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2243 "scannerparser.c" /* yacc.c:1646  */
+#line 2245 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 24:
@@ -2247,7 +2249,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2251 "scannerparser.c" /* yacc.c:1646  */
+#line 2253 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 25:
@@ -2255,7 +2257,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2259 "scannerparser.c" /* yacc.c:1646  */
+#line 2261 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 26:
@@ -2282,7 +2284,7 @@ yyreduce:
 			break;
 		}
 	  }
-#line 2286 "scannerparser.c" /* yacc.c:1646  */
+#line 2288 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 27:
@@ -2290,7 +2292,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2294 "scannerparser.c" /* yacc.c:1646  */
+#line 2296 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 28:
@@ -2298,7 +2300,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2302 "scannerparser.c" /* yacc.c:1646  */
+#line 2304 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 29:
@@ -2306,7 +2308,7 @@ yyreduce:
     {
 		(yyval.unary_operator) = UNARY_ADDRESS_OF;
 	  }
-#line 2310 "scannerparser.c" /* yacc.c:1646  */
+#line 2312 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 30:
@@ -2314,7 +2316,7 @@ yyreduce:
     {
 		(yyval.unary_operator) = UNARY_POINTER_INDIRECTION;
 	  }
-#line 2318 "scannerparser.c" /* yacc.c:1646  */
+#line 2320 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 31:
@@ -2322,7 +2324,7 @@ yyreduce:
     {
 		(yyval.unary_operator) = UNARY_PLUS;
 	  }
-#line 2326 "scannerparser.c" /* yacc.c:1646  */
+#line 2328 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 32:
@@ -2330,7 +2332,7 @@ yyreduce:
     {
 		(yyval.unary_operator) = UNARY_MINUS;
 	  }
-#line 2334 "scannerparser.c" /* yacc.c:1646  */
+#line 2336 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 33:
@@ -2338,7 +2340,7 @@ yyreduce:
     {
 		(yyval.unary_operator) = UNARY_BITWISE_COMPLEMENT;
 	  }
-#line 2342 "scannerparser.c" /* yacc.c:1646  */
+#line 2344 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 34:
@@ -2346,7 +2348,7 @@ yyreduce:
     {
 		(yyval.unary_operator) = UNARY_LOGICAL_NEGATION;
 	  }
-#line 2350 "scannerparser.c" /* yacc.c:1646  */
+#line 2352 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 36:
@@ -2354,7 +2356,7 @@ yyreduce:
     {
 		(yyval.symbol) = (yyvsp[0].symbol);
 	  }
-#line 2358 "scannerparser.c" /* yacc.c:1646  */
+#line 2360 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 38:
@@ -2364,7 +2366,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int * (yyvsp[0].symbol)->const_int;
 	  }
-#line 2368 "scannerparser.c" /* yacc.c:1646  */
+#line 2370 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 39:
@@ -2376,7 +2378,7 @@ yyreduce:
 			(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int / (yyvsp[0].symbol)->const_int;
 		}
 	  }
-#line 2380 "scannerparser.c" /* yacc.c:1646  */
+#line 2382 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 40:
@@ -2386,7 +2388,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int % (yyvsp[0].symbol)->const_int;
 	  }
-#line 2390 "scannerparser.c" /* yacc.c:1646  */
+#line 2392 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 42:
@@ -2396,7 +2398,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int + (yyvsp[0].symbol)->const_int;
 	  }
-#line 2400 "scannerparser.c" /* yacc.c:1646  */
+#line 2402 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 43:
@@ -2406,7 +2408,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int - (yyvsp[0].symbol)->const_int;
 	  }
-#line 2410 "scannerparser.c" /* yacc.c:1646  */
+#line 2412 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 45:
@@ -2416,7 +2418,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int << (yyvsp[0].symbol)->const_int;
 	  }
-#line 2420 "scannerparser.c" /* yacc.c:1646  */
+#line 2422 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 46:
@@ -2426,7 +2428,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int >> (yyvsp[0].symbol)->const_int;
 	  }
-#line 2430 "scannerparser.c" /* yacc.c:1646  */
+#line 2432 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 48:
@@ -2436,7 +2438,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int < (yyvsp[0].symbol)->const_int;
 	  }
-#line 2440 "scannerparser.c" /* yacc.c:1646  */
+#line 2442 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 49:
@@ -2446,7 +2448,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int > (yyvsp[0].symbol)->const_int;
 	  }
-#line 2450 "scannerparser.c" /* yacc.c:1646  */
+#line 2452 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 50:
@@ -2456,7 +2458,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int <= (yyvsp[0].symbol)->const_int;
 	  }
-#line 2460 "scannerparser.c" /* yacc.c:1646  */
+#line 2462 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 51:
@@ -2466,7 +2468,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int >= (yyvsp[0].symbol)->const_int;
 	  }
-#line 2470 "scannerparser.c" /* yacc.c:1646  */
+#line 2472 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 53:
@@ -2476,7 +2478,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int == (yyvsp[0].symbol)->const_int;
 	  }
-#line 2480 "scannerparser.c" /* yacc.c:1646  */
+#line 2482 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 54:
@@ -2486,7 +2488,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int != (yyvsp[0].symbol)->const_int;
 	  }
-#line 2490 "scannerparser.c" /* yacc.c:1646  */
+#line 2492 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 56:
@@ -2496,7 +2498,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int & (yyvsp[0].symbol)->const_int;
 	  }
-#line 2500 "scannerparser.c" /* yacc.c:1646  */
+#line 2502 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 58:
@@ -2506,7 +2508,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int ^ (yyvsp[0].symbol)->const_int;
 	  }
-#line 2510 "scannerparser.c" /* yacc.c:1646  */
+#line 2512 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 60:
@@ -2516,7 +2518,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = (yyvsp[-2].symbol)->const_int | (yyvsp[0].symbol)->const_int;
 	  }
-#line 2520 "scannerparser.c" /* yacc.c:1646  */
+#line 2522 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 62:
@@ -2526,7 +2528,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = csymbol_get_const_boolean ((yyvsp[-2].symbol)) && csymbol_get_const_boolean ((yyvsp[0].symbol));
 	  }
-#line 2530 "scannerparser.c" /* yacc.c:1646  */
+#line 2532 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 64:
@@ -2536,7 +2538,7 @@ yyreduce:
 		(yyval.symbol)->const_int_set = TRUE;
 		(yyval.symbol)->const_int = csymbol_get_const_boolean ((yyvsp[-2].symbol)) || csymbol_get_const_boolean ((yyvsp[0].symbol));
 	  }
-#line 2540 "scannerparser.c" /* yacc.c:1646  */
+#line 2542 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 66:
@@ -2544,7 +2546,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_get_const_boolean ((yyvsp[-4].symbol)) ? (yyvsp[-2].symbol) : (yyvsp[0].symbol);
 	  }
-#line 2548 "scannerparser.c" /* yacc.c:1646  */
+#line 2550 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 68:
@@ -2552,7 +2554,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2556 "scannerparser.c" /* yacc.c:1646  */
+#line 2558 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 81:
@@ -2560,7 +2562,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2564 "scannerparser.c" /* yacc.c:1646  */
+#line 2566 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 83:
@@ -2580,7 +2582,7 @@ yyreduce:
 			g_igenerator_add_symbol (igenerator, sym);
 		}
 	  }
-#line 2584 "scannerparser.c" /* yacc.c:1646  */
+#line 2586 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 85:
@@ -2589,7 +2591,7 @@ yyreduce:
 		(yyval.ctype) = (yyvsp[0].ctype);
 		(yyval.ctype)->storage_class_specifier |= (yyvsp[-1].storage_class_specifier);
 	  }
-#line 2593 "scannerparser.c" /* yacc.c:1646  */
+#line 2595 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 86:
@@ -2598,7 +2600,7 @@ yyreduce:
 		(yyval.ctype) = ctype_new (CTYPE_INVALID);
 		(yyval.ctype)->storage_class_specifier |= (yyvsp[0].storage_class_specifier);
 	  }
-#line 2602 "scannerparser.c" /* yacc.c:1646  */
+#line 2604 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 87:
@@ -2607,7 +2609,7 @@ yyreduce:
 		(yyval.ctype) = (yyvsp[-1].ctype);
 		(yyval.ctype)->base_type = (yyvsp[0].ctype);
 	  }
-#line 2611 "scannerparser.c" /* yacc.c:1646  */
+#line 2613 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 89:
@@ -2616,7 +2618,7 @@ yyreduce:
 		(yyval.ctype) = (yyvsp[0].ctype);
 		(yyval.ctype)->type_qualifier |= (yyvsp[-1].type_qualifier);
 	  }
-#line 2620 "scannerparser.c" /* yacc.c:1646  */
+#line 2622 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 90:
@@ -2625,7 +2627,7 @@ yyreduce:
 		(yyval.ctype) = ctype_new (CTYPE_INVALID);
 		(yyval.ctype)->type_qualifier |= (yyvsp[0].type_qualifier);
 	  }
-#line 2629 "scannerparser.c" /* yacc.c:1646  */
+#line 2631 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 91:
@@ -2634,7 +2636,7 @@ yyreduce:
 		(yyval.ctype) = (yyvsp[0].ctype);
 		(yyval.ctype)->function_specifier |= (yyvsp[-1].function_specifier);
 	  }
-#line 2638 "scannerparser.c" /* yacc.c:1646  */
+#line 2640 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 92:
@@ -2643,7 +2645,7 @@ yyreduce:
 		(yyval.ctype) = ctype_new (CTYPE_INVALID);
 		(yyval.ctype)->function_specifier |= (yyvsp[0].function_specifier);
 	  }
-#line 2647 "scannerparser.c" /* yacc.c:1646  */
+#line 2649 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 93:
@@ -2651,7 +2653,7 @@ yyreduce:
     {
 		(yyval.list) = g_list_append (NULL, (yyvsp[0].symbol));
 	  }
-#line 2655 "scannerparser.c" /* yacc.c:1646  */
+#line 2657 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 94:
@@ -2659,7 +2661,7 @@ yyreduce:
     {
 		(yyval.list) = g_list_append ((yyvsp[-2].list), (yyvsp[0].symbol));
 	  }
-#line 2663 "scannerparser.c" /* yacc.c:1646  */
+#line 2665 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 97:
@@ -2667,7 +2669,7 @@ yyreduce:
     {
 		(yyval.storage_class_specifier) = STORAGE_CLASS_TYPEDEF;
 	  }
-#line 2671 "scannerparser.c" /* yacc.c:1646  */
+#line 2673 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 98:
@@ -2675,7 +2677,7 @@ yyreduce:
     {
 		(yyval.storage_class_specifier) = STORAGE_CLASS_EXTERN;
 	  }
-#line 2679 "scannerparser.c" /* yacc.c:1646  */
+#line 2681 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 99:
@@ -2683,7 +2685,7 @@ yyreduce:
     {
 		(yyval.storage_class_specifier) = STORAGE_CLASS_STATIC;
 	  }
-#line 2687 "scannerparser.c" /* yacc.c:1646  */
+#line 2689 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 100:
@@ -2691,7 +2693,7 @@ yyreduce:
     {
 		(yyval.storage_class_specifier) = STORAGE_CLASS_AUTO;
 	  }
-#line 2695 "scannerparser.c" /* yacc.c:1646  */
+#line 2697 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 101:
@@ -2699,7 +2701,7 @@ yyreduce:
     {
 		(yyval.storage_class_specifier) = STORAGE_CLASS_REGISTER;
 	  }
-#line 2703 "scannerparser.c" /* yacc.c:1646  */
+#line 2705 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 102:
@@ -2707,7 +2709,7 @@ yyreduce:
     {
 		(yyval.ctype) = ctype_new (CTYPE_VOID);
 	  }
-#line 2711 "scannerparser.c" /* yacc.c:1646  */
+#line 2713 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 103:
@@ -2715,7 +2717,7 @@ yyreduce:
     {
 		(yyval.ctype) = cbasic_type_new ("char");
 	  }
-#line 2719 "scannerparser.c" /* yacc.c:1646  */
+#line 2721 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 104:
@@ -2723,7 +2725,7 @@ yyreduce:
     {
 		(yyval.ctype) = cbasic_type_new ("short");
 	  }
-#line 2727 "scannerparser.c" /* yacc.c:1646  */
+#line 2729 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 105:
@@ -2731,7 +2733,7 @@ yyreduce:
     {
 		(yyval.ctype) = cbasic_type_new ("int");
 	  }
-#line 2735 "scannerparser.c" /* yacc.c:1646  */
+#line 2737 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 106:
@@ -2739,7 +2741,7 @@ yyreduce:
     {
 		(yyval.ctype) = cbasic_type_new ("long");
 	  }
-#line 2743 "scannerparser.c" /* yacc.c:1646  */
+#line 2745 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 107:
@@ -2747,7 +2749,7 @@ yyreduce:
     {
 		(yyval.ctype) = cbasic_type_new ("float");
 	  }
-#line 2751 "scannerparser.c" /* yacc.c:1646  */
+#line 2753 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 108:
@@ -2755,7 +2757,7 @@ yyreduce:
     {
 		(yyval.ctype) = cbasic_type_new ("double");
 	  }
-#line 2759 "scannerparser.c" /* yacc.c:1646  */
+#line 2761 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 109:
@@ -2763,7 +2765,7 @@ yyreduce:
     {
 		(yyval.ctype) = cbasic_type_new ("signed");
 	  }
-#line 2767 "scannerparser.c" /* yacc.c:1646  */
+#line 2769 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 110:
@@ -2771,7 +2773,7 @@ yyreduce:
     {
 		(yyval.ctype) = cbasic_type_new ("unsigned");
 	  }
-#line 2775 "scannerparser.c" /* yacc.c:1646  */
+#line 2777 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 111:
@@ -2779,7 +2781,7 @@ yyreduce:
     {
 		(yyval.ctype) = cbasic_type_new ("bool");
 	  }
-#line 2783 "scannerparser.c" /* yacc.c:1646  */
+#line 2785 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 114:
@@ -2787,7 +2789,7 @@ yyreduce:
     {
 		(yyval.ctype) = ctypedef_new ((yyvsp[0].str));
 	  }
-#line 2791 "scannerparser.c" /* yacc.c:1646  */
+#line 2793 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 115:
@@ -2809,7 +2811,7 @@ yyreduce:
 		sym->base_type = ctype_copy ((yyval.ctype));
 		g_igenerator_add_symbol (igenerator, sym);
 	  }
-#line 2813 "scannerparser.c" /* yacc.c:1646  */
+#line 2815 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 116:
@@ -2818,7 +2820,7 @@ yyreduce:
 		(yyval.ctype) = (yyvsp[-3].ctype);
 		(yyval.ctype)->child_list = (yyvsp[-1].list);
 	  }
-#line 2822 "scannerparser.c" /* yacc.c:1646  */
+#line 2824 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 117:
@@ -2827,7 +2829,7 @@ yyreduce:
 		(yyval.ctype) = (yyvsp[-1].ctype);
 		(yyval.ctype)->name = (yyvsp[0].str);
 	  }
-#line 2831 "scannerparser.c" /* yacc.c:1646  */
+#line 2833 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 118:
@@ -2835,7 +2837,7 @@ yyreduce:
     {
 		(yyval.ctype) = cstruct_new (NULL);
 	  }
-#line 2839 "scannerparser.c" /* yacc.c:1646  */
+#line 2841 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 119:
@@ -2843,7 +2845,7 @@ yyreduce:
     {
 		(yyval.ctype) = cunion_new (NULL);
 	  }
-#line 2847 "scannerparser.c" /* yacc.c:1646  */
+#line 2849 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 121:
@@ -2851,7 +2853,7 @@ yyreduce:
     {
 		(yyval.list) = g_list_concat ((yyvsp[-1].list), (yyvsp[0].list));
 	  }
-#line 2855 "scannerparser.c" /* yacc.c:1646  */
+#line 2857 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 122:
@@ -2868,7 +2870,7 @@ yyreduce:
 			(yyval.list) = g_list_append ((yyval.list), sym);
 		}
 	  }
-#line 2872 "scannerparser.c" /* yacc.c:1646  */
+#line 2874 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 123:
@@ -2877,7 +2879,7 @@ yyreduce:
 		(yyval.ctype) = (yyvsp[-1].ctype);
 		(yyval.ctype)->base_type = (yyvsp[0].ctype);
 	  }
-#line 2881 "scannerparser.c" /* yacc.c:1646  */
+#line 2883 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 125:
@@ -2886,7 +2888,7 @@ yyreduce:
 		(yyval.ctype) = (yyvsp[0].ctype);
 		(yyval.ctype)->type_qualifier |= (yyvsp[-1].type_qualifier);
 	  }
-#line 2890 "scannerparser.c" /* yacc.c:1646  */
+#line 2892 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 126:
@@ -2895,7 +2897,7 @@ yyreduce:
 		(yyval.ctype) = ctype_new (CTYPE_INVALID);
 		(yyval.ctype)->type_qualifier |= (yyvsp[0].type_qualifier);
 	  }
-#line 2899 "scannerparser.c" /* yacc.c:1646  */
+#line 2901 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 127:
@@ -2903,7 +2905,7 @@ yyreduce:
     {
 		(yyval.list) = g_list_append (NULL, (yyvsp[0].symbol));
 	  }
-#line 2907 "scannerparser.c" /* yacc.c:1646  */
+#line 2909 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 128:
@@ -2911,7 +2913,7 @@ yyreduce:
     {
 		(yyval.list) = g_list_append ((yyvsp[-2].list), (yyvsp[0].symbol));
 	  }
-#line 2915 "scannerparser.c" /* yacc.c:1646  */
+#line 2917 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 129:
@@ -2919,7 +2921,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2923 "scannerparser.c" /* yacc.c:1646  */
+#line 2925 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 131:
@@ -2927,7 +2929,7 @@ yyreduce:
     {
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 	  }
-#line 2931 "scannerparser.c" /* yacc.c:1646  */
+#line 2933 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 133:
@@ -2937,7 +2939,7 @@ yyreduce:
 		(yyval.ctype)->child_list = (yyvsp[-1].list);
 		last_enum_value = -1;
 	  }
-#line 2941 "scannerparser.c" /* yacc.c:1646  */
+#line 2943 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 134:
@@ -2947,7 +2949,7 @@ yyreduce:
 		(yyval.ctype)->child_list = (yyvsp[-1].list);
 		last_enum_value = -1;
 	  }
-#line 2951 "scannerparser.c" /* yacc.c:1646  */
+#line 2953 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 135:
@@ -2957,7 +2959,7 @@ yyreduce:
 		(yyval.ctype)->child_list = (yyvsp[-2].list);
 		last_enum_value = -1;
 	  }
-#line 2961 "scannerparser.c" /* yacc.c:1646  */
+#line 2963 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 136:
@@ -2967,7 +2969,7 @@ yyreduce:
 		(yyval.ctype)->child_list = (yyvsp[-2].list);
 		last_enum_value = -1;
 	  }
-#line 2971 "scannerparser.c" /* yacc.c:1646  */
+#line 2973 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 137:
@@ -2975,7 +2977,7 @@ yyreduce:
     {
 		(yyval.ctype) = cenum_new ((yyvsp[0].str));
 	  }
-#line 2979 "scannerparser.c" /* yacc.c:1646  */
+#line 2981 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 138:
@@ -2983,7 +2985,7 @@ yyreduce:
     {
 		(yyval.list) = g_list_append (NULL, (yyvsp[0].symbol));
 	  }
-#line 2987 "scannerparser.c" /* yacc.c:1646  */
+#line 2989 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 139:
@@ -2991,7 +2993,7 @@ yyreduce:
     {
 		(yyval.list) = g_list_append ((yyvsp[-2].list), (yyvsp[0].symbol));
 	  }
-#line 2995 "scannerparser.c" /* yacc.c:1646  */
+#line 2997 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 140:
@@ -3003,7 +3005,7 @@ yyreduce:
 		(yyval.symbol)->const_int = ++last_enum_value;
 		g_hash_table_insert (const_table, g_strdup ((yyval.symbol)->ident), (yyval.symbol));
 	  }
-#line 3007 "scannerparser.c" /* yacc.c:1646  */
+#line 3009 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 141:
@@ -3016,7 +3018,7 @@ yyreduce:
 		last_enum_value = (yyval.symbol)->const_int;
 		g_hash_table_insert (const_table, g_strdup ((yyval.symbol)->ident), (yyval.symbol));
 	  }
-#line 3020 "scannerparser.c" /* yacc.c:1646  */
+#line 3022 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 142:
@@ -3024,7 +3026,7 @@ yyreduce:
     {
 		(yyval.type_qualifier) = TYPE_QUALIFIER_CONST;
 	  }
-#line 3028 "scannerparser.c" /* yacc.c:1646  */
+#line 3030 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 143:
@@ -3032,7 +3034,7 @@ yyreduce:
     {
 		(yyval.type_qualifier) = TYPE_QUALIFIER_RESTRICT;
 	  }
-#line 3036 "scannerparser.c" /* yacc.c:1646  */
+#line 3038 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 144:
@@ -3040,7 +3042,7 @@ yyreduce:
     {
 		(yyval.type_qualifier) = TYPE_QUALIFIER_VOLATILE;
 	  }
-#line 3044 "scannerparser.c" /* yacc.c:1646  */
+#line 3046 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 145:
@@ -3048,7 +3050,7 @@ yyreduce:
     {
 		(yyval.function_specifier) = FUNCTION_INLINE;
 	  }
-#line 3052 "scannerparser.c" /* yacc.c:1646  */
+#line 3054 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 146:
@@ -3057,7 +3059,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[0].symbol);
 		csymbol_merge_type ((yyval.symbol), (yyvsp[-1].ctype));
 	  }
-#line 3061 "scannerparser.c" /* yacc.c:1646  */
+#line 3063 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 148:
@@ -3066,7 +3068,7 @@ yyreduce:
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 		(yyval.symbol)->ident = (yyvsp[0].str);
 	  }
-#line 3070 "scannerparser.c" /* yacc.c:1646  */
+#line 3072 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 149:
@@ -3074,7 +3076,7 @@ yyreduce:
     {
 		(yyval.symbol) = (yyvsp[-1].symbol);
 	  }
-#line 3078 "scannerparser.c" /* yacc.c:1646  */
+#line 3080 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 150:
@@ -3083,7 +3085,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[-3].symbol);
 		csymbol_merge_type ((yyval.symbol), carray_new ());
 	  }
-#line 3087 "scannerparser.c" /* yacc.c:1646  */
+#line 3089 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 151:
@@ -3092,7 +3094,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[-2].symbol);
 		csymbol_merge_type ((yyval.symbol), carray_new ());
 	  }
-#line 3096 "scannerparser.c" /* yacc.c:1646  */
+#line 3098 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 152:
@@ -3106,7 +3108,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[-3].symbol);
 		csymbol_merge_type ((yyval.symbol), func);
 	  }
-#line 3110 "scannerparser.c" /* yacc.c:1646  */
+#line 3112 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 153:
@@ -3117,7 +3119,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[-3].symbol);
 		csymbol_merge_type ((yyval.symbol), func);
 	  }
-#line 3121 "scannerparser.c" /* yacc.c:1646  */
+#line 3123 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 154:
@@ -3127,7 +3129,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[-2].symbol);
 		csymbol_merge_type ((yyval.symbol), func);
 	  }
-#line 3131 "scannerparser.c" /* yacc.c:1646  */
+#line 3133 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 155:
@@ -3136,7 +3138,7 @@ yyreduce:
 		(yyval.ctype) = cpointer_new (NULL);
 		(yyval.ctype)->type_qualifier = (yyvsp[0].type_qualifier);
 	  }
-#line 3140 "scannerparser.c" /* yacc.c:1646  */
+#line 3142 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 156:
@@ -3144,7 +3146,7 @@ yyreduce:
     {
 		(yyval.ctype) = cpointer_new (NULL);
 	  }
-#line 3148 "scannerparser.c" /* yacc.c:1646  */
+#line 3150 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 157:
@@ -3153,7 +3155,7 @@ yyreduce:
 		(yyval.ctype) = cpointer_new ((yyvsp[0].ctype));
 		(yyval.ctype)->type_qualifier = (yyvsp[-1].type_qualifier);
 	  }
-#line 3157 "scannerparser.c" /* yacc.c:1646  */
+#line 3159 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 158:
@@ -3161,7 +3163,7 @@ yyreduce:
     {
 		(yyval.ctype) = cpointer_new ((yyvsp[0].ctype));
 	  }
-#line 3165 "scannerparser.c" /* yacc.c:1646  */
+#line 3167 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 160:
@@ -3169,7 +3171,7 @@ yyreduce:
     {
 		(yyval.type_qualifier) = (yyvsp[-1].type_qualifier) | (yyvsp[0].type_qualifier);
 	  }
-#line 3173 "scannerparser.c" /* yacc.c:1646  */
+#line 3175 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 163:
@@ -3177,7 +3179,7 @@ yyreduce:
     {
 		(yyval.list) = g_list_append (NULL, (yyvsp[0].symbol));
 	  }
-#line 3181 "scannerparser.c" /* yacc.c:1646  */
+#line 3183 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 164:
@@ -3185,7 +3187,7 @@ yyreduce:
     {
 		(yyval.list) = g_list_append ((yyvsp[-2].list), (yyvsp[0].symbol));
 	  }
-#line 3189 "scannerparser.c" /* yacc.c:1646  */
+#line 3191 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 165:
@@ -3194,7 +3196,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[0].symbol);
 		csymbol_merge_type ((yyval.symbol), (yyvsp[-1].ctype));
 	  }
-#line 3198 "scannerparser.c" /* yacc.c:1646  */
+#line 3200 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 166:
@@ -3203,7 +3205,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[0].symbol);
 		csymbol_merge_type ((yyval.symbol), (yyvsp[-1].ctype));
 	  }
-#line 3207 "scannerparser.c" /* yacc.c:1646  */
+#line 3209 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 167:
@@ -3212,7 +3214,7 @@ yyreduce:
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 		(yyval.symbol)->base_type = (yyvsp[0].ctype);
 	  }
-#line 3216 "scannerparser.c" /* yacc.c:1646  */
+#line 3218 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 168:
@@ -3222,7 +3224,7 @@ yyreduce:
 		sym->ident = (yyvsp[0].str);
 		(yyval.list) = g_list_append (NULL, sym);
 	  }
-#line 3226 "scannerparser.c" /* yacc.c:1646  */
+#line 3228 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 169:
@@ -3232,7 +3234,7 @@ yyreduce:
 		sym->ident = (yyvsp[0].str);
 		(yyval.list) = g_list_append ((yyvsp[-2].list), sym);
 	  }
-#line 3236 "scannerparser.c" /* yacc.c:1646  */
+#line 3238 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 172:
@@ -3241,7 +3243,7 @@ yyreduce:
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 		csymbol_merge_type ((yyval.symbol), (yyvsp[0].ctype));
 	  }
-#line 3245 "scannerparser.c" /* yacc.c:1646  */
+#line 3247 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 174:
@@ -3250,7 +3252,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[0].symbol);
 		csymbol_merge_type ((yyval.symbol), (yyvsp[-1].ctype));
 	  }
-#line 3254 "scannerparser.c" /* yacc.c:1646  */
+#line 3256 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 175:
@@ -3258,7 +3260,7 @@ yyreduce:
     {
 		(yyval.symbol) = (yyvsp[-1].symbol);
 	  }
-#line 3262 "scannerparser.c" /* yacc.c:1646  */
+#line 3264 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 176:
@@ -3267,7 +3269,7 @@ yyreduce:
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 		csymbol_merge_type ((yyval.symbol), carray_new ());
 	  }
-#line 3271 "scannerparser.c" /* yacc.c:1646  */
+#line 3273 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 177:
@@ -3276,7 +3278,7 @@ yyreduce:
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 		csymbol_merge_type ((yyval.symbol), carray_new ());
 	  }
-#line 3280 "scannerparser.c" /* yacc.c:1646  */
+#line 3282 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 178:
@@ -3285,7 +3287,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[-2].symbol);
 		csymbol_merge_type ((yyval.symbol), carray_new ());
 	  }
-#line 3289 "scannerparser.c" /* yacc.c:1646  */
+#line 3291 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 179:
@@ -3294,7 +3296,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[-3].symbol);
 		csymbol_merge_type ((yyval.symbol), carray_new ());
 	  }
-#line 3298 "scannerparser.c" /* yacc.c:1646  */
+#line 3300 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 180:
@@ -3304,7 +3306,7 @@ yyreduce:
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 		csymbol_merge_type ((yyval.symbol), func);
 	  }
-#line 3308 "scannerparser.c" /* yacc.c:1646  */
+#line 3310 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 181:
@@ -3318,7 +3320,7 @@ yyreduce:
 		(yyval.symbol) = csymbol_new (CSYMBOL_TYPE_INVALID);
 		csymbol_merge_type ((yyval.symbol), func);
 	  }
-#line 3322 "scannerparser.c" /* yacc.c:1646  */
+#line 3324 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 182:
@@ -3328,7 +3330,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[-2].symbol);
 		csymbol_merge_type ((yyval.symbol), func);
 	  }
-#line 3332 "scannerparser.c" /* yacc.c:1646  */
+#line 3334 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 183:
@@ -3342,7 +3344,7 @@ yyreduce:
 		(yyval.symbol) = (yyvsp[-3].symbol);
 		csymbol_merge_type ((yyval.symbol), func);
 	  }
-#line 3346 "scannerparser.c" /* yacc.c:1646  */
+#line 3348 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 184:
@@ -3350,7 +3352,7 @@ yyreduce:
     {
 		(yyval.str) = g_strdup (yytext);
 	  }
-#line 3354 "scannerparser.c" /* yacc.c:1646  */
+#line 3356 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 234:
@@ -3358,7 +3360,7 @@ yyreduce:
     {
 		(yyval.str) = g_strdup (yytext + strlen ("#define "));
 	  }
-#line 3362 "scannerparser.c" /* yacc.c:1646  */
+#line 3364 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 235:
@@ -3366,7 +3368,7 @@ yyreduce:
     {
 		(yyval.str) = g_strdup (yytext + strlen ("#define "));
 	  }
-#line 3370 "scannerparser.c" /* yacc.c:1646  */
+#line 3372 "scannerparser.c" /* yacc.c:1646  */
     break;
 
   case 237:
@@ -3377,11 +3379,11 @@ yyreduce:
 			g_igenerator_add_symbol (igenerator, (yyvsp[0].symbol));
 		}
 	  }
-#line 3381 "scannerparser.c" /* yacc.c:1646  */
+#line 3383 "scannerparser.c" /* yacc.c:1646  */
     break;
 
 
-#line 3385 "scannerparser.c" /* yacc.c:1646  */
+#line 3387 "scannerparser.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

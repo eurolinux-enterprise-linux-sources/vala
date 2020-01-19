@@ -181,7 +181,7 @@ ValaCCodeBreakStatement* vala_ccode_break_statement_new (void) {
 
 static void vala_ccode_break_statement_class_init (ValaCCodeBreakStatementClass * klass) {
 	vala_ccode_break_statement_parent_class = g_type_class_peek_parent (klass);
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_break_statement_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_break_statement_real_write;
 }
 
 

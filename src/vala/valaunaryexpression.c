@@ -1495,7 +1495,7 @@ static void vala_unary_expression_finalize (ValaCodeNode* obj);
  * Creates a new unary expression.
  *
  * @param op     unary operator
- * @param inner  operand
+ * @param _inner operand
  * @param source reference to source code
  * @return       newly created binary expression
  */
@@ -2627,16 +2627,16 @@ static void vala_unary_expression_class_init (ValaUnaryExpressionClass * klass) 
 	vala_unary_expression_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_unary_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaUnaryExpressionPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_unary_expression_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_unary_expression_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_unary_expression_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->to_string = vala_unary_expression_real_to_string;
-	((ValaExpressionClass *) klass)->is_constant = vala_unary_expression_real_is_constant;
-	((ValaExpressionClass *) klass)->is_pure = vala_unary_expression_real_is_pure;
-	((ValaCodeNodeClass *) klass)->check = vala_unary_expression_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_unary_expression_real_emit;
-	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_unary_expression_real_get_defined_variables;
-	((ValaCodeNodeClass *) klass)->get_used_variables = vala_unary_expression_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_unary_expression_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_unary_expression_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_unary_expression_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->to_string = (gchar* (*)(ValaCodeNode*)) vala_unary_expression_real_to_string;
+	((ValaExpressionClass *) klass)->is_constant = (gboolean (*)(ValaExpression*)) vala_unary_expression_real_is_constant;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_unary_expression_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_unary_expression_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_unary_expression_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_unary_expression_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_unary_expression_real_get_used_variables;
 }
 
 

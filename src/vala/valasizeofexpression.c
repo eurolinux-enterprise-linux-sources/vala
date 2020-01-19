@@ -1515,13 +1515,13 @@ static void vala_sizeof_expression_class_init (ValaSizeofExpressionClass * klass
 	vala_sizeof_expression_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_sizeof_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaSizeofExpressionPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_sizeof_expression_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_sizeof_expression_real_accept_children;
-	((ValaExpressionClass *) klass)->is_pure = vala_sizeof_expression_real_is_pure;
-	((ValaExpressionClass *) klass)->is_constant = vala_sizeof_expression_real_is_constant;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_sizeof_expression_real_replace_type;
-	((ValaCodeNodeClass *) klass)->check = vala_sizeof_expression_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_sizeof_expression_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_sizeof_expression_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_sizeof_expression_real_accept_children;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_sizeof_expression_real_is_pure;
+	((ValaExpressionClass *) klass)->is_constant = (gboolean (*)(ValaExpression*)) vala_sizeof_expression_real_is_constant;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_sizeof_expression_real_replace_type;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_sizeof_expression_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_sizeof_expression_real_emit;
 }
 
 

@@ -198,7 +198,7 @@ void vala_scope_add (ValaScope* self, const gchar* name, ValaSymbol* sym) {
 			_tmp2_ = g_str_hash;
 			_tmp3_ = g_str_equal;
 			_tmp4_ = g_direct_equal;
-			_tmp5_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_, _tmp3_, _tmp4_);
+			_tmp5_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_, _tmp3_, _tmp4_);
 			_vala_map_unref0 (self->priv->symbol_table);
 			self->priv->symbol_table = (ValaMap*) _tmp5_;
 		} else {
@@ -306,7 +306,7 @@ void vala_scope_add (ValaScope* self, const gchar* name, ValaSymbol* sym) {
 			GEqualFunc _tmp45_ = NULL;
 			ValaArrayList* _tmp46_ = NULL;
 			_tmp45_ = g_direct_equal;
-			_tmp46_ = vala_array_list_new (VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp45_);
+			_tmp46_ = vala_array_list_new (VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp45_);
 			_vala_iterable_unref0 (self->priv->anonymous_members);
 			self->priv->anonymous_members = (ValaList*) _tmp46_;
 		}

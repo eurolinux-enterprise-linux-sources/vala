@@ -66,11 +66,11 @@ public class Vala.BinaryExpression : Expression {
 	/**
 	 * Creates a new binary expression.
 	 *
-	 * @param op     binary operator
-	 * @param left   left operand
-	 * @param right  right operand
-	 * @param source reference to source code
-	 * @return       newly created binary expression
+	 * @param op      binary operator
+	 * @param _left   left operand
+	 * @param _right  right operand
+	 * @param source  reference to source code
+	 * @return        newly created binary expression
 	 */
 	public BinaryExpression (BinaryOperator op, Expression _left, Expression _right, SourceReference? source = null) {
 		operator = op;
@@ -355,8 +355,7 @@ public class Vala.BinaryExpression : Expression {
 			}
 		} else if (operator == BinaryOperator.MOD
 			   || operator == BinaryOperator.SHIFT_LEFT
-			   || operator == BinaryOperator.SHIFT_RIGHT
-			   || operator == BinaryOperator.BITWISE_XOR) {
+			   || operator == BinaryOperator.SHIFT_RIGHT) {
 			left.target_type.nullable = false;
 			right.target_type.nullable = false;
 
@@ -433,7 +432,8 @@ public class Vala.BinaryExpression : Expression {
 
 			value_type = context.analyzer.bool_type;
 		} else if (operator == BinaryOperator.BITWISE_AND
-			   || operator == BinaryOperator.BITWISE_OR) {
+			   || operator == BinaryOperator.BITWISE_OR
+			   || operator == BinaryOperator.BITWISE_XOR) {
 			// integer type or flags type
 			left.target_type.nullable = false;
 			right.target_type.nullable = false;

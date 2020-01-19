@@ -787,14 +787,14 @@ static void vala_reference_transfer_expression_class_init (ValaReferenceTransfer
 	vala_reference_transfer_expression_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_reference_transfer_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaReferenceTransferExpressionPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_reference_transfer_expression_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_reference_transfer_expression_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_reference_transfer_expression_real_replace_expression;
-	((ValaExpressionClass *) klass)->is_pure = vala_reference_transfer_expression_real_is_pure;
-	((ValaCodeNodeClass *) klass)->check = vala_reference_transfer_expression_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_reference_transfer_expression_real_emit;
-	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_reference_transfer_expression_real_get_defined_variables;
-	((ValaCodeNodeClass *) klass)->get_used_variables = vala_reference_transfer_expression_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_reference_transfer_expression_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_reference_transfer_expression_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_reference_transfer_expression_real_replace_expression;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_reference_transfer_expression_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_reference_transfer_expression_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_reference_transfer_expression_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_reference_transfer_expression_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_reference_transfer_expression_real_get_used_variables;
 }
 
 

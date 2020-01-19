@@ -142,15 +142,15 @@ typedef struct _ValaScopeClass ValaScopeClass;
 typedef struct _ValaParameter ValaParameter;
 typedef struct _ValaParameterClass ValaParameterClass;
 
-#define VALA_TYPE_MEMBER_ACCESS (vala_member_access_get_type ())
-#define VALA_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccess))
-#define VALA_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
-#define VALA_IS_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_IS_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_MEMBER_ACCESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
+#define VALA_TYPE_TYPEPARAMETER (vala_typeparameter_get_type ())
+#define VALA_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameter))
+#define VALA_TYPEPARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_TYPEPARAMETER, ValaTypeParameterClass))
+#define VALA_IS_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_TYPEPARAMETER))
+#define VALA_IS_TYPEPARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_TYPEPARAMETER))
+#define VALA_TYPEPARAMETER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameterClass))
 
-typedef struct _ValaMemberAccess ValaMemberAccess;
-typedef struct _ValaMemberAccessClass ValaMemberAccessClass;
+typedef struct _ValaTypeParameter ValaTypeParameter;
+typedef struct _ValaTypeParameterClass ValaTypeParameterClass;
 
 #define VALA_TYPE_POINTER_TYPE (vala_pointer_type_get_type ())
 #define VALA_POINTER_TYPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_POINTER_TYPE, ValaPointerType))
@@ -194,16 +194,6 @@ typedef struct _ValaVoidTypeClass ValaVoidTypeClass;
 
 typedef struct _ValaTypeSymbol ValaTypeSymbol;
 typedef struct _ValaTypeSymbolClass ValaTypeSymbolClass;
-
-#define VALA_TYPE_TYPEPARAMETER (vala_typeparameter_get_type ())
-#define VALA_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameter))
-#define VALA_TYPEPARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_TYPEPARAMETER, ValaTypeParameterClass))
-#define VALA_IS_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_TYPEPARAMETER))
-#define VALA_IS_TYPEPARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_TYPEPARAMETER))
-#define VALA_TYPEPARAMETER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameterClass))
-
-typedef struct _ValaTypeParameter ValaTypeParameter;
-typedef struct _ValaTypeParameterClass ValaTypeParameterClass;
 
 #define VALA_TYPE_SEMANTIC_ANALYZER (vala_semantic_analyzer_get_type ())
 #define VALA_SEMANTIC_ANALYZER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SEMANTIC_ANALYZER, ValaSemanticAnalyzer))
@@ -796,6 +786,16 @@ typedef struct _ValaTupleClass ValaTupleClass;
 typedef struct _ValaNullLiteral ValaNullLiteral;
 typedef struct _ValaNullLiteralClass ValaNullLiteralClass;
 
+#define VALA_TYPE_MEMBER_ACCESS (vala_member_access_get_type ())
+#define VALA_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccess))
+#define VALA_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
+#define VALA_IS_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_MEMBER_ACCESS))
+#define VALA_IS_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_MEMBER_ACCESS))
+#define VALA_MEMBER_ACCESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
+
+typedef struct _ValaMemberAccess ValaMemberAccess;
+typedef struct _ValaMemberAccessClass ValaMemberAccessClass;
+
 #define VALA_TYPE_METHOD_CALL (vala_method_call_get_type ())
 #define VALA_METHOD_CALL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_METHOD_CALL, ValaMethodCall))
 #define VALA_METHOD_CALL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_METHOD_CALL, ValaMethodCallClass))
@@ -1081,7 +1081,8 @@ struct _ValaDataTypeClass {
 	ValaSymbol* (*get_pointer_member) (ValaDataType* self, const gchar* member_name);
 	gboolean (*is_real_struct_type) (ValaDataType* self);
 	gboolean (*is_disposable) (ValaDataType* self);
-	ValaDataType* (*get_actual_type) (ValaDataType* self, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
+	ValaDataType* (*get_actual_type) (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
+	ValaDataType* (*infer_type_argument) (ValaDataType* self, ValaTypeParameter* type_param, ValaDataType* value_type);
 };
 
 struct _ValaPointerType {
@@ -1269,7 +1270,7 @@ void vala_value_take_scope (GValue* value, gpointer v_object);
 gpointer vala_value_get_scope (const GValue* value);
 GType vala_scope_get_type (void) G_GNUC_CONST;
 GType vala_parameter_get_type (void) G_GNUC_CONST;
-GType vala_member_access_get_type (void) G_GNUC_CONST;
+GType vala_typeparameter_get_type (void) G_GNUC_CONST;
 GType vala_pointer_type_get_type (void) G_GNUC_CONST;
 #define VALA_POINTER_TYPE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_TYPE_POINTER_TYPE, ValaPointerTypePrivate))
 enum  {
@@ -1300,7 +1301,6 @@ gboolean vala_data_type_compatible (ValaDataType* self, ValaDataType* target_typ
 GType vala_typesymbol_get_type (void) G_GNUC_CONST;
 ValaTypeSymbol* vala_data_type_get_data_type (ValaDataType* self);
 ValaAttribute* vala_code_node_get_attribute (ValaCodeNode* self, const gchar* name);
-GType vala_typeparameter_get_type (void) G_GNUC_CONST;
 ValaTypeParameter* vala_data_type_get_type_parameter (ValaDataType* self);
 gboolean vala_typesymbol_is_subtype_of (ValaTypeSymbol* self, ValaTypeSymbol* t);
 ValaCodeContext* vala_code_context_get (void);
@@ -1370,6 +1370,7 @@ GType vala_string_literal_get_type (void) G_GNUC_CONST;
 GType vala_template_get_type (void) G_GNUC_CONST;
 GType vala_tuple_get_type (void) G_GNUC_CONST;
 GType vala_null_literal_get_type (void) G_GNUC_CONST;
+GType vala_member_access_get_type (void) G_GNUC_CONST;
 GType vala_method_call_get_type (void) G_GNUC_CONST;
 GType vala_element_access_get_type (void) G_GNUC_CONST;
 GType vala_slice_expression_get_type (void) G_GNUC_CONST;
@@ -1402,10 +1403,12 @@ static void vala_pointer_type_real_accept_children (ValaCodeNode* base, ValaCode
 void vala_code_node_accept (ValaCodeNode* self, ValaCodeVisitor* visitor);
 static void vala_pointer_type_real_replace_type (ValaCodeNode* base, ValaDataType* old_type, ValaDataType* new_type);
 static gboolean vala_pointer_type_real_is_disposable (ValaDataType* base);
-static ValaDataType* vala_pointer_type_real_get_actual_type (ValaDataType* base, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
+static ValaDataType* vala_pointer_type_real_get_actual_type (ValaDataType* base, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
 GType vala_generic_type_get_type (void) G_GNUC_CONST;
 gboolean vala_data_type_has_type_arguments (ValaDataType* self);
-ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
+ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
+static ValaDataType* vala_pointer_type_real_infer_type_argument (ValaDataType* base, ValaTypeParameter* type_param, ValaDataType* value_type);
+ValaDataType* vala_data_type_infer_type_argument (ValaDataType* self, ValaTypeParameter* type_param, ValaDataType* value_type);
 static gboolean vala_pointer_type_real_check (ValaCodeNode* base, ValaCodeContext* context);
 gboolean vala_code_node_check (ValaCodeNode* self, ValaCodeContext* context);
 void vala_code_node_set_error (ValaCodeNode* self, gboolean value);
@@ -1760,7 +1763,7 @@ static gboolean vala_pointer_type_real_is_disposable (ValaDataType* base) {
 }
 
 
-static ValaDataType* vala_pointer_type_real_get_actual_type (ValaDataType* base, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference) {
+static ValaDataType* vala_pointer_type_real_get_actual_type (ValaDataType* base, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference) {
 	ValaPointerType * self;
 	ValaDataType* result = NULL;
 	ValaPointerType* _result_ = NULL;
@@ -1776,8 +1779,8 @@ static ValaDataType* vala_pointer_type_real_get_actual_type (ValaDataType* base,
 	_result_ = G_TYPE_CHECK_INSTANCE_CAST (_tmp0_, VALA_TYPE_POINTER_TYPE, ValaPointerType);
 	_tmp2_ = derived_instance_type;
 	if (_tmp2_ == NULL) {
-		ValaMemberAccess* _tmp3_ = NULL;
-		_tmp3_ = method_access;
+		ValaList* _tmp3_ = NULL;
+		_tmp3_ = method_type_arguments;
 		_tmp1_ = _tmp3_ == NULL;
 	} else {
 		_tmp1_ = FALSE;
@@ -1805,7 +1808,7 @@ static ValaDataType* vala_pointer_type_real_get_actual_type (ValaDataType* base,
 		ValaDataType* _tmp12_ = NULL;
 		ValaDataType* _tmp13_ = NULL;
 		ValaDataType* _tmp14_ = NULL;
-		ValaMemberAccess* _tmp15_ = NULL;
+		ValaList* _tmp15_ = NULL;
 		ValaCodeNode* _tmp16_ = NULL;
 		ValaDataType* _tmp17_ = NULL;
 		ValaDataType* _tmp18_ = NULL;
@@ -1814,7 +1817,7 @@ static ValaDataType* vala_pointer_type_real_get_actual_type (ValaDataType* base,
 		_tmp12_ = vala_pointer_type_get_base_type (_tmp11_);
 		_tmp13_ = _tmp12_;
 		_tmp14_ = derived_instance_type;
-		_tmp15_ = method_access;
+		_tmp15_ = method_type_arguments;
 		_tmp16_ = node_reference;
 		_tmp17_ = vala_data_type_get_actual_type (_tmp13_, _tmp14_, _tmp15_, _tmp16_);
 		_tmp18_ = _tmp17_;
@@ -1822,6 +1825,45 @@ static ValaDataType* vala_pointer_type_real_get_actual_type (ValaDataType* base,
 		_vala_code_node_unref0 (_tmp18_);
 	}
 	result = (ValaDataType*) _result_;
+	return result;
+}
+
+
+static ValaDataType* vala_pointer_type_real_infer_type_argument (ValaDataType* base, ValaTypeParameter* type_param, ValaDataType* value_type) {
+	ValaPointerType * self;
+	ValaDataType* result = NULL;
+	ValaPointerType* pointer_type = NULL;
+	ValaDataType* _tmp0_ = NULL;
+	ValaPointerType* _tmp1_ = NULL;
+	ValaPointerType* _tmp2_ = NULL;
+	self = (ValaPointerType*) base;
+	g_return_val_if_fail (type_param != NULL, NULL);
+	g_return_val_if_fail (value_type != NULL, NULL);
+	_tmp0_ = value_type;
+	_tmp1_ = _vala_code_node_ref0 (G_TYPE_CHECK_INSTANCE_TYPE (_tmp0_, VALA_TYPE_POINTER_TYPE) ? ((ValaPointerType*) _tmp0_) : NULL);
+	pointer_type = _tmp1_;
+	_tmp2_ = pointer_type;
+	if (_tmp2_ != NULL) {
+		ValaDataType* _tmp3_ = NULL;
+		ValaDataType* _tmp4_ = NULL;
+		ValaTypeParameter* _tmp5_ = NULL;
+		ValaPointerType* _tmp6_ = NULL;
+		ValaDataType* _tmp7_ = NULL;
+		ValaDataType* _tmp8_ = NULL;
+		ValaDataType* _tmp9_ = NULL;
+		_tmp3_ = vala_pointer_type_get_base_type (self);
+		_tmp4_ = _tmp3_;
+		_tmp5_ = type_param;
+		_tmp6_ = pointer_type;
+		_tmp7_ = vala_pointer_type_get_base_type (_tmp6_);
+		_tmp8_ = _tmp7_;
+		_tmp9_ = vala_data_type_infer_type_argument (_tmp4_, _tmp5_, _tmp8_);
+		result = _tmp9_;
+		_vala_code_node_unref0 (pointer_type);
+		return result;
+	}
+	result = NULL;
+	_vala_code_node_unref0 (pointer_type);
 	return result;
 }
 
@@ -1877,17 +1919,18 @@ static void vala_pointer_type_class_init (ValaPointerTypeClass * klass) {
 	vala_pointer_type_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_pointer_type_finalize;
 	g_type_class_add_private (klass, sizeof (ValaPointerTypePrivate));
-	((ValaDataTypeClass *) klass)->to_qualified_string = vala_pointer_type_real_to_qualified_string;
-	((ValaDataTypeClass *) klass)->copy = vala_pointer_type_real_copy;
-	((ValaDataTypeClass *) klass)->compatible = vala_pointer_type_real_compatible;
-	((ValaDataTypeClass *) klass)->get_member = vala_pointer_type_real_get_member;
-	((ValaDataTypeClass *) klass)->get_pointer_member = vala_pointer_type_real_get_pointer_member;
-	((ValaDataTypeClass *) klass)->is_accessible = vala_pointer_type_real_is_accessible;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_pointer_type_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_pointer_type_real_replace_type;
-	((ValaDataTypeClass *) klass)->is_disposable = vala_pointer_type_real_is_disposable;
-	((ValaDataTypeClass *) klass)->get_actual_type = vala_pointer_type_real_get_actual_type;
-	((ValaCodeNodeClass *) klass)->check = vala_pointer_type_real_check;
+	((ValaDataTypeClass *) klass)->to_qualified_string = (gchar* (*)(ValaDataType*, ValaScope*)) vala_pointer_type_real_to_qualified_string;
+	((ValaDataTypeClass *) klass)->copy = (ValaDataType* (*)(ValaDataType*)) vala_pointer_type_real_copy;
+	((ValaDataTypeClass *) klass)->compatible = (gboolean (*)(ValaDataType*, ValaDataType*)) vala_pointer_type_real_compatible;
+	((ValaDataTypeClass *) klass)->get_member = (ValaSymbol* (*)(ValaDataType*, const gchar*)) vala_pointer_type_real_get_member;
+	((ValaDataTypeClass *) klass)->get_pointer_member = (ValaSymbol* (*)(ValaDataType*, const gchar*)) vala_pointer_type_real_get_pointer_member;
+	((ValaDataTypeClass *) klass)->is_accessible = (gboolean (*)(ValaDataType*, ValaSymbol*)) vala_pointer_type_real_is_accessible;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_pointer_type_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_pointer_type_real_replace_type;
+	((ValaDataTypeClass *) klass)->is_disposable = (gboolean (*)(ValaDataType*)) vala_pointer_type_real_is_disposable;
+	((ValaDataTypeClass *) klass)->get_actual_type = (ValaDataType* (*)(ValaDataType*, ValaDataType*, ValaList*, ValaCodeNode*)) vala_pointer_type_real_get_actual_type;
+	((ValaDataTypeClass *) klass)->infer_type_argument = (ValaDataType* (*)(ValaDataType*, ValaTypeParameter*, ValaDataType*)) vala_pointer_type_real_infer_type_argument;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_pointer_type_real_check;
 }
 
 

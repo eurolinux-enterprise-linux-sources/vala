@@ -1568,25 +1568,25 @@ static gboolean vala_integer_literal_real_check (ValaCodeNode* base, ValaCodeCon
 	gboolean _tmp29_ = FALSE;
 	gboolean _tmp30_ = FALSE;
 	gchar* type_name = NULL;
-	gint _tmp35_ = 0;
+	gint _tmp37_ = 0;
 	ValaStruct* st = NULL;
-	ValaCodeContext* _tmp46_ = NULL;
-	ValaSemanticAnalyzer* _tmp47_ = NULL;
-	ValaSemanticAnalyzer* _tmp48_ = NULL;
-	ValaSymbol* _tmp49_ = NULL;
-	ValaScope* _tmp50_ = NULL;
-	ValaScope* _tmp51_ = NULL;
-	const gchar* _tmp52_ = NULL;
-	ValaSymbol* _tmp53_ = NULL;
-	ValaStruct* _tmp54_ = NULL;
-	ValaCodeContext* _tmp55_ = NULL;
+	ValaCodeContext* _tmp48_ = NULL;
+	ValaSemanticAnalyzer* _tmp49_ = NULL;
+	ValaSemanticAnalyzer* _tmp50_ = NULL;
+	ValaSymbol* _tmp51_ = NULL;
+	ValaScope* _tmp52_ = NULL;
+	ValaScope* _tmp53_ = NULL;
+	const gchar* _tmp54_ = NULL;
+	ValaSymbol* _tmp55_ = NULL;
 	ValaStruct* _tmp56_ = NULL;
-	const gchar* _tmp57_ = NULL;
-	const gchar* _tmp58_ = NULL;
-	ValaIntegerType* _tmp59_ = NULL;
-	ValaIntegerType* _tmp60_ = NULL;
-	gboolean _tmp61_ = FALSE;
-	gboolean _tmp62_ = FALSE;
+	ValaCodeContext* _tmp57_ = NULL;
+	ValaStruct* _tmp58_ = NULL;
+	const gchar* _tmp59_ = NULL;
+	const gchar* _tmp60_ = NULL;
+	ValaIntegerType* _tmp61_ = NULL;
+	ValaIntegerType* _tmp62_ = NULL;
+	gboolean _tmp63_ = FALSE;
+	gboolean _tmp64_ = FALSE;
 	self = (ValaIntegerLiteral*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
@@ -1671,105 +1671,113 @@ static gboolean vala_integer_literal_real_check (ValaCodeNode* base, ValaCodeCon
 	n = _tmp28_;
 	_tmp30_ = u;
 	if (!_tmp30_) {
-		gint64 _tmp31_ = 0LL;
-		_tmp31_ = n;
-		_tmp29_ = _tmp31_ > ((gint64) 0x7fffffff);
+		gboolean _tmp31_ = FALSE;
+		gint64 _tmp32_ = 0LL;
+		_tmp32_ = n;
+		if (_tmp32_ > ((gint64) G_MAXINT)) {
+			_tmp31_ = TRUE;
+		} else {
+			gint64 _tmp33_ = 0LL;
+			_tmp33_ = n;
+			_tmp31_ = _tmp33_ < ((gint64) G_MININT);
+		}
+		_tmp29_ = _tmp31_;
 	} else {
 		_tmp29_ = FALSE;
 	}
 	if (_tmp29_) {
 		l = 2;
 	} else {
-		gboolean _tmp32_ = FALSE;
-		gboolean _tmp33_ = FALSE;
-		_tmp33_ = u;
-		if (_tmp33_) {
-			gint64 _tmp34_ = 0LL;
-			_tmp34_ = n;
-			_tmp32_ = _tmp34_ > 0xffffffffLL;
+		gboolean _tmp34_ = FALSE;
+		gboolean _tmp35_ = FALSE;
+		_tmp35_ = u;
+		if (_tmp35_) {
+			gint64 _tmp36_ = 0LL;
+			_tmp36_ = n;
+			_tmp34_ = _tmp36_ > ((gint64) G_MAXUINT);
 		} else {
-			_tmp32_ = FALSE;
+			_tmp34_ = FALSE;
 		}
-		if (_tmp32_) {
+		if (_tmp34_) {
 			l = 2;
 		}
 	}
-	_tmp35_ = l;
-	if (_tmp35_ == 0) {
-		gboolean _tmp36_ = FALSE;
-		_tmp36_ = u;
-		if (_tmp36_) {
-			gchar* _tmp37_ = NULL;
+	_tmp37_ = l;
+	if (_tmp37_ == 0) {
+		gboolean _tmp38_ = FALSE;
+		_tmp38_ = u;
+		if (_tmp38_) {
+			gchar* _tmp39_ = NULL;
 			vala_integer_literal_set_type_suffix (self, "U");
-			_tmp37_ = g_strdup ("uint");
+			_tmp39_ = g_strdup ("uint");
 			_g_free0 (type_name);
-			type_name = _tmp37_;
+			type_name = _tmp39_;
 		} else {
-			gchar* _tmp38_ = NULL;
+			gchar* _tmp40_ = NULL;
 			vala_integer_literal_set_type_suffix (self, "");
-			_tmp38_ = g_strdup ("int");
+			_tmp40_ = g_strdup ("int");
 			_g_free0 (type_name);
-			type_name = _tmp38_;
+			type_name = _tmp40_;
 		}
 	} else {
-		gint _tmp39_ = 0;
-		_tmp39_ = l;
-		if (_tmp39_ == 1) {
-			gboolean _tmp40_ = FALSE;
-			_tmp40_ = u;
-			if (_tmp40_) {
-				gchar* _tmp41_ = NULL;
+		gint _tmp41_ = 0;
+		_tmp41_ = l;
+		if (_tmp41_ == 1) {
+			gboolean _tmp42_ = FALSE;
+			_tmp42_ = u;
+			if (_tmp42_) {
+				gchar* _tmp43_ = NULL;
 				vala_integer_literal_set_type_suffix (self, "UL");
-				_tmp41_ = g_strdup ("ulong");
+				_tmp43_ = g_strdup ("ulong");
 				_g_free0 (type_name);
-				type_name = _tmp41_;
+				type_name = _tmp43_;
 			} else {
-				gchar* _tmp42_ = NULL;
-				vala_integer_literal_set_type_suffix (self, "L");
-				_tmp42_ = g_strdup ("long");
-				_g_free0 (type_name);
-				type_name = _tmp42_;
-			}
-		} else {
-			gboolean _tmp43_ = FALSE;
-			_tmp43_ = u;
-			if (_tmp43_) {
 				gchar* _tmp44_ = NULL;
-				vala_integer_literal_set_type_suffix (self, "ULL");
-				_tmp44_ = g_strdup ("uint64");
+				vala_integer_literal_set_type_suffix (self, "L");
+				_tmp44_ = g_strdup ("long");
 				_g_free0 (type_name);
 				type_name = _tmp44_;
-			} else {
-				gchar* _tmp45_ = NULL;
-				vala_integer_literal_set_type_suffix (self, "LL");
-				_tmp45_ = g_strdup ("int64");
+			}
+		} else {
+			gboolean _tmp45_ = FALSE;
+			_tmp45_ = u;
+			if (_tmp45_) {
+				gchar* _tmp46_ = NULL;
+				vala_integer_literal_set_type_suffix (self, "ULL");
+				_tmp46_ = g_strdup ("uint64");
 				_g_free0 (type_name);
-				type_name = _tmp45_;
+				type_name = _tmp46_;
+			} else {
+				gchar* _tmp47_ = NULL;
+				vala_integer_literal_set_type_suffix (self, "LL");
+				_tmp47_ = g_strdup ("int64");
+				_g_free0 (type_name);
+				type_name = _tmp47_;
 			}
 		}
 	}
-	_tmp46_ = context;
-	_tmp47_ = vala_code_context_get_analyzer (_tmp46_);
-	_tmp48_ = _tmp47_;
-	_tmp49_ = _tmp48_->root_symbol;
-	_tmp50_ = vala_symbol_get_scope (_tmp49_);
-	_tmp51_ = _tmp50_;
-	_tmp52_ = type_name;
-	_tmp53_ = vala_scope_lookup (_tmp51_, _tmp52_);
-	st = G_TYPE_CHECK_INSTANCE_CAST (_tmp53_, VALA_TYPE_STRUCT, ValaStruct);
-	_tmp54_ = st;
-	_tmp55_ = context;
-	vala_code_node_check ((ValaCodeNode*) _tmp54_, _tmp55_);
+	_tmp48_ = context;
+	_tmp49_ = vala_code_context_get_analyzer (_tmp48_);
+	_tmp50_ = _tmp49_;
+	_tmp51_ = _tmp50_->root_symbol;
+	_tmp52_ = vala_symbol_get_scope (_tmp51_);
+	_tmp53_ = _tmp52_;
+	_tmp54_ = type_name;
+	_tmp55_ = vala_scope_lookup (_tmp53_, _tmp54_);
+	st = G_TYPE_CHECK_INSTANCE_CAST (_tmp55_, VALA_TYPE_STRUCT, ValaStruct);
 	_tmp56_ = st;
-	_tmp57_ = self->priv->_value;
-	_tmp58_ = type_name;
-	_tmp59_ = vala_integer_type_new (_tmp56_, _tmp57_, _tmp58_);
-	_tmp60_ = _tmp59_;
-	vala_expression_set_value_type ((ValaExpression*) self, (ValaDataType*) _tmp60_);
-	_vala_code_node_unref0 (_tmp60_);
-	_tmp61_ = vala_code_node_get_error ((ValaCodeNode*) self);
+	_tmp57_ = context;
+	vala_code_node_check ((ValaCodeNode*) _tmp56_, _tmp57_);
+	_tmp58_ = st;
+	_tmp59_ = self->priv->_value;
+	_tmp60_ = type_name;
+	_tmp61_ = vala_integer_type_new (_tmp58_, _tmp59_, _tmp60_);
 	_tmp62_ = _tmp61_;
-	result = !_tmp62_;
+	vala_expression_set_value_type ((ValaExpression*) self, (ValaDataType*) _tmp62_);
+	_vala_code_node_unref0 (_tmp62_);
+	_tmp63_ = vala_code_node_get_error ((ValaCodeNode*) self);
+	_tmp64_ = _tmp63_;
+	result = !_tmp64_;
 	_vala_code_node_unref0 (st);
 	_g_free0 (type_name);
 	return result;
@@ -1835,11 +1843,11 @@ static void vala_integer_literal_class_init (ValaIntegerLiteralClass * klass) {
 	vala_integer_literal_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_integer_literal_finalize;
 	g_type_class_add_private (klass, sizeof (ValaIntegerLiteralPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_integer_literal_real_accept;
-	((ValaCodeNodeClass *) klass)->to_string = vala_integer_literal_real_to_string;
-	((ValaExpressionClass *) klass)->is_pure = vala_integer_literal_real_is_pure;
-	((ValaCodeNodeClass *) klass)->check = vala_integer_literal_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_integer_literal_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_integer_literal_real_accept;
+	((ValaCodeNodeClass *) klass)->to_string = (gchar* (*)(ValaCodeNode*)) vala_integer_literal_real_to_string;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_integer_literal_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_integer_literal_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_integer_literal_real_emit;
 }
 
 

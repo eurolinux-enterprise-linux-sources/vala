@@ -473,10 +473,10 @@ static void vala_delete_statement_class_init (ValaDeleteStatementClass * klass) 
 	vala_delete_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_delete_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaDeleteStatementPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_delete_statement_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_delete_statement_real_accept_children;
-	((ValaCodeNodeClass *) klass)->check = vala_delete_statement_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_delete_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_delete_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_delete_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_delete_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_delete_statement_real_emit;
 }
 
 

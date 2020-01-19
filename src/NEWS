@@ -1,7 +1,98 @@
-Vala 0.26.1
+Vala 0.34.6
 ===========
 
  * Bug fixes and binding updates.
+ * Update manpages.
+ * Update manual.
+
+Vala 0.34.5
+===========
+
+ * Bug fixes and binding updates.
+
+Vala 0.34.4
+===========
+
+ * Bug fixes.
+
+Vala 0.34.3
+===========
+
+ * Bug fixes and binding updates.
+
+Vala 0.34.2
+===========
+
+ * Bug fixes and binding updates.
+
+Vala 0.34.1
+===========
+
+ * Add support for the \v escape character.
+ * Bug fixes and binding updates.
+
+Vala 0.34.0
+===========
+
+ * Bug fixes and binding updates.
+
+Vala 0.33.1
+===========
+
+ * Bug fixes and binding updates.
+
+Vala 0.32.0
+===========
+
+ * Bug fixes and binding updates.
+
+Vala 0.31.1
+===========
+
+ * Introduce [Version] attribute.
+ * Require and target GLib >= 2.32.
+ * Bug fixes and binding updates.
+
+Vala 0.30.0
+===========
+
+ * Binding updates.
+
+Vala 0.29.3
+===========
+
+ * Add --shared-library option for GIR files.
+ * Bug fixes and binding updates.
+
+Vala 0.29.2
+===========
+
+ * Bug fixes and binding updates.
+
+Vala 0.29.1
+===========
+
+ * Binding updates.
+
+Vala 0.28.0
+===========
+
+ * Binding updates.
+
+Vala 0.27.2
+===========
+
+ * Bug fixes and binding updates.
+
+Vala 0.27.1
+===========
+
+ * Print compiler messages in color.
+ * Add clutter-gdk-1.0 bindings.
+ * Add clutter-gst-3.0 bindings.
+ * Add clutter-x11-1.0 bindings.
+ * Add rest-extras-0.7 bindings.
+ * Bug fix and binding updates.
 
 Vala 0.26.0
 ===========

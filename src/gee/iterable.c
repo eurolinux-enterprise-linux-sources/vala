@@ -103,8 +103,9 @@ static void vala_iterable_finalize (ValaIterable* obj);
 
 
 static GType vala_iterable_real_get_element_type (ValaIterable* self) {
+	GType _tmp0_ = 0UL;
 	g_critical ("Type `%s' does not implement abstract method `vala_iterable_get_element_type'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
-	return 0UL;
+	return _tmp0_;
 }
 
 
@@ -257,8 +258,8 @@ static void vala_iterable_class_init (ValaIterableClass * klass) {
 	vala_iterable_parent_class = g_type_class_peek_parent (klass);
 	((ValaIterableClass *) klass)->finalize = vala_iterable_finalize;
 	g_type_class_add_private (klass, sizeof (ValaIterablePrivate));
-	((ValaIterableClass *) klass)->get_element_type = vala_iterable_real_get_element_type;
-	((ValaIterableClass *) klass)->iterator = vala_iterable_real_iterator;
+	((ValaIterableClass *) klass)->get_element_type = (GType (*)(ValaIterable*)) vala_iterable_real_get_element_type;
+	((ValaIterableClass *) klass)->iterator = (ValaIterator* (*)(ValaIterable*)) vala_iterable_real_iterator;
 }
 
 

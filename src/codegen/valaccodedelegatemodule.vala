@@ -116,7 +116,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 		}
 
 		var ctypedef = new CCodeTypeDefinition (return_type_cname, cfundecl);
-		ctypedef.deprecated = d.deprecated;
+		ctypedef.deprecated = d.version.deprecated;
 
 		decl_space.add_type_definition (ctypedef);
 	}
@@ -408,8 +408,13 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 			ccall.add_argument (new CCodeConstant ("NULL"));
 			ccall.add_argument (new CCodeConstant ("NULL"));
 		}
+
 		if (m.return_type is VoidType || m.return_type.is_real_non_null_struct_type ()) {
 			ccode.add_expression (ccall);
+			if (!(d.return_type is VoidType || d.return_type.is_real_non_null_struct_type ())) {
+				// return a default value
+				ccode.add_declaration (return_type_cname, new CCodeVariableDeclarator ("result", default_value_for_type (d.return_type, true)));
+			}
 		} else {
 			CCodeExpression result = ccall;
 			if (d.return_type is GenericType) {
@@ -435,7 +440,8 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 			}
 		}
 
-		if (!(m.return_type is VoidType || m.return_type.is_real_non_null_struct_type ())) {
+		if (!(m.return_type is VoidType || m.return_type.is_real_non_null_struct_type ()) ||
+			!(d.return_type is VoidType || d.return_type.is_real_non_null_struct_type ())) {
 			ccode.add_return (new CCodeIdentifier ("result"));
 		}
 

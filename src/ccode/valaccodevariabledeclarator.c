@@ -491,9 +491,9 @@ static void vala_ccode_variable_declarator_class_init (ValaCCodeVariableDeclarat
 	vala_ccode_variable_declarator_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_variable_declarator_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeVariableDeclaratorPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_variable_declarator_real_write;
-	((ValaCCodeNodeClass *) klass)->write_declaration = vala_ccode_variable_declarator_real_write_declaration;
-	((ValaCCodeDeclaratorClass *) klass)->write_initialization = vala_ccode_variable_declarator_real_write_initialization;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_variable_declarator_real_write;
+	((ValaCCodeNodeClass *) klass)->write_declaration = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_variable_declarator_real_write_declaration;
+	((ValaCCodeDeclaratorClass *) klass)->write_initialization = (void (*)(ValaCCodeDeclarator*, ValaCCodeWriter*)) vala_ccode_variable_declarator_real_write_initialization;
 }
 
 

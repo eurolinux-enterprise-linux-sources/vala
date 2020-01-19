@@ -228,7 +228,7 @@ static void vala_gir_comment_instance_init (ValaGirComment * self) {
 	_tmp0_ = g_direct_hash;
 	_tmp1_ = g_direct_equal;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, VALA_TYPE_COMMENT, (GBoxedCopyFunc) vala_comment_ref, vala_comment_unref, _tmp0_, _tmp1_, _tmp2_);
+	_tmp3_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, VALA_TYPE_COMMENT, (GBoxedCopyFunc) vala_comment_ref, (GDestroyNotify) vala_comment_unref, _tmp0_, _tmp1_, _tmp2_);
 	self->priv->parameter_content = _tmp3_;
 }
 

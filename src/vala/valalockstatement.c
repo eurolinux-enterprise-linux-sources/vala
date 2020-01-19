@@ -680,9 +680,9 @@ static void vala_lock_statement_class_init (ValaLockStatementClass * klass) {
 	vala_lock_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_lock_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaLockStatementPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_lock_statement_real_accept;
-	((ValaCodeNodeClass *) klass)->check = vala_lock_statement_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_lock_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_lock_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_lock_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_lock_statement_real_emit;
 }
 
 

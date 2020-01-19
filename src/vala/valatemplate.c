@@ -1671,10 +1671,10 @@ static void vala_template_class_init (ValaTemplateClass * klass) {
 	vala_template_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_template_finalize;
 	g_type_class_add_private (klass, sizeof (ValaTemplatePrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_template_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_template_real_accept_children;
-	((ValaExpressionClass *) klass)->is_pure = vala_template_real_is_pure;
-	((ValaCodeNodeClass *) klass)->check = vala_template_real_check;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_template_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_template_real_accept_children;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_template_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_template_real_check;
 }
 
 
@@ -1683,7 +1683,7 @@ static void vala_template_instance_init (ValaTemplate * self) {
 	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_TEMPLATE_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->expression_list = (ValaList*) _tmp1_;
 }
 

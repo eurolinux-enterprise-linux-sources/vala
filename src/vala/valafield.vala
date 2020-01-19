@@ -43,11 +43,11 @@ public class Vala.Field : Variable, Lockable {
 	/**
 	 * Creates a new field.
 	 *
-	 * @param name   field name
-	 * @param type   field type
-	 * @param init   initializer expression
-	 * @param source reference to source code
-	 * @return       newly created field
+	 * @param name              field name
+	 * @param variable_type     field type
+	 * @param initializer       initializer expression
+	 * @param source_reference  reference to source code
+	 * @return                  newly created field
 	 */
 	public Field (string name, DataType variable_type, Expression? initializer, SourceReference? source_reference = null, Comment? comment = null) {
 		base (variable_type, name, initializer, source_reference, comment);
@@ -143,9 +143,19 @@ public class Vala.Field : Variable, Lockable {
 				return false;
 			}
 
+			if (initializer.value_type.is_disposable ()) {
+				/* rhs transfers ownership of the expression */
+				if (!(variable_type is PointerType) && !variable_type.value_owned) {
+					/* lhs doesn't own the value */
+					error = true;
+					Report.error (source_reference, "Invalid assignment from owned expression to unowned variable");
+					return false;
+				}
+			}
+
 			if (parent_symbol is Namespace && !initializer.is_constant ()) {
 				error = true;
-				Report.error (source_reference, "Non-constant field initializerS not supported in this context");
+				Report.error (source_reference, "Non-constant field initializers not supported in this context");
 				return false;
 			}
 

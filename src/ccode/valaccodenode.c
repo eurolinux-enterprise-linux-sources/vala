@@ -322,9 +322,9 @@ static void vala_ccode_node_class_init (ValaCCodeNodeClass * klass) {
 	vala_ccode_node_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_node_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeNodePrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_node_real_write;
-	((ValaCCodeNodeClass *) klass)->write_declaration = vala_ccode_node_real_write_declaration;
-	((ValaCCodeNodeClass *) klass)->write_combined = vala_ccode_node_real_write_combined;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_node_real_write;
+	((ValaCCodeNodeClass *) klass)->write_declaration = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_node_real_write_declaration;
+	((ValaCCodeNodeClass *) klass)->write_combined = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_node_real_write_combined;
 }
 
 

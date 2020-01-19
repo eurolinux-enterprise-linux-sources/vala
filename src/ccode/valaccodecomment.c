@@ -174,7 +174,7 @@ static void vala_ccode_comment_class_init (ValaCCodeCommentClass * klass) {
 	vala_ccode_comment_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_comment_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeCommentPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_comment_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_comment_real_write;
 }
 
 

@@ -626,9 +626,9 @@ static void vala_error_code_class_init (ValaErrorCodeClass * klass) {
 	vala_error_code_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_error_code_finalize;
 	g_type_class_add_private (klass, sizeof (ValaErrorCodePrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_error_code_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_error_code_real_accept_children;
-	((ValaCodeNodeClass *) klass)->check = vala_error_code_real_check;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_error_code_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_error_code_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_error_code_real_check;
 }
 
 

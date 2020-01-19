@@ -386,15 +386,15 @@ typedef struct _ValaScopeClass ValaScopeClass;
 typedef struct _ValaParameter ValaParameter;
 typedef struct _ValaParameterClass ValaParameterClass;
 
-#define VALA_TYPE_MEMBER_ACCESS (vala_member_access_get_type ())
-#define VALA_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccess))
-#define VALA_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
-#define VALA_IS_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_IS_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_MEMBER_ACCESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
+#define VALA_TYPE_TYPEPARAMETER (vala_typeparameter_get_type ())
+#define VALA_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameter))
+#define VALA_TYPEPARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_TYPEPARAMETER, ValaTypeParameterClass))
+#define VALA_IS_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_TYPEPARAMETER))
+#define VALA_IS_TYPEPARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_TYPEPARAMETER))
+#define VALA_TYPEPARAMETER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameterClass))
 
-typedef struct _ValaMemberAccess ValaMemberAccess;
-typedef struct _ValaMemberAccessClass ValaMemberAccessClass;
+typedef struct _ValaTypeParameter ValaTypeParameter;
+typedef struct _ValaTypeParameterClass ValaTypeParameterClass;
 
 #define VALA_TYPE_REFERENCE_TYPE (vala_reference_type_get_type ())
 #define VALA_REFERENCE_TYPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_REFERENCE_TYPE, ValaReferenceType))
@@ -680,6 +680,16 @@ typedef struct _ValaSemanticAnalyzerClass ValaSemanticAnalyzerClass;
 
 typedef struct _ValaFlowAnalyzer ValaFlowAnalyzer;
 typedef struct _ValaFlowAnalyzerClass ValaFlowAnalyzerClass;
+
+#define VALA_TYPE_USED_ATTR (vala_used_attr_get_type ())
+#define VALA_USED_ATTR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_USED_ATTR, ValaUsedAttr))
+#define VALA_USED_ATTR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_USED_ATTR, ValaUsedAttrClass))
+#define VALA_IS_USED_ATTR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_USED_ATTR))
+#define VALA_IS_USED_ATTR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_USED_ATTR))
+#define VALA_USED_ATTR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_USED_ATTR, ValaUsedAttrClass))
+
+typedef struct _ValaUsedAttr ValaUsedAttr;
+typedef struct _ValaUsedAttrClass ValaUsedAttrClass;
 typedef struct _ValaCodeVisitorPrivate ValaCodeVisitorPrivate;
 
 #define VALA_TYPE_ENUM_VALUE (vala_enum_value_get_type ())
@@ -711,16 +721,6 @@ typedef struct _ValaErrorCodeClass ValaErrorCodeClass;
 
 typedef struct _ValaPropertyAccessor ValaPropertyAccessor;
 typedef struct _ValaPropertyAccessorClass ValaPropertyAccessorClass;
-
-#define VALA_TYPE_TYPEPARAMETER (vala_typeparameter_get_type ())
-#define VALA_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameter))
-#define VALA_TYPEPARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_TYPEPARAMETER, ValaTypeParameterClass))
-#define VALA_IS_TYPEPARAMETER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_TYPEPARAMETER))
-#define VALA_IS_TYPEPARAMETER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_TYPEPARAMETER))
-#define VALA_TYPEPARAMETER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_TYPEPARAMETER, ValaTypeParameterClass))
-
-typedef struct _ValaTypeParameter ValaTypeParameter;
-typedef struct _ValaTypeParameterClass ValaTypeParameterClass;
 
 #define VALA_TYPE_USING_DIRECTIVE (vala_using_directive_get_type ())
 #define VALA_USING_DIRECTIVE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_USING_DIRECTIVE, ValaUsingDirective))
@@ -1001,6 +1001,16 @@ typedef struct _ValaTupleClass ValaTupleClass;
 
 typedef struct _ValaNullLiteral ValaNullLiteral;
 typedef struct _ValaNullLiteralClass ValaNullLiteralClass;
+
+#define VALA_TYPE_MEMBER_ACCESS (vala_member_access_get_type ())
+#define VALA_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccess))
+#define VALA_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
+#define VALA_IS_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_MEMBER_ACCESS))
+#define VALA_IS_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_MEMBER_ACCESS))
+#define VALA_MEMBER_ACCESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
+
+typedef struct _ValaMemberAccess ValaMemberAccess;
+typedef struct _ValaMemberAccessClass ValaMemberAccessClass;
 
 #define VALA_TYPE_METHOD_CALL (vala_method_call_get_type ())
 #define VALA_METHOD_CALL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_METHOD_CALL, ValaMethodCall))
@@ -1548,6 +1558,16 @@ typedef struct _ValaSwitchSectionPrivate ValaSwitchSectionPrivate;
 typedef struct _ValaSwitchStatementPrivate ValaSwitchStatementPrivate;
 
 #define VALA_TYPE_SYMBOL_ACCESSIBILITY (vala_symbol_accessibility_get_type ())
+
+#define VALA_TYPE_VERSION_ATTRIBUTE (vala_version_attribute_get_type ())
+#define VALA_VERSION_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_VERSION_ATTRIBUTE, ValaVersionAttribute))
+#define VALA_VERSION_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_VERSION_ATTRIBUTE, ValaVersionAttributeClass))
+#define VALA_IS_VERSION_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_VERSION_ATTRIBUTE))
+#define VALA_IS_VERSION_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_VERSION_ATTRIBUTE))
+#define VALA_VERSION_ATTRIBUTE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_VERSION_ATTRIBUTE, ValaVersionAttributeClass))
+
+typedef struct _ValaVersionAttribute ValaVersionAttribute;
+typedef struct _ValaVersionAttributeClass ValaVersionAttributeClass;
 typedef struct _ValaSymbolResolverPrivate ValaSymbolResolverPrivate;
 typedef struct _ValaTargetValuePrivate ValaTargetValuePrivate;
 typedef struct _ValaTemplatePrivate ValaTemplatePrivate;
@@ -1583,7 +1603,9 @@ typedef struct _ValaUnresolvedSymbolPrivate ValaUnresolvedSymbolPrivate;
 typedef struct _ValaUnresolvedType ValaUnresolvedType;
 typedef struct _ValaUnresolvedTypeClass ValaUnresolvedTypeClass;
 typedef struct _ValaUnresolvedTypePrivate ValaUnresolvedTypePrivate;
+typedef struct _ValaUsedAttrPrivate ValaUsedAttrPrivate;
 typedef struct _ValaUsingDirectivePrivate ValaUsingDirectivePrivate;
+typedef struct _ValaVersionAttributePrivate ValaVersionAttributePrivate;
 
 #define VALA_TYPE_VOID_TYPE (vala_void_type_get_type ())
 #define VALA_VOID_TYPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_VOID_TYPE, ValaVoidType))
@@ -1766,7 +1788,8 @@ struct _ValaDataTypeClass {
 	ValaSymbol* (*get_pointer_member) (ValaDataType* self, const gchar* member_name);
 	gboolean (*is_real_struct_type) (ValaDataType* self);
 	gboolean (*is_disposable) (ValaDataType* self);
-	ValaDataType* (*get_actual_type) (ValaDataType* self, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
+	ValaDataType* (*get_actual_type) (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
+	ValaDataType* (*infer_type_argument) (ValaDataType* self, ValaTypeParameter* type_param, ValaDataType* value_type);
 };
 
 struct _ValaReferenceType {
@@ -3440,6 +3463,16 @@ struct _ValaUnresolvedTypeClass {
 	ValaDataTypeClass parent_class;
 };
 
+struct _ValaUsedAttr {
+	ValaCodeVisitor parent_instance;
+	ValaUsedAttrPrivate * priv;
+	ValaMap* marked;
+};
+
+struct _ValaUsedAttrClass {
+	ValaCodeVisitorClass parent_class;
+};
+
 struct _ValaUsingDirective {
 	ValaCodeNode parent_instance;
 	ValaUsingDirectivePrivate * priv;
@@ -3447,6 +3480,17 @@ struct _ValaUsingDirective {
 
 struct _ValaUsingDirectiveClass {
 	ValaCodeNodeClass parent_class;
+};
+
+struct _ValaVersionAttribute {
+	GTypeInstance parent_instance;
+	volatile int ref_count;
+	ValaVersionAttributePrivate * priv;
+};
+
+struct _ValaVersionAttributeClass {
+	GTypeClass parent_class;
+	void (*finalize) (ValaVersionAttribute *self);
 };
 
 struct _ValaVoidType {
@@ -3563,7 +3607,7 @@ void vala_value_take_scope (GValue* value, gpointer v_object);
 gpointer vala_value_get_scope (const GValue* value);
 GType vala_scope_get_type (void) G_GNUC_CONST;
 GType vala_parameter_get_type (void) G_GNUC_CONST;
-GType vala_member_access_get_type (void) G_GNUC_CONST;
+GType vala_typeparameter_get_type (void) G_GNUC_CONST;
 GType vala_reference_type_get_type (void) G_GNUC_CONST;
 GType vala_array_type_get_type (void) G_GNUC_CONST;
 ValaArrayType* vala_array_type_new (ValaDataType* element_type, gint rank, ValaSourceReference* source_reference);
@@ -3803,6 +3847,8 @@ gboolean vala_code_context_get_deprecated (ValaCodeContext* self);
 void vala_code_context_set_deprecated (ValaCodeContext* self, gboolean value);
 gboolean vala_code_context_get_hide_internal (ValaCodeContext* self);
 void vala_code_context_set_hide_internal (ValaCodeContext* self, gboolean value);
+gboolean vala_code_context_get_since_check (ValaCodeContext* self);
+void vala_code_context_set_since_check (ValaCodeContext* self, gboolean value);
 gboolean vala_code_context_get_experimental (ValaCodeContext* self);
 void vala_code_context_set_experimental (ValaCodeContext* self, gboolean value);
 gboolean vala_code_context_get_experimental_non_null (ValaCodeContext* self);
@@ -3877,10 +3923,12 @@ GType vala_flow_analyzer_get_type (void) G_GNUC_CONST;
 ValaFlowAnalyzer* vala_code_context_get_flow_analyzer (ValaCodeContext* self);
 ValaCodeGenerator* vala_code_context_get_codegen (ValaCodeContext* self);
 void vala_code_context_set_codegen (ValaCodeContext* self, ValaCodeGenerator* value);
+GType vala_used_attr_get_type (void) G_GNUC_CONST;
+ValaUsedAttr* vala_code_context_get_used_attr (ValaCodeContext* self);
+void vala_code_context_set_used_attr (ValaCodeContext* self, ValaUsedAttr* value);
 GType vala_enum_value_get_type (void) G_GNUC_CONST;
 GType vala_error_code_get_type (void) G_GNUC_CONST;
 GType vala_property_accessor_get_type (void) G_GNUC_CONST;
-GType vala_typeparameter_get_type (void) G_GNUC_CONST;
 GType vala_using_directive_get_type (void) G_GNUC_CONST;
 GType vala_empty_statement_get_type (void) G_GNUC_CONST;
 GType vala_declaration_statement_get_type (void) G_GNUC_CONST;
@@ -3909,6 +3957,7 @@ GType vala_string_literal_get_type (void) G_GNUC_CONST;
 GType vala_template_get_type (void) G_GNUC_CONST;
 GType vala_tuple_get_type (void) G_GNUC_CONST;
 GType vala_null_literal_get_type (void) G_GNUC_CONST;
+GType vala_member_access_get_type (void) G_GNUC_CONST;
 GType vala_method_call_get_type (void) G_GNUC_CONST;
 GType vala_element_access_get_type (void) G_GNUC_CONST;
 GType vala_slice_expression_get_type (void) G_GNUC_CONST;
@@ -4138,7 +4187,8 @@ ValaSymbol* vala_data_type_get_pointer_member (ValaDataType* self, const gchar* 
 gboolean vala_data_type_is_real_struct_type (ValaDataType* self);
 gboolean vala_data_type_is_real_non_null_struct_type (ValaDataType* self);
 gboolean vala_data_type_is_disposable (ValaDataType* self);
-ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
+ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
+ValaDataType* vala_data_type_infer_type_argument (ValaDataType* self, ValaTypeParameter* type_param, ValaDataType* value_type);
 gboolean vala_data_type_is_weak (ValaDataType* self);
 ValaDataType* vala_data_type_construct (GType object_type);
 gboolean vala_data_type_get_value_owned (ValaDataType* self);
@@ -4705,6 +4755,7 @@ ValaRegexLiteral* vala_regex_literal_new (const gchar* value, ValaSourceReferenc
 ValaRegexLiteral* vala_regex_literal_construct (GType object_type, const gchar* value, ValaSourceReference* source_reference);
 const gchar* vala_regex_literal_get_value (ValaRegexLiteral* self);
 void vala_regex_literal_set_value (ValaRegexLiteral* self, const gchar* value);
+gboolean vala_report_set_colors (ValaReport* self, const gchar* str);
 void vala_report_set_verbose_errors (ValaReport* self, gboolean verbose);
 gint vala_report_get_warnings (ValaReport* self);
 gint vala_report_get_errors (ValaReport* self);
@@ -4765,7 +4816,7 @@ ValaDataType* vala_semantic_analyzer_get_data_type_for_symbol (ValaTypeSymbol* s
 gboolean vala_semantic_analyzer_check_arguments (ValaSemanticAnalyzer* self, ValaExpression* expr, ValaDataType* mtype, ValaList* params, ValaList* args);
 gboolean vala_semantic_analyzer_check_variadic_arguments (ValaSemanticAnalyzer* self, ValaIterator* arg_it, gint i, ValaSourceReference* source_reference);
 gboolean vala_semantic_analyzer_check_print_format (ValaSemanticAnalyzer* self, const gchar* format, ValaIterator* arg_it, ValaSourceReference* source_reference);
-ValaDataType* vala_semantic_analyzer_get_actual_type (ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaGenericType* generic_type, ValaCodeNode* node_reference);
+ValaDataType* vala_semantic_analyzer_get_actual_type (ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaGenericType* generic_type, ValaCodeNode* node_reference);
 gboolean vala_semantic_analyzer_is_in_instance_method (ValaSemanticAnalyzer* self);
 ValaExpression* vala_semantic_analyzer_create_temp_access (ValaLocalVariable* local, ValaDataType* target_type);
 void vala_semantic_analyzer_visit_member_initializer (ValaSemanticAnalyzer* self, ValaMemberInitializer* init, ValaDataType* type);
@@ -4838,6 +4889,10 @@ gboolean vala_source_file_check (ValaSourceFile* self, ValaCodeContext* context)
 const gchar* vala_source_file_get_filename (ValaSourceFile* self);
 void vala_source_file_set_filename (ValaSourceFile* self, const gchar* value);
 void vala_source_file_set_relative_filename (ValaSourceFile* self, const gchar* value);
+const gchar* vala_source_file_get_package_name (ValaSourceFile* self);
+void vala_source_file_set_package_name (ValaSourceFile* self, const gchar* value);
+const gchar* vala_source_file_get_installed_version (ValaSourceFile* self);
+void vala_source_file_set_installed_version (ValaSourceFile* self, const gchar* value);
 ValaSourceFileType vala_source_file_get_file_type (ValaSourceFile* self);
 void vala_source_file_set_file_type (ValaSourceFile* self, ValaSourceFileType value);
 gboolean vala_source_file_get_from_commandline (ValaSourceFile* self);
@@ -4950,8 +5005,6 @@ gchar* vala_symbol_lower_case_to_camel_case (const gchar* lower_case);
 ValaScope* vala_symbol_get_top_accessible_scope (ValaSymbol* self, gboolean is_internal);
 gboolean vala_symbol_is_instance_member (ValaSymbol* self);
 gboolean vala_symbol_is_class_member (ValaSymbol* self);
-gboolean vala_symbol_check_deprecated (ValaSymbol* self, ValaSourceReference* source_ref);
-gboolean vala_symbol_check_experimental (ValaSymbol* self, ValaSourceReference* source_ref);
 ValaSymbol* vala_symbol_get_hidden_member (ValaSymbol* self);
 gboolean vala_symbol_is_accessible (ValaSymbol* self, ValaSymbol* sym);
 void vala_symbol_add_namespace (ValaSymbol* self, ValaNamespace* ns);
@@ -4975,14 +5028,6 @@ const gchar* vala_symbol_get_name (ValaSymbol* self);
 void vala_symbol_set_name (ValaSymbol* self, const gchar* value);
 gboolean vala_symbol_get_active (ValaSymbol* self);
 void vala_symbol_set_active (ValaSymbol* self, gboolean value);
-gboolean vala_symbol_get_deprecated (ValaSymbol* self);
-void vala_symbol_set_deprecated (ValaSymbol* self, gboolean value);
-gchar* vala_symbol_get_deprecated_since (ValaSymbol* self);
-void vala_symbol_set_deprecated_since (ValaSymbol* self, const gchar* value);
-gchar* vala_symbol_get_replacement (ValaSymbol* self);
-void vala_symbol_set_replacement (ValaSymbol* self, const gchar* value);
-gboolean vala_symbol_get_experimental (ValaSymbol* self);
-void vala_symbol_set_experimental (ValaSymbol* self, gboolean value);
 gboolean vala_symbol_get_used (ValaSymbol* self);
 void vala_symbol_set_used (ValaSymbol* self, gboolean value);
 GType vala_symbol_accessibility_get_type (void) G_GNUC_CONST;
@@ -4990,6 +5035,14 @@ ValaSymbolAccessibility vala_symbol_get_access (ValaSymbol* self);
 void vala_symbol_set_access (ValaSymbol* self, ValaSymbolAccessibility value);
 ValaComment* vala_symbol_get_comment (ValaSymbol* self);
 void vala_symbol_set_comment (ValaSymbol* self, ValaComment* value);
+gpointer vala_version_attribute_ref (gpointer instance);
+void vala_version_attribute_unref (gpointer instance);
+GParamSpec* vala_param_spec_version_attribute (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void vala_value_set_version_attribute (GValue* value, gpointer v_object);
+void vala_value_take_version_attribute (GValue* value, gpointer v_object);
+gpointer vala_value_get_version_attribute (const GValue* value);
+GType vala_version_attribute_get_type (void) G_GNUC_CONST;
+ValaVersionAttribute* vala_symbol_get_version (ValaSymbol* self);
 gboolean vala_symbol_get_hides (ValaSymbol* self);
 void vala_symbol_set_hides (ValaSymbol* self, gboolean value);
 ValaScope* vala_symbol_get_scope (ValaSymbol* self);
@@ -5074,6 +5127,10 @@ ValaUnresolvedType* vala_unresolved_type_construct_from_symbol (GType object_typ
 ValaUnresolvedType* vala_unresolved_type_new_from_expression (ValaExpression* expr);
 ValaUnresolvedSymbol* vala_unresolved_type_get_unresolved_symbol (ValaUnresolvedType* self);
 void vala_unresolved_type_set_unresolved_symbol (ValaUnresolvedType* self, ValaUnresolvedSymbol* value);
+ValaUsedAttr* vala_used_attr_new (void);
+ValaUsedAttr* vala_used_attr_construct (GType object_type);
+void vala_used_attr_mark (ValaUsedAttr* self, const gchar* attribute, const gchar* argument);
+void vala_used_attr_check_unused (ValaUsedAttr* self, ValaCodeContext* context);
 ValaUsingDirective* vala_using_directive_new (ValaSymbol* namespace_symbol, ValaSourceReference* source_reference);
 ValaUsingDirective* vala_using_directive_construct (GType object_type, ValaSymbol* namespace_symbol, ValaSourceReference* source_reference);
 ValaSymbol* vala_using_directive_get_namespace_symbol (ValaUsingDirective* self);
@@ -5089,6 +5146,22 @@ ValaDataType* vala_variable_get_variable_type (ValaVariable* self);
 void vala_variable_set_variable_type (ValaVariable* self, ValaDataType* value);
 gboolean vala_variable_get_single_assignment (ValaVariable* self);
 void vala_variable_set_single_assignment (ValaVariable* self, gboolean value);
+ValaVersionAttribute* vala_version_attribute_new (ValaSymbol* symbol);
+ValaVersionAttribute* vala_version_attribute_construct (GType object_type, ValaSymbol* symbol);
+gboolean vala_version_attribute_check (ValaVersionAttribute* self, ValaSourceReference* source_ref);
+gint vala_version_attribute_cmp_versions (const gchar* v1str, const gchar* v2str);
+gboolean vala_version_attribute_get_deprecated (ValaVersionAttribute* self);
+void vala_version_attribute_set_deprecated (ValaVersionAttribute* self, gboolean value);
+gchar* vala_version_attribute_get_deprecated_since (ValaVersionAttribute* self);
+void vala_version_attribute_set_deprecated_since (ValaVersionAttribute* self, const gchar* value);
+gchar* vala_version_attribute_get_replacement (ValaVersionAttribute* self);
+void vala_version_attribute_set_replacement (ValaVersionAttribute* self, const gchar* value);
+gboolean vala_version_attribute_get_experimental (ValaVersionAttribute* self);
+void vala_version_attribute_set_experimental (ValaVersionAttribute* self, gboolean value);
+gchar* vala_version_attribute_get_experimental_until (ValaVersionAttribute* self);
+void vala_version_attribute_set_experimental_until (ValaVersionAttribute* self, const gchar* value);
+gchar* vala_version_attribute_get_since (ValaVersionAttribute* self);
+void vala_version_attribute_set_since (ValaVersionAttribute* self, const gchar* value);
 GType vala_void_type_get_type (void) G_GNUC_CONST;
 ValaVoidType* vala_void_type_new (ValaSourceReference* source_reference);
 ValaVoidType* vala_void_type_construct (GType object_type, ValaSourceReference* source_reference);

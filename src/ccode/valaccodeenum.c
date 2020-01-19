@@ -174,7 +174,6 @@ ValaCCodeEnum* vala_ccode_enum_new (const gchar* name) {
 /**
  * Adds the specified value to this enum.
  *
- * @param name  enum value name
  * @param value optional numerical value
  */
 void vala_ccode_enum_add_value (ValaCCodeEnum* self, ValaCCodeEnumValue* value) {
@@ -352,7 +351,7 @@ static void vala_ccode_enum_class_init (ValaCCodeEnumClass * klass) {
 	vala_ccode_enum_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_enum_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeEnumPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_enum_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_enum_real_write;
 }
 
 
@@ -362,7 +361,7 @@ static void vala_ccode_enum_instance_init (ValaCCodeEnum * self) {
 	self->priv = VALA_CCODE_ENUM_GET_PRIVATE (self);
 	self->priv->_deprecated = FALSE;
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_CCODE_ENUM_VALUE, (GBoxedCopyFunc) vala_ccode_node_ref, vala_ccode_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_CCODE_ENUM_VALUE, (GBoxedCopyFunc) vala_ccode_node_ref, (GDestroyNotify) vala_ccode_node_unref, _tmp0_);
 	self->priv->values = (ValaList*) _tmp1_;
 }
 

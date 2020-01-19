@@ -2114,11 +2114,11 @@ static void vala_constant_class_init (ValaConstantClass * klass) {
 	vala_constant_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_constant_finalize;
 	g_type_class_add_private (klass, sizeof (ValaConstantPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_constant_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_constant_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_constant_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_constant_real_replace_type;
-	((ValaCodeNodeClass *) klass)->check = vala_constant_real_check;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_constant_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_constant_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_constant_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_constant_real_replace_type;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_constant_real_check;
 }
 
 

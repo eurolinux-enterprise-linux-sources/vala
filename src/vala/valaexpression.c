@@ -315,8 +315,9 @@ gboolean vala_expression_is_constant (ValaExpression* self) {
  * is free of side-effects.
  */
 static gboolean vala_expression_real_is_pure (ValaExpression* self) {
+	gboolean _tmp0_ = FALSE;
 	g_critical ("Type `%s' does not implement abstract method `vala_expression_is_pure'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
-	return FALSE;
+	return _tmp0_;
 }
 
 
@@ -638,9 +639,9 @@ static void vala_expression_class_init (ValaExpressionClass * klass) {
 	vala_expression_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaExpressionPrivate));
-	((ValaExpressionClass *) klass)->is_constant = vala_expression_real_is_constant;
-	((ValaExpressionClass *) klass)->is_pure = vala_expression_real_is_pure;
-	((ValaExpressionClass *) klass)->is_non_null = vala_expression_real_is_non_null;
+	((ValaExpressionClass *) klass)->is_constant = (gboolean (*)(ValaExpression*)) vala_expression_real_is_constant;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_expression_real_is_pure;
+	((ValaExpressionClass *) klass)->is_non_null = (gboolean (*)(ValaExpression*)) vala_expression_real_is_non_null;
 }
 
 

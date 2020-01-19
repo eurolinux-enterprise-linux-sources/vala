@@ -2233,10 +2233,10 @@ static void vala_conditional_expression_class_init (ValaConditionalExpressionCla
 	vala_conditional_expression_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_conditional_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaConditionalExpressionPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_conditional_expression_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_conditional_expression_real_accept_children;
-	((ValaExpressionClass *) klass)->is_pure = vala_conditional_expression_real_is_pure;
-	((ValaCodeNodeClass *) klass)->check = vala_conditional_expression_real_check;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_conditional_expression_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_conditional_expression_real_accept_children;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_conditional_expression_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_conditional_expression_real_check;
 }
 
 

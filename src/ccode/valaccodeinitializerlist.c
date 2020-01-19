@@ -255,7 +255,7 @@ static void vala_ccode_initializer_list_class_init (ValaCCodeInitializerListClas
 	vala_ccode_initializer_list_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_initializer_list_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeInitializerListPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_initializer_list_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_initializer_list_real_write;
 }
 
 
@@ -264,7 +264,7 @@ static void vala_ccode_initializer_list_instance_init (ValaCCodeInitializerList 
 	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_CCODE_INITIALIZER_LIST_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_CCODE_EXPRESSION, (GBoxedCopyFunc) vala_ccode_node_ref, vala_ccode_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_CCODE_EXPRESSION, (GBoxedCopyFunc) vala_ccode_node_ref, (GDestroyNotify) vala_ccode_node_unref, _tmp0_);
 	self->priv->initializers = (ValaList*) _tmp1_;
 }
 

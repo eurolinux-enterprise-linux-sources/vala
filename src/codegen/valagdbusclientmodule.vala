@@ -55,7 +55,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 		push_function (func);
 
 		if (dynamic_method.dynamic_type.data_type == dbus_proxy_type) {
-			generate_marshalling (method, CallType.SYNC, null, method.name);
+			generate_marshalling (method, CallType.SYNC, null, method.name, -1);
 		} else {
 			Report.error (method.source_reference, "dynamic methods are not supported for `%s'".printf (dynamic_method.dynamic_type.to_string ()));
 		}
@@ -554,7 +554,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 		cfile.add_function (cfunc);
 	}
 
-	void generate_marshalling (Method m, CallType call_type, string? iface_name, string? method_name) {
+	void generate_marshalling (Method m, CallType call_type, string? iface_name, string? method_name, int method_timeout) {
 		var gdbusproxy = new CCodeCastExpression (new CCodeIdentifier ("self"), "GDBusProxy *");
 
 		var connection = new CCodeFunctionCall (new CCodeIdentifier ("g_dbus_proxy_get_connection"));
@@ -563,6 +563,14 @@ public class Vala.GDBusClientModule : GDBusModule {
 		bool uses_fd = dbus_method_uses_file_descriptor (m);
 		if (uses_fd) {
 			cfile.add_include ("gio/gunixfdlist.h");
+		}
+
+		bool has_error_argument = (m.get_error_types ().size > 0);
+		CCodeExpression error_argument;
+		if (has_error_argument) {
+			error_argument = new CCodeIdentifier ("error");
+		} else {
+			error_argument = new CCodeConstant ("NULL");
 		}
 
 		if (call_type != CallType.FINISH) {
@@ -575,8 +583,13 @@ public class Vala.GDBusClientModule : GDBusModule {
 			var object_path = new CCodeFunctionCall (new CCodeIdentifier ("g_dbus_proxy_get_object_path"));
 			object_path.add_argument (gdbusproxy);
 
-			var timeout = new CCodeFunctionCall (new CCodeIdentifier ("g_dbus_proxy_get_default_timeout"));
-			timeout.add_argument (gdbusproxy);
+			CCodeExpression timeout;
+			if (method_timeout <= 0) {
+				timeout = new CCodeFunctionCall (new CCodeIdentifier ("g_dbus_proxy_get_default_timeout"));
+				((CCodeFunctionCall) timeout).add_argument (gdbusproxy);
+			} else {
+				timeout = new CCodeConstant ("%d".printf (method_timeout));
+			}
 
 			// register errors
 			foreach (var error_type in m.get_error_types ()) {
@@ -610,7 +623,6 @@ public class Vala.GDBusClientModule : GDBusModule {
 			ccode.add_expression (builder_init);
 
 			if (uses_fd) {
-				ccode.add_declaration ("GUnixFDList", new CCodeVariableDeclarator ("*_fd_list"));
 				ccode.add_assignment (new CCodeIdentifier ("_fd_list"), new CCodeFunctionCall (new CCodeIdentifier ("g_unix_fd_list_new")));
 			}
 
@@ -667,7 +679,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 				ccall.add_argument (timeout);
 				ccall.add_argument (new CCodeConstant ("NULL"));
 				ccall.add_argument (cancellable);
-				ccall.add_argument (new CCodeIdentifier ("error"));
+				ccall.add_argument (error_argument);
 				ccode.add_assignment (new CCodeIdentifier ("_reply_message"), ccall);
 			} else if (call_type == CallType.NO_REPLY) {
 				var set_flags = new CCodeFunctionCall (new CCodeIdentifier ("g_dbus_message_set_flags"));
@@ -680,7 +692,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 				ccall.add_argument (new CCodeIdentifier ("_message"));
 				ccall.add_argument (new CCodeConstant ("G_DBUS_SEND_MESSAGE_FLAGS_NONE"));
 				ccall.add_argument (new CCodeConstant ("NULL"));
-				ccall.add_argument (new CCodeIdentifier ("error"));
+				ccall.add_argument (error_argument);
 				ccode.add_expression (ccall);
 			} else if (call_type == CallType.ASYNC) {
 				ccall = new CCodeFunctionCall (new CCodeIdentifier ("g_dbus_connection_send_message_with_reply"));
@@ -717,7 +729,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 			inner_res.add_argument (new CCodeCastExpression (new CCodeIdentifier ("_res_"), "GSimpleAsyncResult *"));
 			ccall.add_argument (inner_res);
 
-			ccall.add_argument (new CCodeConstant ("error"));
+			ccall.add_argument (error_argument);
 			ccode.add_assignment (new CCodeIdentifier ("_reply_message"), ccall);
 		}
 
@@ -736,7 +748,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 			// return on remote error
 			var ccall = new CCodeFunctionCall (new CCodeIdentifier ("g_dbus_message_to_gerror"));
 			ccall.add_argument (new CCodeIdentifier ("_reply_message"));
-			ccall.add_argument (new CCodeIdentifier ("error"));
+			ccall.add_argument (error_argument);
 			ccode.open_if (ccall);
 			ccode.add_expression (unref_reply);
 			return_default_value (m.return_type);
@@ -746,6 +758,8 @@ public class Vala.GDBusClientModule : GDBusModule {
 
 			if (uses_fd) {
 				ccode.add_declaration ("gint", new CCodeVariableDeclarator.zero ("_fd_index", new CCodeConstant ("0")));
+				ccode.add_declaration ("GUnixFDList*", new CCodeVariableDeclarator ("_fd_list"));
+				ccode.add_declaration ("gint", new CCodeVariableDeclarator ("_fd"));
 			}
 
 			foreach (Parameter param in m.get_parameters ()) {
@@ -769,7 +783,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 
 				foreach (Parameter param in m.get_parameters ()) {
 					if (param.direction == ParameterDirection.OUT) {
-						ccode.add_declaration (get_ccode_name (param.variable_type), new CCodeVariableDeclarator ("_vala_" + param.name));
+						ccode.add_declaration (get_ccode_name (param.variable_type), new CCodeVariableDeclarator.zero ("_vala_%s".printf (param.name), default_value_for_type (param.variable_type, true)));
 
 						var array_type = param.variable_type as ArrayType;
 
@@ -781,7 +795,8 @@ public class Vala.GDBusClientModule : GDBusModule {
 
 						var target = new CCodeIdentifier ("_vala_" + param.name);
 						bool may_fail;
-						receive_dbus_value (param.variable_type, new CCodeIdentifier ("_reply_message"), new CCodeIdentifier ("_reply_iter"), target, param, new CCodeIdentifier ("error"), out may_fail);
+
+						receive_dbus_value (param.variable_type, new CCodeIdentifier ("_reply_message"), new CCodeIdentifier ("_reply_iter"), target, param, error_argument, out may_fail);
 
 						// TODO check that parameter is not NULL (out parameters are optional)
 						// free value if parameter is NULL
@@ -794,7 +809,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 							}
 						}
 
-						if (may_fail) {
+						if (may_fail && has_error_argument) {
 							ccode.open_if (new CCodeBinaryExpression (CCodeBinaryOperator.AND, new CCodeIdentifier ("error"), new CCodeUnaryExpression (CCodeUnaryOperator.POINTER_INDIRECTION, new CCodeIdentifier ("error"))));
 							ccode.add_expression (unref_reply);
 							return_default_value (m.return_type);
@@ -808,7 +823,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 						var target = new CCodeUnaryExpression (CCodeUnaryOperator.POINTER_INDIRECTION, new CCodeIdentifier ("result"));
 						receive_dbus_value (m.return_type, new CCodeIdentifier ("_reply_message"), new CCodeIdentifier ("_reply_iter"), target, m);
 					} else {
-						ccode.add_declaration (get_ccode_name (m.return_type), new CCodeVariableDeclarator ("_result"));
+						ccode.add_declaration (get_ccode_name (m.return_type), new CCodeVariableDeclarator.zero ("_result", default_value_for_type (m.return_type, true)));
 
 						var array_type = m.return_type as ArrayType;
 
@@ -862,7 +877,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 
 		push_function (function);
 
-		generate_marshalling (m, no_reply ? CallType.NO_REPLY : CallType.SYNC, dbus_iface_name, get_dbus_name_for_member (m));
+		generate_marshalling (m, no_reply ? CallType.NO_REPLY : CallType.SYNC, dbus_iface_name, get_dbus_name_for_member (m), get_dbus_timeout_for_member (m));
 
 		pop_function ();
 
@@ -889,7 +904,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 
 		push_function (function);
 
-		generate_marshalling (m, CallType.ASYNC, dbus_iface_name, get_dbus_name_for_member (m));
+		generate_marshalling (m, CallType.ASYNC, dbus_iface_name, get_dbus_name_for_member (m), get_dbus_timeout_for_member (m));
 
 		pop_function ();
 
@@ -913,7 +928,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 
 		push_function (function);
 
-		generate_marshalling (m, CallType.FINISH, null, null);
+		generate_marshalling (m, CallType.FINISH, null, null, -1);
 
 		pop_function ();
 

@@ -151,6 +151,9 @@ typedef struct _ValaGLibValuePrivate ValaGLibValuePrivate;
 #define _vala_target_value_unref0(var) ((var == NULL) ? NULL : (var = (vala_target_value_unref (var), NULL)))
 #define _vala_ccode_base_module_emit_context_unref0(var) ((var == NULL) ? NULL : (var = (vala_ccode_base_module_emit_context_unref (var), NULL)))
 #define _vala_assert(expr, msg) if G_LIKELY (expr) ; else g_assertion_message_expr (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
+#define _vala_return_if_fail(expr, msg) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return; }
+#define _vala_return_val_if_fail(expr, msg, val) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return val; }
+#define _vala_warn_if_fail(expr, msg) if G_LIKELY (expr) ; else g_warn_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
 
 struct _ValaCCodeBaseModule {
 	ValaCodeGenerator parent_instance;
@@ -1016,7 +1019,7 @@ static ValaCCodeExpression* vala_ccode_array_module_real_get_array_length_cvalue
 		return result;
 	}
 	_tmp13_ = dim;
-	if (_tmp13_ == (-1)) {
+	if (_tmp13_ == -1) {
 		gboolean _tmp14_ = FALSE;
 		ValaArrayType* _tmp15_ = NULL;
 		_tmp15_ = array_type;
@@ -2893,7 +2896,7 @@ static gchar* vala_ccode_array_module_generate_array_dup_wrapper (ValaCCodeArray
 		_tmp28_ = _tmp27_;
 		_tmp29_ = vala_symbol_get_name ((ValaSymbol*) _tmp28_);
 		_tmp30_ = _tmp29_;
-		_tmp31_ = g_utf8_strdown (_tmp30_, (gssize) (-1));
+		_tmp31_ = g_utf8_strdown (_tmp30_, (gssize) -1);
 		_tmp32_ = _tmp31_;
 		_tmp33_ = g_strdup_printf ("%s_dup_func", _tmp32_);
 		_tmp34_ = _tmp33_;
@@ -4537,23 +4540,23 @@ static void vala_ccode_array_module_class_init (ValaCCodeArrayModuleClass * klas
 	vala_ccode_array_module_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeVisitorClass *) klass)->finalize = vala_ccode_array_module_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeArrayModulePrivate));
-	((ValaCodeVisitorClass *) klass)->visit_array_creation_expression = vala_ccode_array_module_real_visit_array_creation_expression;
-	((ValaCCodeBaseModuleClass *) klass)->get_array_length_cname = vala_ccode_array_module_real_get_array_length_cname;
-	((ValaCCodeBaseModuleClass *) klass)->get_parameter_array_length_cname = vala_ccode_array_module_real_get_parameter_array_length_cname;
-	((ValaCCodeBaseModuleClass *) klass)->get_array_length_cexpression = vala_ccode_array_module_real_get_array_length_cexpression;
-	((ValaCCodeBaseModuleClass *) klass)->get_array_length_cvalue = vala_ccode_array_module_real_get_array_length_cvalue;
-	((ValaCCodeBaseModuleClass *) klass)->get_array_size_cname = vala_ccode_array_module_real_get_array_size_cname;
-	((ValaCodeVisitorClass *) klass)->visit_element_access = vala_ccode_array_module_real_visit_element_access;
-	((ValaCodeVisitorClass *) klass)->visit_slice_expression = vala_ccode_array_module_real_visit_slice_expression;
-	((ValaCCodeBaseModuleClass *) klass)->append_struct_array_free = vala_ccode_array_module_real_append_struct_array_free;
-	((ValaCCodeBaseModuleClass *) klass)->append_vala_array_free = vala_ccode_array_module_real_append_vala_array_free;
-	((ValaCCodeBaseModuleClass *) klass)->append_vala_array_move = vala_ccode_array_module_real_append_vala_array_move;
-	((ValaCCodeBaseModuleClass *) klass)->append_vala_array_length = vala_ccode_array_module_real_append_vala_array_length;
-	((ValaCCodeBaseModuleClass *) klass)->copy_value = vala_ccode_array_module_real_copy_value;
-	((ValaCCodeBaseModuleClass *) klass)->get_dup_func_expression = vala_ccode_array_module_real_get_dup_func_expression;
-	((ValaCCodeBaseModuleClass *) klass)->destroy_value = vala_ccode_array_module_real_destroy_value;
-	((ValaCodeVisitorClass *) klass)->visit_assignment = vala_ccode_array_module_real_visit_assignment;
-	((ValaCCodeMethodModuleClass *) klass)->generate_parameter = vala_ccode_array_module_real_generate_parameter;
+	((ValaCodeVisitorClass *) klass)->visit_array_creation_expression = (void (*)(ValaCodeVisitor*, ValaArrayCreationExpression*)) vala_ccode_array_module_real_visit_array_creation_expression;
+	((ValaCCodeBaseModuleClass *) klass)->get_array_length_cname = (gchar* (*)(ValaCCodeBaseModule*, const gchar*, gint)) vala_ccode_array_module_real_get_array_length_cname;
+	((ValaCCodeBaseModuleClass *) klass)->get_parameter_array_length_cname = (gchar* (*)(ValaCCodeBaseModule*, ValaParameter*, gint)) vala_ccode_array_module_real_get_parameter_array_length_cname;
+	((ValaCCodeBaseModuleClass *) klass)->get_array_length_cexpression = (ValaCCodeExpression* (*)(ValaCCodeBaseModule*, ValaExpression*, gint)) vala_ccode_array_module_real_get_array_length_cexpression;
+	((ValaCCodeBaseModuleClass *) klass)->get_array_length_cvalue = (ValaCCodeExpression* (*)(ValaCCodeBaseModule*, ValaTargetValue*, gint)) vala_ccode_array_module_real_get_array_length_cvalue;
+	((ValaCCodeBaseModuleClass *) klass)->get_array_size_cname = (gchar* (*)(ValaCCodeBaseModule*, const gchar*)) vala_ccode_array_module_real_get_array_size_cname;
+	((ValaCodeVisitorClass *) klass)->visit_element_access = (void (*)(ValaCodeVisitor*, ValaElementAccess*)) vala_ccode_array_module_real_visit_element_access;
+	((ValaCodeVisitorClass *) klass)->visit_slice_expression = (void (*)(ValaCodeVisitor*, ValaSliceExpression*)) vala_ccode_array_module_real_visit_slice_expression;
+	((ValaCCodeBaseModuleClass *) klass)->append_struct_array_free = (gchar* (*)(ValaCCodeBaseModule*, ValaStruct*)) vala_ccode_array_module_real_append_struct_array_free;
+	((ValaCCodeBaseModuleClass *) klass)->append_vala_array_free = (void (*)(ValaCCodeBaseModule*)) vala_ccode_array_module_real_append_vala_array_free;
+	((ValaCCodeBaseModuleClass *) klass)->append_vala_array_move = (void (*)(ValaCCodeBaseModule*)) vala_ccode_array_module_real_append_vala_array_move;
+	((ValaCCodeBaseModuleClass *) klass)->append_vala_array_length = (void (*)(ValaCCodeBaseModule*)) vala_ccode_array_module_real_append_vala_array_length;
+	((ValaCCodeBaseModuleClass *) klass)->copy_value = (ValaTargetValue* (*)(ValaCCodeBaseModule*, ValaTargetValue*, ValaCodeNode*)) vala_ccode_array_module_real_copy_value;
+	((ValaCCodeBaseModuleClass *) klass)->get_dup_func_expression = (ValaCCodeExpression* (*)(ValaCCodeBaseModule*, ValaDataType*, ValaSourceReference*, gboolean)) vala_ccode_array_module_real_get_dup_func_expression;
+	((ValaCCodeBaseModuleClass *) klass)->destroy_value = (ValaCCodeExpression* (*)(ValaCCodeBaseModule*, ValaTargetValue*, gboolean)) vala_ccode_array_module_real_destroy_value;
+	((ValaCodeVisitorClass *) klass)->visit_assignment = (void (*)(ValaCodeVisitor*, ValaAssignment*)) vala_ccode_array_module_real_visit_assignment;
+	((ValaCCodeMethodModuleClass *) klass)->generate_parameter = (ValaCCodeParameter* (*)(ValaCCodeMethodModule*, ValaParameter*, ValaCCodeFile*, ValaMap*, ValaMap*)) vala_ccode_array_module_real_generate_parameter;
 }
 
 

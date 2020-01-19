@@ -47,6 +47,11 @@ public class Vala.CodeContext {
 	public bool hide_internal { get; set; }
 
 	/**
+	 * Do not check whether used symbols exist in local packages.
+	 */
+	public bool since_check { get; set; }
+
+	/**
 	 * Do not warn when using experimental features.
 	 */
 	public bool experimental { get; set; }
@@ -212,8 +217,6 @@ public class Vala.CodeContext {
 
 	/**
 	 * The root namespace of the symbol tree.
-	 *
-	 * @return root namespace
 	 */
 	public Namespace root {
 		get { return _root; }
@@ -230,10 +233,16 @@ public class Vala.CodeContext {
 	 */
 	public CodeGenerator codegen { get; set; }
 
+	/**
+	 * Mark attributes used by the compiler and report unused at the end.
+	 */
+	public UsedAttr used_attr { get; set; }
+
 	public CodeContext () {
 		resolver = new SymbolResolver ();
 		analyzer = new SemanticAnalyzer ();
 		flow_analyzer = new FlowAnalyzer ();
+		used_attr = new UsedAttr ();
 	}
 
 	/**
@@ -376,7 +385,7 @@ public class Vala.CodeContext {
 	 * Read the given filename and pull in packages.
 	 * The method is tolerant if the file does not exist.
 	 *
-	 * @param filename a filanem
+	 * @param filename a filename
 	 * @return false if an error occurs while reading the file or if a package could not be added
 	 */
 	public bool add_packages_from_file (string filename) {
@@ -479,6 +488,12 @@ public class Vala.CodeContext {
 		}
 
 		flow_analyzer.analyze (this);
+
+		if (report.get_errors () > 0) {
+			return;
+		}
+
+		used_attr.check_unused (this);
 	}
 
 	public void add_define (string define) {
@@ -635,7 +650,8 @@ public class Vala.CodeContext {
 					rpath += Path.DIR_SEPARATOR_S;
 				}
 
-				rpath += start.substring (0, len);
+				// don't use len, substring works on bytes
+				rpath += start.substring (0, (long)((char*)end - (char*)start));
 			}
 		}
 

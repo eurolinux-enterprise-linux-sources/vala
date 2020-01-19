@@ -226,6 +226,9 @@ typedef struct _ValaGVariantModuleBasicTypeInfo ValaGVariantModuleBasicTypeInfo;
 #define _g_string_free0(var) ((var == NULL) ? NULL : (var = (g_string_free (var, TRUE), NULL)))
 #define _vala_ccode_node_unref0(var) ((var == NULL) ? NULL : (var = (vala_ccode_node_unref (var), NULL)))
 #define _vala_assert(expr, msg) if G_LIKELY (expr) ; else g_assertion_message_expr (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
+#define _vala_return_if_fail(expr, msg) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return; }
+#define _vala_return_val_if_fail(expr, msg, val) if G_LIKELY (expr) ; else { g_return_if_fail_warning (G_LOG_DOMAIN, G_STRFUNC, msg); return val; }
+#define _vala_warn_if_fail(expr, msg) if G_LIKELY (expr) ; else g_warn_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, msg);
 
 struct _ValaCCodeBaseModule {
 	ValaCodeGenerator parent_instance;
@@ -5515,10 +5518,10 @@ static GType vala_gvariant_module_basic_type_info_get_type (void) {
 
 static void vala_gvariant_module_class_init (ValaGVariantModuleClass * klass) {
 	vala_gvariant_module_parent_class = g_type_class_peek_parent (klass);
-	((ValaCodeVisitorClass *) klass)->visit_enum = vala_gvariant_module_real_visit_enum;
-	((ValaCCodeBaseModuleClass *) klass)->generate_enum_declaration = vala_gvariant_module_real_generate_enum_declaration;
-	((ValaCCodeBaseModuleClass *) klass)->deserialize_expression = vala_gvariant_module_real_deserialize_expression;
-	((ValaCCodeBaseModuleClass *) klass)->serialize_expression = vala_gvariant_module_real_serialize_expression;
+	((ValaCodeVisitorClass *) klass)->visit_enum = (void (*)(ValaCodeVisitor*, ValaEnum*)) vala_gvariant_module_real_visit_enum;
+	((ValaCCodeBaseModuleClass *) klass)->generate_enum_declaration = (gboolean (*)(ValaCCodeBaseModule*, ValaEnum*, ValaCCodeFile*)) vala_gvariant_module_real_generate_enum_declaration;
+	((ValaCCodeBaseModuleClass *) klass)->deserialize_expression = (ValaCCodeExpression* (*)(ValaCCodeBaseModule*, ValaDataType*, ValaCCodeExpression*, ValaCCodeExpression*, ValaCCodeExpression*, gboolean*)) vala_gvariant_module_real_deserialize_expression;
+	((ValaCCodeBaseModuleClass *) klass)->serialize_expression = (ValaCCodeExpression* (*)(ValaCCodeBaseModule*, ValaDataType*, ValaCCodeExpression*)) vala_gvariant_module_real_serialize_expression;
 }
 
 

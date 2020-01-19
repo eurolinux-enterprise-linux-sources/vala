@@ -236,6 +236,7 @@ namespace Vala {
 		public static bool get_ccode_array_null_terminated (Vala.CodeNode node);
 		public static Vala.CCodeAttribute get_ccode_attribute (Vala.CodeNode node);
 		public static string get_ccode_blurb (Vala.Property prop);
+		public static bool get_ccode_concrete_accessor (Vala.Property p);
 		public static string get_ccode_const_name (Vala.CodeNode node);
 		public static string get_ccode_constructv_name (Vala.CreationMethod m);
 		public static string get_ccode_copy_function (Vala.TypeSymbol sym);
@@ -572,6 +573,7 @@ namespace Vala {
 		public static string dbus_result_name (Vala.Method m);
 		public static string? get_dbus_name (Vala.TypeSymbol symbol);
 		public static string get_dbus_name_for_member (Vala.Symbol symbol);
+		public static int get_dbus_timeout_for_member (Vala.Symbol symbol);
 		protected Vala.CCodeExpression get_interface_info (Vala.ObjectTypeSymbol sym);
 		public static bool is_dbus_no_reply (Vala.Method m);
 		public static bool is_dbus_visible (Vala.CodeNode node);
@@ -638,7 +640,7 @@ namespace Vala {
 		public override void visit_property (Vala.Property prop);
 		public override void visit_signal (Vala.Signal sig);
 		public override void visit_struct (Vala.Struct st);
-		public void write_file (Vala.CodeContext context, string directory, string gir_filename, string gir_namespace, string gir_version, string package);
+		public void write_file (Vala.CodeContext context, string directory, string gir_filename, string gir_namespace, string gir_version, string package, string? gir_shared_library = null);
 		public void write_includes ();
 	}
 	[CCode (cheader_filename = "valacodegen.h")]
@@ -724,6 +726,7 @@ namespace Vala {
 		public override void generate_class_init (Vala.Class cl);
 		public override void visit_field (Vala.Field f);
 		public override void visit_method (Vala.Method m);
+		public override void visit_property (Vala.Property prop);
 	}
 	[CCode (cheader_filename = "valacodegen.h")]
 	public class InterfaceRegisterFunction : Vala.TypeRegisterFunction {

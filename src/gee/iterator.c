@@ -91,8 +91,9 @@ static void vala_iterator_finalize (ValaIterator* obj);
  * @return true if the iterator has a next element
  */
 static gboolean vala_iterator_real_next (ValaIterator* self) {
+	gboolean _tmp0_ = FALSE;
 	g_critical ("Type `%s' does not implement abstract method `vala_iterator_next'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
-	return FALSE;
+	return _tmp0_;
 }
 
 
@@ -243,8 +244,8 @@ static void vala_iterator_class_init (ValaIteratorClass * klass) {
 	vala_iterator_parent_class = g_type_class_peek_parent (klass);
 	((ValaIteratorClass *) klass)->finalize = vala_iterator_finalize;
 	g_type_class_add_private (klass, sizeof (ValaIteratorPrivate));
-	((ValaIteratorClass *) klass)->next = vala_iterator_real_next;
-	((ValaIteratorClass *) klass)->get = vala_iterator_real_get;
+	((ValaIteratorClass *) klass)->next = (gboolean (*)(ValaIterator*)) vala_iterator_real_next;
+	((ValaIteratorClass *) klass)->get = (gpointer (*)(ValaIterator*)) vala_iterator_real_get;
 }
 
 

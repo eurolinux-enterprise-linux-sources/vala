@@ -1573,11 +1573,11 @@ static void vala_real_literal_class_init (ValaRealLiteralClass * klass) {
 	vala_real_literal_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_real_literal_finalize;
 	g_type_class_add_private (klass, sizeof (ValaRealLiteralPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_real_literal_real_accept;
-	((ValaExpressionClass *) klass)->is_pure = vala_real_literal_real_is_pure;
-	((ValaCodeNodeClass *) klass)->to_string = vala_real_literal_real_to_string;
-	((ValaCodeNodeClass *) klass)->check = vala_real_literal_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_real_literal_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_real_literal_real_accept;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_real_literal_real_is_pure;
+	((ValaCodeNodeClass *) klass)->to_string = (gchar* (*)(ValaCodeNode*)) vala_real_literal_real_to_string;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_real_literal_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_real_literal_real_emit;
 }
 
 

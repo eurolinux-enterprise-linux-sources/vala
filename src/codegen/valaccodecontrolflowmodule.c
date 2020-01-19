@@ -2420,13 +2420,13 @@ ValaCCodeControlFlowModule* vala_ccode_control_flow_module_construct (GType obje
 
 static void vala_ccode_control_flow_module_class_init (ValaCCodeControlFlowModuleClass * klass) {
 	vala_ccode_control_flow_module_parent_class = g_type_class_peek_parent (klass);
-	((ValaCodeVisitorClass *) klass)->visit_if_statement = vala_ccode_control_flow_module_real_visit_if_statement;
-	((ValaCodeVisitorClass *) klass)->visit_switch_statement = vala_ccode_control_flow_module_real_visit_switch_statement;
-	((ValaCodeVisitorClass *) klass)->visit_switch_label = vala_ccode_control_flow_module_real_visit_switch_label;
-	((ValaCodeVisitorClass *) klass)->visit_loop = vala_ccode_control_flow_module_real_visit_loop;
-	((ValaCodeVisitorClass *) klass)->visit_foreach_statement = vala_ccode_control_flow_module_real_visit_foreach_statement;
-	((ValaCodeVisitorClass *) klass)->visit_break_statement = vala_ccode_control_flow_module_real_visit_break_statement;
-	((ValaCodeVisitorClass *) klass)->visit_continue_statement = vala_ccode_control_flow_module_real_visit_continue_statement;
+	((ValaCodeVisitorClass *) klass)->visit_if_statement = (void (*)(ValaCodeVisitor*, ValaIfStatement*)) vala_ccode_control_flow_module_real_visit_if_statement;
+	((ValaCodeVisitorClass *) klass)->visit_switch_statement = (void (*)(ValaCodeVisitor*, ValaSwitchStatement*)) vala_ccode_control_flow_module_real_visit_switch_statement;
+	((ValaCodeVisitorClass *) klass)->visit_switch_label = (void (*)(ValaCodeVisitor*, ValaSwitchLabel*)) vala_ccode_control_flow_module_real_visit_switch_label;
+	((ValaCodeVisitorClass *) klass)->visit_loop = (void (*)(ValaCodeVisitor*, ValaLoop*)) vala_ccode_control_flow_module_real_visit_loop;
+	((ValaCodeVisitorClass *) klass)->visit_foreach_statement = (void (*)(ValaCodeVisitor*, ValaForeachStatement*)) vala_ccode_control_flow_module_real_visit_foreach_statement;
+	((ValaCodeVisitorClass *) klass)->visit_break_statement = (void (*)(ValaCodeVisitor*, ValaBreakStatement*)) vala_ccode_control_flow_module_real_visit_break_statement;
+	((ValaCodeVisitorClass *) klass)->visit_continue_statement = (void (*)(ValaCodeVisitor*, ValaContinueStatement*)) vala_ccode_control_flow_module_real_visit_continue_statement;
 }
 
 

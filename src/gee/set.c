@@ -141,7 +141,7 @@ ValaCollection* vala_collection_construct (GType object_type, GType g_type, GBox
 
 ValaSet* vala_set_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func) {
 	ValaSet* self = NULL;
-	self = (ValaSet*) vala_collection_construct (object_type, g_type, (GBoxedCopyFunc) g_dup_func, g_destroy_func);
+	self = (ValaSet*) vala_collection_construct (object_type, g_type, (GBoxedCopyFunc) g_dup_func, (GDestroyNotify) g_destroy_func);
 	self->priv->g_type = g_type;
 	self->priv->g_dup_func = g_dup_func;
 	self->priv->g_destroy_func = g_destroy_func;

@@ -362,9 +362,9 @@ static void vala_catch_clause_finalize (ValaCodeNode* obj);
 
 
 /**
- * Creates a new catch 
+ * Creates a new catch
  *
- * @param type_reference   error type
+ * @param error_type       error type
  * @param variable_name    error variable name
  * @param body             error handler body
  * @param source_reference reference to source code
@@ -753,12 +753,12 @@ static void vala_catch_clause_class_init (ValaCatchClauseClass * klass) {
 	vala_catch_clause_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_catch_clause_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCatchClausePrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_catch_clause_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_catch_clause_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_catch_clause_real_replace_type;
-	((ValaCodeNodeClass *) klass)->check = vala_catch_clause_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_catch_clause_real_emit;
-	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_catch_clause_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_catch_clause_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_catch_clause_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_catch_clause_real_replace_type;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_catch_clause_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_catch_clause_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_catch_clause_real_get_defined_variables;
 }
 
 

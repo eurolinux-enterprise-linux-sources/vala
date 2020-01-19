@@ -153,7 +153,7 @@ static void vala_ccode_invalid_expression_real_write (ValaCCodeNode* base, ValaC
 
 static void vala_ccode_invalid_expression_class_init (ValaCCodeInvalidExpressionClass * klass) {
 	vala_ccode_invalid_expression_parent_class = g_type_class_peek_parent (klass);
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_invalid_expression_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_invalid_expression_real_write;
 }
 
 

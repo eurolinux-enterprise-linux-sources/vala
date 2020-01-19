@@ -136,7 +136,7 @@ ValaCCodeDeclarator* vala_ccode_declarator_construct (GType object_type) {
 
 static void vala_ccode_declarator_class_init (ValaCCodeDeclaratorClass * klass) {
 	vala_ccode_declarator_parent_class = g_type_class_peek_parent (klass);
-	((ValaCCodeDeclaratorClass *) klass)->write_initialization = vala_ccode_declarator_real_write_initialization;
+	((ValaCCodeDeclaratorClass *) klass)->write_initialization = (void (*)(ValaCCodeDeclarator*, ValaCCodeWriter*)) vala_ccode_declarator_real_write_initialization;
 }
 
 

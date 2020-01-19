@@ -523,12 +523,12 @@ static void vala_tuple_class_init (ValaTupleClass * klass) {
 	vala_tuple_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_tuple_finalize;
 	g_type_class_add_private (klass, sizeof (ValaTuplePrivate));
-	((ValaCodeNodeClass *) klass)->accept_children = vala_tuple_real_accept_children;
-	((ValaCodeNodeClass *) klass)->accept = vala_tuple_real_accept;
-	((ValaExpressionClass *) klass)->is_pure = vala_tuple_real_is_pure;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_tuple_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->check = vala_tuple_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_tuple_real_emit;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_tuple_real_accept_children;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_tuple_real_accept;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_tuple_real_is_pure;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_tuple_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_tuple_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_tuple_real_emit;
 }
 
 
@@ -537,7 +537,7 @@ static void vala_tuple_instance_init (ValaTuple * self) {
 	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_TUPLE_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->expression_list = (ValaList*) _tmp1_;
 }
 

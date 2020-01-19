@@ -1489,14 +1489,14 @@ static void vala_initializer_list_class_init (ValaInitializerListClass * klass) 
 	vala_initializer_list_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_initializer_list_finalize;
 	g_type_class_add_private (klass, sizeof (ValaInitializerListPrivate));
-	((ValaCodeNodeClass *) klass)->accept_children = vala_initializer_list_real_accept_children;
-	((ValaCodeNodeClass *) klass)->accept = vala_initializer_list_real_accept;
-	((ValaExpressionClass *) klass)->is_constant = vala_initializer_list_real_is_constant;
-	((ValaExpressionClass *) klass)->is_pure = vala_initializer_list_real_is_pure;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_initializer_list_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->check = vala_initializer_list_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_initializer_list_real_emit;
-	((ValaCodeNodeClass *) klass)->get_used_variables = vala_initializer_list_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_initializer_list_real_accept_children;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_initializer_list_real_accept;
+	((ValaExpressionClass *) klass)->is_constant = (gboolean (*)(ValaExpression*)) vala_initializer_list_real_is_constant;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_initializer_list_real_is_pure;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_initializer_list_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_initializer_list_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_initializer_list_real_emit;
+	((ValaCodeNodeClass *) klass)->get_used_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_initializer_list_real_get_used_variables;
 }
 
 
@@ -1505,7 +1505,7 @@ static void vala_initializer_list_instance_init (ValaInitializerList * self) {
 	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_INITIALIZER_LIST_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->initializers = (ValaList*) _tmp1_;
 }
 

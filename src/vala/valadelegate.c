@@ -346,16 +346,6 @@ typedef struct _ValaCommentClass ValaCommentClass;
 
 typedef struct _ValaScope ValaScope;
 typedef struct _ValaScopeClass ValaScopeClass;
-
-#define VALA_TYPE_MEMBER_ACCESS (vala_member_access_get_type ())
-#define VALA_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccess))
-#define VALA_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
-#define VALA_IS_MEMBER_ACCESS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_IS_MEMBER_ACCESS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_MEMBER_ACCESS))
-#define VALA_MEMBER_ACCESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_MEMBER_ACCESS, ValaMemberAccessClass))
-
-typedef struct _ValaMemberAccess ValaMemberAccess;
-typedef struct _ValaMemberAccessClass ValaMemberAccessClass;
 #define _vala_iterator_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterator_unref (var), NULL)))
 
 #define VALA_TYPE_MEMBER_BINDING (vala_member_binding_get_type ())
@@ -572,8 +562,7 @@ ValaSymbol* vala_symbol_get_parent_symbol (ValaSymbol* self);
 ValaDataType* vala_method_get_return_type (ValaMethod* self);
 gboolean vala_data_type_stricter (ValaDataType* self, ValaDataType* type2);
 ValaDataType* vala_delegate_get_return_type (ValaDelegate* self);
-GType vala_member_access_get_type (void) G_GNUC_CONST;
-ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
+ValaDataType* vala_data_type_get_actual_type (ValaDataType* self, ValaDataType* derived_instance_type, ValaList* method_type_arguments, ValaCodeNode* node_reference);
 ValaList* vala_method_get_parameters (ValaMethod* self);
 ValaDataType* vala_delegate_get_sender_type (ValaDelegate* self);
 ValaDataType* vala_variable_get_variable_type (ValaVariable* self);
@@ -627,10 +616,10 @@ static void vala_delegate_finalize (ValaCodeNode* obj);
 /**
  * Creates a new delegate.
  *
- * @param name        delegate type name
- * @param return_type return type
- * @param source      reference to source code
- * @return            newly created delegate
+ * @param name              delegate type name
+ * @param return_type       return type
+ * @param source_reference  reference to source code
+ * @return                  newly created delegate
  */
 ValaDelegate* vala_delegate_construct (GType object_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaDelegate* self = NULL;
@@ -1985,12 +1974,12 @@ static void vala_delegate_class_init (ValaDelegateClass * klass) {
 	vala_delegate_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_delegate_finalize;
 	g_type_class_add_private (klass, sizeof (ValaDelegatePrivate));
-	((ValaTypeSymbolClass *) klass)->get_type_parameter_index = vala_delegate_real_get_type_parameter_index;
-	((ValaCodeNodeClass *) klass)->accept = vala_delegate_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_delegate_real_accept_children;
-	((ValaTypeSymbolClass *) klass)->is_reference_type = vala_delegate_real_is_reference_type;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_delegate_real_replace_type;
-	((ValaCodeNodeClass *) klass)->check = vala_delegate_real_check;
+	((ValaTypeSymbolClass *) klass)->get_type_parameter_index = (gint (*)(ValaTypeSymbol*, const gchar*)) vala_delegate_real_get_type_parameter_index;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_delegate_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_delegate_real_accept_children;
+	((ValaTypeSymbolClass *) klass)->is_reference_type = (gboolean (*)(ValaTypeSymbol*)) vala_delegate_real_is_reference_type;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_delegate_real_replace_type;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_delegate_real_check;
 }
 
 
@@ -2001,10 +1990,10 @@ static void vala_delegate_instance_init (ValaDelegate * self) {
 	ValaArrayList* _tmp3_ = NULL;
 	self->priv = VALA_DELEGATE_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->type_parameters = (ValaList*) _tmp1_;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_);
+	_tmp3_ = vala_array_list_new (VALA_TYPE_PARAMETER, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_);
 	self->priv->parameters = (ValaList*) _tmp3_;
 }
 

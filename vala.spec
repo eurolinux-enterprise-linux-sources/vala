@@ -1,22 +1,15 @@
-%global api_ver 0.26
+%global api_ver 0.34
 %global priority 90
 
 Name:           vala
-Version:        0.26.1
-Release:        3%{?dist}
+Version:        0.34.6
+Release:        1%{?dist}
 Summary:        A modern programming language for GNOME
 
 # Most files are LGPLv2.1+, curses.vapi is 2-clause BSD
 License:        LGPLv2+ and BSD
-URL:            http://live.gnome.org/Vala
-#VCS:           git:git://git.gnome.org/vala
-# note: do not use a macro for directory name
-# as it breaks Colin Walters' automatic build script
-# see https://bugzilla.redhat.com/show_bug.cgi?id=609292
-Source0:        http://download.gnome.org/sources/vala/0.26/vala-%{version}.tar.xz
-Source1:        vala-mode.el
-Source2:        vala-init.el
-Source3:        emacs-vala-COPYING
+URL:            https://wiki.gnome.org/Projects/Vala
+Source0:        https://download.gnome.org/sources/vala/0.34/vala-%{version}.tar.xz
 
 BuildRequires:  flex
 BuildRequires:  bison
@@ -25,20 +18,28 @@ BuildRequires:  libxslt
 # only if Vala source files are patched
 # BuildRequires:  vala
 
-# for Emacs modes
-BuildRequires:  emacs emacs-el
-
 # for tests
 # BuildRequires:  dbus-x11
 
 # alternatives
-%global vala_binaries vala valac
-%global vala_manpages valac
-%global vala_tools_binaries vala-gen-introspect vapicheck vapigen
-%global vala_tools_manpages vala-gen-introspect vapigen
+%global vala_binaries vala valac vala-gen-introspect vapicheck vapigen
+%global vala_manpages valac vala-gen-introspect vapigen
 Requires(posttrans):   %{_sbindir}/alternatives
 Requires(preun):       %{_sbindir}/alternatives
 
+# For GLib-2.0 and GObject-2.0 .gir files
+Requires: gobject-introspection-devel
+
+# Removed in F25
+Obsoletes: vala-tools < 0.34.0
+Conflicts: vala-tools < 0.34.0
+Provides: vala-tools = %{version}-%{release}
+
+# Removed in RHEL 7.4
+Obsoletes: emacs-vala < 0.34.0
+Obsoletes: emacs-vala-el < 0.34.0
+
+Provides: vala(api) = %{api_ver}
 
 %description
 Vala is a new programming language that aims to bring modern programming
@@ -70,23 +71,6 @@ This package contains development files for %{name}. This is not
 necessary for using the %{name} compiler.
 
 
-%package        tools
-Summary:        Tools for creating projects and bindings for %{name}
-License:        LGPLv2+
-Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       gnome-common intltool libtool pkgconfig
-Requires:       gobject-introspection-devel
-
-%description    tools
-Vala is a new programming language that aims to bring modern programming
-language features to GNOME developers without imposing any additional
-runtime requirements and without using a different ABI compared to
-applications and libraries written in C.
-
-This package contains tools to generate Vala projects, as well as API
-bindings from existing C libraries, allowing access from Vala programs.
-
-
 %package        doc
 Summary:        Documentation for %{name}
 License:        LGPLv2+
@@ -104,30 +88,6 @@ applications and libraries written in C.
 This package contains documentation in a devhelp HTML book.
 
 
-%package -n emacs-%{name}
-Summary:        Vala mode for Emacs
-License:        GPLv2+
-
-BuildArch:      noarch
-Requires:       emacs(bin) >= %{_emacs_version}
-
-%description -n emacs-%{name}
-An Emacs mode for editing Vala source code.
-
-
-%package -n emacs-%{name}-el
-Summary:        Elisp source files for emacs-%{name}
-License:        GPLv2+
-
-BuildArch:      noarch
-Requires:       emacs-%{name} = %{version}-%{release}
-
-%description -n emacs-%{name}-el
-This package contains the elisp source files for Vala under GNU
-Emacs. You do not need to install this package to run Vala. Install
-the emacs-%{name} package to use Vala with GNU Emacs.
-
-
 %prep
 %setup -q
 
@@ -137,22 +97,17 @@ the emacs-%{name} package to use Vala with GNU Emacs.
 # Don't use rpath!
 sed -i 's|/lib /usr/lib|/lib /usr/lib /lib64 /usr/lib64|' libtool
 make %{?_smp_mflags}
-# Compile emacs module
-mkdir emacs-vala && cd emacs-vala && cp -p %{SOURCE1} .
-%{_emacs_bytecompile} vala-mode.el
-# and copy its licensing file
-cp -p %{SOURCE3} COPYING
 
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
+%make_install
 # remove symlinks, using alternatives
-for f in %{vala_binaries} %{vala_tools_binaries};
+for f in %{vala_binaries}
 do
     rm $RPM_BUILD_ROOT%{_bindir}/$f
     touch $RPM_BUILD_ROOT%{_bindir}/$f
 done
-for f in %{vala_manpages} %{vala_tools_manpages};
+for f in %{vala_manpages}
 do
     rm $RPM_BUILD_ROOT%{_mandir}/man1/$f.1*
     touch $RPM_BUILD_ROOT%{_mandir}/man1/$f.1.gz
@@ -160,12 +115,6 @@ done
 # own this directory for third-party *.vapi files
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/vala/vapi
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
-
-# Emacs mode files
-mkdir -p $RPM_BUILD_ROOT%{_emacs_sitelispdir}/%{name}
-mkdir -p $RPM_BUILD_ROOT%{_emacs_sitestartdir}
-cp -p emacs-vala/*.el* $RPM_BUILD_ROOT%{_emacs_sitelispdir}/%{name}
-cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_emacs_sitestartdir}
 
 
 %check
@@ -185,18 +134,6 @@ do
       $f.1.gz %{_mandir}/man1/$f-%{api_ver}.1.gz %{priority} || :
 done
 
-%posttrans tools
-for f in %{vala_tools_binaries};
-do
-    %{_sbindir}/alternatives --install %{_bindir}/$f \
-      $f %{_bindir}/$f-%{api_ver} %{priority} || :
-done
-for f in %{vala_tools_manpages};
-do
-    %{_sbindir}/alternatives --install %{_mandir}/man1/$f.1.gz \
-      $f.1.gz %{_mandir}/man1/$f-%{api_ver}.1.gz %{priority} || :
-done
-
 %preun
 /sbin/ldconfig
 for f in %{vala_binaries};
@@ -210,70 +147,52 @@ do
       %{_mandir}/man1/$f-%{api_ver}.1.gz || :
 done
 
-%preun tools
-for f in %{vala_tools_binaries};
-do
-    %{_sbindir}/alternatives --remove $f \
-      %{_bindir}/$f-%{api_ver} || :
-done
-for f in %{vala_tools_manpages};
-do
-    %{_sbindir}/alternatives --remove $f.1.gz \
-      %{_mandir}/man1/$f-%{api_ver}.1.gz || :
-done
-
 
 %files
-%doc AUTHORS COPYING MAINTAINERS NEWS README THANKS
+%license COPYING
+%doc AUTHORS MAINTAINERS NEWS README THANKS
 %ghost %{_bindir}/vala
 %ghost %{_bindir}/valac
+%ghost %{_bindir}/vala-gen-introspect
+%ghost %{_bindir}/vapicheck
+%ghost %{_bindir}/vapigen
 %{_bindir}/vala-%{api_ver}
 %{_bindir}/valac-%{api_ver}
-# owning only the directories, they should be empty
-%dir %{_datadir}/vala
-%dir %{_datadir}/vala/vapi
-%{_datadir}/vala-%{api_ver}
+%{_bindir}/vala-gen-introspect-%{api_ver}
+%{_bindir}/vapicheck-%{api_ver}
+%{_bindir}/vapigen-%{api_ver}
+%{_libdir}/pkgconfig/vapigen*.pc
+%{_libdir}/vala-%{api_ver}/
 %{_libdir}/libvala-%{api_ver}.so.*
+%{_datadir}/aclocal/vala.m4
+%{_datadir}/aclocal/vapigen.m4
+%{_datadir}/vala/
+%{_datadir}/vala-%{api_ver}/
 %ghost %{_mandir}/man1/valac.1.gz
+%ghost %{_mandir}/man1/vala-gen-introspect.1.gz
+%ghost %{_mandir}/man1/vapigen.1.gz
 %{_mandir}/man1/valac-%{api_ver}.1.gz
+%{_mandir}/man1/vala-gen-introspect-%{api_ver}.1.gz
+%{_mandir}/man1/vapigen-%{api_ver}.1.gz
 
 %files devel
 %{_includedir}/vala-%{api_ver}
 %{_libdir}/libvala-%{api_ver}.so
 %{_libdir}/pkgconfig/libvala-%{api_ver}.pc
-# directory owned by filesystem
-%{_datadir}/aclocal/vala.m4
-
-%files tools
-%ghost %{_bindir}/vala-gen-introspect
-%ghost %{_bindir}/vapicheck
-%ghost %{_bindir}/vapigen
-%{_bindir}/vala-gen-introspect-%{api_ver}
-%{_bindir}/vapicheck-%{api_ver}
-%{_bindir}/vapigen-%{api_ver}
-%{_libdir}/vala-%{api_ver}
-%{_datadir}/aclocal/vapigen.m4
-%{_datadir}/pkgconfig/vapigen*.pc
-%{_datadir}/vala/Makefile.vapigen
-%ghost %{_mandir}/man1/vala-gen-introspect.1.gz
-%ghost %{_mandir}/man1/vapigen.1.gz
-%{_mandir}/man1/vala-gen-introspect-%{api_ver}.1.gz
-%{_mandir}/man1/vapigen-%{api_ver}.1.gz
 
 %files doc
 %doc %{_datadir}/devhelp/books/vala-%{api_ver}
 
-%files -n emacs-%{name}
-%doc emacs-vala/COPYING
-%dir %{_emacs_sitelispdir}/%{name}
-%{_emacs_sitelispdir}/%{name}/*.elc
-%{_emacs_sitestartdir}/*.el
-
-%files -n emacs-%{name}-el
-%{_emacs_sitelispdir}/%{name}/*.el
-
 
 %changelog
+* Tue Mar 07 2017 Kalev Lember <klember@redhat.com> - 0.34.6-1
+- Update to 0.34.6
+- Resolves: #1387052
+
+* Mon Dec 05 2016 Kalev Lember <klember@redhat.com> - 0.34.4-1
+- Update to 0.34.4
+- Resolves: #1387052
+
 * Thu Aug 20 2015 Matthias Clasen <mclasen@redhat.com> - 0.26.1-3
 - Make scriptlets failsafe
   Resolves: #1247971

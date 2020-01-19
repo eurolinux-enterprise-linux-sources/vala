@@ -646,10 +646,10 @@ static void vala_parameter_finalize (ValaCodeNode* obj);
 /**
  * Creates a new formal parameter.
  *
- * @param name   parameter name
- * @param type   parameter type
- * @param source reference to source code
- * @return       newly created formal parameter
+ * @param name              parameter name
+ * @param variable_type     parameter type
+ * @param source_reference  reference to source code
+ * @return                  newly created formal parameter
  */
 ValaParameter* vala_parameter_construct (GType object_type, const gchar* name, ValaDataType* variable_type, ValaSourceReference* source_reference) {
 	ValaParameter* self = NULL;
@@ -1465,11 +1465,11 @@ static void vala_parameter_class_init (ValaParameterClass * klass) {
 	vala_parameter_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_parameter_finalize;
 	g_type_class_add_private (klass, sizeof (ValaParameterPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_parameter_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_parameter_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_type = vala_parameter_real_replace_type;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_parameter_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->check = vala_parameter_real_check;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_parameter_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_parameter_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_type = (void (*)(ValaCodeNode*, ValaDataType*, ValaDataType*)) vala_parameter_real_replace_type;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_parameter_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_parameter_real_check;
 }
 
 

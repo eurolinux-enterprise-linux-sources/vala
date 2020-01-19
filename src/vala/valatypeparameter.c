@@ -323,6 +323,16 @@ typedef struct _ValaSourceReferenceClass ValaSourceReferenceClass;
 typedef struct _ValaComment ValaComment;
 typedef struct _ValaCommentClass ValaCommentClass;
 
+#define VALA_TYPE_SCOPE (vala_scope_get_type ())
+#define VALA_SCOPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SCOPE, ValaScope))
+#define VALA_SCOPE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SCOPE, ValaScopeClass))
+#define VALA_IS_SCOPE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SCOPE))
+#define VALA_IS_SCOPE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SCOPE))
+#define VALA_SCOPE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SCOPE, ValaScopeClass))
+
+typedef struct _ValaScope ValaScope;
+typedef struct _ValaScopeClass ValaScopeClass;
+
 struct _ValaCodeNode {
 	GTypeInstance parent_instance;
 	volatile int ref_count;
@@ -449,14 +459,27 @@ ValaSymbol* vala_symbol_construct (GType object_type, const gchar* name, ValaSou
 static void vala_typeparameter_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor);
 void vala_code_visitor_visit_type_parameter (ValaCodeVisitor* self, ValaTypeParameter* p);
 gboolean vala_typeparameter_equals (ValaTypeParameter* self, ValaTypeParameter* param2);
+gpointer vala_scope_ref (gpointer instance);
+void vala_scope_unref (gpointer instance);
+GParamSpec* vala_param_spec_scope (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void vala_value_set_scope (GValue* value, gpointer v_object);
+void vala_value_take_scope (GValue* value, gpointer v_object);
+gpointer vala_value_get_scope (const GValue* value);
+GType vala_scope_get_type (void) G_GNUC_CONST;
+ValaScope* vala_symbol_get_owner (ValaSymbol* self);
+gboolean vala_scope_is_subscope_of (ValaScope* self, ValaScope* scope);
+void vala_report_error (ValaSourceReference* source, const gchar* message);
+ValaSourceReference* vala_code_node_get_source_reference (ValaCodeNode* self);
+const gchar* vala_symbol_get_name (ValaSymbol* self);
+ValaSymbol* vala_symbol_get_parent_symbol (ValaSymbol* self);
 
 
 /**
  * Creates a new generic type parameter.
  *
- * @param name   parameter name
- * @param source reference to source code
- * @return       newly created generic type parameter
+ * @param name              parameter name
+ * @param source_reference  reference to source code
+ * @return                  newly created generic type parameter
  */
 ValaTypeParameter* vala_typeparameter_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference) {
 	ValaTypeParameter* self = NULL;
@@ -495,16 +518,81 @@ static void vala_typeparameter_real_accept (ValaCodeNode* base, ValaCodeVisitor*
  */
 gboolean vala_typeparameter_equals (ValaTypeParameter* self, ValaTypeParameter* param2) {
 	gboolean result = FALSE;
+	gboolean _tmp0_ = FALSE;
+	ValaScope* _tmp1_ = NULL;
+	ValaScope* _tmp2_ = NULL;
+	ValaTypeParameter* _tmp3_ = NULL;
+	ValaScope* _tmp4_ = NULL;
+	ValaScope* _tmp5_ = NULL;
+	gboolean _tmp6_ = FALSE;
+	gboolean _tmp15_ = FALSE;
+	const gchar* _tmp16_ = NULL;
+	const gchar* _tmp17_ = NULL;
+	ValaTypeParameter* _tmp18_ = NULL;
+	const gchar* _tmp19_ = NULL;
+	const gchar* _tmp20_ = NULL;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (param2 != NULL, FALSE);
-	result = TRUE;
+	_tmp1_ = vala_symbol_get_owner ((ValaSymbol*) self);
+	_tmp2_ = _tmp1_;
+	_tmp3_ = param2;
+	_tmp4_ = vala_symbol_get_owner ((ValaSymbol*) _tmp3_);
+	_tmp5_ = _tmp4_;
+	_tmp6_ = vala_scope_is_subscope_of (_tmp2_, _tmp5_);
+	if (!_tmp6_) {
+		ValaTypeParameter* _tmp7_ = NULL;
+		ValaScope* _tmp8_ = NULL;
+		ValaScope* _tmp9_ = NULL;
+		ValaScope* _tmp10_ = NULL;
+		ValaScope* _tmp11_ = NULL;
+		gboolean _tmp12_ = FALSE;
+		_tmp7_ = param2;
+		_tmp8_ = vala_symbol_get_owner ((ValaSymbol*) _tmp7_);
+		_tmp9_ = _tmp8_;
+		_tmp10_ = vala_symbol_get_owner ((ValaSymbol*) self);
+		_tmp11_ = _tmp10_;
+		_tmp12_ = vala_scope_is_subscope_of (_tmp9_, _tmp11_);
+		_tmp0_ = !_tmp12_;
+	} else {
+		_tmp0_ = FALSE;
+	}
+	if (_tmp0_) {
+		ValaSourceReference* _tmp13_ = NULL;
+		ValaSourceReference* _tmp14_ = NULL;
+		_tmp13_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+		_tmp14_ = _tmp13_;
+		vala_report_error (_tmp14_, "internal error: comparing type parameters from different scopes");
+		result = FALSE;
+		return result;
+	}
+	_tmp16_ = vala_symbol_get_name ((ValaSymbol*) self);
+	_tmp17_ = _tmp16_;
+	_tmp18_ = param2;
+	_tmp19_ = vala_symbol_get_name ((ValaSymbol*) _tmp18_);
+	_tmp20_ = _tmp19_;
+	if (g_strcmp0 (_tmp17_, _tmp20_) == 0) {
+		ValaSymbol* _tmp21_ = NULL;
+		ValaSymbol* _tmp22_ = NULL;
+		ValaTypeParameter* _tmp23_ = NULL;
+		ValaSymbol* _tmp24_ = NULL;
+		ValaSymbol* _tmp25_ = NULL;
+		_tmp21_ = vala_symbol_get_parent_symbol ((ValaSymbol*) self);
+		_tmp22_ = _tmp21_;
+		_tmp23_ = param2;
+		_tmp24_ = vala_symbol_get_parent_symbol ((ValaSymbol*) _tmp23_);
+		_tmp25_ = _tmp24_;
+		_tmp15_ = _tmp22_ == _tmp25_;
+	} else {
+		_tmp15_ = FALSE;
+	}
+	result = _tmp15_;
 	return result;
 }
 
 
 static void vala_typeparameter_class_init (ValaTypeParameterClass * klass) {
 	vala_typeparameter_parent_class = g_type_class_peek_parent (klass);
-	((ValaCodeNodeClass *) klass)->accept = vala_typeparameter_real_accept;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_typeparameter_real_accept;
 }
 
 

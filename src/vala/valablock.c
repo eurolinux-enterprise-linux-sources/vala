@@ -1441,7 +1441,7 @@ static void vala_block_finalize (ValaCodeNode* obj);
 /**
  * Creates a new block.
  *
- * @param source reference to source code
+ * @param source_reference  reference to source code
  */
 ValaBlock* vala_block_construct (GType object_type, ValaSourceReference* source_reference) {
 	ValaBlock* self = NULL;
@@ -1514,7 +1514,7 @@ ValaList* vala_block_get_statements (ValaBlock* self) {
 	ValaArrayList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_STATEMENT, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_STATEMENT, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	list = _tmp1_;
 	{
 		ValaList* _stmt_list = NULL;
@@ -1620,7 +1620,7 @@ ValaList* vala_block_get_statements (ValaBlock* self) {
 /**
  * Add a local variable to this block.
  *
- * @param decl a variable declarator
+ * @param local a variable declarator
  */
 void vala_block_add_local_variable (ValaBlock* self, ValaLocalVariable* local) {
 	ValaSymbol* parent_block = NULL;
@@ -2526,10 +2526,10 @@ static void vala_block_class_init (ValaBlockClass * klass) {
 	vala_block_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_block_finalize;
 	g_type_class_add_private (klass, sizeof (ValaBlockPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_block_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_block_real_accept_children;
-	((ValaCodeNodeClass *) klass)->check = vala_block_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_block_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_block_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_block_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_block_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_block_real_emit;
 }
 
 
@@ -2547,13 +2547,13 @@ static void vala_block_instance_init (ValaBlock * self) {
 	ValaArrayList* _tmp5_ = NULL;
 	self->priv = VALA_BLOCK_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_STATEMENT, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_STATEMENT, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->statement_list = (ValaList*) _tmp1_;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_array_list_new (VALA_TYPE_LOCAL_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_);
+	_tmp3_ = vala_array_list_new (VALA_TYPE_LOCAL_VARIABLE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_);
 	self->priv->local_variables = (ValaList*) _tmp3_;
 	_tmp4_ = g_direct_equal;
-	_tmp5_ = vala_array_list_new (VALA_TYPE_CONSTANT, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp4_);
+	_tmp5_ = vala_array_list_new (VALA_TYPE_CONSTANT, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp4_);
 	self->priv->local_constants = (ValaList*) _tmp5_;
 }
 

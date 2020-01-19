@@ -242,7 +242,7 @@ static void vala_ccode_case_statement_class_init (ValaCCodeCaseStatementClass * 
 	vala_ccode_case_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_case_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeCaseStatementPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_case_statement_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_case_statement_real_write;
 }
 
 

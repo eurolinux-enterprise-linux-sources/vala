@@ -266,9 +266,9 @@ static void vala_expression_statement_finalize (ValaCodeNode* obj);
 /**
  * Creates a new expression statement.
  *
- * @param expr   expression to evaluate
- * @param source reference to source code
- * @return       newly created expression statement
+ * @param expression        expression to evaluate
+ * @param source_reference  reference to source code
+ * @return                  newly created expression statement
  */
 ValaExpressionStatement* vala_expression_statement_construct (GType object_type, ValaExpression* expression, ValaSourceReference* source_reference) {
 	ValaExpressionStatement* self = NULL;
@@ -460,13 +460,13 @@ static void vala_expression_statement_class_init (ValaExpressionStatementClass *
 	vala_expression_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_expression_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaExpressionStatementPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_expression_statement_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_expression_statement_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_expression_statement_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->check = vala_expression_statement_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_expression_statement_real_emit;
-	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_expression_statement_real_get_defined_variables;
-	((ValaCodeNodeClass *) klass)->get_used_variables = vala_expression_statement_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_expression_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_expression_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_expression_statement_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_expression_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_expression_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_expression_statement_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_expression_statement_real_get_used_variables;
 }
 
 

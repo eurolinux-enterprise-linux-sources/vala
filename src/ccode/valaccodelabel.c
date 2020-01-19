@@ -217,7 +217,7 @@ static void vala_ccode_label_class_init (ValaCCodeLabelClass * klass) {
 	vala_ccode_label_parent_class = g_type_class_peek_parent (klass);
 	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_label_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeLabelPrivate));
-	((ValaCCodeNodeClass *) klass)->write = vala_ccode_label_real_write;
+	((ValaCCodeNodeClass *) klass)->write = (void (*)(ValaCCodeNode*, ValaCCodeWriter*)) vala_ccode_label_real_write;
 }
 
 

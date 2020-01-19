@@ -286,12 +286,12 @@ static void vala_vapi_check_parse_gidl (ValaVAPICheck* self) {
 	GError * _inner_error_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp0_);
+	_tmp1_ = vala_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, _tmp0_);
 	_vala_iterable_unref0 (self->priv->_scope);
 	self->priv->_scope = (ValaList*) _tmp1_;
 	_tmp2_ = g_str_hash;
 	_tmp3_ = g_str_equal;
-	_tmp4_ = vala_hash_set_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp2_, _tmp3_);
+	_tmp4_ = vala_hash_set_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, _tmp2_, _tmp3_);
 	_vala_iterable_unref0 (self->priv->_symbols);
 	self->priv->_symbols = (ValaSet*) _tmp4_;
 	{
@@ -592,6 +592,7 @@ static void vala_vapi_check_parse_members (ValaVAPICheck* self, const gchar* nam
 
 static gint vala_vapi_check_check_metadata (ValaVAPICheck* self) {
 	gint result = 0;
+	gint _tmp42_ = 0;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (self != NULL, 0);
 	{
@@ -741,7 +742,7 @@ static gint vala_vapi_check_check_metadata (ValaVAPICheck* self) {
 	__finally1:
 	g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 	g_clear_error (&_inner_error_);
-	return 0;
+	return _tmp42_;
 }
 
 

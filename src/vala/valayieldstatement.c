@@ -491,11 +491,11 @@ static void vala_yield_statement_class_init (ValaYieldStatementClass * klass) {
 	vala_yield_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_yield_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaYieldStatementPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_yield_statement_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_yield_statement_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_yield_statement_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->check = vala_yield_statement_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_yield_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_yield_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_yield_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_yield_statement_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_yield_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_yield_statement_real_emit;
 }
 
 

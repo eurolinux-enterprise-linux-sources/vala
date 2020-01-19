@@ -198,8 +198,9 @@ void vala_list_set (ValaList* self, gint index, gconstpointer item) {
  *         -1 if the item could not be found
  */
 static gint vala_list_real_index_of (ValaList* self, gconstpointer item) {
+	gint _tmp0_ = 0;
 	g_critical ("Type `%s' does not implement abstract method `vala_list_index_of'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
-	return 0;
+	return _tmp0_;
 }
 
 
@@ -246,7 +247,7 @@ void vala_list_remove_at (ValaList* self, gint index) {
 
 ValaList* vala_list_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func) {
 	ValaList* self = NULL;
-	self = (ValaList*) vala_collection_construct (object_type, g_type, (GBoxedCopyFunc) g_dup_func, g_destroy_func);
+	self = (ValaList*) vala_collection_construct (object_type, g_type, (GBoxedCopyFunc) g_dup_func, (GDestroyNotify) g_destroy_func);
 	self->priv->g_type = g_type;
 	self->priv->g_dup_func = g_dup_func;
 	self->priv->g_destroy_func = g_destroy_func;
@@ -257,11 +258,11 @@ ValaList* vala_list_construct (GType object_type, GType g_type, GBoxedCopyFunc g
 static void vala_list_class_init (ValaListClass * klass) {
 	vala_list_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (ValaListPrivate));
-	((ValaListClass *) klass)->get = vala_list_real_get;
-	((ValaListClass *) klass)->set = vala_list_real_set;
-	((ValaListClass *) klass)->index_of = vala_list_real_index_of;
-	((ValaListClass *) klass)->insert = vala_list_real_insert;
-	((ValaListClass *) klass)->remove_at = vala_list_real_remove_at;
+	((ValaListClass *) klass)->get = (gpointer (*)(ValaList*, gint)) vala_list_real_get;
+	((ValaListClass *) klass)->set = (void (*)(ValaList*, gint, gconstpointer)) vala_list_real_set;
+	((ValaListClass *) klass)->index_of = (gint (*)(ValaList*, gconstpointer)) vala_list_real_index_of;
+	((ValaListClass *) klass)->insert = (void (*)(ValaList*, gint, gconstpointer)) vala_list_real_insert;
+	((ValaListClass *) klass)->remove_at = (void (*)(ValaList*, gint)) vala_list_real_remove_at;
 }
 
 

@@ -1363,7 +1363,7 @@ static void vala_gerror_module_real_add_simple_check (ValaCCodeBaseModule* base,
 			vala_ccode_base_module_append_local_free ((ValaCCodeBaseModule*) self, _tmp24_, FALSE, (ValaCodeNode*) _tmp26_);
 		}
 		_tmp27_ = g_direct_equal;
-		_tmp28_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp27_);
+		_tmp28_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp27_);
 		error_types = _tmp28_;
 		{
 			ValaList* _node_error_type_list = NULL;
@@ -1417,7 +1417,7 @@ static void vala_gerror_module_real_add_simple_check (ValaCCodeBaseModule* base,
 			GEqualFunc _tmp43_ = NULL;
 			ValaArrayList* _tmp44_ = NULL;
 			_tmp43_ = g_direct_equal;
-			_tmp44_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp43_);
+			_tmp44_ = vala_array_list_new (VALA_TYPE_DATA_TYPE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp43_);
 			handled_error_types = _tmp44_;
 			{
 				ValaList* _clause_list = NULL;
@@ -2447,14 +2447,14 @@ static void vala_gerror_module_class_init (ValaGErrorModuleClass * klass) {
 	vala_gerror_module_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeVisitorClass *) klass)->finalize = vala_gerror_module_finalize;
 	g_type_class_add_private (klass, sizeof (ValaGErrorModulePrivate));
-	((ValaCCodeBaseModuleClass *) klass)->generate_error_domain_declaration = vala_gerror_module_real_generate_error_domain_declaration;
-	((ValaCodeVisitorClass *) klass)->visit_error_domain = vala_gerror_module_real_visit_error_domain;
-	((ValaCodeVisitorClass *) klass)->visit_throw_statement = vala_gerror_module_real_visit_throw_statement;
-	((ValaGErrorModuleClass *) klass)->return_with_exception = vala_gerror_module_real_return_with_exception;
-	((ValaCCodeBaseModuleClass *) klass)->add_simple_check = vala_gerror_module_real_add_simple_check;
-	((ValaCodeVisitorClass *) klass)->visit_try_statement = vala_gerror_module_real_visit_try_statement;
-	((ValaCodeVisitorClass *) klass)->visit_catch_clause = vala_gerror_module_real_visit_catch_clause;
-	((ValaCCodeBaseModuleClass *) klass)->append_scope_free = vala_gerror_module_real_append_scope_free;
+	((ValaCCodeBaseModuleClass *) klass)->generate_error_domain_declaration = (void (*)(ValaCCodeBaseModule*, ValaErrorDomain*, ValaCCodeFile*)) vala_gerror_module_real_generate_error_domain_declaration;
+	((ValaCodeVisitorClass *) klass)->visit_error_domain = (void (*)(ValaCodeVisitor*, ValaErrorDomain*)) vala_gerror_module_real_visit_error_domain;
+	((ValaCodeVisitorClass *) klass)->visit_throw_statement = (void (*)(ValaCodeVisitor*, ValaThrowStatement*)) vala_gerror_module_real_visit_throw_statement;
+	((ValaGErrorModuleClass *) klass)->return_with_exception = (void (*)(ValaGErrorModule*, ValaCCodeExpression*)) vala_gerror_module_real_return_with_exception;
+	((ValaCCodeBaseModuleClass *) klass)->add_simple_check = (void (*)(ValaCCodeBaseModule*, ValaCodeNode*, gboolean)) vala_gerror_module_real_add_simple_check;
+	((ValaCodeVisitorClass *) klass)->visit_try_statement = (void (*)(ValaCodeVisitor*, ValaTryStatement*)) vala_gerror_module_real_visit_try_statement;
+	((ValaCodeVisitorClass *) klass)->visit_catch_clause = (void (*)(ValaCodeVisitor*, ValaCatchClause*)) vala_gerror_module_real_visit_catch_clause;
+	((ValaCCodeBaseModuleClass *) klass)->append_scope_free = (void (*)(ValaCCodeBaseModule*, ValaSymbol*, ValaCodeNode*)) vala_gerror_module_real_append_scope_free;
 }
 
 

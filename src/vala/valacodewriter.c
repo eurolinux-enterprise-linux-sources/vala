@@ -1024,6 +1024,16 @@ typedef struct _ValaArrayTypeClass ValaArrayTypeClass;
 
 #define VALA_TYPE_SYMBOL_ACCESSIBILITY (vala_symbol_accessibility_get_type ())
 
+#define VALA_TYPE_VERSION_ATTRIBUTE (vala_version_attribute_get_type ())
+#define VALA_VERSION_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_VERSION_ATTRIBUTE, ValaVersionAttribute))
+#define VALA_VERSION_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_VERSION_ATTRIBUTE, ValaVersionAttributeClass))
+#define VALA_IS_VERSION_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_VERSION_ATTRIBUTE))
+#define VALA_IS_VERSION_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_VERSION_ATTRIBUTE))
+#define VALA_VERSION_ATTRIBUTE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_VERSION_ATTRIBUTE, ValaVersionAttributeClass))
+
+typedef struct _ValaVersionAttribute ValaVersionAttribute;
+typedef struct _ValaVersionAttributeClass ValaVersionAttributeClass;
+
 #define VALA_TYPE_ATTRIBUTE (vala_attribute_get_type ())
 #define VALA_ATTRIBUTE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_ATTRIBUTE, ValaAttribute))
 #define VALA_ATTRIBUTE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_ATTRIBUTE, ValaAttributeClass))
@@ -1834,6 +1844,16 @@ gboolean vala_array_type_get_fixed_length (ValaArrayType* self);
 ValaExpression* vala_array_type_get_length (ValaArrayType* self);
 GType vala_symbol_accessibility_get_type (void) G_GNUC_CONST;
 ValaSymbolAccessibility vala_symbol_get_access (ValaSymbol* self);
+static gboolean vala_code_writer_skip_since_tag_check (ValaCodeWriter* self, ValaSymbol* sym, const gchar* since_val);
+gpointer vala_version_attribute_ref (gpointer instance);
+void vala_version_attribute_unref (gpointer instance);
+GParamSpec* vala_param_spec_version_attribute (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void vala_value_set_version_attribute (GValue* value, gpointer v_object);
+void vala_value_take_version_attribute (GValue* value, gpointer v_object);
+gpointer vala_value_get_version_attribute (const GValue* value);
+GType vala_version_attribute_get_type (void) G_GNUC_CONST;
+ValaVersionAttribute* vala_symbol_get_version (ValaSymbol* self);
+gchar* vala_version_attribute_get_since (ValaVersionAttribute* self);
 GType vala_attribute_get_type (void) G_GNUC_CONST;
 GType vala_code_generator_get_type (void) G_GNUC_CONST;
 static gint ____lambda4_ (ValaCodeWriter* self, ValaAttribute* a, ValaAttribute* b);
@@ -1846,6 +1866,7 @@ static gint ___lambda5_ (ValaCodeWriter* self, ValaAttribute* a, ValaAttribute* 
 static gint ____lambda5__gcompare_data_func (gconstpointer a, gconstpointer b, gpointer self);
 static void _g_free0_ (gpointer var);
 gboolean vala_attribute_has_argument (ValaAttribute* self, const gchar* name);
+gchar* vala_attribute_get_string (ValaAttribute* self, const gchar* name, const gchar* default_value);
 gboolean vala_symbol_get_external (ValaSymbol* self);
 static void vala_code_writer_finalize (ValaCodeVisitor* obj);
 
@@ -2563,7 +2584,7 @@ static gchar* string_replace (const gchar* self, const gchar* old, const gchar* 
 		}
 		_tmp6_ = regex;
 		_tmp7_ = replacement;
-		_tmp8_ = g_regex_replace_literal (_tmp6_, self, (gssize) (-1), 0, _tmp7_, 0, &_inner_error_);
+		_tmp8_ = g_regex_replace_literal (_tmp6_, self, (gssize) -1, 0, _tmp7_, 0, &_inner_error_);
 		_tmp5_ = _tmp8_;
 		if (G_UNLIKELY (_inner_error_ != NULL)) {
 			_g_regex_unref0 (regex);
@@ -3067,7 +3088,7 @@ static void vala_code_writer_visit_sorted (ValaCodeWriter* self, ValaList* symbo
 		return;
 	}
 	_tmp13_ = g_direct_equal;
-	_tmp14_ = vala_array_list_new (VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp13_);
+	_tmp14_ = vala_array_list_new (VALA_TYPE_SYMBOL, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp13_);
 	sorted_symbols = _tmp14_;
 	{
 		ValaList* _sym_list = NULL;
@@ -7875,6 +7896,66 @@ static gboolean vala_code_writer_check_accessibility (ValaCodeWriter* self, Vala
 }
 
 
+static gboolean vala_code_writer_skip_since_tag_check (ValaCodeWriter* self, ValaSymbol* sym, const gchar* since_val) {
+	gboolean result = FALSE;
+	ValaSymbol* parent_symbol = NULL;
+	ValaSymbol* _tmp0_ = NULL;
+	ValaSymbol* _tmp1_ = NULL;
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (sym != NULL, FALSE);
+	g_return_val_if_fail (since_val != NULL, FALSE);
+	_tmp0_ = sym;
+	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
+	parent_symbol = _tmp1_;
+	while (TRUE) {
+		ValaSymbol* _tmp2_ = NULL;
+		ValaSymbol* _tmp3_ = NULL;
+		ValaSymbol* _tmp4_ = NULL;
+		ValaSymbol* _tmp5_ = NULL;
+		ValaSymbol* _tmp6_ = NULL;
+		ValaSymbol* _tmp7_ = NULL;
+		ValaSymbol* _tmp8_ = NULL;
+		ValaSymbol* _tmp9_ = NULL;
+		ValaVersionAttribute* _tmp10_ = NULL;
+		ValaVersionAttribute* _tmp11_ = NULL;
+		gchar* _tmp12_ = NULL;
+		gchar* _tmp13_ = NULL;
+		gchar* _tmp14_ = NULL;
+		const gchar* _tmp15_ = NULL;
+		gboolean _tmp16_ = FALSE;
+		_tmp2_ = parent_symbol;
+		_tmp3_ = vala_symbol_get_parent_symbol (_tmp2_);
+		_tmp4_ = _tmp3_;
+		if (!(_tmp4_ != NULL)) {
+			break;
+		}
+		_tmp5_ = parent_symbol;
+		_tmp6_ = vala_symbol_get_parent_symbol (_tmp5_);
+		_tmp7_ = _tmp6_;
+		_tmp8_ = _vala_code_node_ref0 (_tmp7_);
+		_vala_code_node_unref0 (parent_symbol);
+		parent_symbol = _tmp8_;
+		_tmp9_ = parent_symbol;
+		_tmp10_ = vala_symbol_get_version (_tmp9_);
+		_tmp11_ = _tmp10_;
+		_tmp12_ = vala_version_attribute_get_since (_tmp11_);
+		_tmp13_ = _tmp12_;
+		_tmp14_ = _tmp13_;
+		_tmp15_ = since_val;
+		_tmp16_ = g_strcmp0 (_tmp14_, _tmp15_) == 0;
+		_g_free0 (_tmp14_);
+		if (_tmp16_) {
+			result = TRUE;
+			_vala_code_node_unref0 (parent_symbol);
+			return result;
+		}
+	}
+	result = FALSE;
+	_vala_code_node_unref0 (parent_symbol);
+	return result;
+}
+
+
 static gint ____lambda4_ (ValaCodeWriter* self, ValaAttribute* a, ValaAttribute* b) {
 	gint result = 0;
 	GCompareFunc _tmp0_ = NULL;
@@ -8062,16 +8143,19 @@ static void vala_code_writer_write_attributes (ValaCodeWriter* self, ValaCodeNod
 		const gchar* _tmp68_ = NULL;
 		const gchar* _tmp69_ = NULL;
 		gboolean _tmp72_ = FALSE;
-		ValaCodeNode* _tmp73_ = NULL;
-		FILE* _tmp75_ = NULL;
-		ValaAttribute* _tmp76_ = NULL;
-		const gchar* _tmp77_ = NULL;
-		const gchar* _tmp78_ = NULL;
-		GSequence* _tmp79_ = NULL;
-		gint _tmp80_ = 0;
-		FILE* _tmp107_ = NULL;
-		gboolean _tmp108_ = FALSE;
-		ValaCodeNode* _tmp109_ = NULL;
+		gboolean _tmp73_ = FALSE;
+		ValaSymbol* _tmp74_ = NULL;
+		gboolean _tmp89_ = FALSE;
+		ValaCodeNode* _tmp90_ = NULL;
+		FILE* _tmp92_ = NULL;
+		ValaAttribute* _tmp93_ = NULL;
+		const gchar* _tmp94_ = NULL;
+		const gchar* _tmp95_ = NULL;
+		GSequence* _tmp96_ = NULL;
+		gint _tmp97_ = 0;
+		FILE* _tmp124_ = NULL;
+		gboolean _tmp125_ = FALSE;
+		ValaCodeNode* _tmp126_ = NULL;
 		_tmp29_ = iter;
 		_tmp30_ = g_sequence_iter_is_end (_tmp29_);
 		if (!(!_tmp30_)) {
@@ -8190,113 +8274,166 @@ static void vala_code_writer_write_attributes (ValaCodeWriter* self, ValaCodeNod
 			_g_sequence_free0 (keys);
 			continue;
 		}
-		_tmp73_ = node;
-		if (!G_TYPE_CHECK_INSTANCE_TYPE (_tmp73_, VALA_TYPE_PARAMETER)) {
-			ValaCodeNode* _tmp74_ = NULL;
-			_tmp74_ = node;
-			_tmp72_ = !G_TYPE_CHECK_INSTANCE_TYPE (_tmp74_, VALA_TYPE_PROPERTY_ACCESSOR);
+		_tmp74_ = sym;
+		if (_tmp74_ != NULL) {
+			ValaAttribute* _tmp75_ = NULL;
+			ValaMap* _tmp76_ = NULL;
+			gint _tmp77_ = 0;
+			gint _tmp78_ = 0;
+			_tmp75_ = attr;
+			_tmp76_ = _tmp75_->args;
+			_tmp77_ = vala_map_get_size (_tmp76_);
+			_tmp78_ = _tmp77_;
+			_tmp73_ = _tmp78_ == 1;
+		} else {
+			_tmp73_ = FALSE;
+		}
+		if (_tmp73_) {
+			ValaAttribute* _tmp79_ = NULL;
+			const gchar* _tmp80_ = NULL;
+			const gchar* _tmp81_ = NULL;
+			_tmp79_ = attr;
+			_tmp80_ = vala_attribute_get_name (_tmp79_);
+			_tmp81_ = _tmp80_;
+			_tmp72_ = g_strcmp0 (_tmp81_, "Version") == 0;
 		} else {
 			_tmp72_ = FALSE;
 		}
 		if (_tmp72_) {
+			gchar* since_val = NULL;
+			ValaAttribute* _tmp82_ = NULL;
+			gchar* _tmp83_ = NULL;
+			gboolean _tmp84_ = FALSE;
+			const gchar* _tmp85_ = NULL;
+			_tmp82_ = attr;
+			_tmp83_ = vala_attribute_get_string (_tmp82_, "since", NULL);
+			since_val = _tmp83_;
+			_tmp85_ = since_val;
+			if (_tmp85_ != NULL) {
+				ValaSymbol* _tmp86_ = NULL;
+				const gchar* _tmp87_ = NULL;
+				gboolean _tmp88_ = FALSE;
+				_tmp86_ = sym;
+				_tmp87_ = since_val;
+				_tmp88_ = vala_code_writer_skip_since_tag_check (self, _tmp86_, _tmp87_);
+				_tmp84_ = _tmp88_;
+			} else {
+				_tmp84_ = FALSE;
+			}
+			if (_tmp84_) {
+				_g_free0 (since_val);
+				_g_sequence_free0 (keys);
+				continue;
+			}
+			_g_free0 (since_val);
+		}
+		_tmp90_ = node;
+		if (!G_TYPE_CHECK_INSTANCE_TYPE (_tmp90_, VALA_TYPE_PARAMETER)) {
+			ValaCodeNode* _tmp91_ = NULL;
+			_tmp91_ = node;
+			_tmp89_ = !G_TYPE_CHECK_INSTANCE_TYPE (_tmp91_, VALA_TYPE_PROPERTY_ACCESSOR);
+		} else {
+			_tmp89_ = FALSE;
+		}
+		if (_tmp89_) {
 			vala_code_writer_write_indent (self);
 		}
-		_tmp75_ = self->priv->stream;
-		_tmp76_ = attr;
-		_tmp77_ = vala_attribute_get_name (_tmp76_);
-		_tmp78_ = _tmp77_;
-		fprintf (_tmp75_, "[%s", _tmp78_);
-		_tmp79_ = keys;
-		_tmp80_ = g_sequence_get_length (_tmp79_);
-		if (_tmp80_ > 0) {
-			FILE* _tmp81_ = NULL;
+		_tmp92_ = self->priv->stream;
+		_tmp93_ = attr;
+		_tmp94_ = vala_attribute_get_name (_tmp93_);
+		_tmp95_ = _tmp94_;
+		fprintf (_tmp92_, "[%s", _tmp95_);
+		_tmp96_ = keys;
+		_tmp97_ = g_sequence_get_length (_tmp96_);
+		if (_tmp97_ > 0) {
+			FILE* _tmp98_ = NULL;
 			gchar* separator = NULL;
-			gchar* _tmp82_ = NULL;
+			gchar* _tmp99_ = NULL;
 			GSequenceIter* arg_iter = NULL;
-			GSequence* _tmp83_ = NULL;
-			GSequenceIter* _tmp84_ = NULL;
-			FILE* _tmp106_ = NULL;
-			_tmp81_ = self->priv->stream;
-			fprintf (_tmp81_, " (");
-			_tmp82_ = g_strdup ("");
-			separator = _tmp82_;
-			_tmp83_ = keys;
-			_tmp84_ = g_sequence_get_begin_iter (_tmp83_);
-			arg_iter = _tmp84_;
+			GSequence* _tmp100_ = NULL;
+			GSequenceIter* _tmp101_ = NULL;
+			FILE* _tmp123_ = NULL;
+			_tmp98_ = self->priv->stream;
+			fprintf (_tmp98_, " (");
+			_tmp99_ = g_strdup ("");
+			separator = _tmp99_;
+			_tmp100_ = keys;
+			_tmp101_ = g_sequence_get_begin_iter (_tmp100_);
+			arg_iter = _tmp101_;
 			while (TRUE) {
-				GSequenceIter* _tmp85_ = NULL;
-				gboolean _tmp86_ = FALSE;
+				GSequenceIter* _tmp102_ = NULL;
+				gboolean _tmp103_ = FALSE;
 				const gchar* arg_name = NULL;
-				GSequenceIter* _tmp87_ = NULL;
-				gconstpointer _tmp88_ = NULL;
-				GSequenceIter* _tmp89_ = NULL;
-				GSequenceIter* _tmp90_ = NULL;
-				const gchar* _tmp91_ = NULL;
-				gchar* _tmp105_ = NULL;
-				_tmp85_ = arg_iter;
-				_tmp86_ = g_sequence_iter_is_end (_tmp85_);
-				if (!(!_tmp86_)) {
+				GSequenceIter* _tmp104_ = NULL;
+				gconstpointer _tmp105_ = NULL;
+				GSequenceIter* _tmp106_ = NULL;
+				GSequenceIter* _tmp107_ = NULL;
+				const gchar* _tmp108_ = NULL;
+				gchar* _tmp122_ = NULL;
+				_tmp102_ = arg_iter;
+				_tmp103_ = g_sequence_iter_is_end (_tmp102_);
+				if (!(!_tmp103_)) {
 					break;
 				}
-				_tmp87_ = arg_iter;
-				_tmp88_ = g_sequence_get (_tmp87_);
-				arg_name = (const gchar*) _tmp88_;
-				_tmp89_ = arg_iter;
-				_tmp90_ = g_sequence_iter_next (_tmp89_);
-				arg_iter = _tmp90_;
-				_tmp91_ = arg_name;
-				if (g_strcmp0 (_tmp91_, "cheader_filename") == 0) {
-					FILE* _tmp92_ = NULL;
-					const gchar* _tmp93_ = NULL;
-					ValaSymbol* _tmp94_ = NULL;
-					gchar* _tmp95_ = NULL;
-					gchar* _tmp96_ = NULL;
-					_tmp92_ = self->priv->stream;
-					_tmp93_ = separator;
-					_tmp94_ = sym;
-					_tmp95_ = vala_code_writer_get_cheaders (self, _tmp94_);
-					_tmp96_ = _tmp95_;
-					fprintf (_tmp92_, "%scheader_filename = \"%s\"", _tmp93_, _tmp96_);
-					_g_free0 (_tmp96_);
+				_tmp104_ = arg_iter;
+				_tmp105_ = g_sequence_get (_tmp104_);
+				arg_name = (const gchar*) _tmp105_;
+				_tmp106_ = arg_iter;
+				_tmp107_ = g_sequence_iter_next (_tmp106_);
+				arg_iter = _tmp107_;
+				_tmp108_ = arg_name;
+				if (g_strcmp0 (_tmp108_, "cheader_filename") == 0) {
+					FILE* _tmp109_ = NULL;
+					const gchar* _tmp110_ = NULL;
+					ValaSymbol* _tmp111_ = NULL;
+					gchar* _tmp112_ = NULL;
+					gchar* _tmp113_ = NULL;
+					_tmp109_ = self->priv->stream;
+					_tmp110_ = separator;
+					_tmp111_ = sym;
+					_tmp112_ = vala_code_writer_get_cheaders (self, _tmp111_);
+					_tmp113_ = _tmp112_;
+					fprintf (_tmp109_, "%scheader_filename = \"%s\"", _tmp110_, _tmp113_);
+					_g_free0 (_tmp113_);
 				} else {
-					FILE* _tmp97_ = NULL;
-					const gchar* _tmp98_ = NULL;
-					const gchar* _tmp99_ = NULL;
-					ValaAttribute* _tmp100_ = NULL;
-					ValaMap* _tmp101_ = NULL;
-					const gchar* _tmp102_ = NULL;
-					gpointer _tmp103_ = NULL;
-					gchar* _tmp104_ = NULL;
-					_tmp97_ = self->priv->stream;
-					_tmp98_ = separator;
-					_tmp99_ = arg_name;
-					_tmp100_ = attr;
-					_tmp101_ = _tmp100_->args;
-					_tmp102_ = arg_name;
-					_tmp103_ = vala_map_get (_tmp101_, _tmp102_);
-					_tmp104_ = (gchar*) _tmp103_;
-					fprintf (_tmp97_, "%s%s = %s", _tmp98_, _tmp99_, _tmp104_);
-					_g_free0 (_tmp104_);
+					FILE* _tmp114_ = NULL;
+					const gchar* _tmp115_ = NULL;
+					const gchar* _tmp116_ = NULL;
+					ValaAttribute* _tmp117_ = NULL;
+					ValaMap* _tmp118_ = NULL;
+					const gchar* _tmp119_ = NULL;
+					gpointer _tmp120_ = NULL;
+					gchar* _tmp121_ = NULL;
+					_tmp114_ = self->priv->stream;
+					_tmp115_ = separator;
+					_tmp116_ = arg_name;
+					_tmp117_ = attr;
+					_tmp118_ = _tmp117_->args;
+					_tmp119_ = arg_name;
+					_tmp120_ = vala_map_get (_tmp118_, _tmp119_);
+					_tmp121_ = (gchar*) _tmp120_;
+					fprintf (_tmp114_, "%s%s = %s", _tmp115_, _tmp116_, _tmp121_);
+					_g_free0 (_tmp121_);
 				}
-				_tmp105_ = g_strdup (", ");
+				_tmp122_ = g_strdup (", ");
 				_g_free0 (separator);
-				separator = _tmp105_;
+				separator = _tmp122_;
 			}
-			_tmp106_ = self->priv->stream;
-			fprintf (_tmp106_, ")");
+			_tmp123_ = self->priv->stream;
+			fprintf (_tmp123_, ")");
 			_g_free0 (separator);
 		}
-		_tmp107_ = self->priv->stream;
-		fprintf (_tmp107_, "]");
-		_tmp109_ = node;
-		if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp109_, VALA_TYPE_PARAMETER)) {
-			_tmp108_ = TRUE;
+		_tmp124_ = self->priv->stream;
+		fprintf (_tmp124_, "]");
+		_tmp126_ = node;
+		if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp126_, VALA_TYPE_PARAMETER)) {
+			_tmp125_ = TRUE;
 		} else {
-			ValaCodeNode* _tmp110_ = NULL;
-			_tmp110_ = node;
-			_tmp108_ = G_TYPE_CHECK_INSTANCE_TYPE (_tmp110_, VALA_TYPE_PROPERTY_ACCESSOR);
+			ValaCodeNode* _tmp127_ = NULL;
+			_tmp127_ = node;
+			_tmp125_ = G_TYPE_CHECK_INSTANCE_TYPE (_tmp127_, VALA_TYPE_PROPERTY_ACCESSOR);
 		}
-		if (_tmp108_) {
+		if (_tmp125_) {
 			vala_code_writer_write_string (self, " ");
 		} else {
 			vala_code_writer_write_newline (self);
@@ -8493,71 +8630,71 @@ static void vala_code_writer_class_init (ValaCodeWriterClass * klass) {
 	vala_code_writer_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeVisitorClass *) klass)->finalize = vala_code_writer_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCodeWriterPrivate));
-	((ValaCodeVisitorClass *) klass)->visit_using_directive = vala_code_writer_real_visit_using_directive;
-	((ValaCodeVisitorClass *) klass)->visit_namespace = vala_code_writer_real_visit_namespace;
-	((ValaCodeVisitorClass *) klass)->visit_class = vala_code_writer_real_visit_class;
-	((ValaCodeVisitorClass *) klass)->visit_struct = vala_code_writer_real_visit_struct;
-	((ValaCodeVisitorClass *) klass)->visit_interface = vala_code_writer_real_visit_interface;
-	((ValaCodeVisitorClass *) klass)->visit_enum = vala_code_writer_real_visit_enum;
-	((ValaCodeVisitorClass *) klass)->visit_error_domain = vala_code_writer_real_visit_error_domain;
-	((ValaCodeVisitorClass *) klass)->visit_constant = vala_code_writer_real_visit_constant;
-	((ValaCodeVisitorClass *) klass)->visit_field = vala_code_writer_real_visit_field;
-	((ValaCodeVisitorClass *) klass)->visit_delegate = vala_code_writer_real_visit_delegate;
-	((ValaCodeVisitorClass *) klass)->visit_constructor = vala_code_writer_real_visit_constructor;
-	((ValaCodeVisitorClass *) klass)->visit_method = vala_code_writer_real_visit_method;
-	((ValaCodeVisitorClass *) klass)->visit_creation_method = vala_code_writer_real_visit_creation_method;
-	((ValaCodeVisitorClass *) klass)->visit_property = vala_code_writer_real_visit_property;
-	((ValaCodeVisitorClass *) klass)->visit_signal = vala_code_writer_real_visit_signal;
-	((ValaCodeVisitorClass *) klass)->visit_block = vala_code_writer_real_visit_block;
-	((ValaCodeVisitorClass *) klass)->visit_empty_statement = vala_code_writer_real_visit_empty_statement;
-	((ValaCodeVisitorClass *) klass)->visit_declaration_statement = vala_code_writer_real_visit_declaration_statement;
-	((ValaCodeVisitorClass *) klass)->visit_local_variable = vala_code_writer_real_visit_local_variable;
-	((ValaCodeVisitorClass *) klass)->visit_initializer_list = vala_code_writer_real_visit_initializer_list;
-	((ValaCodeVisitorClass *) klass)->visit_expression_statement = vala_code_writer_real_visit_expression_statement;
-	((ValaCodeVisitorClass *) klass)->visit_if_statement = vala_code_writer_real_visit_if_statement;
-	((ValaCodeVisitorClass *) klass)->visit_switch_statement = vala_code_writer_real_visit_switch_statement;
-	((ValaCodeVisitorClass *) klass)->visit_switch_section = vala_code_writer_real_visit_switch_section;
-	((ValaCodeVisitorClass *) klass)->visit_switch_label = vala_code_writer_real_visit_switch_label;
-	((ValaCodeVisitorClass *) klass)->visit_loop = vala_code_writer_real_visit_loop;
-	((ValaCodeVisitorClass *) klass)->visit_while_statement = vala_code_writer_real_visit_while_statement;
-	((ValaCodeVisitorClass *) klass)->visit_do_statement = vala_code_writer_real_visit_do_statement;
-	((ValaCodeVisitorClass *) klass)->visit_for_statement = vala_code_writer_real_visit_for_statement;
-	((ValaCodeVisitorClass *) klass)->visit_foreach_statement = vala_code_writer_real_visit_foreach_statement;
-	((ValaCodeVisitorClass *) klass)->visit_break_statement = vala_code_writer_real_visit_break_statement;
-	((ValaCodeVisitorClass *) klass)->visit_continue_statement = vala_code_writer_real_visit_continue_statement;
-	((ValaCodeVisitorClass *) klass)->visit_return_statement = vala_code_writer_real_visit_return_statement;
-	((ValaCodeVisitorClass *) klass)->visit_yield_statement = vala_code_writer_real_visit_yield_statement;
-	((ValaCodeVisitorClass *) klass)->visit_throw_statement = vala_code_writer_real_visit_throw_statement;
-	((ValaCodeVisitorClass *) klass)->visit_try_statement = vala_code_writer_real_visit_try_statement;
-	((ValaCodeVisitorClass *) klass)->visit_catch_clause = vala_code_writer_real_visit_catch_clause;
-	((ValaCodeVisitorClass *) klass)->visit_lock_statement = vala_code_writer_real_visit_lock_statement;
-	((ValaCodeVisitorClass *) klass)->visit_delete_statement = vala_code_writer_real_visit_delete_statement;
-	((ValaCodeVisitorClass *) klass)->visit_array_creation_expression = vala_code_writer_real_visit_array_creation_expression;
-	((ValaCodeVisitorClass *) klass)->visit_boolean_literal = vala_code_writer_real_visit_boolean_literal;
-	((ValaCodeVisitorClass *) klass)->visit_character_literal = vala_code_writer_real_visit_character_literal;
-	((ValaCodeVisitorClass *) klass)->visit_integer_literal = vala_code_writer_real_visit_integer_literal;
-	((ValaCodeVisitorClass *) klass)->visit_real_literal = vala_code_writer_real_visit_real_literal;
-	((ValaCodeVisitorClass *) klass)->visit_string_literal = vala_code_writer_real_visit_string_literal;
-	((ValaCodeVisitorClass *) klass)->visit_null_literal = vala_code_writer_real_visit_null_literal;
-	((ValaCodeVisitorClass *) klass)->visit_member_access = vala_code_writer_real_visit_member_access;
-	((ValaCodeVisitorClass *) klass)->visit_method_call = vala_code_writer_real_visit_method_call;
-	((ValaCodeVisitorClass *) klass)->visit_element_access = vala_code_writer_real_visit_element_access;
-	((ValaCodeVisitorClass *) klass)->visit_slice_expression = vala_code_writer_real_visit_slice_expression;
-	((ValaCodeVisitorClass *) klass)->visit_base_access = vala_code_writer_real_visit_base_access;
-	((ValaCodeVisitorClass *) klass)->visit_postfix_expression = vala_code_writer_real_visit_postfix_expression;
-	((ValaCodeVisitorClass *) klass)->visit_object_creation_expression = vala_code_writer_real_visit_object_creation_expression;
-	((ValaCodeVisitorClass *) klass)->visit_sizeof_expression = vala_code_writer_real_visit_sizeof_expression;
-	((ValaCodeVisitorClass *) klass)->visit_typeof_expression = vala_code_writer_real_visit_typeof_expression;
-	((ValaCodeVisitorClass *) klass)->visit_unary_expression = vala_code_writer_real_visit_unary_expression;
-	((ValaCodeVisitorClass *) klass)->visit_cast_expression = vala_code_writer_real_visit_cast_expression;
-	((ValaCodeVisitorClass *) klass)->visit_pointer_indirection = vala_code_writer_real_visit_pointer_indirection;
-	((ValaCodeVisitorClass *) klass)->visit_addressof_expression = vala_code_writer_real_visit_addressof_expression;
-	((ValaCodeVisitorClass *) klass)->visit_reference_transfer_expression = vala_code_writer_real_visit_reference_transfer_expression;
-	((ValaCodeVisitorClass *) klass)->visit_binary_expression = vala_code_writer_real_visit_binary_expression;
-	((ValaCodeVisitorClass *) klass)->visit_type_check = vala_code_writer_real_visit_type_check;
-	((ValaCodeVisitorClass *) klass)->visit_conditional_expression = vala_code_writer_real_visit_conditional_expression;
-	((ValaCodeVisitorClass *) klass)->visit_lambda_expression = vala_code_writer_real_visit_lambda_expression;
-	((ValaCodeVisitorClass *) klass)->visit_assignment = vala_code_writer_real_visit_assignment;
+	((ValaCodeVisitorClass *) klass)->visit_using_directive = (void (*)(ValaCodeVisitor*, ValaUsingDirective*)) vala_code_writer_real_visit_using_directive;
+	((ValaCodeVisitorClass *) klass)->visit_namespace = (void (*)(ValaCodeVisitor*, ValaNamespace*)) vala_code_writer_real_visit_namespace;
+	((ValaCodeVisitorClass *) klass)->visit_class = (void (*)(ValaCodeVisitor*, ValaClass*)) vala_code_writer_real_visit_class;
+	((ValaCodeVisitorClass *) klass)->visit_struct = (void (*)(ValaCodeVisitor*, ValaStruct*)) vala_code_writer_real_visit_struct;
+	((ValaCodeVisitorClass *) klass)->visit_interface = (void (*)(ValaCodeVisitor*, ValaInterface*)) vala_code_writer_real_visit_interface;
+	((ValaCodeVisitorClass *) klass)->visit_enum = (void (*)(ValaCodeVisitor*, ValaEnum*)) vala_code_writer_real_visit_enum;
+	((ValaCodeVisitorClass *) klass)->visit_error_domain = (void (*)(ValaCodeVisitor*, ValaErrorDomain*)) vala_code_writer_real_visit_error_domain;
+	((ValaCodeVisitorClass *) klass)->visit_constant = (void (*)(ValaCodeVisitor*, ValaConstant*)) vala_code_writer_real_visit_constant;
+	((ValaCodeVisitorClass *) klass)->visit_field = (void (*)(ValaCodeVisitor*, ValaField*)) vala_code_writer_real_visit_field;
+	((ValaCodeVisitorClass *) klass)->visit_delegate = (void (*)(ValaCodeVisitor*, ValaDelegate*)) vala_code_writer_real_visit_delegate;
+	((ValaCodeVisitorClass *) klass)->visit_constructor = (void (*)(ValaCodeVisitor*, ValaConstructor*)) vala_code_writer_real_visit_constructor;
+	((ValaCodeVisitorClass *) klass)->visit_method = (void (*)(ValaCodeVisitor*, ValaMethod*)) vala_code_writer_real_visit_method;
+	((ValaCodeVisitorClass *) klass)->visit_creation_method = (void (*)(ValaCodeVisitor*, ValaCreationMethod*)) vala_code_writer_real_visit_creation_method;
+	((ValaCodeVisitorClass *) klass)->visit_property = (void (*)(ValaCodeVisitor*, ValaProperty*)) vala_code_writer_real_visit_property;
+	((ValaCodeVisitorClass *) klass)->visit_signal = (void (*)(ValaCodeVisitor*, ValaSignal*)) vala_code_writer_real_visit_signal;
+	((ValaCodeVisitorClass *) klass)->visit_block = (void (*)(ValaCodeVisitor*, ValaBlock*)) vala_code_writer_real_visit_block;
+	((ValaCodeVisitorClass *) klass)->visit_empty_statement = (void (*)(ValaCodeVisitor*, ValaEmptyStatement*)) vala_code_writer_real_visit_empty_statement;
+	((ValaCodeVisitorClass *) klass)->visit_declaration_statement = (void (*)(ValaCodeVisitor*, ValaDeclarationStatement*)) vala_code_writer_real_visit_declaration_statement;
+	((ValaCodeVisitorClass *) klass)->visit_local_variable = (void (*)(ValaCodeVisitor*, ValaLocalVariable*)) vala_code_writer_real_visit_local_variable;
+	((ValaCodeVisitorClass *) klass)->visit_initializer_list = (void (*)(ValaCodeVisitor*, ValaInitializerList*)) vala_code_writer_real_visit_initializer_list;
+	((ValaCodeVisitorClass *) klass)->visit_expression_statement = (void (*)(ValaCodeVisitor*, ValaExpressionStatement*)) vala_code_writer_real_visit_expression_statement;
+	((ValaCodeVisitorClass *) klass)->visit_if_statement = (void (*)(ValaCodeVisitor*, ValaIfStatement*)) vala_code_writer_real_visit_if_statement;
+	((ValaCodeVisitorClass *) klass)->visit_switch_statement = (void (*)(ValaCodeVisitor*, ValaSwitchStatement*)) vala_code_writer_real_visit_switch_statement;
+	((ValaCodeVisitorClass *) klass)->visit_switch_section = (void (*)(ValaCodeVisitor*, ValaSwitchSection*)) vala_code_writer_real_visit_switch_section;
+	((ValaCodeVisitorClass *) klass)->visit_switch_label = (void (*)(ValaCodeVisitor*, ValaSwitchLabel*)) vala_code_writer_real_visit_switch_label;
+	((ValaCodeVisitorClass *) klass)->visit_loop = (void (*)(ValaCodeVisitor*, ValaLoop*)) vala_code_writer_real_visit_loop;
+	((ValaCodeVisitorClass *) klass)->visit_while_statement = (void (*)(ValaCodeVisitor*, ValaWhileStatement*)) vala_code_writer_real_visit_while_statement;
+	((ValaCodeVisitorClass *) klass)->visit_do_statement = (void (*)(ValaCodeVisitor*, ValaDoStatement*)) vala_code_writer_real_visit_do_statement;
+	((ValaCodeVisitorClass *) klass)->visit_for_statement = (void (*)(ValaCodeVisitor*, ValaForStatement*)) vala_code_writer_real_visit_for_statement;
+	((ValaCodeVisitorClass *) klass)->visit_foreach_statement = (void (*)(ValaCodeVisitor*, ValaForeachStatement*)) vala_code_writer_real_visit_foreach_statement;
+	((ValaCodeVisitorClass *) klass)->visit_break_statement = (void (*)(ValaCodeVisitor*, ValaBreakStatement*)) vala_code_writer_real_visit_break_statement;
+	((ValaCodeVisitorClass *) klass)->visit_continue_statement = (void (*)(ValaCodeVisitor*, ValaContinueStatement*)) vala_code_writer_real_visit_continue_statement;
+	((ValaCodeVisitorClass *) klass)->visit_return_statement = (void (*)(ValaCodeVisitor*, ValaReturnStatement*)) vala_code_writer_real_visit_return_statement;
+	((ValaCodeVisitorClass *) klass)->visit_yield_statement = (void (*)(ValaCodeVisitor*, ValaYieldStatement*)) vala_code_writer_real_visit_yield_statement;
+	((ValaCodeVisitorClass *) klass)->visit_throw_statement = (void (*)(ValaCodeVisitor*, ValaThrowStatement*)) vala_code_writer_real_visit_throw_statement;
+	((ValaCodeVisitorClass *) klass)->visit_try_statement = (void (*)(ValaCodeVisitor*, ValaTryStatement*)) vala_code_writer_real_visit_try_statement;
+	((ValaCodeVisitorClass *) klass)->visit_catch_clause = (void (*)(ValaCodeVisitor*, ValaCatchClause*)) vala_code_writer_real_visit_catch_clause;
+	((ValaCodeVisitorClass *) klass)->visit_lock_statement = (void (*)(ValaCodeVisitor*, ValaLockStatement*)) vala_code_writer_real_visit_lock_statement;
+	((ValaCodeVisitorClass *) klass)->visit_delete_statement = (void (*)(ValaCodeVisitor*, ValaDeleteStatement*)) vala_code_writer_real_visit_delete_statement;
+	((ValaCodeVisitorClass *) klass)->visit_array_creation_expression = (void (*)(ValaCodeVisitor*, ValaArrayCreationExpression*)) vala_code_writer_real_visit_array_creation_expression;
+	((ValaCodeVisitorClass *) klass)->visit_boolean_literal = (void (*)(ValaCodeVisitor*, ValaBooleanLiteral*)) vala_code_writer_real_visit_boolean_literal;
+	((ValaCodeVisitorClass *) klass)->visit_character_literal = (void (*)(ValaCodeVisitor*, ValaCharacterLiteral*)) vala_code_writer_real_visit_character_literal;
+	((ValaCodeVisitorClass *) klass)->visit_integer_literal = (void (*)(ValaCodeVisitor*, ValaIntegerLiteral*)) vala_code_writer_real_visit_integer_literal;
+	((ValaCodeVisitorClass *) klass)->visit_real_literal = (void (*)(ValaCodeVisitor*, ValaRealLiteral*)) vala_code_writer_real_visit_real_literal;
+	((ValaCodeVisitorClass *) klass)->visit_string_literal = (void (*)(ValaCodeVisitor*, ValaStringLiteral*)) vala_code_writer_real_visit_string_literal;
+	((ValaCodeVisitorClass *) klass)->visit_null_literal = (void (*)(ValaCodeVisitor*, ValaNullLiteral*)) vala_code_writer_real_visit_null_literal;
+	((ValaCodeVisitorClass *) klass)->visit_member_access = (void (*)(ValaCodeVisitor*, ValaMemberAccess*)) vala_code_writer_real_visit_member_access;
+	((ValaCodeVisitorClass *) klass)->visit_method_call = (void (*)(ValaCodeVisitor*, ValaMethodCall*)) vala_code_writer_real_visit_method_call;
+	((ValaCodeVisitorClass *) klass)->visit_element_access = (void (*)(ValaCodeVisitor*, ValaElementAccess*)) vala_code_writer_real_visit_element_access;
+	((ValaCodeVisitorClass *) klass)->visit_slice_expression = (void (*)(ValaCodeVisitor*, ValaSliceExpression*)) vala_code_writer_real_visit_slice_expression;
+	((ValaCodeVisitorClass *) klass)->visit_base_access = (void (*)(ValaCodeVisitor*, ValaBaseAccess*)) vala_code_writer_real_visit_base_access;
+	((ValaCodeVisitorClass *) klass)->visit_postfix_expression = (void (*)(ValaCodeVisitor*, ValaPostfixExpression*)) vala_code_writer_real_visit_postfix_expression;
+	((ValaCodeVisitorClass *) klass)->visit_object_creation_expression = (void (*)(ValaCodeVisitor*, ValaObjectCreationExpression*)) vala_code_writer_real_visit_object_creation_expression;
+	((ValaCodeVisitorClass *) klass)->visit_sizeof_expression = (void (*)(ValaCodeVisitor*, ValaSizeofExpression*)) vala_code_writer_real_visit_sizeof_expression;
+	((ValaCodeVisitorClass *) klass)->visit_typeof_expression = (void (*)(ValaCodeVisitor*, ValaTypeofExpression*)) vala_code_writer_real_visit_typeof_expression;
+	((ValaCodeVisitorClass *) klass)->visit_unary_expression = (void (*)(ValaCodeVisitor*, ValaUnaryExpression*)) vala_code_writer_real_visit_unary_expression;
+	((ValaCodeVisitorClass *) klass)->visit_cast_expression = (void (*)(ValaCodeVisitor*, ValaCastExpression*)) vala_code_writer_real_visit_cast_expression;
+	((ValaCodeVisitorClass *) klass)->visit_pointer_indirection = (void (*)(ValaCodeVisitor*, ValaPointerIndirection*)) vala_code_writer_real_visit_pointer_indirection;
+	((ValaCodeVisitorClass *) klass)->visit_addressof_expression = (void (*)(ValaCodeVisitor*, ValaAddressofExpression*)) vala_code_writer_real_visit_addressof_expression;
+	((ValaCodeVisitorClass *) klass)->visit_reference_transfer_expression = (void (*)(ValaCodeVisitor*, ValaReferenceTransferExpression*)) vala_code_writer_real_visit_reference_transfer_expression;
+	((ValaCodeVisitorClass *) klass)->visit_binary_expression = (void (*)(ValaCodeVisitor*, ValaBinaryExpression*)) vala_code_writer_real_visit_binary_expression;
+	((ValaCodeVisitorClass *) klass)->visit_type_check = (void (*)(ValaCodeVisitor*, ValaTypeCheck*)) vala_code_writer_real_visit_type_check;
+	((ValaCodeVisitorClass *) klass)->visit_conditional_expression = (void (*)(ValaCodeVisitor*, ValaConditionalExpression*)) vala_code_writer_real_visit_conditional_expression;
+	((ValaCodeVisitorClass *) klass)->visit_lambda_expression = (void (*)(ValaCodeVisitor*, ValaLambdaExpression*)) vala_code_writer_real_visit_lambda_expression;
+	((ValaCodeVisitorClass *) klass)->visit_assignment = (void (*)(ValaCodeVisitor*, ValaAssignment*)) vala_code_writer_real_visit_assignment;
 }
 
 

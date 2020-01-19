@@ -1586,7 +1586,7 @@ void vala_character_literal_set_value (ValaCharacterLiteral* self, const gchar* 
 	_g_free0 (self->priv->_value);
 	self->priv->_value = _tmp1_;
 	_tmp2_ = value;
-	_tmp3_ = g_utf8_validate (_tmp2_, (gssize) (-1), NULL);
+	_tmp3_ = g_utf8_validate (_tmp2_, (gssize) -1, NULL);
 	if (!_tmp3_) {
 		vala_code_node_set_error ((ValaCodeNode*) self, TRUE);
 	}
@@ -1597,11 +1597,11 @@ static void vala_character_literal_class_init (ValaCharacterLiteralClass * klass
 	vala_character_literal_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_character_literal_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCharacterLiteralPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_character_literal_real_accept;
-	((ValaExpressionClass *) klass)->is_pure = vala_character_literal_real_is_pure;
-	((ValaCodeNodeClass *) klass)->to_string = vala_character_literal_real_to_string;
-	((ValaCodeNodeClass *) klass)->check = vala_character_literal_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_character_literal_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_character_literal_real_accept;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_character_literal_real_is_pure;
+	((ValaCodeNodeClass *) klass)->to_string = (gchar* (*)(ValaCodeNode*)) vala_character_literal_real_to_string;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_character_literal_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_character_literal_real_emit;
 }
 
 

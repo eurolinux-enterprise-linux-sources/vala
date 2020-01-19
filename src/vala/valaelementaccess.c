@@ -2715,14 +2715,14 @@ static void vala_element_access_class_init (ValaElementAccessClass * klass) {
 	vala_element_access_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_element_access_finalize;
 	g_type_class_add_private (klass, sizeof (ValaElementAccessPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_element_access_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_element_access_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_element_access_real_replace_expression;
-	((ValaExpressionClass *) klass)->is_pure = vala_element_access_real_is_pure;
-	((ValaCodeNodeClass *) klass)->check = vala_element_access_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_element_access_real_emit;
-	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_element_access_real_get_defined_variables;
-	((ValaCodeNodeClass *) klass)->get_used_variables = vala_element_access_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_element_access_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_element_access_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_element_access_real_replace_expression;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_element_access_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_element_access_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_element_access_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_element_access_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = (void (*)(ValaCodeNode*, ValaCollection*)) vala_element_access_real_get_used_variables;
 }
 
 
@@ -2731,7 +2731,7 @@ static void vala_element_access_instance_init (ValaElementAccess * self) {
 	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_ELEMENT_ACCESS_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->indices = (ValaList*) _tmp1_;
 }
 

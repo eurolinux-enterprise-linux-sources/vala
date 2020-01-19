@@ -1,4 +1,8 @@
-AC_INIT([vala], m4_esyscmd([build-aux/git-version-gen .tarball-version]), [j@bitron.ch], [vala])
+AC_PREREQ([2.65])
+AC_INIT([vala], m4_esyscmd([build-aux/git-version-gen .tarball-version]),
+	[https://bugzilla.gnome.org/browse.cgi?product=vala],
+	[vala],
+	[https://wiki.gnome.org/Projects/Vala])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_HEADERS(config.h)
@@ -6,7 +10,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([1.11 dist-xz no-dist-gzip])
 AM_MAINTAINER_MODE([enable])
 
-PACKAGE_SUFFIX=-0.26
+PACKAGE_SUFFIX=-0.34
 
 dnl http://people.gnome.org/~walters/docs/build-api.txt
 dnl We don't support separate builddir when building from git
@@ -22,9 +26,13 @@ AC_SUBST(pkgdatadir, [${datadir}/vala${PACKAGE_SUFFIX}])
 # Checks for programs.
 AC_PROG_CC
 AM_PROG_CC_C_O
-AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
 AC_PROG_LN_S
+AC_PROG_INSTALL
+AC_PROG_MKDIR_P
+
+LT_PREREQ([2.2.6])
+LT_INIT([disable-static])
+PKG_PROG_PKG_CONFIG([0.21])
 
 AC_PROG_LEX
 if test "$LEX" = :; then
@@ -65,7 +73,7 @@ AC_SUBST(COVERAGE_VALAFLAGS)
 AC_SUBST(COVERAGE_CFLAGS)
 AC_SUBST(COVERAGE_LIBS)
 
-GLIB_REQUIRED=2.24.0
+GLIB_REQUIRED=2.32.0
 
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= $GLIB_REQUIRED gobject-2.0 >= $GLIB_REQUIRED)
 
@@ -85,6 +93,9 @@ AC_SUBST(GTHREAD_LIBS)
 AC_PATH_PROG([XSLTPROC], [xsltproc], :)
 AM_CONDITIONAL(HAVE_XSLTPROC, test "$XSLTPROC" != :)
 
+AC_CHECK_PROG([HELP2MAN], [help2man], [help2man])
+AM_CONDITIONAL([HAVE_HELP2MAN], [test x$HELP2MAN = xhelp2man])
+
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
 AC_CONFIG_FILES([Makefile
@@ -97,7 +108,7 @@ AC_CONFIG_FILES([Makefile
            vapi/Makefile
            tests/Makefile
            doc/Makefile
-           doc/vala/Makefile
+           doc/manual/Makefile
            gobject-introspection/Makefile
            vapigen/vapigen.pc
            vapigen/Makefile

@@ -1350,9 +1350,9 @@ static void vala_string_literal_finalize (ValaCodeNode* obj);
 /**
  * Creates a new string literal.
  *
- * @param s      the literal value
- * @param source reference to source code
- * @return       newly created string literal
+ * @param value             the literal value
+ * @param source_reference  reference to source code
+ * @return                  newly created string literal
  */
 ValaStringLiteral* vala_string_literal_construct (GType object_type, const gchar* value, ValaSourceReference* source_reference) {
 	ValaStringLiteral* self = NULL;
@@ -1652,12 +1652,12 @@ static void vala_string_literal_class_init (ValaStringLiteralClass * klass) {
 	vala_string_literal_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_string_literal_finalize;
 	g_type_class_add_private (klass, sizeof (ValaStringLiteralPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_string_literal_real_accept;
-	((ValaExpressionClass *) klass)->is_pure = vala_string_literal_real_is_pure;
-	((ValaExpressionClass *) klass)->is_non_null = vala_string_literal_real_is_non_null;
-	((ValaCodeNodeClass *) klass)->to_string = vala_string_literal_real_to_string;
-	((ValaCodeNodeClass *) klass)->check = vala_string_literal_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_string_literal_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_string_literal_real_accept;
+	((ValaExpressionClass *) klass)->is_pure = (gboolean (*)(ValaExpression*)) vala_string_literal_real_is_pure;
+	((ValaExpressionClass *) klass)->is_non_null = (gboolean (*)(ValaExpression*)) vala_string_literal_real_is_non_null;
+	((ValaCodeNodeClass *) klass)->to_string = (gchar* (*)(ValaCodeNode*)) vala_string_literal_real_to_string;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_string_literal_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_string_literal_real_emit;
 }
 
 

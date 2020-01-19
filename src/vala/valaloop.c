@@ -270,9 +270,9 @@ static void vala_loop_finalize (ValaCodeNode* obj);
 /**
  * Creates a new loop.
  *
- * @param body   loop body
- * @param source reference to source code
- * @return       newly created while statement
+ * @param body             loop body
+ * @param source_reference reference to source code
+ * @return                 newly created while statement
  */
 ValaLoop* vala_loop_construct (GType object_type, ValaBlock* body, ValaSourceReference* source_reference) {
 	ValaLoop* self = NULL;
@@ -404,10 +404,10 @@ static void vala_loop_class_init (ValaLoopClass * klass) {
 	vala_loop_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_loop_finalize;
 	g_type_class_add_private (klass, sizeof (ValaLoopPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_loop_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_loop_real_accept_children;
-	((ValaCodeNodeClass *) klass)->check = vala_loop_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_loop_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_loop_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_loop_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_loop_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_loop_real_emit;
 }
 
 

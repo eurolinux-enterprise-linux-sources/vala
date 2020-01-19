@@ -1679,7 +1679,7 @@ static gboolean vala_switch_statement_real_check (ValaCodeNode* base, ValaCodeCo
 	vala_data_type_set_nullable (_tmp47_, FALSE);
 	_tmp48_ = g_str_hash;
 	_tmp49_ = g_str_equal;
-	_tmp50_ = vala_hash_set_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp48_, _tmp49_);
+	_tmp50_ = vala_hash_set_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, (GDestroyNotify) g_free, _tmp48_, _tmp49_);
 	labelset = _tmp50_;
 	{
 		ValaList* _section_list = NULL;
@@ -1936,11 +1936,11 @@ static void vala_switch_statement_class_init (ValaSwitchStatementClass * klass) 
 	vala_switch_statement_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_switch_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaSwitchStatementPrivate));
-	((ValaCodeNodeClass *) klass)->accept = vala_switch_statement_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_switch_statement_real_accept_children;
-	((ValaCodeNodeClass *) klass)->replace_expression = vala_switch_statement_real_replace_expression;
-	((ValaCodeNodeClass *) klass)->check = vala_switch_statement_real_check;
-	((ValaCodeNodeClass *) klass)->emit = vala_switch_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_switch_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_switch_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = (void (*)(ValaCodeNode*, ValaExpression*, ValaExpression*)) vala_switch_statement_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_switch_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = (void (*)(ValaCodeNode*, ValaCodeGenerator*)) vala_switch_statement_real_emit;
 }
 
 
@@ -1954,7 +1954,7 @@ static void vala_switch_statement_instance_init (ValaSwitchStatement * self) {
 	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_SWITCH_STATEMENT_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_SWITCH_SECTION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_SWITCH_SECTION, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->sections = (ValaList*) _tmp1_;
 }
 

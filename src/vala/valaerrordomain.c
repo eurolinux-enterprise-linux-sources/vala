@@ -987,11 +987,11 @@ static void vala_error_domain_class_init (ValaErrorDomainClass * klass) {
 	vala_error_domain_parent_class = g_type_class_peek_parent (klass);
 	((ValaCodeNodeClass *) klass)->finalize = vala_error_domain_finalize;
 	g_type_class_add_private (klass, sizeof (ValaErrorDomainPrivate));
-	((ValaSymbolClass *) klass)->add_method = vala_error_domain_real_add_method;
-	((ValaCodeNodeClass *) klass)->accept = vala_error_domain_real_accept;
-	((ValaCodeNodeClass *) klass)->accept_children = vala_error_domain_real_accept_children;
-	((ValaTypeSymbolClass *) klass)->is_reference_type = vala_error_domain_real_is_reference_type;
-	((ValaCodeNodeClass *) klass)->check = vala_error_domain_real_check;
+	((ValaSymbolClass *) klass)->add_method = (void (*)(ValaSymbol*, ValaMethod*)) vala_error_domain_real_add_method;
+	((ValaCodeNodeClass *) klass)->accept = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_error_domain_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = (void (*)(ValaCodeNode*, ValaCodeVisitor*)) vala_error_domain_real_accept_children;
+	((ValaTypeSymbolClass *) klass)->is_reference_type = (gboolean (*)(ValaTypeSymbol*)) vala_error_domain_real_is_reference_type;
+	((ValaCodeNodeClass *) klass)->check = (gboolean (*)(ValaCodeNode*, ValaCodeContext*)) vala_error_domain_real_check;
 }
 
 
@@ -1002,10 +1002,10 @@ static void vala_error_domain_instance_init (ValaErrorDomain * self) {
 	ValaArrayList* _tmp3_ = NULL;
 	self->priv = VALA_ERROR_DOMAIN_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
-	_tmp1_ = vala_array_list_new (VALA_TYPE_ERROR_CODE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
+	_tmp1_ = vala_array_list_new (VALA_TYPE_ERROR_CODE, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp0_);
 	self->priv->codes = (ValaList*) _tmp1_;
 	_tmp2_ = g_direct_equal;
-	_tmp3_ = vala_array_list_new (VALA_TYPE_METHOD, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp2_);
+	_tmp3_ = vala_array_list_new (VALA_TYPE_METHOD, (GBoxedCopyFunc) vala_code_node_ref, (GDestroyNotify) vala_code_node_unref, _tmp2_);
 	self->priv->methods = (ValaList*) _tmp3_;
 }
 
