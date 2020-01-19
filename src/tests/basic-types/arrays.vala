@@ -84,6 +84,7 @@ void test_array_pass () {
 	assert (b[0] == 42);
 }
 
+const int FOO = 2;
 void test_static_array () {
 	int a[2];
 	assert (a.length == 2);
@@ -91,11 +92,18 @@ void test_static_array () {
 	assert (a[1] == 23);
 	a = { 23, 34 };
 	assert (a[0] == 23 && a[1] == 34);
+
+	int b[FOO * 1 << 3];
+	assert (b.length == FOO * 1 << 3);
 }
 
 void test_reference_transfer () {
 	var baz = (owned) foo;
 	baz = (owned) bar;
+
+	var data = new string[]{"foo"};
+	var data2 = (owned) data;
+	assert (data.length == 0);
 }
 
 void test_length_assignment () {
@@ -121,4 +129,3 @@ void main () {
 	test_length_assignment ();
 	test_inline_array ();
 }
-

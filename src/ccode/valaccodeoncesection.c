@@ -164,7 +164,7 @@ static void vala_ccode_once_section_finalize (ValaCCodeNode* obj);
 
 ValaCCodeOnceSection* vala_ccode_once_section_construct (GType object_type, const gchar* def) {
 	ValaCCodeOnceSection* self = NULL;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (def != NULL, NULL);
 	self = (ValaCCodeOnceSection*) vala_ccode_fragment_construct (object_type);
 	_tmp0_ = def;
@@ -180,18 +180,18 @@ ValaCCodeOnceSection* vala_ccode_once_section_new (const gchar* def) {
 
 static void vala_ccode_once_section_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeOnceSection * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	ValaCCodeWriter* _tmp2_;
-	const gchar* _tmp3_;
-	ValaCCodeWriter* _tmp4_;
-	ValaCCodeWriter* _tmp5_;
-	ValaCCodeWriter* _tmp6_;
-	const gchar* _tmp7_;
-	ValaCCodeWriter* _tmp8_;
-	ValaCCodeWriter* _tmp21_;
-	ValaCCodeWriter* _tmp22_;
-	ValaCCodeWriter* _tmp23_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	ValaCCodeWriter* _tmp2_ = NULL;
+	const gchar* _tmp3_ = NULL;
+	ValaCCodeWriter* _tmp4_ = NULL;
+	ValaCCodeWriter* _tmp5_ = NULL;
+	ValaCCodeWriter* _tmp6_ = NULL;
+	const gchar* _tmp7_ = NULL;
+	ValaCCodeWriter* _tmp8_ = NULL;
+	ValaCCodeWriter* _tmp21_ = NULL;
+	ValaCCodeWriter* _tmp22_ = NULL;
+	ValaCCodeWriter* _tmp23_ = NULL;
 	self = (ValaCCodeOnceSection*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -211,13 +211,13 @@ static void vala_ccode_once_section_real_write (ValaCCodeNode* base, ValaCCodeWr
 	_tmp8_ = writer;
 	vala_ccode_writer_write_newline (_tmp8_);
 	{
+		ValaList* _node_list = NULL;
 		ValaList* _tmp9_ = NULL;
-		ValaList* _node_list;
-		ValaList* _tmp10_;
-		gint _tmp11_;
-		gint _tmp12_;
-		gint _node_size;
-		gint _node_index;
+		gint _node_size = 0;
+		ValaList* _tmp10_ = NULL;
+		gint _tmp11_ = 0;
+		gint _tmp12_ = 0;
+		gint _node_index = 0;
 		_tmp9_ = vala_ccode_fragment_get_children ((ValaCCodeFragment*) self);
 		_node_list = _tmp9_;
 		_tmp10_ = _node_list;
@@ -226,15 +226,15 @@ static void vala_ccode_once_section_real_write (ValaCCodeNode* base, ValaCCodeWr
 		_node_size = _tmp12_;
 		_node_index = -1;
 		while (TRUE) {
-			gint _tmp13_;
-			gint _tmp14_;
-			gint _tmp15_;
-			ValaList* _tmp16_;
-			gint _tmp17_;
+			gint _tmp13_ = 0;
+			gint _tmp14_ = 0;
+			gint _tmp15_ = 0;
+			ValaCCodeNode* node = NULL;
+			ValaList* _tmp16_ = NULL;
+			gint _tmp17_ = 0;
 			gpointer _tmp18_ = NULL;
-			ValaCCodeNode* node;
-			ValaCCodeNode* _tmp19_;
-			ValaCCodeWriter* _tmp20_;
+			ValaCCodeNode* _tmp19_ = NULL;
+			ValaCCodeWriter* _tmp20_ = NULL;
 			_tmp13_ = _node_index;
 			_node_index = _tmp13_ + 1;
 			_tmp14_ = _node_index;
@@ -271,7 +271,7 @@ static void vala_ccode_once_section_real_write_declaration (ValaCCodeNode* base,
 
 const gchar* vala_ccode_once_section_get_define (ValaCCodeOnceSection* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_define;
 	result = _tmp0_;
@@ -280,8 +280,8 @@ const gchar* vala_ccode_once_section_get_define (ValaCCodeOnceSection* self) {
 
 
 void vala_ccode_once_section_set_define (ValaCCodeOnceSection* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -292,10 +292,10 @@ void vala_ccode_once_section_set_define (ValaCCodeOnceSection* self, const gchar
 
 static void vala_ccode_once_section_class_init (ValaCCodeOnceSectionClass * klass) {
 	vala_ccode_once_section_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_once_section_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_once_section_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeOnceSectionPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_once_section_real_write;
-	VALA_CCODE_NODE_CLASS (klass)->write_declaration = vala_ccode_once_section_real_write_declaration;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_once_section_real_write;
+	((ValaCCodeNodeClass *) klass)->write_declaration = vala_ccode_once_section_real_write_declaration;
 }
 
 

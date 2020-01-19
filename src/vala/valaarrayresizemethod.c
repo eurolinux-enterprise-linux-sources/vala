@@ -495,9 +495,9 @@ void vala_code_node_set_attribute_double (ValaCodeNode* self, const gchar* attri
  */
 ValaArrayResizeMethod* vala_array_resize_method_construct (GType object_type, ValaSourceReference* source_reference) {
 	ValaArrayResizeMethod* self = NULL;
-	ValaVoidType* _tmp0_;
-	ValaVoidType* _tmp1_;
-	ValaSourceReference* _tmp2_;
+	ValaVoidType* _tmp0_ = NULL;
+	ValaVoidType* _tmp1_ = NULL;
+	ValaSourceReference* _tmp2_ = NULL;
 	g_return_val_if_fail (source_reference != NULL, NULL);
 	_tmp0_ = vala_void_type_new (NULL);
 	_tmp1_ = _tmp0_;

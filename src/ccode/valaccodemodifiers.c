@@ -39,7 +39,8 @@ typedef enum  {
 	VALA_CCODE_MODIFIERS_INLINE = 1 << 3,
 	VALA_CCODE_MODIFIERS_VOLATILE = 1 << 4,
 	VALA_CCODE_MODIFIERS_DEPRECATED = 1 << 5,
-	VALA_CCODE_MODIFIERS_THREAD_LOCAL = 1 << 6
+	VALA_CCODE_MODIFIERS_THREAD_LOCAL = 1 << 6,
+	VALA_CCODE_MODIFIERS_INTERNAL = 1 << 7
 } ValaCCodeModifiers;
 
 
@@ -50,7 +51,7 @@ GType vala_ccode_modifiers_get_type (void) G_GNUC_CONST;
 GType vala_ccode_modifiers_get_type (void) {
 	static volatile gsize vala_ccode_modifiers_type_id__volatile = 0;
 	if (g_once_init_enter (&vala_ccode_modifiers_type_id__volatile)) {
-		static const GFlagsValue values[] = {{VALA_CCODE_MODIFIERS_NONE, "VALA_CCODE_MODIFIERS_NONE", "none"}, {VALA_CCODE_MODIFIERS_STATIC, "VALA_CCODE_MODIFIERS_STATIC", "static"}, {VALA_CCODE_MODIFIERS_REGISTER, "VALA_CCODE_MODIFIERS_REGISTER", "register"}, {VALA_CCODE_MODIFIERS_EXTERN, "VALA_CCODE_MODIFIERS_EXTERN", "extern"}, {VALA_CCODE_MODIFIERS_INLINE, "VALA_CCODE_MODIFIERS_INLINE", "inline"}, {VALA_CCODE_MODIFIERS_VOLATILE, "VALA_CCODE_MODIFIERS_VOLATILE", "volatile"}, {VALA_CCODE_MODIFIERS_DEPRECATED, "VALA_CCODE_MODIFIERS_DEPRECATED", "deprecated"}, {VALA_CCODE_MODIFIERS_THREAD_LOCAL, "VALA_CCODE_MODIFIERS_THREAD_LOCAL", "thread-local"}, {0, NULL, NULL}};
+		static const GFlagsValue values[] = {{VALA_CCODE_MODIFIERS_NONE, "VALA_CCODE_MODIFIERS_NONE", "none"}, {VALA_CCODE_MODIFIERS_STATIC, "VALA_CCODE_MODIFIERS_STATIC", "static"}, {VALA_CCODE_MODIFIERS_REGISTER, "VALA_CCODE_MODIFIERS_REGISTER", "register"}, {VALA_CCODE_MODIFIERS_EXTERN, "VALA_CCODE_MODIFIERS_EXTERN", "extern"}, {VALA_CCODE_MODIFIERS_INLINE, "VALA_CCODE_MODIFIERS_INLINE", "inline"}, {VALA_CCODE_MODIFIERS_VOLATILE, "VALA_CCODE_MODIFIERS_VOLATILE", "volatile"}, {VALA_CCODE_MODIFIERS_DEPRECATED, "VALA_CCODE_MODIFIERS_DEPRECATED", "deprecated"}, {VALA_CCODE_MODIFIERS_THREAD_LOCAL, "VALA_CCODE_MODIFIERS_THREAD_LOCAL", "thread-local"}, {VALA_CCODE_MODIFIERS_INTERNAL, "VALA_CCODE_MODIFIERS_INTERNAL", "internal"}, {0, NULL, NULL}};
 		GType vala_ccode_modifiers_type_id;
 		vala_ccode_modifiers_type_id = g_flags_register_static ("ValaCCodeModifiers", values);
 		g_once_init_leave (&vala_ccode_modifiers_type_id__volatile, vala_ccode_modifiers_type_id);

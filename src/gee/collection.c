@@ -167,7 +167,7 @@ gboolean vala_collection_add (ValaCollection* self, gconstpointer item) {
 
 
 /**
- * Removes the first occurence of an item from this collection. Must not
+ * Removes the first occurrence of an item from this collection. Must not
  * be called on read-only collections.
  *
  * @param item the item to remove from the collection
@@ -221,10 +221,10 @@ gint vala_collection_get_size (ValaCollection* self) {
 static void vala_collection_class_init (ValaCollectionClass * klass) {
 	vala_collection_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (ValaCollectionPrivate));
-	VALA_COLLECTION_CLASS (klass)->contains = vala_collection_real_contains;
-	VALA_COLLECTION_CLASS (klass)->add = vala_collection_real_add;
-	VALA_COLLECTION_CLASS (klass)->remove = vala_collection_real_remove;
-	VALA_COLLECTION_CLASS (klass)->clear = vala_collection_real_clear;
+	((ValaCollectionClass *) klass)->contains = vala_collection_real_contains;
+	((ValaCollectionClass *) klass)->add = vala_collection_real_add;
+	((ValaCollectionClass *) klass)->remove = vala_collection_real_remove;
+	((ValaCollectionClass *) klass)->clear = vala_collection_real_clear;
 }
 
 

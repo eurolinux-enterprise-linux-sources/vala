@@ -602,21 +602,16 @@ public class Vala.Genie.Parser : CodeVisitor {
 
 		// inline-allocated array
 		if (type != null && accept (TokenType.OPEN_BRACKET)) {
-			int array_length = -1;
+			Expression array_length = null;
 
 			if (current () != TokenType.CLOSE_BRACKET) {
-				if (current () != TokenType.INTEGER_LITERAL) {
-					throw new ParseError.SYNTAX (get_error ("expected `]' or integer literal"));
- 				}
-
-				var length_literal = (IntegerLiteral) parse_literal ();
-				array_length = int.parse (length_literal.value);
+				array_length = parse_expression ();
  			}
 			expect (TokenType.CLOSE_BRACKET);
 
 			var array_type = new ArrayType (type, 1, get_src (begin));
 			array_type.inline_allocated = true;
-			if (array_length > 0) {
+			if (array_length != null) {
 				array_type.fixed_length = true;
 				array_type.length = array_length;
 			}
@@ -835,8 +830,6 @@ public class Vala.Genie.Parser : CodeVisitor {
 					i++;
 					
 					if (p_expr != null) { 
-						
-						
 						if (p_expr is StringLiteral) {
 							var s_exp = (StringLiteral) p_expr;
 							var len = s_exp.value.length;
@@ -846,14 +839,16 @@ public class Vala.Genie.Parser : CodeVisitor {
 								var st =  s_exp.value.substring (0, len-1);
 								st += s;
 								s_exp.value = st;
+							} else {
+								string s = "\"\\n\"";
+								p_expr = new StringLiteral (s, get_src (begin));
 							}
 						} else {
-							string s = "\"\\n\"";
-							var rhs = new StringLiteral (s, get_src (begin));
-							p_expr = new BinaryExpression (BinaryOperator.PLUS, p_expr, rhs, get_src (begin));
+							string s = "\"%s\\n\"";
+							var s_exp = new StringLiteral (s, get_src (begin));
+							list.add (s_exp);
 						}
 					}
-				
 				} 
 				list.add (p_expr);
 
@@ -2648,7 +2643,7 @@ public class Vala.Genie.Parser : CodeVisitor {
 		if (ModifierFlags.PRIVATE in flags) {
 			cl.access = SymbolAccessibility.PRIVATE;
 		} else {
-			/* class must always be Public unless its name starts wtih underscore */
+			/* class must always be Public unless its name starts with underscore */
 			if (sym.name[0] == '_') {
 				cl.access = SymbolAccessibility.PRIVATE;
 			} else {

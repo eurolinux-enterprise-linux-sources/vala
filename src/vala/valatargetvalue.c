@@ -113,7 +113,7 @@ static void vala_target_value_finalize (ValaTargetValue* obj);
 
 ValaTargetValue* vala_target_value_construct (GType object_type, ValaDataType* value_type) {
 	ValaTargetValue* self = NULL;
-	ValaDataType* _tmp0_;
+	ValaDataType* _tmp0_ = NULL;
 	self = (ValaTargetValue*) g_type_create_instance (object_type);
 	_tmp0_ = value_type;
 	vala_target_value_set_value_type (self, _tmp0_);
@@ -123,7 +123,7 @@ ValaTargetValue* vala_target_value_construct (GType object_type, ValaDataType* v
 
 ValaDataType* vala_target_value_get_value_type (ValaTargetValue* self) {
 	ValaDataType* result;
-	ValaDataType* _tmp0_;
+	ValaDataType* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_value_type;
 	result = _tmp0_;
@@ -137,8 +137,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_target_value_set_value_type (ValaTargetValue* self, ValaDataType* value) {
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -149,7 +149,7 @@ void vala_target_value_set_value_type (ValaTargetValue* self, ValaDataType* valu
 
 ValaDataType* vala_target_value_get_actual_value_type (ValaTargetValue* self) {
 	ValaDataType* result;
-	ValaDataType* _tmp0_;
+	ValaDataType* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_actual_value_type;
 	result = _tmp0_;
@@ -158,8 +158,8 @@ ValaDataType* vala_target_value_get_actual_value_type (ValaTargetValue* self) {
 
 
 void vala_target_value_set_actual_value_type (ValaTargetValue* self, ValaDataType* value) {
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -280,7 +280,7 @@ void vala_value_take_target_value (GValue* value, gpointer v_object) {
 
 static void vala_target_value_class_init (ValaTargetValueClass * klass) {
 	vala_target_value_parent_class = g_type_class_peek_parent (klass);
-	VALA_TARGET_VALUE_CLASS (klass)->finalize = vala_target_value_finalize;
+	((ValaTargetValueClass *) klass)->finalize = vala_target_value_finalize;
 	g_type_class_add_private (klass, sizeof (ValaTargetValuePrivate));
 }
 
@@ -294,6 +294,7 @@ static void vala_target_value_instance_init (ValaTargetValue * self) {
 static void vala_target_value_finalize (ValaTargetValue* obj) {
 	ValaTargetValue * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_TARGET_VALUE, ValaTargetValue);
+	g_signal_handlers_destroy (self);
 	_vala_code_node_unref0 (self->priv->_value_type);
 	_vala_code_node_unref0 (self->priv->_actual_value_type);
 }

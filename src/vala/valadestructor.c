@@ -543,7 +543,7 @@ static void vala_destructor_finalize (ValaCodeNode* obj);
  */
 ValaDestructor* vala_destructor_construct (GType object_type, ValaSourceReference* source_reference) {
 	ValaDestructor* self = NULL;
-	ValaSourceReference* _tmp0_;
+	ValaSourceReference* _tmp0_ = NULL;
 	_tmp0_ = source_reference;
 	self = (ValaDestructor*) vala_subroutine_construct (object_type, NULL, _tmp0_, NULL);
 	return self;
@@ -557,7 +557,7 @@ ValaDestructor* vala_destructor_new (ValaSourceReference* source_reference) {
 
 static void vala_destructor_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaDestructor * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaDestructor*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -567,16 +567,16 @@ static void vala_destructor_real_accept (ValaCodeNode* base, ValaCodeVisitor* vi
 
 static void vala_destructor_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaDestructor * self;
-	ValaBlock* _tmp0_;
-	ValaBlock* _tmp1_;
+	ValaBlock* _tmp0_ = NULL;
+	ValaBlock* _tmp1_ = NULL;
 	self = (ValaDestructor*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_subroutine_get_body ((ValaSubroutine*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_ != NULL) {
-		ValaBlock* _tmp2_;
-		ValaBlock* _tmp3_;
-		ValaCodeVisitor* _tmp4_;
+		ValaBlock* _tmp2_ = NULL;
+		ValaBlock* _tmp3_ = NULL;
+		ValaCodeVisitor* _tmp4_ = NULL;
 		_tmp2_ = vala_subroutine_get_body ((ValaSubroutine*) self);
 		_tmp3_ = _tmp2_;
 		_tmp4_ = visitor;
@@ -588,39 +588,39 @@ static void vala_destructor_real_accept_children (ValaCodeNode* base, ValaCodeVi
 static gboolean vala_destructor_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaDestructor * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaCodeContext* _tmp4_;
-	ValaSemanticAnalyzer* _tmp5_;
-	ValaSemanticAnalyzer* _tmp6_;
-	ValaSymbol* _tmp7_;
-	ValaSymbol* _tmp8_;
-	ValaScope* _tmp9_;
-	ValaScope* _tmp10_;
-	ValaCodeContext* _tmp11_;
-	ValaSemanticAnalyzer* _tmp12_;
-	ValaSemanticAnalyzer* _tmp13_;
-	ValaBlock* _tmp14_;
-	ValaBlock* _tmp15_;
-	ValaCodeContext* _tmp19_;
-	ValaSemanticAnalyzer* _tmp20_;
-	ValaSemanticAnalyzer* _tmp21_;
-	ValaCodeContext* _tmp22_;
-	ValaSemanticAnalyzer* _tmp23_;
-	ValaSemanticAnalyzer* _tmp24_;
-	ValaSymbol* _tmp25_;
-	ValaSymbol* _tmp26_;
-	ValaSymbol* _tmp27_;
-	ValaSymbol* _tmp28_;
-	gboolean _tmp29_;
-	gboolean _tmp30_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaCodeContext* _tmp4_ = NULL;
+	ValaSemanticAnalyzer* _tmp5_ = NULL;
+	ValaSemanticAnalyzer* _tmp6_ = NULL;
+	ValaSymbol* _tmp7_ = NULL;
+	ValaSymbol* _tmp8_ = NULL;
+	ValaScope* _tmp9_ = NULL;
+	ValaScope* _tmp10_ = NULL;
+	ValaCodeContext* _tmp11_ = NULL;
+	ValaSemanticAnalyzer* _tmp12_ = NULL;
+	ValaSemanticAnalyzer* _tmp13_ = NULL;
+	ValaBlock* _tmp14_ = NULL;
+	ValaBlock* _tmp15_ = NULL;
+	ValaCodeContext* _tmp19_ = NULL;
+	ValaSemanticAnalyzer* _tmp20_ = NULL;
+	ValaSemanticAnalyzer* _tmp21_ = NULL;
+	ValaCodeContext* _tmp22_ = NULL;
+	ValaSemanticAnalyzer* _tmp23_ = NULL;
+	ValaSemanticAnalyzer* _tmp24_ = NULL;
+	ValaSymbol* _tmp25_ = NULL;
+	ValaSymbol* _tmp26_ = NULL;
+	ValaSymbol* _tmp27_ = NULL;
+	ValaSymbol* _tmp28_ = NULL;
+	gboolean _tmp29_ = FALSE;
+	gboolean _tmp30_ = FALSE;
 	self = (ValaDestructor*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -642,9 +642,9 @@ static gboolean vala_destructor_real_check (ValaCodeNode* base, ValaCodeContext*
 	_tmp14_ = vala_subroutine_get_body ((ValaSubroutine*) self);
 	_tmp15_ = _tmp14_;
 	if (_tmp15_ != NULL) {
-		ValaBlock* _tmp16_;
-		ValaBlock* _tmp17_;
-		ValaCodeContext* _tmp18_;
+		ValaBlock* _tmp16_ = NULL;
+		ValaBlock* _tmp17_ = NULL;
+		ValaCodeContext* _tmp18_ = NULL;
 		_tmp16_ = vala_subroutine_get_body ((ValaSubroutine*) self);
 		_tmp17_ = _tmp16_;
 		_tmp18_ = context;
@@ -670,7 +670,7 @@ static gboolean vala_destructor_real_check (ValaCodeNode* base, ValaCodeContext*
 
 ValaParameter* vala_destructor_get_this_parameter (ValaDestructor* self) {
 	ValaParameter* result;
-	ValaParameter* _tmp0_;
+	ValaParameter* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_this_parameter;
 	result = _tmp0_;
@@ -684,8 +684,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_destructor_set_this_parameter (ValaDestructor* self, ValaParameter* value) {
-	ValaParameter* _tmp0_;
-	ValaParameter* _tmp1_;
+	ValaParameter* _tmp0_ = NULL;
+	ValaParameter* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -696,7 +696,7 @@ void vala_destructor_set_this_parameter (ValaDestructor* self, ValaParameter* va
 
 ValaMemberBinding vala_destructor_get_binding (ValaDestructor* self) {
 	ValaMemberBinding result;
-	ValaMemberBinding _tmp0_;
+	ValaMemberBinding _tmp0_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->_binding;
 	result = _tmp0_;
@@ -705,7 +705,7 @@ ValaMemberBinding vala_destructor_get_binding (ValaDestructor* self) {
 
 
 void vala_destructor_set_binding (ValaDestructor* self, ValaMemberBinding value) {
-	ValaMemberBinding _tmp0_;
+	ValaMemberBinding _tmp0_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_binding = _tmp0_;
@@ -723,11 +723,11 @@ static gboolean vala_destructor_real_get_has_result (ValaSubroutine* base) {
 
 static void vala_destructor_class_init (ValaDestructorClass * klass) {
 	vala_destructor_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_destructor_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_destructor_finalize;
 	g_type_class_add_private (klass, sizeof (ValaDestructorPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_destructor_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_destructor_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_destructor_real_check;
+	((ValaCodeNodeClass *) klass)->accept = vala_destructor_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_destructor_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = vala_destructor_real_check;
 	VALA_SUBROUTINE_CLASS (klass)->get_has_result = vala_destructor_real_get_has_result;
 }
 

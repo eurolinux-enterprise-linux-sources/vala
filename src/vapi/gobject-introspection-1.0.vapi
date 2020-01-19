@@ -48,6 +48,7 @@ namespace GI {
 		public static bool can_throw_gerror (GI.CallableInfo info);
 		public static GI.ArgInfo get_arg (GI.CallableInfo info, int n);
 		public static GI.Transfer get_caller_owns (GI.CallableInfo info);
+		public static GI.Transfer get_instance_ownership_transfer (GI.CallableInfo info);
 		public static int get_n_args (GI.CallableInfo info);
 		public static unowned string get_return_attribute (GI.CallableInfo info, string name);
 		public static GI.TypeInfo get_return_type (GI.CallableInfo info);
@@ -126,6 +127,7 @@ namespace GI {
 		protected ObjectInfo ();
 		public static GI.FunctionInfo find_method (GI.ObjectInfo info, string name);
 		public static GI.FunctionInfo find_method_using_interfaces (GI.ObjectInfo info, string name, out GI.ObjectInfo implementor);
+		public static GI.SignalInfo find_signal (GI.ObjectInfo info, string name);
 		public static GI.VFuncInfo find_vfunc (GI.ObjectInfo info, string name);
 		public static GI.VFuncInfo find_vfunc_using_interfaces (GI.ObjectInfo info, string name, out GI.ObjectInfo implementor);
 		public static bool get_abstract (GI.ObjectInfo info);
@@ -193,6 +195,7 @@ namespace GI {
 		public unowned string get_version (string namespace_);
 		public bool is_registered (string namespace_, string? version);
 		public unowned string load_typelib (GI.Typelib typelib, GI.RepositoryLoadFlags flags) throws GLib.Error;
+		public static void prepend_library_path (string directory);
 		public static void prepend_search_path (string directory);
 		public unowned GI.Typelib require (string namespace_, string? version, GI.RepositoryLoadFlags flags) throws GLib.Error;
 		public unowned GI.Typelib require_private (string typelib_dir, string namespace_, string? version, GI.RepositoryLoadFlags flags) throws GLib.Error;
@@ -300,9 +303,6 @@ namespace GI {
 	}
 	[CCode (cheader_filename = "girepository.h", has_type_id = false)]
 	public struct AttributeIter {
-	}
-	[CCode (cheader_filename = "girepository.h", cname = "_GIBaseInfoStub", has_type_id = false)]
-	public struct _BaseInfoStub {
 	}
 	[CCode (cheader_filename = "girepository.h", cprefix = "GI_ARRAY_TYPE_", has_type_id = false)]
 	public enum ArrayType {

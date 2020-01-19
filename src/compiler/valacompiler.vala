@@ -44,6 +44,8 @@ class Vala.Compiler {
 	[CCode (array_length = false, array_null_terminated = true)]
 	static string[] fast_vapis;
 	static string target_glib;
+	[CCode (array_length = false, array_null_terminated = true)]
+	static string[] gresources;
 
 	static bool ccode_only;
 	static string header_filename;
@@ -51,6 +53,7 @@ class Vala.Compiler {
 	static string internal_header_filename;
 	static string internal_vapi_filename;
 	static string fast_vapi_filename;
+	static bool vapi_comments;
 	static string symbols_filename;
 	static string includedir;
 	static bool compile_only;
@@ -61,6 +64,7 @@ class Vala.Compiler {
 	static bool disable_assert;
 	static bool enable_checking;
 	static bool deprecated;
+	static bool hide_internal;
 	static bool experimental;
 	static bool experimental_non_null;
 	static bool gobject_tracing;
@@ -68,6 +72,7 @@ class Vala.Compiler {
 	static string cc_command;
 	[CCode (array_length = false, array_null_terminated = true)]
 	static string[] cc_options;
+	static string pkg_config_command;
 	static string dump_tree;
 	static bool save_temps;
 	[CCode (array_length = false, array_null_terminated = true)]
@@ -107,6 +112,7 @@ class Vala.Compiler {
 		{ "internal-vapi", 0, 0, OptionArg.FILENAME, ref internal_vapi_filename, "Output vapi with internal api", "FILE" },
 		{ "fast-vapi", 0, 0, OptionArg.STRING, ref fast_vapi_filename, "Output vapi without performing symbol resolution", null },
 		{ "use-fast-vapi", 0, 0, OptionArg.STRING_ARRAY, ref fast_vapis, "Use --fast-vapi output during this compile", null },
+		{ "vapi-comments", 0, 0, OptionArg.NONE, ref vapi_comments, "Include comments in generated vapi", null },
 		{ "deps", 0, 0, OptionArg.STRING, ref dependencies, "Write make-style dependency information to this file", null },
 		{ "symbols", 0, 0, OptionArg.FILENAME, ref symbols_filename, "Output symbols file", "FILE" },
 		{ "compile", 'c', 0, OptionArg.NONE, ref compile_only, "Compile but do not link", null },
@@ -120,6 +126,7 @@ class Vala.Compiler {
 		{ "disable-assert", 0, 0, OptionArg.NONE, ref disable_assert, "Disable assertions", null },
 		{ "enable-checking", 0, 0, OptionArg.NONE, ref enable_checking, "Enable additional run-time checks", null },
 		{ "enable-deprecated", 0, 0, OptionArg.NONE, ref deprecated, "Enable deprecated features", null },
+		{ "hide-internal", 0, 0, OptionArg.NONE, ref hide_internal, "Hide symbols marked as internal", null },
 		{ "enable-experimental", 0, 0, OptionArg.NONE, ref experimental, "Enable experimental features", null },
 		{ "disable-warnings", 0, 0, OptionArg.NONE, ref disable_warnings, "Disable warnings", null },
 		{ "fatal-warnings", 0, 0, OptionArg.NONE, ref fatal_warnings, "Treat warnings as fatal", null },
@@ -127,12 +134,14 @@ class Vala.Compiler {
 		{ "enable-gobject-tracing", 0, 0, OptionArg.NONE, ref gobject_tracing, "Enable GObject creation tracing", null },
 		{ "cc", 0, 0, OptionArg.STRING, ref cc_command, "Use COMMAND as C compiler command", "COMMAND" },
 		{ "Xcc", 'X', 0, OptionArg.STRING_ARRAY, ref cc_options, "Pass OPTION to the C compiler", "OPTION..." },
+		{ "pkg-config", 0, 0, OptionArg.STRING, ref pkg_config_command, "Use COMMAND as pkg-config command", "COMMAND" },
 		{ "dump-tree", 0, 0, OptionArg.FILENAME, ref dump_tree, "Write code tree to FILE", "FILE" },
 		{ "save-temps", 0, 0, OptionArg.NONE, ref save_temps, "Keep temporary files", null },
 		{ "profile", 0, 0, OptionArg.STRING, ref profile, "Use the given profile instead of the default", "PROFILE" },
 		{ "quiet", 'q', 0, OptionArg.NONE, ref quiet_mode, "Do not print messages to the console", null },
 		{ "verbose", 'v', 0, OptionArg.NONE, ref verbose_mode, "Print additional messages to the console", null },
 		{ "target-glib", 0, 0, OptionArg.STRING, ref target_glib, "Target version of glib for code generation", "MAJOR.MINOR" },
+		{ "gresources", 0, 0, OptionArg.STRING_ARRAY, ref gresources, "XML of gresources", "FILE..." },
 		{ "enable-version-header", 0, 0, OptionArg.NONE, ref enable_version_header, "Write vala build version in generated files", null },
 		{ "disable-version-header", 0, 0, OptionArg.NONE, ref disable_version_header, "Do not write vala build version in generated files", null },
 		{ "", 0, 0, OptionArg.FILENAME_ARRAY, ref sources, null, "FILE..." },
@@ -173,6 +182,7 @@ class Vala.Compiler {
 		context.assert = !disable_assert;
 		context.checking = enable_checking;
 		context.deprecated = deprecated;
+		context.hide_internal = hide_internal;
 		context.experimental = experimental;
 		context.experimental_non_null = experimental_non_null;
 		context.gobject_tracing = gobject_tracing;
@@ -182,6 +192,9 @@ class Vala.Compiler {
 		context.version_header = !disable_version_header;
 
 		context.ccode_only = ccode_only;
+		if (ccode_only && cc_options != null) {
+			Report.warning (null, "-X has no effect when -C or --ccode is set");
+		}
 		context.compile_only = compile_only;
 		context.header_filename = header_filename;
 		if (header_filename == null && use_header) {
@@ -192,6 +205,9 @@ class Vala.Compiler {
 		context.symbols_filename = symbols_filename;
 		context.includedir = includedir;
 		context.output = output;
+		if (output != null && ccode_only) {
+			Report.warning (null, "--output and -o have no effect when -C or --ccode is set");
+		}
 		if (basedir == null) {
 			context.basedir = CodeContext.realpath (".");
 		} else {
@@ -203,12 +219,16 @@ class Vala.Compiler {
 			context.directory = context.basedir;
 		}
 		context.vapi_directories = vapi_directories;
+		context.vapi_comments = vapi_comments;
 		context.gir_directories = gir_directories;
 		context.metadata_directories = metadata_directories;
 		context.debug = debug;
 		context.thread = thread;
 		context.mem_profiler = mem_profiler;
 		context.save_temps = save_temps;
+		if (ccode_only && save_temps) {
+			Report.warning (null, "--save-temps has no effect when -C or --ccode is set");
+		}
 		if (profile == "gobject-2.0" || profile == "gobject" || profile == null) {
 			// default profile
 			context.profile = Profile.GOBJECT;
@@ -229,12 +249,12 @@ class Vala.Compiler {
 			}
 		}
 
-		for (int i = 2; i <= 20; i += 2) {
+		for (int i = 2; i <= 26; i += 2) {
 			context.add_define ("VALA_0_%d".printf (i));
 		}
 
 		int glib_major = 2;
-		int glib_minor = 18;
+		int glib_minor = 24;
 		if (target_glib != null && target_glib.scanf ("%d.%d", out glib_major, out glib_minor) != 2) {
 			Report.error (null, "Invalid format for --target-glib");
 		}
@@ -270,6 +290,8 @@ class Vala.Compiler {
 			}
 			context.use_fast_vapi = true;
 		}
+
+		context.gresources = gresources;
 		
 		if (context.report.get_errors () > 0 || (fatal_warnings && context.report.get_warnings () > 0)) {
 			return quit ();
@@ -278,16 +300,22 @@ class Vala.Compiler {
 		context.codegen = new GDBusServerModule ();
 
 		bool has_c_files = false;
+		bool has_h_files = false;
 
 		foreach (string source in sources) {
 			if (context.add_source_filename (source, run_output, true)) {
 				if (source.has_suffix (".c")) {
 					has_c_files = true;
+				} else if (source.has_suffix (".h")) {
+					has_h_files = true;
 				}
 			}
 		}
 		sources = null;
-		
+		if (ccode_only && (has_c_files || has_h_files)) {
+			Report.warning (null, "C header and source files are ignored when -C or --ccode is set");
+		}
+
 		if (context.report.get_errors () > 0 || (fatal_warnings && context.report.get_warnings () > 0)) {
 			return quit ();
 		}
@@ -346,14 +374,15 @@ class Vala.Compiler {
 
 		if (library != null) {
 			if (gir != null) {
-				long gir_len = gir.length;
-				int last_hyphen = gir.last_index_of_char ('-');
+				string gir_base = Path.get_basename(gir);
+				long gir_len = gir_base.length;
+				int last_hyphen = gir_base.last_index_of_char ('-');
 
-				if (last_hyphen == -1 || !gir.has_suffix (".gir")) {
+				if (last_hyphen == -1 || !gir_base.has_suffix (".gir")) {
 					Report.error (null, "GIR file name `%s' is not well-formed, expected NAME-VERSION.gir".printf (gir));
 				} else {
-					string gir_namespace = gir.substring (0, last_hyphen);
-					string gir_version = gir.substring (last_hyphen + 1, gir_len - last_hyphen - 5);
+					string gir_namespace = gir_base.substring (0, last_hyphen);
+					string gir_version = gir_base.substring (last_hyphen + 1, gir_len - last_hyphen - 5);
 					gir_version.canon ("0123456789.", '?');
 					if (gir_namespace == "" || gir_version == "" || !gir_version[0].isdigit () || gir_version.contains ("?")) {
 						Report.error (null, "GIR file name `%s' is not well-formed, expected NAME-VERSION.gir".printf (gir));
@@ -366,7 +395,7 @@ class Vala.Compiler {
 							gir_directory = context.directory;
 						}
 
-						gir_writer.write_file (context, gir_directory, gir_namespace, gir_version, library);
+						gir_writer.write_file (context, gir_directory, gir, gir_namespace, gir_version, library);
 					}
 				}
 
@@ -418,10 +447,13 @@ class Vala.Compiler {
 			if (cc_command == null && Environment.get_variable ("CC") != null) {
 				cc_command = Environment.get_variable ("CC");
 			}
+			if (pkg_config_command == null && Environment.get_variable ("PKG_CONFIG") != null) {
+				pkg_config_command = Environment.get_variable ("PKG_CONFIG");
+			}
 			if (cc_options == null) {
-				ccompiler.compile (context, cc_command, new string[] { });
+				ccompiler.compile (context, cc_command, new string[] { }, pkg_config_command);
 			} else {
-				ccompiler.compile (context, cc_command, cc_options);
+				ccompiler.compile (context, cc_command, cc_options, pkg_config_command);
 			}
 		}
 
@@ -452,6 +484,14 @@ class Vala.Compiler {
 			i++;
 		}
 
+		if (version) {
+			stdout.printf ("Vala %s\n", Config.BUILD_VERSION);
+			return 0;
+		} else if (api_version) {
+			stdout.printf ("%s\n", Config.PACKAGE_SUFFIX.substring (1));
+			return 0;
+		}
+		
 		if (args[i] == null) {
 			stderr.printf ("No source file specified.\n");
 			return 1;

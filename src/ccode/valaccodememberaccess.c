@@ -155,9 +155,9 @@ static void vala_ccode_member_access_finalize (ValaCCodeNode* obj);
 
 ValaCCodeMemberAccess* vala_ccode_member_access_construct (GType object_type, ValaCCodeExpression* container, const gchar* member, gboolean pointer) {
 	ValaCCodeMemberAccess* self = NULL;
-	ValaCCodeExpression* _tmp0_;
-	const gchar* _tmp1_;
-	gboolean _tmp2_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
+	gboolean _tmp2_ = FALSE;
 	g_return_val_if_fail (container != NULL, NULL);
 	g_return_val_if_fail (member != NULL, NULL);
 	self = (ValaCCodeMemberAccess*) vala_ccode_expression_construct (object_type);
@@ -178,8 +178,8 @@ ValaCCodeMemberAccess* vala_ccode_member_access_new (ValaCCodeExpression* contai
 
 ValaCCodeMemberAccess* vala_ccode_member_access_construct_pointer (GType object_type, ValaCCodeExpression* container, const gchar* member) {
 	ValaCCodeMemberAccess* self = NULL;
-	ValaCCodeExpression* _tmp0_;
-	const gchar* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	g_return_val_if_fail (container != NULL, NULL);
 	g_return_val_if_fail (member != NULL, NULL);
 	self = (ValaCCodeMemberAccess*) vala_ccode_expression_construct (object_type);
@@ -199,11 +199,11 @@ ValaCCodeMemberAccess* vala_ccode_member_access_new_pointer (ValaCCodeExpression
 
 static void vala_ccode_member_access_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeMemberAccess * self;
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	gboolean _tmp2_;
-	ValaCCodeWriter* _tmp5_;
-	const gchar* _tmp6_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	gboolean _tmp2_ = FALSE;
+	ValaCCodeWriter* _tmp5_ = NULL;
+	const gchar* _tmp6_ = NULL;
 	self = (ValaCCodeMemberAccess*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = self->priv->_inner;
@@ -211,11 +211,11 @@ static void vala_ccode_member_access_real_write (ValaCCodeNode* base, ValaCCodeW
 	vala_ccode_expression_write_inner (_tmp0_, _tmp1_);
 	_tmp2_ = self->priv->_is_pointer;
 	if (_tmp2_) {
-		ValaCCodeWriter* _tmp3_;
+		ValaCCodeWriter* _tmp3_ = NULL;
 		_tmp3_ = writer;
 		vala_ccode_writer_write_string (_tmp3_, "->");
 	} else {
-		ValaCCodeWriter* _tmp4_;
+		ValaCCodeWriter* _tmp4_ = NULL;
 		_tmp4_ = writer;
 		vala_ccode_writer_write_string (_tmp4_, ".");
 	}
@@ -227,7 +227,7 @@ static void vala_ccode_member_access_real_write (ValaCCodeNode* base, ValaCCodeW
 
 ValaCCodeExpression* vala_ccode_member_access_get_inner (ValaCCodeMemberAccess* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_inner;
 	result = _tmp0_;
@@ -241,8 +241,8 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 
 void vala_ccode_member_access_set_inner (ValaCCodeMemberAccess* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -253,7 +253,7 @@ void vala_ccode_member_access_set_inner (ValaCCodeMemberAccess* self, ValaCCodeE
 
 const gchar* vala_ccode_member_access_get_member_name (ValaCCodeMemberAccess* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_member_name;
 	result = _tmp0_;
@@ -262,8 +262,8 @@ const gchar* vala_ccode_member_access_get_member_name (ValaCCodeMemberAccess* se
 
 
 void vala_ccode_member_access_set_member_name (ValaCCodeMemberAccess* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -274,7 +274,7 @@ void vala_ccode_member_access_set_member_name (ValaCCodeMemberAccess* self, cons
 
 gboolean vala_ccode_member_access_get_is_pointer (ValaCCodeMemberAccess* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_is_pointer;
 	result = _tmp0_;
@@ -283,7 +283,7 @@ gboolean vala_ccode_member_access_get_is_pointer (ValaCCodeMemberAccess* self) {
 
 
 void vala_ccode_member_access_set_is_pointer (ValaCCodeMemberAccess* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_is_pointer = _tmp0_;
@@ -292,9 +292,9 @@ void vala_ccode_member_access_set_is_pointer (ValaCCodeMemberAccess* self, gbool
 
 static void vala_ccode_member_access_class_init (ValaCCodeMemberAccessClass * klass) {
 	vala_ccode_member_access_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_member_access_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_member_access_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeMemberAccessPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_member_access_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_member_access_real_write;
 }
 
 

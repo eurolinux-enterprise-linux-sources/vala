@@ -112,7 +112,7 @@ ValaCCodeNode* vala_ccode_node_construct (GType object_type);
 
 
 static void vala_ccode_expression_real_write_inner (ValaCCodeExpression* self, ValaCCodeWriter* writer) {
-	ValaCCodeWriter* _tmp0_;
+	ValaCCodeWriter* _tmp0_ = NULL;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
 	vala_ccode_node_write ((ValaCCodeNode*) self, _tmp0_);
@@ -134,7 +134,7 @@ ValaCCodeExpression* vala_ccode_expression_construct (GType object_type) {
 
 static void vala_ccode_expression_class_init (ValaCCodeExpressionClass * klass) {
 	vala_ccode_expression_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_EXPRESSION_CLASS (klass)->write_inner = vala_ccode_expression_real_write_inner;
+	((ValaCCodeExpressionClass *) klass)->write_inner = vala_ccode_expression_real_write_inner;
 }
 
 

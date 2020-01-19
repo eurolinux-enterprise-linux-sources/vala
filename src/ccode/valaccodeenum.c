@@ -158,7 +158,7 @@ static void vala_ccode_enum_finalize (ValaCCodeNode* obj);
 
 ValaCCodeEnum* vala_ccode_enum_construct (GType object_type, const gchar* name) {
 	ValaCCodeEnum* self = NULL;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	self = (ValaCCodeEnum*) vala_ccode_node_construct (object_type);
 	_tmp0_ = name;
 	vala_ccode_enum_set_name (self, _tmp0_);
@@ -178,8 +178,8 @@ ValaCCodeEnum* vala_ccode_enum_new (const gchar* name) {
  * @param value optional numerical value
  */
 void vala_ccode_enum_add_value (ValaCCodeEnum* self, ValaCCodeEnumValue* value) {
-	ValaList* _tmp0_;
-	ValaCCodeEnumValue* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaCCodeEnumValue* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (value != NULL);
 	_tmp0_ = self->priv->values;
@@ -195,21 +195,21 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 
 static void vala_ccode_enum_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeEnum * self;
-	const gchar* _tmp0_;
-	ValaCCodeWriter* _tmp2_;
-	ValaCCodeWriter* _tmp3_;
-	gboolean first;
-	gboolean _tmp21_;
-	ValaCCodeWriter* _tmp23_;
-	const gchar* _tmp24_;
-	gboolean _tmp28_;
-	ValaCCodeWriter* _tmp30_;
-	ValaCCodeWriter* _tmp31_;
+	const gchar* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp2_ = NULL;
+	ValaCCodeWriter* _tmp3_ = NULL;
+	gboolean first = FALSE;
+	gboolean _tmp21_ = FALSE;
+	ValaCCodeWriter* _tmp23_ = NULL;
+	const gchar* _tmp24_ = NULL;
+	gboolean _tmp28_ = FALSE;
+	ValaCCodeWriter* _tmp30_ = NULL;
+	ValaCCodeWriter* _tmp31_ = NULL;
 	self = (ValaCCodeEnum*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = self->priv->_name;
 	if (_tmp0_ != NULL) {
-		ValaCCodeWriter* _tmp1_;
+		ValaCCodeWriter* _tmp1_ = NULL;
 		_tmp1_ = writer;
 		vala_ccode_writer_write_string (_tmp1_, "typedef ");
 	}
@@ -219,14 +219,14 @@ static void vala_ccode_enum_real_write (ValaCCodeNode* base, ValaCCodeWriter* wr
 	vala_ccode_writer_write_begin_block (_tmp3_);
 	first = TRUE;
 	{
-		ValaList* _tmp4_;
-		ValaList* _tmp5_;
-		ValaList* _value_list;
-		ValaList* _tmp6_;
-		gint _tmp7_;
-		gint _tmp8_;
-		gint _value_size;
-		gint _value_index;
+		ValaList* _value_list = NULL;
+		ValaList* _tmp4_ = NULL;
+		ValaList* _tmp5_ = NULL;
+		gint _value_size = 0;
+		ValaList* _tmp6_ = NULL;
+		gint _tmp7_ = 0;
+		gint _tmp8_ = 0;
+		gint _value_index = 0;
 		_tmp4_ = self->priv->values;
 		_tmp5_ = _vala_iterable_ref0 (_tmp4_);
 		_value_list = _tmp5_;
@@ -236,17 +236,17 @@ static void vala_ccode_enum_real_write (ValaCCodeNode* base, ValaCCodeWriter* wr
 		_value_size = _tmp8_;
 		_value_index = -1;
 		while (TRUE) {
-			gint _tmp9_;
-			gint _tmp10_;
-			gint _tmp11_;
-			ValaList* _tmp12_;
-			gint _tmp13_;
+			gint _tmp9_ = 0;
+			gint _tmp10_ = 0;
+			gint _tmp11_ = 0;
+			ValaCCodeEnumValue* value = NULL;
+			ValaList* _tmp12_ = NULL;
+			gint _tmp13_ = 0;
 			gpointer _tmp14_ = NULL;
-			ValaCCodeEnumValue* value;
-			gboolean _tmp15_;
-			ValaCCodeWriter* _tmp18_;
-			ValaCCodeEnumValue* _tmp19_;
-			ValaCCodeWriter* _tmp20_;
+			gboolean _tmp15_ = FALSE;
+			ValaCCodeWriter* _tmp18_ = NULL;
+			ValaCCodeEnumValue* _tmp19_ = NULL;
+			ValaCCodeWriter* _tmp20_ = NULL;
 			_tmp9_ = _value_index;
 			_value_index = _tmp9_ + 1;
 			_tmp10_ = _value_index;
@@ -260,8 +260,8 @@ static void vala_ccode_enum_real_write (ValaCCodeNode* base, ValaCCodeWriter* wr
 			value = (ValaCCodeEnumValue*) _tmp14_;
 			_tmp15_ = first;
 			if (!_tmp15_) {
-				ValaCCodeWriter* _tmp16_;
-				ValaCCodeWriter* _tmp17_;
+				ValaCCodeWriter* _tmp16_ = NULL;
+				ValaCCodeWriter* _tmp17_ = NULL;
 				_tmp16_ = writer;
 				vala_ccode_writer_write_string (_tmp16_, ",");
 				_tmp17_ = writer;
@@ -279,7 +279,7 @@ static void vala_ccode_enum_real_write (ValaCCodeNode* base, ValaCCodeWriter* wr
 	}
 	_tmp21_ = first;
 	if (!_tmp21_) {
-		ValaCCodeWriter* _tmp22_;
+		ValaCCodeWriter* _tmp22_ = NULL;
 		_tmp22_ = writer;
 		vala_ccode_writer_write_newline (_tmp22_);
 	}
@@ -287,9 +287,9 @@ static void vala_ccode_enum_real_write (ValaCCodeNode* base, ValaCCodeWriter* wr
 	vala_ccode_writer_write_end_block (_tmp23_);
 	_tmp24_ = self->priv->_name;
 	if (_tmp24_ != NULL) {
-		ValaCCodeWriter* _tmp25_;
-		ValaCCodeWriter* _tmp26_;
-		const gchar* _tmp27_;
+		ValaCCodeWriter* _tmp25_ = NULL;
+		ValaCCodeWriter* _tmp26_ = NULL;
+		const gchar* _tmp27_ = NULL;
 		_tmp25_ = writer;
 		vala_ccode_writer_write_string (_tmp25_, " ");
 		_tmp26_ = writer;
@@ -298,7 +298,7 @@ static void vala_ccode_enum_real_write (ValaCCodeNode* base, ValaCCodeWriter* wr
 	}
 	_tmp28_ = self->priv->_deprecated;
 	if (_tmp28_) {
-		ValaCCodeWriter* _tmp29_;
+		ValaCCodeWriter* _tmp29_ = NULL;
 		_tmp29_ = writer;
 		vala_ccode_writer_write_string (_tmp29_, " G_GNUC_DEPRECATED");
 	}
@@ -311,7 +311,7 @@ static void vala_ccode_enum_real_write (ValaCCodeNode* base, ValaCCodeWriter* wr
 
 const gchar* vala_ccode_enum_get_name (ValaCCodeEnum* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_name;
 	result = _tmp0_;
@@ -320,8 +320,8 @@ const gchar* vala_ccode_enum_get_name (ValaCCodeEnum* self) {
 
 
 void vala_ccode_enum_set_name (ValaCCodeEnum* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -332,7 +332,7 @@ void vala_ccode_enum_set_name (ValaCCodeEnum* self, const gchar* value) {
 
 gboolean vala_ccode_enum_get_deprecated (ValaCCodeEnum* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_deprecated;
 	result = _tmp0_;
@@ -341,7 +341,7 @@ gboolean vala_ccode_enum_get_deprecated (ValaCCodeEnum* self) {
 
 
 void vala_ccode_enum_set_deprecated (ValaCCodeEnum* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_deprecated = _tmp0_;
@@ -350,15 +350,15 @@ void vala_ccode_enum_set_deprecated (ValaCCodeEnum* self, gboolean value) {
 
 static void vala_ccode_enum_class_init (ValaCCodeEnumClass * klass) {
 	vala_ccode_enum_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_enum_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_enum_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeEnumPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_enum_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_enum_real_write;
 }
 
 
 static void vala_ccode_enum_instance_init (ValaCCodeEnum * self) {
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_CCODE_ENUM_GET_PRIVATE (self);
 	self->priv->_deprecated = FALSE;
 	_tmp0_ = g_direct_equal;

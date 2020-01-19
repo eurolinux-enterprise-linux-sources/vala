@@ -46,9 +46,9 @@ void vala_source_location_init (ValaSourceLocation *self, gchar* _pos, gint _lin
 
 
 void vala_source_location_init (ValaSourceLocation *self, gchar* _pos, gint _line, gint _column) {
-	gchar* _tmp0_;
-	gint _tmp1_;
-	gint _tmp2_;
+	gchar* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	gint _tmp2_ = 0;
 	memset (self, 0, sizeof (ValaSourceLocation));
 	_tmp0_ = _pos;
 	(*self).pos = _tmp0_;

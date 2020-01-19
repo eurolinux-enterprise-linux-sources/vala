@@ -29,7 +29,7 @@ AC_DEFUN([_VALA_CHECK_COMPILE_WITH_ARGS],
 void main(){}
 _ACEOF
 
-  AS_IF([vala_error=`$VALAC $1 -q -o conftest$ac_exeext conftest.vala 2>&1`],
+  AS_IF([vala_error=`$VALAC $1 -q --cc="${CC} ${CPPFLAGS} ${CFLAGS} ${LDFLAGS}" -o conftest$ac_exeext conftest.vala 2>&1`],
         [$2], [$3])
 ])
 
@@ -89,7 +89,7 @@ AC_DEFUN([VALA_CHECK_MODULES],
         AC_REQUIRE([_VALA_CHECK_COMPILE_WITH_ARGS])dnl
 		AC_ARG_VAR([$1][_VALAFLAGS], [Vala compiler flags for $1])dnl
 
-        VALA_MODULES="`echo '$2' | sed -e 's/ [[=<>]]\+ [[0-9.]]\+//g'`"
+        VALA_MODULES="`echo $2 | sed -e 's/ [[=<>]]\+ [[0-9.]]\+//g'`"
         for MODULE in $VALA_MODULES; do
             $1[]_VALAFLAGS="$[]$1[]_VALAFLAGS --pkg $MODULE"
         done

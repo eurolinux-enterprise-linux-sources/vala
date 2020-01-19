@@ -73,7 +73,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 				if (param_d.has_target) {
 					cparam = new CCodeParameter (get_delegate_target_cname (get_variable_cname (param.name)), "void*");
 					cfundecl.add_parameter (cparam);
-					if (deleg_type.value_owned) {
+					if (deleg_type.is_disposable ()) {
 						cparam = new CCodeParameter (get_delegate_target_destroy_notify_cname (get_variable_cname (param.name)), "GDestroyNotify*");
 						cfundecl.add_parameter (cparam);
 					}
@@ -97,7 +97,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 			if (result_d.has_target) {
 				var cparam = new CCodeParameter (get_delegate_target_cname ("result"), "void**");
 				cfundecl.add_parameter (cparam);
-				if (deleg_type.value_owned) {
+				if (deleg_type.is_disposable ()) {
 					cparam = new CCodeParameter (get_delegate_target_destroy_notify_cname ("result"), "GDestroyNotify*");
 					cfundecl.add_parameter (cparam);
 				}
@@ -173,7 +173,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 		return base.get_implicit_cast_expression (source_cexpr, expression_type, target_type, node);
 	}
 
-	private string generate_delegate_wrapper (Method m, DelegateType dt, CodeNode? node) {
+	public string generate_delegate_wrapper (Method m, DelegateType dt, CodeNode? node) {
 		var d = dt.delegate_symbol;
 		string delegate_name;
 		var sig = d.parent_symbol as Signal;
@@ -248,7 +248,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 			if (deleg_type.delegate_symbol.has_target) {
 				var cparam = new CCodeParameter (get_delegate_target_cname ("result"), "void**");
 				cparam_map.set (get_param_pos (get_ccode_delegate_target_pos (d)), cparam);
-				if (deleg_type.value_owned) {
+				if (deleg_type.is_disposable ()) {
 					cparam = new CCodeParameter (get_delegate_target_destroy_notify_cname ("result"), "GDestroyNotify*");
 					cparam_map.set (get_param_pos (get_ccode_delegate_target_pos (d) + 0.01), cparam);
 				}
@@ -290,6 +290,9 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 			CCodeExpression arg;
 			if (d.has_target) {
 				arg = new CCodeIdentifier ("self");
+				if (!m.closure && m.this_parameter != null) {
+					arg = convert_from_generic_pointer (arg, m.this_parameter.variable_type);
+				}
 			} else {
 				// use first delegate parameter as instance
 				if (d_params.size == 0 || m.closure) {
@@ -316,6 +319,9 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 
 			CCodeExpression arg;
 			arg = new CCodeIdentifier (get_variable_cname (d_params.get (i).name));
+			if (d_params.get (i).variable_type is GenericType) {
+				arg = convert_from_generic_pointer (arg, param.variable_type);
+			}
 			carg_map.set (get_param_pos (get_ccode_pos (param)), arg);
 
 			// handle array arguments
@@ -341,7 +347,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 				if (deleg_type.delegate_symbol.has_target) {
 					var ctarget = new CCodeIdentifier (get_ccode_delegate_target_name (d_params.get (i)));
 					carg_map.set (get_param_pos (get_ccode_delegate_target_pos (param)), ctarget);
-					if (deleg_type.value_owned) {
+					if (deleg_type.is_disposable ()) {
 						var ctarget_destroy_notify = new CCodeIdentifier (get_delegate_target_destroy_notify_cname (d_params.get (i).name));
 						carg_map.set (get_param_pos (get_ccode_delegate_target_pos (m) + 0.01), ctarget_destroy_notify);
 					}
@@ -367,7 +373,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 			if (deleg_type.delegate_symbol.has_target) {
 				var ctarget = new CCodeIdentifier (get_delegate_target_cname ("result"));
 				carg_map.set (get_param_pos (get_ccode_delegate_target_pos (m)), ctarget);
-				if (deleg_type.value_owned) {
+				if (deleg_type.is_disposable ()) {
 					var ctarget_destroy_notify = new CCodeIdentifier (get_delegate_target_destroy_notify_cname ("result"));
 					carg_map.set (get_param_pos (get_ccode_delegate_target_pos (m) + 0.01), ctarget_destroy_notify);
 				}
@@ -405,10 +411,14 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 		if (m.return_type is VoidType || m.return_type.is_real_non_null_struct_type ()) {
 			ccode.add_expression (ccall);
 		} else {
-			ccode.add_declaration (return_type_cname, new CCodeVariableDeclarator ("result", ccall));
+			CCodeExpression result = ccall;
+			if (d.return_type is GenericType) {
+				result = convert_to_generic_pointer (result, m.return_type);
+			}
+			ccode.add_declaration (return_type_cname, new CCodeVariableDeclarator ("result", result));
 		}
 
-		if (d.has_target && !dt.value_owned && dt.is_called_once) {
+		if (d.has_target /* TODO: && dt.value_owned */ && dt.is_called_once) {
 			// destroy notify "self" after the call
 			CCodeExpression? destroy_notify = null;
 			if (m.closure) {
@@ -478,7 +488,7 @@ public class Vala.CCodeDelegateModule : CCodeArrayModule {
 				if (carg_map != null) {
 					carg_map.set (get_param_pos (get_ccode_delegate_target_pos (param)), get_variable_cexpression (cparam.name));
 				}
-				if (deleg_type.value_owned) {
+				if (deleg_type.is_disposable ()) {
 					cparam = new CCodeParameter (get_delegate_target_destroy_notify_cname (get_variable_cname (param.name)), target_destroy_notify_ctypename);
 					cparam_map.set (get_param_pos (get_ccode_delegate_target_pos (param) + 0.01), cparam);
 					if (carg_map != null) {

@@ -489,11 +489,11 @@ static void vala_dynamic_signal_finalize (ValaCodeNode* obj);
 
 ValaDynamicSignal* vala_dynamic_signal_construct (GType object_type, ValaDataType* dynamic_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaDynamicSignal* self = NULL;
-	const gchar* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaSourceReference* _tmp2_;
-	ValaComment* _tmp3_;
-	ValaDataType* _tmp4_;
+	const gchar* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaSourceReference* _tmp2_ = NULL;
+	ValaComment* _tmp3_ = NULL;
+	ValaDataType* _tmp4_ = NULL;
 	g_return_val_if_fail (dynamic_type != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (return_type != NULL, NULL);
@@ -525,7 +525,7 @@ static gboolean vala_dynamic_signal_real_check (ValaCodeNode* base, ValaCodeCont
 
 ValaDataType* vala_dynamic_signal_get_dynamic_type (ValaDynamicSignal* self) {
 	ValaDataType* result;
-	ValaDataType* _tmp0_;
+	ValaDataType* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_dynamic_type;
 	result = _tmp0_;
@@ -539,8 +539,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_dynamic_signal_set_dynamic_type (ValaDynamicSignal* self, ValaDataType* value) {
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -551,7 +551,7 @@ void vala_dynamic_signal_set_dynamic_type (ValaDynamicSignal* self, ValaDataType
 
 ValaExpression* vala_dynamic_signal_get_handler (ValaDynamicSignal* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_handler;
 	result = _tmp0_;
@@ -560,8 +560,8 @@ ValaExpression* vala_dynamic_signal_get_handler (ValaDynamicSignal* self) {
 
 
 void vala_dynamic_signal_set_handler (ValaDynamicSignal* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -572,9 +572,9 @@ void vala_dynamic_signal_set_handler (ValaDynamicSignal* self, ValaExpression* v
 
 static void vala_dynamic_signal_class_init (ValaDynamicSignalClass * klass) {
 	vala_dynamic_signal_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_dynamic_signal_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_dynamic_signal_finalize;
 	g_type_class_add_private (klass, sizeof (ValaDynamicSignalPrivate));
-	VALA_CODE_NODE_CLASS (klass)->check = vala_dynamic_signal_real_check;
+	((ValaCodeNodeClass *) klass)->check = vala_dynamic_signal_real_check;
 }
 
 

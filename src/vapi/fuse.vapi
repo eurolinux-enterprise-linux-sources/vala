@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
- * 
+ *
  * Author:
  * 	John Carr <john.carr@unrouted.co.uk>
  */
 
 [CCode (cprefix = "fuse_", cheader_filename = "fuse/fuse.h")]
 namespace Fuse {
-	[CCode (cname = "struct fuse_file_info")]
+	[CCode (cname = "struct fuse_file_info", has_type_id = false)]
 	public struct FileInfo {
 		public int flags;
 		public ulong fh_old;
@@ -35,11 +35,11 @@ namespace Fuse {
 		public uint64 lock_owner;
 	}
 
-	[CCode (cname = "struct fuse")]
+	[CCode (cname = "struct fuse", has_type_id = false)]
 	public struct Fuse {
 	}
 
-	[CCode (cname = "struct fuse_context")]
+	[CCode (cname = "struct fuse_context", has_type_id = false)]
 	public struct Context {
 		Fuse fuse;
 		Posix.uid_t uid;
@@ -105,7 +105,7 @@ namespace Fuse {
 	[CCode (has_target = false)]
 	public delegate int RemoveXAttr (string path, string name);
 
-	[CCode (cname = "struct fuse_operations")]
+	[CCode (cname = "struct fuse_operations", has_type_id = false)]
 	public struct Operations {
 		public GetAttr getattr;
 		public Access access;

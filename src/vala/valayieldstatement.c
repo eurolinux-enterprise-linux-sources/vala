@@ -301,8 +301,8 @@ static void vala_yield_statement_finalize (ValaCodeNode* obj);
  */
 ValaYieldStatement* vala_yield_statement_construct (GType object_type, ValaExpression* yield_expression, ValaSourceReference* source_reference) {
 	ValaYieldStatement* self = NULL;
-	ValaExpression* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	self = (ValaYieldStatement*) vala_code_node_construct (object_type);
 	_tmp0_ = yield_expression;
 	vala_yield_statement_set_yield_expression (self, _tmp0_);
@@ -319,7 +319,7 @@ ValaYieldStatement* vala_yield_statement_new (ValaExpression* yield_expression, 
 
 static void vala_yield_statement_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaYieldStatement * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaYieldStatement*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -329,19 +329,19 @@ static void vala_yield_statement_real_accept (ValaCodeNode* base, ValaCodeVisito
 
 static void vala_yield_statement_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaYieldStatement * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	self = (ValaYieldStatement*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_yield_statement_get_yield_expression (self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_ != NULL) {
-		ValaExpression* _tmp2_;
-		ValaExpression* _tmp3_;
-		ValaCodeVisitor* _tmp4_;
-		ValaCodeVisitor* _tmp5_;
-		ValaExpression* _tmp6_;
-		ValaExpression* _tmp7_;
+		ValaExpression* _tmp2_ = NULL;
+		ValaExpression* _tmp3_ = NULL;
+		ValaCodeVisitor* _tmp4_ = NULL;
+		ValaCodeVisitor* _tmp5_ = NULL;
+		ValaExpression* _tmp6_ = NULL;
+		ValaExpression* _tmp7_ = NULL;
 		_tmp2_ = vala_yield_statement_get_yield_expression (self);
 		_tmp3_ = _tmp2_;
 		_tmp4_ = visitor;
@@ -356,9 +356,9 @@ static void vala_yield_statement_real_accept_children (ValaCodeNode* base, ValaC
 
 static void vala_yield_statement_real_replace_expression (ValaCodeNode* base, ValaExpression* old_node, ValaExpression* new_node) {
 	ValaYieldStatement * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	self = (ValaYieldStatement*) base;
 	g_return_if_fail (old_node != NULL);
 	g_return_if_fail (new_node != NULL);
@@ -366,7 +366,7 @@ static void vala_yield_statement_real_replace_expression (ValaCodeNode* base, Va
 	_tmp1_ = _tmp0_;
 	_tmp2_ = old_node;
 	if (_tmp1_ == _tmp2_) {
-		ValaExpression* _tmp3_;
+		ValaExpression* _tmp3_ = NULL;
 		_tmp3_ = new_node;
 		vala_yield_statement_set_yield_expression (self, _tmp3_);
 	}
@@ -376,29 +376,29 @@ static void vala_yield_statement_real_replace_expression (ValaCodeNode* base, Va
 static gboolean vala_yield_statement_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaYieldStatement * self;
 	gboolean result = FALSE;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeContext* _tmp9_;
-	ValaSemanticAnalyzer* _tmp10_;
-	ValaSemanticAnalyzer* _tmp11_;
-	ValaMethod* _tmp12_;
-	ValaMethod* _tmp13_;
-	gint _tmp14_;
-	gint _tmp15_;
-	gboolean _tmp16_;
-	gboolean _tmp17_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeContext* _tmp9_ = NULL;
+	ValaSemanticAnalyzer* _tmp10_ = NULL;
+	ValaSemanticAnalyzer* _tmp11_ = NULL;
+	ValaMethod* _tmp12_ = NULL;
+	ValaMethod* _tmp13_ = NULL;
+	gint _tmp14_ = 0;
+	gint _tmp15_ = 0;
+	gboolean _tmp16_ = FALSE;
+	gboolean _tmp17_ = FALSE;
 	self = (ValaYieldStatement*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_yield_statement_get_yield_expression (self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_ != NULL) {
-		ValaExpression* _tmp2_;
-		ValaExpression* _tmp3_;
-		ValaCodeContext* _tmp4_;
-		ValaExpression* _tmp5_;
-		ValaExpression* _tmp6_;
-		gboolean _tmp7_;
-		gboolean _tmp8_;
+		ValaExpression* _tmp2_ = NULL;
+		ValaExpression* _tmp3_ = NULL;
+		ValaCodeContext* _tmp4_ = NULL;
+		ValaExpression* _tmp5_ = NULL;
+		ValaExpression* _tmp6_ = NULL;
+		gboolean _tmp7_ = FALSE;
+		gboolean _tmp8_ = FALSE;
 		_tmp2_ = vala_yield_statement_get_yield_expression (self);
 		_tmp3_ = _tmp2_;
 		_tmp4_ = context;
@@ -426,20 +426,20 @@ static gboolean vala_yield_statement_real_check (ValaCodeNode* base, ValaCodeCon
 
 static void vala_yield_statement_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaYieldStatement * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeGenerator* _tmp8_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeGenerator* _tmp8_ = NULL;
 	self = (ValaYieldStatement*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = vala_yield_statement_get_yield_expression (self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_ != NULL) {
-		ValaExpression* _tmp2_;
-		ValaExpression* _tmp3_;
-		ValaCodeGenerator* _tmp4_;
-		ValaCodeGenerator* _tmp5_;
-		ValaExpression* _tmp6_;
-		ValaExpression* _tmp7_;
+		ValaExpression* _tmp2_ = NULL;
+		ValaExpression* _tmp3_ = NULL;
+		ValaCodeGenerator* _tmp4_ = NULL;
+		ValaCodeGenerator* _tmp5_ = NULL;
+		ValaExpression* _tmp6_ = NULL;
+		ValaExpression* _tmp7_ = NULL;
 		_tmp2_ = vala_yield_statement_get_yield_expression (self);
 		_tmp3_ = _tmp2_;
 		_tmp4_ = codegen;
@@ -456,7 +456,7 @@ static void vala_yield_statement_real_emit (ValaCodeNode* base, ValaCodeGenerato
 
 ValaExpression* vala_yield_statement_get_yield_expression (ValaYieldStatement* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_yield_expression;
 	result = _tmp0_;
@@ -470,9 +470,9 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_yield_statement_set_yield_expression (ValaYieldStatement* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -480,7 +480,7 @@ void vala_yield_statement_set_yield_expression (ValaYieldStatement* self, ValaEx
 	self->priv->_yield_expression = _tmp1_;
 	_tmp2_ = self->priv->_yield_expression;
 	if (_tmp2_ != NULL) {
-		ValaExpression* _tmp3_;
+		ValaExpression* _tmp3_ = NULL;
 		_tmp3_ = self->priv->_yield_expression;
 		vala_code_node_set_parent_node ((ValaCodeNode*) _tmp3_, (ValaCodeNode*) self);
 	}
@@ -489,13 +489,13 @@ void vala_yield_statement_set_yield_expression (ValaYieldStatement* self, ValaEx
 
 static void vala_yield_statement_class_init (ValaYieldStatementClass * klass) {
 	vala_yield_statement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_yield_statement_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_yield_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaYieldStatementPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_yield_statement_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_yield_statement_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->replace_expression = vala_yield_statement_real_replace_expression;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_yield_statement_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_yield_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_yield_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_yield_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = vala_yield_statement_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = vala_yield_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_yield_statement_real_emit;
 }
 
 

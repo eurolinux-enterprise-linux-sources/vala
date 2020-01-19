@@ -489,9 +489,9 @@ static void vala_error_code_finalize (ValaCodeNode* obj);
  */
 ValaErrorCode* vala_error_code_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaErrorCode* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaComment* _tmp2_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaComment* _tmp2_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	_tmp0_ = name;
 	_tmp1_ = source_reference;
@@ -515,9 +515,9 @@ ValaErrorCode* vala_error_code_new (const gchar* name, ValaSourceReference* sour
  */
 ValaErrorCode* vala_error_code_construct_with_value (GType object_type, const gchar* name, ValaExpression* value, ValaSourceReference* source_reference) {
 	ValaErrorCode* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaExpression* _tmp2_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (value != NULL, NULL);
 	_tmp0_ = name;
@@ -536,7 +536,7 @@ ValaErrorCode* vala_error_code_new_with_value (const gchar* name, ValaExpression
 
 static void vala_error_code_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaErrorCode * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaErrorCode*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -546,13 +546,13 @@ static void vala_error_code_real_accept (ValaCodeNode* base, ValaCodeVisitor* vi
 
 static void vala_error_code_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaErrorCode * self;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	self = (ValaErrorCode*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = self->priv->_value;
 	if (_tmp0_ != NULL) {
-		ValaExpression* _tmp1_;
-		ValaCodeVisitor* _tmp2_;
+		ValaExpression* _tmp1_ = NULL;
+		ValaCodeVisitor* _tmp2_ = NULL;
 		_tmp1_ = self->priv->_value;
 		_tmp2_ = visitor;
 		vala_code_node_accept ((ValaCodeNode*) _tmp1_, _tmp2_);
@@ -563,18 +563,18 @@ static void vala_error_code_real_accept_children (ValaCodeNode* base, ValaCodeVi
 static gboolean vala_error_code_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaErrorCode * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaExpression* _tmp4_;
-	gboolean _tmp7_;
-	gboolean _tmp8_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaExpression* _tmp4_ = NULL;
+	gboolean _tmp7_ = FALSE;
+	gboolean _tmp8_ = FALSE;
 	self = (ValaErrorCode*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -583,8 +583,8 @@ static gboolean vala_error_code_real_check (ValaCodeNode* base, ValaCodeContext*
 	vala_code_node_set_checked ((ValaCodeNode*) self, TRUE);
 	_tmp4_ = self->priv->_value;
 	if (_tmp4_ != NULL) {
-		ValaExpression* _tmp5_;
-		ValaCodeContext* _tmp6_;
+		ValaExpression* _tmp5_ = NULL;
+		ValaCodeContext* _tmp6_ = NULL;
 		_tmp5_ = self->priv->_value;
 		_tmp6_ = context;
 		vala_code_node_check ((ValaCodeNode*) _tmp5_, _tmp6_);
@@ -598,7 +598,7 @@ static gboolean vala_error_code_real_check (ValaCodeNode* base, ValaCodeContext*
 
 ValaExpression* vala_error_code_get_value (ValaErrorCode* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_value;
 	result = _tmp0_;
@@ -612,8 +612,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_error_code_set_value (ValaErrorCode* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -624,11 +624,11 @@ void vala_error_code_set_value (ValaErrorCode* self, ValaExpression* value) {
 
 static void vala_error_code_class_init (ValaErrorCodeClass * klass) {
 	vala_error_code_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_error_code_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_error_code_finalize;
 	g_type_class_add_private (klass, sizeof (ValaErrorCodePrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_error_code_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_error_code_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_error_code_real_check;
+	((ValaCodeNodeClass *) klass)->accept = vala_error_code_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_error_code_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = vala_error_code_real_check;
 }
 
 

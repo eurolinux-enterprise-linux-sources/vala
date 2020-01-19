@@ -295,8 +295,8 @@ static void vala_delete_statement_finalize (ValaCodeNode* obj);
 
 ValaDeleteStatement* vala_delete_statement_construct (GType object_type, ValaExpression* expression, ValaSourceReference* source_reference) {
 	ValaDeleteStatement* self = NULL;
-	ValaExpression* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	g_return_val_if_fail (expression != NULL, NULL);
 	self = (ValaDeleteStatement*) vala_code_node_construct (object_type);
 	_tmp0_ = expression;
@@ -314,7 +314,7 @@ ValaDeleteStatement* vala_delete_statement_new (ValaExpression* expression, Vala
 
 static void vala_delete_statement_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaDeleteStatement * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaDeleteStatement*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -324,9 +324,9 @@ static void vala_delete_statement_real_accept (ValaCodeNode* base, ValaCodeVisit
 
 static void vala_delete_statement_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaDeleteStatement * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeVisitor* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeVisitor* _tmp2_ = NULL;
 	self = (ValaDeleteStatement*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_delete_statement_get_expression (self);
@@ -339,27 +339,26 @@ static void vala_delete_statement_real_accept_children (ValaCodeNode* base, Vala
 static gboolean vala_delete_statement_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaDeleteStatement * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaExpression* _tmp4_;
-	ValaExpression* _tmp5_;
-	ValaCodeContext* _tmp6_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaExpression* _tmp4_ = NULL;
+	ValaExpression* _tmp5_ = NULL;
+	ValaCodeContext* _tmp6_ = NULL;
 	gboolean _tmp7_ = FALSE;
 	gboolean _tmp8_ = FALSE;
-	ValaExpression* _tmp9_;
-	ValaExpression* _tmp10_;
-	ValaDataType* _tmp11_;
-	ValaDataType* _tmp12_;
-	gboolean _tmp17_;
-	gboolean _tmp28_;
-	gboolean _tmp29_;
+	ValaExpression* _tmp9_ = NULL;
+	ValaExpression* _tmp10_ = NULL;
+	ValaDataType* _tmp11_ = NULL;
+	ValaDataType* _tmp12_ = NULL;
+	gboolean _tmp27_ = FALSE;
+	gboolean _tmp28_ = FALSE;
 	self = (ValaDeleteStatement*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -379,10 +378,10 @@ static gboolean vala_delete_statement_real_check (ValaCodeNode* base, ValaCodeCo
 	_tmp11_ = vala_expression_get_value_type (_tmp10_);
 	_tmp12_ = _tmp11_;
 	if (!G_TYPE_CHECK_INSTANCE_TYPE (_tmp12_, VALA_TYPE_POINTER_TYPE)) {
-		ValaExpression* _tmp13_;
-		ValaExpression* _tmp14_;
-		ValaDataType* _tmp15_;
-		ValaDataType* _tmp16_;
+		ValaExpression* _tmp13_ = NULL;
+		ValaExpression* _tmp14_ = NULL;
+		ValaDataType* _tmp15_ = NULL;
+		ValaDataType* _tmp16_ = NULL;
 		_tmp13_ = vala_delete_statement_get_expression (self);
 		_tmp14_ = _tmp13_;
 		_tmp15_ = vala_expression_get_value_type (_tmp14_);
@@ -391,46 +390,45 @@ static gboolean vala_delete_statement_real_check (ValaCodeNode* base, ValaCodeCo
 	} else {
 		_tmp8_ = FALSE;
 	}
-	_tmp17_ = _tmp8_;
-	if (_tmp17_) {
-		ValaSourceReference* _tmp18_;
-		ValaSourceReference* _tmp19_;
-		ValaExpression* _tmp20_;
-		ValaExpression* _tmp21_;
-		ValaDataType* _tmp22_;
-		ValaDataType* _tmp23_;
+	if (_tmp8_) {
+		ValaSourceReference* _tmp17_ = NULL;
+		ValaSourceReference* _tmp18_ = NULL;
+		ValaExpression* _tmp19_ = NULL;
+		ValaExpression* _tmp20_ = NULL;
+		ValaDataType* _tmp21_ = NULL;
+		ValaDataType* _tmp22_ = NULL;
+		gchar* _tmp23_ = NULL;
 		gchar* _tmp24_ = NULL;
-		gchar* _tmp25_;
+		gchar* _tmp25_ = NULL;
 		gchar* _tmp26_ = NULL;
-		gchar* _tmp27_;
 		vala_code_node_set_error ((ValaCodeNode*) self, TRUE);
-		_tmp18_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
-		_tmp19_ = _tmp18_;
-		_tmp20_ = vala_delete_statement_get_expression (self);
-		_tmp21_ = _tmp20_;
-		_tmp22_ = vala_expression_get_value_type (_tmp21_);
-		_tmp23_ = _tmp22_;
-		_tmp24_ = vala_code_node_to_string ((ValaCodeNode*) _tmp23_);
-		_tmp25_ = _tmp24_;
-		_tmp26_ = g_strdup_printf ("delete operator not supported for `%s'", _tmp25_);
-		_tmp27_ = _tmp26_;
-		vala_report_error (_tmp19_, _tmp27_);
-		_g_free0 (_tmp27_);
-		_g_free0 (_tmp25_);
+		_tmp17_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+		_tmp18_ = _tmp17_;
+		_tmp19_ = vala_delete_statement_get_expression (self);
+		_tmp20_ = _tmp19_;
+		_tmp21_ = vala_expression_get_value_type (_tmp20_);
+		_tmp22_ = _tmp21_;
+		_tmp23_ = vala_code_node_to_string ((ValaCodeNode*) _tmp22_);
+		_tmp24_ = _tmp23_;
+		_tmp25_ = g_strdup_printf ("delete operator not supported for `%s'", _tmp24_);
+		_tmp26_ = _tmp25_;
+		vala_report_error (_tmp18_, _tmp26_);
+		_g_free0 (_tmp26_);
+		_g_free0 (_tmp24_);
 	}
-	_tmp28_ = vala_code_node_get_error ((ValaCodeNode*) self);
-	_tmp29_ = _tmp28_;
-	result = !_tmp29_;
+	_tmp27_ = vala_code_node_get_error ((ValaCodeNode*) self);
+	_tmp28_ = _tmp27_;
+	result = !_tmp28_;
 	return result;
 }
 
 
 static void vala_delete_statement_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaDeleteStatement * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeGenerator* _tmp2_;
-	ValaCodeGenerator* _tmp3_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeGenerator* _tmp2_ = NULL;
+	ValaCodeGenerator* _tmp3_ = NULL;
 	self = (ValaDeleteStatement*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = vala_delete_statement_get_expression (self);
@@ -444,7 +442,7 @@ static void vala_delete_statement_real_emit (ValaCodeNode* base, ValaCodeGenerat
 
 ValaExpression* vala_delete_statement_get_expression (ValaDeleteStatement* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_expression;
 	result = _tmp0_;
@@ -458,9 +456,9 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_delete_statement_set_expression (ValaDeleteStatement* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -473,12 +471,12 @@ void vala_delete_statement_set_expression (ValaDeleteStatement* self, ValaExpres
 
 static void vala_delete_statement_class_init (ValaDeleteStatementClass * klass) {
 	vala_delete_statement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_delete_statement_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_delete_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaDeleteStatementPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_delete_statement_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_delete_statement_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_delete_statement_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_delete_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_delete_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_delete_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = vala_delete_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_delete_statement_real_emit;
 }
 
 

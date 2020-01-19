@@ -146,7 +146,7 @@ static void vala_ccode_parenthesized_expression_finalize (ValaCCodeNode* obj);
 
 ValaCCodeParenthesizedExpression* vala_ccode_parenthesized_expression_construct (GType object_type, ValaCCodeExpression* expr) {
 	ValaCCodeParenthesizedExpression* self = NULL;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (expr != NULL, NULL);
 	self = (ValaCCodeParenthesizedExpression*) vala_ccode_expression_construct (object_type);
 	_tmp0_ = expr;
@@ -162,10 +162,10 @@ ValaCCodeParenthesizedExpression* vala_ccode_parenthesized_expression_new (ValaC
 
 static void vala_ccode_parenthesized_expression_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeParenthesizedExpression * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
-	ValaCCodeWriter* _tmp2_;
-	ValaCCodeWriter* _tmp3_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
+	ValaCCodeWriter* _tmp2_ = NULL;
+	ValaCCodeWriter* _tmp3_ = NULL;
 	self = (ValaCCodeParenthesizedExpression*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -180,7 +180,7 @@ static void vala_ccode_parenthesized_expression_real_write (ValaCCodeNode* base,
 
 ValaCCodeExpression* vala_ccode_parenthesized_expression_get_inner (ValaCCodeParenthesizedExpression* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_inner;
 	result = _tmp0_;
@@ -194,8 +194,8 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 
 void vala_ccode_parenthesized_expression_set_inner (ValaCCodeParenthesizedExpression* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -206,9 +206,9 @@ void vala_ccode_parenthesized_expression_set_inner (ValaCCodeParenthesizedExpres
 
 static void vala_ccode_parenthesized_expression_class_init (ValaCCodeParenthesizedExpressionClass * klass) {
 	vala_ccode_parenthesized_expression_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_parenthesized_expression_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_parenthesized_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeParenthesizedExpressionPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_parenthesized_expression_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_parenthesized_expression_real_write;
 }
 
 

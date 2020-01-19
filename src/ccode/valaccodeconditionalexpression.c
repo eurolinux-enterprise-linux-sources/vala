@@ -154,9 +154,9 @@ static void vala_ccode_conditional_expression_finalize (ValaCCodeNode* obj);
 
 ValaCCodeConditionalExpression* vala_ccode_conditional_expression_construct (GType object_type, ValaCCodeExpression* cond, ValaCCodeExpression* true_expr, ValaCCodeExpression* false_expr) {
 	ValaCCodeConditionalExpression* self = NULL;
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
-	ValaCCodeExpression* _tmp2_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
+	ValaCCodeExpression* _tmp2_ = NULL;
 	g_return_val_if_fail (cond != NULL, NULL);
 	g_return_val_if_fail (true_expr != NULL, NULL);
 	g_return_val_if_fail (false_expr != NULL, NULL);
@@ -178,14 +178,14 @@ ValaCCodeConditionalExpression* vala_ccode_conditional_expression_new (ValaCCode
 
 static void vala_ccode_conditional_expression_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeConditionalExpression * self;
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	ValaCCodeWriter* _tmp2_;
-	ValaCCodeExpression* _tmp3_;
-	ValaCCodeWriter* _tmp4_;
-	ValaCCodeWriter* _tmp5_;
-	ValaCCodeExpression* _tmp6_;
-	ValaCCodeWriter* _tmp7_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	ValaCCodeWriter* _tmp2_ = NULL;
+	ValaCCodeExpression* _tmp3_ = NULL;
+	ValaCCodeWriter* _tmp4_ = NULL;
+	ValaCCodeWriter* _tmp5_ = NULL;
+	ValaCCodeExpression* _tmp6_ = NULL;
+	ValaCCodeWriter* _tmp7_ = NULL;
 	self = (ValaCCodeConditionalExpression*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = self->priv->_condition;
@@ -206,9 +206,9 @@ static void vala_ccode_conditional_expression_real_write (ValaCCodeNode* base, V
 
 static void vala_ccode_conditional_expression_real_write_inner (ValaCCodeExpression* base, ValaCCodeWriter* writer) {
 	ValaCCodeConditionalExpression * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	ValaCCodeWriter* _tmp2_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	ValaCCodeWriter* _tmp2_ = NULL;
 	self = (ValaCCodeConditionalExpression*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -222,7 +222,7 @@ static void vala_ccode_conditional_expression_real_write_inner (ValaCCodeExpress
 
 ValaCCodeExpression* vala_ccode_conditional_expression_get_condition (ValaCCodeConditionalExpression* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_condition;
 	result = _tmp0_;
@@ -236,8 +236,8 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 
 void vala_ccode_conditional_expression_set_condition (ValaCCodeConditionalExpression* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -248,7 +248,7 @@ void vala_ccode_conditional_expression_set_condition (ValaCCodeConditionalExpres
 
 ValaCCodeExpression* vala_ccode_conditional_expression_get_true_expression (ValaCCodeConditionalExpression* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_true_expression;
 	result = _tmp0_;
@@ -257,8 +257,8 @@ ValaCCodeExpression* vala_ccode_conditional_expression_get_true_expression (Vala
 
 
 void vala_ccode_conditional_expression_set_true_expression (ValaCCodeConditionalExpression* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -269,7 +269,7 @@ void vala_ccode_conditional_expression_set_true_expression (ValaCCodeConditional
 
 ValaCCodeExpression* vala_ccode_conditional_expression_get_false_expression (ValaCCodeConditionalExpression* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_false_expression;
 	result = _tmp0_;
@@ -278,8 +278,8 @@ ValaCCodeExpression* vala_ccode_conditional_expression_get_false_expression (Val
 
 
 void vala_ccode_conditional_expression_set_false_expression (ValaCCodeConditionalExpression* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -290,10 +290,10 @@ void vala_ccode_conditional_expression_set_false_expression (ValaCCodeConditiona
 
 static void vala_ccode_conditional_expression_class_init (ValaCCodeConditionalExpressionClass * klass) {
 	vala_ccode_conditional_expression_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_conditional_expression_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_conditional_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeConditionalExpressionPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_conditional_expression_real_write;
-	VALA_CCODE_EXPRESSION_CLASS (klass)->write_inner = vala_ccode_conditional_expression_real_write_inner;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_conditional_expression_real_write;
+	((ValaCCodeExpressionClass *) klass)->write_inner = vala_ccode_conditional_expression_real_write_inner;
 }
 
 

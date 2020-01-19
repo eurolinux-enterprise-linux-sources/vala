@@ -219,7 +219,7 @@ void vala_attribute_set_name (ValaAttribute* self, const gchar* value);
 void vala_code_node_set_source_reference (ValaCodeNode* self, ValaSourceReference* value);
 void vala_attribute_add_argument (ValaAttribute* self, const gchar* key, const gchar* value);
 gboolean vala_attribute_has_argument (ValaAttribute* self, const gchar* name);
-gchar* vala_attribute_get_string (ValaAttribute* self, const gchar* name);
+gchar* vala_attribute_get_string (ValaAttribute* self, const gchar* name, const gchar* default_value);
 gint vala_attribute_get_integer (ValaAttribute* self, const gchar* name, gint default_value);
 gdouble vala_attribute_get_double (ValaAttribute* self, const gchar* name, gdouble default_value);
 gboolean vala_attribute_get_bool (ValaAttribute* self, const gchar* name, gboolean default_value);
@@ -236,8 +236,8 @@ static void vala_attribute_finalize (ValaCodeNode* obj);
  */
 ValaAttribute* vala_attribute_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference) {
 	ValaAttribute* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	self = (ValaAttribute*) vala_code_node_construct (object_type);
 	_tmp0_ = name;
@@ -259,9 +259,9 @@ ValaAttribute* vala_attribute_new (const gchar* name, ValaSourceReference* sourc
  * @param arg named argument
  */
 void vala_attribute_add_argument (ValaAttribute* self, const gchar* key, const gchar* value) {
-	ValaMap* _tmp0_;
-	const gchar* _tmp1_;
-	const gchar* _tmp2_;
+	ValaMap* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
+	const gchar* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (value != NULL);
@@ -280,8 +280,8 @@ void vala_attribute_add_argument (ValaAttribute* self, const gchar* key, const g
  */
 gboolean vala_attribute_has_argument (ValaAttribute* self, const gchar* name) {
 	gboolean result = FALSE;
-	ValaMap* _tmp0_;
-	const gchar* _tmp1_;
+	ValaMap* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
@@ -301,24 +301,24 @@ gboolean vala_attribute_has_argument (ValaAttribute* self, const gchar* name) {
  */
 static glong string_strnlen (gchar* str, glong maxlen) {
 	glong result = 0L;
-	gchar* _tmp0_;
-	glong _tmp1_;
+	gchar* end = NULL;
+	gchar* _tmp0_ = NULL;
+	glong _tmp1_ = 0L;
 	gchar* _tmp2_ = NULL;
-	gchar* end;
-	gchar* _tmp3_;
+	gchar* _tmp3_ = NULL;
 	_tmp0_ = str;
 	_tmp1_ = maxlen;
 	_tmp2_ = memchr (_tmp0_, 0, (gsize) _tmp1_);
 	end = _tmp2_;
 	_tmp3_ = end;
 	if (_tmp3_ == NULL) {
-		glong _tmp4_;
+		glong _tmp4_ = 0L;
 		_tmp4_ = maxlen;
 		result = _tmp4_;
 		return result;
 	} else {
-		gchar* _tmp5_;
-		gchar* _tmp6_;
+		gchar* _tmp5_ = NULL;
+		gchar* _tmp6_ = NULL;
 		_tmp5_ = end;
 		_tmp6_ = str;
 		result = (glong) (_tmp5_ - _tmp6_);
@@ -331,93 +331,91 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 	gchar* result = NULL;
 	glong string_length = 0L;
 	gboolean _tmp0_ = FALSE;
-	glong _tmp1_;
-	gboolean _tmp3_;
-	glong _tmp9_;
-	glong _tmp15_;
-	glong _tmp18_;
-	glong _tmp19_;
-	glong _tmp20_;
-	glong _tmp21_;
-	glong _tmp22_;
-	gchar* _tmp23_ = NULL;
+	glong _tmp1_ = 0L;
+	glong _tmp8_ = 0L;
+	glong _tmp14_ = 0L;
+	glong _tmp17_ = 0L;
+	glong _tmp18_ = 0L;
+	glong _tmp19_ = 0L;
+	glong _tmp20_ = 0L;
+	glong _tmp21_ = 0L;
+	gchar* _tmp22_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp1_ = offset;
 	if (_tmp1_ >= ((glong) 0)) {
-		glong _tmp2_;
+		glong _tmp2_ = 0L;
 		_tmp2_ = len;
 		_tmp0_ = _tmp2_ >= ((glong) 0);
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp3_ = _tmp0_;
-	if (_tmp3_) {
-		glong _tmp4_;
-		glong _tmp5_;
-		glong _tmp6_ = 0L;
-		_tmp4_ = offset;
-		_tmp5_ = len;
-		_tmp6_ = string_strnlen ((gchar*) self, _tmp4_ + _tmp5_);
-		string_length = _tmp6_;
+	if (_tmp0_) {
+		glong _tmp3_ = 0L;
+		glong _tmp4_ = 0L;
+		glong _tmp5_ = 0L;
+		_tmp3_ = offset;
+		_tmp4_ = len;
+		_tmp5_ = string_strnlen ((gchar*) self, _tmp3_ + _tmp4_);
+		string_length = _tmp5_;
 	} else {
-		gint _tmp7_;
-		gint _tmp8_;
-		_tmp7_ = strlen (self);
-		_tmp8_ = _tmp7_;
-		string_length = (glong) _tmp8_;
+		gint _tmp6_ = 0;
+		gint _tmp7_ = 0;
+		_tmp6_ = strlen (self);
+		_tmp7_ = _tmp6_;
+		string_length = (glong) _tmp7_;
 	}
-	_tmp9_ = offset;
-	if (_tmp9_ < ((glong) 0)) {
-		glong _tmp10_;
-		glong _tmp11_;
-		glong _tmp12_;
-		_tmp10_ = string_length;
+	_tmp8_ = offset;
+	if (_tmp8_ < ((glong) 0)) {
+		glong _tmp9_ = 0L;
+		glong _tmp10_ = 0L;
+		glong _tmp11_ = 0L;
+		_tmp9_ = string_length;
+		_tmp10_ = offset;
+		offset = _tmp9_ + _tmp10_;
 		_tmp11_ = offset;
-		offset = _tmp10_ + _tmp11_;
-		_tmp12_ = offset;
-		g_return_val_if_fail (_tmp12_ >= ((glong) 0), NULL);
+		g_return_val_if_fail (_tmp11_ >= ((glong) 0), NULL);
 	} else {
-		glong _tmp13_;
-		glong _tmp14_;
-		_tmp13_ = offset;
-		_tmp14_ = string_length;
-		g_return_val_if_fail (_tmp13_ <= _tmp14_, NULL);
+		glong _tmp12_ = 0L;
+		glong _tmp13_ = 0L;
+		_tmp12_ = offset;
+		_tmp13_ = string_length;
+		g_return_val_if_fail (_tmp12_ <= _tmp13_, NULL);
 	}
-	_tmp15_ = len;
-	if (_tmp15_ < ((glong) 0)) {
-		glong _tmp16_;
-		glong _tmp17_;
-		_tmp16_ = string_length;
-		_tmp17_ = offset;
-		len = _tmp16_ - _tmp17_;
+	_tmp14_ = len;
+	if (_tmp14_ < ((glong) 0)) {
+		glong _tmp15_ = 0L;
+		glong _tmp16_ = 0L;
+		_tmp15_ = string_length;
+		_tmp16_ = offset;
+		len = _tmp15_ - _tmp16_;
 	}
-	_tmp18_ = offset;
-	_tmp19_ = len;
-	_tmp20_ = string_length;
-	g_return_val_if_fail ((_tmp18_ + _tmp19_) <= _tmp20_, NULL);
-	_tmp21_ = offset;
-	_tmp22_ = len;
-	_tmp23_ = g_strndup (((gchar*) self) + _tmp21_, (gsize) _tmp22_);
-	result = _tmp23_;
+	_tmp17_ = offset;
+	_tmp18_ = len;
+	_tmp19_ = string_length;
+	g_return_val_if_fail ((_tmp17_ + _tmp18_) <= _tmp19_, NULL);
+	_tmp20_ = offset;
+	_tmp21_ = len;
+	_tmp22_ = g_strndup (((gchar*) self) + _tmp20_, (gsize) _tmp21_);
+	result = _tmp22_;
 	return result;
 }
 
 
-gchar* vala_attribute_get_string (ValaAttribute* self, const gchar* name) {
+gchar* vala_attribute_get_string (ValaAttribute* self, const gchar* name, const gchar* default_value) {
 	gchar* result = NULL;
-	ValaMap* _tmp0_;
-	const gchar* _tmp1_;
+	gchar* value = NULL;
+	ValaMap* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	gpointer _tmp2_ = NULL;
-	gchar* value;
-	const gchar* _tmp3_;
-	const gchar* _tmp4_;
-	const gchar* _tmp5_;
-	gint _tmp6_;
-	gint _tmp7_;
-	gchar* _tmp8_ = NULL;
-	gchar* noquotes;
-	const gchar* _tmp9_;
+	const gchar* _tmp3_ = NULL;
+	gchar* noquotes = NULL;
+	const gchar* _tmp6_ = NULL;
+	const gchar* _tmp7_ = NULL;
+	gint _tmp8_ = 0;
+	gint _tmp9_ = 0;
 	gchar* _tmp10_ = NULL;
+	const gchar* _tmp11_ = NULL;
+	gchar* _tmp12_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 	_tmp0_ = self->args;
@@ -426,19 +424,23 @@ gchar* vala_attribute_get_string (ValaAttribute* self, const gchar* name) {
 	value = (gchar*) _tmp2_;
 	_tmp3_ = value;
 	if (_tmp3_ == NULL) {
-		result = NULL;
+		const gchar* _tmp4_ = NULL;
+		gchar* _tmp5_ = NULL;
+		_tmp4_ = default_value;
+		_tmp5_ = g_strdup (_tmp4_);
+		result = _tmp5_;
 		_g_free0 (value);
 		return result;
 	}
-	_tmp4_ = value;
-	_tmp5_ = value;
-	_tmp6_ = strlen (_tmp5_);
-	_tmp7_ = _tmp6_;
-	_tmp8_ = string_substring (_tmp4_, (glong) 1, (glong) ((guint) (_tmp7_ - 2)));
-	noquotes = _tmp8_;
-	_tmp9_ = noquotes;
-	_tmp10_ = g_strcompress (_tmp9_);
-	result = _tmp10_;
+	_tmp6_ = value;
+	_tmp7_ = value;
+	_tmp8_ = strlen (_tmp7_);
+	_tmp9_ = _tmp8_;
+	_tmp10_ = string_substring (_tmp6_, (glong) 1, (glong) ((guint) (_tmp9_ - 2)));
+	noquotes = _tmp10_;
+	_tmp11_ = noquotes;
+	_tmp12_ = g_strcompress (_tmp11_);
+	result = _tmp12_;
 	_g_free0 (noquotes);
 	_g_free0 (value);
 	return result;
@@ -453,12 +455,12 @@ gchar* vala_attribute_get_string (ValaAttribute* self, const gchar* name) {
  */
 gint vala_attribute_get_integer (ValaAttribute* self, const gchar* name, gint default_value) {
 	gint result = 0;
-	ValaMap* _tmp0_;
-	const gchar* _tmp1_;
+	gchar* value = NULL;
+	ValaMap* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	gpointer _tmp2_ = NULL;
-	gchar* value;
-	const gchar* _tmp3_;
-	const gchar* _tmp5_;
+	const gchar* _tmp3_ = NULL;
+	const gchar* _tmp5_ = NULL;
 	gint _tmp6_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	g_return_val_if_fail (name != NULL, 0);
@@ -468,7 +470,7 @@ gint vala_attribute_get_integer (ValaAttribute* self, const gchar* name, gint de
 	value = (gchar*) _tmp2_;
 	_tmp3_ = value;
 	if (_tmp3_ == NULL) {
-		gint _tmp4_;
+		gint _tmp4_ = 0;
 		_tmp4_ = default_value;
 		result = _tmp4_;
 		_g_free0 (value);
@@ -490,7 +492,7 @@ gint vala_attribute_get_integer (ValaAttribute* self, const gchar* name, gint de
  */
 static gdouble double_parse (const gchar* str) {
 	gdouble result = 0.0;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	gdouble _tmp1_ = 0.0;
 	g_return_val_if_fail (str != NULL, 0.0);
 	_tmp0_ = str;
@@ -502,12 +504,12 @@ static gdouble double_parse (const gchar* str) {
 
 gdouble vala_attribute_get_double (ValaAttribute* self, const gchar* name, gdouble default_value) {
 	gdouble result = 0.0;
-	ValaMap* _tmp0_;
-	const gchar* _tmp1_;
+	gchar* value = NULL;
+	ValaMap* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	gpointer _tmp2_ = NULL;
-	gchar* value;
-	const gchar* _tmp3_;
-	const gchar* _tmp5_;
+	const gchar* _tmp3_ = NULL;
+	const gchar* _tmp5_ = NULL;
 	gdouble _tmp6_ = 0.0;
 	g_return_val_if_fail (self != NULL, 0.0);
 	g_return_val_if_fail (name != NULL, 0.0);
@@ -517,7 +519,7 @@ gdouble vala_attribute_get_double (ValaAttribute* self, const gchar* name, gdoub
 	value = (gchar*) _tmp2_;
 	_tmp3_ = value;
 	if (_tmp3_ == NULL) {
-		gdouble _tmp4_;
+		gdouble _tmp4_ = 0.0;
 		_tmp4_ = default_value;
 		result = _tmp4_;
 		_g_free0 (value);
@@ -539,7 +541,7 @@ gdouble vala_attribute_get_double (ValaAttribute* self, const gchar* name, gdoub
  */
 static gboolean bool_parse (const gchar* str) {
 	gboolean result = FALSE;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (str != NULL, FALSE);
 	_tmp0_ = str;
 	if (g_strcmp0 (_tmp0_, "true") == 0) {
@@ -554,12 +556,12 @@ static gboolean bool_parse (const gchar* str) {
 
 gboolean vala_attribute_get_bool (ValaAttribute* self, const gchar* name, gboolean default_value) {
 	gboolean result = FALSE;
-	ValaMap* _tmp0_;
-	const gchar* _tmp1_;
+	gchar* value = NULL;
+	ValaMap* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	gpointer _tmp2_ = NULL;
-	gchar* value;
-	const gchar* _tmp3_;
-	const gchar* _tmp5_;
+	const gchar* _tmp3_ = NULL;
+	const gchar* _tmp5_ = NULL;
 	gboolean _tmp6_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
@@ -569,7 +571,7 @@ gboolean vala_attribute_get_bool (ValaAttribute* self, const gchar* name, gboole
 	value = (gchar*) _tmp2_;
 	_tmp3_ = value;
 	if (_tmp3_ == NULL) {
-		gboolean _tmp4_;
+		gboolean _tmp4_ = FALSE;
 		_tmp4_ = default_value;
 		result = _tmp4_;
 		_g_free0 (value);
@@ -585,7 +587,7 @@ gboolean vala_attribute_get_bool (ValaAttribute* self, const gchar* name, gboole
 
 const gchar* vala_attribute_get_name (ValaAttribute* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_name;
 	result = _tmp0_;
@@ -594,8 +596,8 @@ const gchar* vala_attribute_get_name (ValaAttribute* self) {
 
 
 void vala_attribute_set_name (ValaAttribute* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -606,16 +608,16 @@ void vala_attribute_set_name (ValaAttribute* self, const gchar* value) {
 
 static void vala_attribute_class_init (ValaAttributeClass * klass) {
 	vala_attribute_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_attribute_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_attribute_finalize;
 	g_type_class_add_private (klass, sizeof (ValaAttributePrivate));
 }
 
 
 static void vala_attribute_instance_init (ValaAttribute * self) {
-	GHashFunc _tmp0_;
-	GEqualFunc _tmp1_;
-	GEqualFunc _tmp2_;
-	ValaHashMap* _tmp3_;
+	GHashFunc _tmp0_ = NULL;
+	GEqualFunc _tmp1_ = NULL;
+	GEqualFunc _tmp2_ = NULL;
+	ValaHashMap* _tmp3_ = NULL;
 	self->priv = VALA_ATTRIBUTE_GET_PRIVATE (self);
 	_tmp0_ = g_str_hash;
 	_tmp1_ = g_str_equal;

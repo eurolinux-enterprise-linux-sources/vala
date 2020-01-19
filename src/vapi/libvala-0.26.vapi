@@ -200,6 +200,15 @@ namespace Vala {
 		public virtual void write_initialization (Vala.CCodeWriter writer);
 	}
 	[CCode (cheader_filename = "valaccode.h")]
+	public class CCodeDeclaratorSuffix {
+		public bool array;
+		public Vala.CCodeExpression? array_length;
+		public bool deprecated;
+		public CCodeDeclaratorSuffix ();
+		public CCodeDeclaratorSuffix.with_array (Vala.CCodeExpression? array_length = null);
+		public void write (Vala.CCodeWriter writer);
+	}
+	[CCode (cheader_filename = "valaccode.h")]
 	public class CCodeDoStatement : Vala.CCodeStatement {
 		public CCodeDoStatement (Vala.CCodeStatement stmt, Vala.CCodeExpression cond);
 		public override void write (Vala.CCodeWriter writer);
@@ -346,6 +355,13 @@ namespace Vala {
 		public string name { get; set; }
 	}
 	[CCode (cheader_filename = "valaccode.h")]
+	public class CCodeIfSection : Vala.CCodeFragment {
+		public CCodeIfSection (string expr);
+		public override void write (Vala.CCodeWriter writer);
+		public override void write_declaration (Vala.CCodeWriter writer);
+		public string expression { get; set; }
+	}
+	[CCode (cheader_filename = "valaccode.h")]
 	public class CCodeIfStatement : Vala.CCodeStatement {
 		public CCodeIfStatement (Vala.CCodeExpression cond, Vala.CCodeStatement true_stmt, Vala.CCodeStatement? false_stmt = null);
 		public override void write (Vala.CCodeWriter writer);
@@ -452,7 +468,7 @@ namespace Vala {
 	public class CCodeStruct : Vala.CCodeNode {
 		public CCodeStruct (string name);
 		public void add_declaration (Vala.CCodeDeclaration decl);
-		public void add_field (string type_name, string name, string? declarator_suffix = null);
+		public void add_field (string type_name, string name, Vala.CCodeDeclaratorSuffix? declarator_suffix = null);
 		public override void write (Vala.CCodeWriter writer);
 		public bool deprecated { get; set; }
 		public bool is_empty { get; }
@@ -483,12 +499,12 @@ namespace Vala {
 	}
 	[CCode (cheader_filename = "valaccode.h")]
 	public class CCodeVariableDeclarator : Vala.CCodeDeclarator {
-		public CCodeVariableDeclarator (string name, Vala.CCodeExpression? initializer = null, string? declarator_suffix = null);
+		public CCodeVariableDeclarator (string name, Vala.CCodeExpression? initializer = null, Vala.CCodeDeclaratorSuffix? declarator_suffix = null);
 		public override void write (Vala.CCodeWriter writer);
 		public override void write_declaration (Vala.CCodeWriter writer);
 		public override void write_initialization (Vala.CCodeWriter writer);
-		public CCodeVariableDeclarator.zero (string name, Vala.CCodeExpression? initializer, string? declarator_suffix = null);
-		public string? declarator_suffix { get; set; }
+		public CCodeVariableDeclarator.zero (string name, Vala.CCodeExpression? initializer, Vala.CCodeDeclaratorSuffix? declarator_suffix = null);
+		public Vala.CCodeDeclaratorSuffix? declarator_suffix { get; set; }
 		public bool init0 { get; set; }
 		public Vala.CCodeExpression? initializer { get; set; }
 		public string name { get; set; }
@@ -560,7 +576,8 @@ namespace Vala {
 		INLINE,
 		VOLATILE,
 		DEPRECATED,
-		THREAD_LOCAL
+		THREAD_LOCAL,
+		INTERNAL
 	}
 	[CCode (cheader_filename = "valaccode.h")]
 	public enum CCodeUnaryOperator {
@@ -772,6 +789,7 @@ namespace Vala {
 		public override bool check (Vala.CodeContext context);
 		public override void emit (Vala.CodeGenerator codegen);
 		public Vala.List<Vala.Expression> get_sizes ();
+		public override void get_used_variables (Vala.Collection<Vala.Variable> collection);
 		public override bool is_pure ();
 		public override void replace_expression (Vala.Expression old_node, Vala.Expression new_node);
 		public override void replace_type (Vala.DataType old_type, Vala.DataType new_type);
@@ -810,7 +828,7 @@ namespace Vala {
 		public bool fixed_length { get; set; }
 		public bool inline_allocated { get; set; }
 		public bool invalid_syntax { get; set; }
-		public int length { get; set; }
+		public Vala.Expression? length { get; set; }
 		public int rank { get; set; }
 	}
 	[CCode (cheader_filename = "vala.h")]
@@ -836,7 +854,7 @@ namespace Vala {
 		public bool get_bool (string name, bool default_value = false);
 		public double get_double (string name, double default_value = 0);
 		public int get_integer (string name, int default_value = 0);
-		public string? get_string (string name);
+		public string? get_string (string name, string? default_value = null);
 		public bool has_argument (string name);
 		public string name { get; set; }
 	}
@@ -1014,7 +1032,7 @@ namespace Vala {
 		public Vala.Constructor class_constructor { get; set; }
 		public Vala.Destructor? class_destructor { get; set; }
 		public Vala.Constructor constructor { get; set; }
-		public Vala.Method default_construction_method { get; set; }
+		public Vala.CreationMethod default_construction_method { get; set; }
 		public Vala.Destructor? destructor { get; set; }
 		public bool has_class_private_fields { get; private set; }
 		public bool has_private_fields { get; set; }
@@ -1034,6 +1052,7 @@ namespace Vala {
 	[CCode (cheader_filename = "vala.h")]
 	public class CodeContext {
 		public string[] gir_directories;
+		public string[] gresources;
 		public string[] metadata_directories;
 		public string[] vapi_directories;
 		public CodeContext ();
@@ -1077,6 +1096,7 @@ namespace Vala {
 		public Vala.FlowAnalyzer flow_analyzer { get; private set; }
 		public bool gobject_tracing { get; set; }
 		public string? header_filename { get; set; }
+		public bool hide_internal { get; set; }
 		public string? includedir { get; set; }
 		public string? internal_header_filename { get; set; }
 		public bool mem_profiler { get; set; }
@@ -1097,6 +1117,7 @@ namespace Vala {
 		public bool thread { get; set; }
 		public bool use_fast_vapi { get; set; }
 		public bool use_header { get; set; }
+		public bool vapi_comments { get; set; }
 		public bool verbose_mode { get; set; }
 		public bool version_header { get; set; }
 	}
@@ -1128,7 +1149,7 @@ namespace Vala {
 		public static int get_attribute_cache_index ();
 		public double get_attribute_double (string attribute, string argument, double default_value = 0);
 		public int get_attribute_integer (string attribute, string argument, int default_value = 0);
-		public string? get_attribute_string (string attribute, string argument);
+		public string? get_attribute_string (string attribute, string argument, string? default_value = null);
 		public virtual void get_defined_variables (Vala.Collection<Vala.Variable> collection);
 		public Vala.List<Vala.DataType> get_error_types ();
 		public static string get_temp_name ();
@@ -1736,6 +1757,7 @@ namespace Vala {
 		public override bool check (Vala.CodeContext context);
 		public override void emit (Vala.CodeGenerator codegen);
 		public Vala.List<Vala.Expression> get_initializers ();
+		public override void get_used_variables (Vala.Collection<Vala.Variable> collection);
 		public override bool is_constant ();
 		public override bool is_pure ();
 		public override void replace_expression (Vala.Expression old_node, Vala.Expression new_node);
@@ -1784,6 +1806,7 @@ namespace Vala {
 		public override Vala.List<Vala.Property> get_properties ();
 		public override Vala.List<Vala.Signal> get_signals ();
 		public Vala.List<Vala.Struct> get_structs ();
+		public virtual Vala.List<Vala.Symbol> get_virtuals ();
 		public override bool is_reference_type ();
 		public override bool is_subtype_of (Vala.TypeSymbol t);
 		public void prepend_prerequisite (Vala.DataType type);
@@ -1831,7 +1854,6 @@ namespace Vala {
 		public override void replace_expression (Vala.Expression old_node, Vala.Expression new_node);
 		public override void replace_type (Vala.DataType old_type, Vala.DataType new_type);
 		public bool captured { get; set; }
-		public bool floating { get; set; }
 		public bool is_result { get; set; }
 		public bool no_init { get; set; }
 	}
@@ -1896,6 +1918,7 @@ namespace Vala {
 		public override void accept (Vala.CodeVisitor visitor);
 		public override bool check (Vala.CodeContext context);
 		public override void emit (Vala.CodeGenerator codegen);
+		public override void get_used_variables (Vala.Collection<Vala.Variable> collection);
 		public override void replace_expression (Vala.Expression old_node, Vala.Expression new_node);
 		public Vala.Expression initializer { get; set; }
 		public string name { get; set; }
@@ -1928,6 +1951,7 @@ namespace Vala {
 		public bool is_variadic ();
 		public override void replace_type (Vala.DataType old_type, Vala.DataType new_type);
 		public Vala.Method base_interface_method { get; }
+		public Vala.DataType base_interface_type { get; set; }
 		public Vala.Method base_method { get; }
 		public Vala.MemberBinding binding { get; set; }
 		public bool closure { get; set; }
@@ -1966,6 +1990,7 @@ namespace Vala {
 		public override void replace_expression (Vala.Expression old_node, Vala.Expression new_node);
 		public Vala.Expression call { get; set; }
 		public bool is_assert { get; private set; }
+		public bool is_constructv_chainup { get; private set; }
 		public bool is_yield_expression { get; set; }
 	}
 	[CCode (cheader_filename = "vala.h")]
@@ -2097,6 +2122,7 @@ namespace Vala {
 		public override void replace_expression (Vala.Expression old_node, Vala.Expression new_node);
 		public override void replace_type (Vala.DataType old_type, Vala.DataType new_type);
 		public Parameter.with_ellipsis (Vala.SourceReference? source_reference = null);
+		public Vala.Parameter base_parameter { get; set; }
 		public bool captured { get; set; }
 		public Vala.ParameterDirection direction { get; set; }
 		public bool ellipsis { get; set; }
@@ -2163,6 +2189,7 @@ namespace Vala {
 		public override void accept_children (Vala.CodeVisitor visitor);
 		public override bool check (Vala.CodeContext context);
 		public bool compatible (Vala.Property base_property, out string? invalid_match);
+		public override void replace_expression (Vala.Expression old_node, Vala.Expression new_node);
 		public override void replace_type (Vala.DataType old_type, Vala.DataType new_type);
 		public Vala.Property base_interface_property { get; }
 		public Vala.Property base_property { get; }
@@ -2184,6 +2211,7 @@ namespace Vala {
 		public override void accept (Vala.CodeVisitor visitor);
 		public override void accept_children (Vala.CodeVisitor visitor);
 		public override bool check (Vala.CodeContext context);
+		public Vala.Method? get_method ();
 		public override void replace_type (Vala.DataType old_type, Vala.DataType new_type);
 		public bool automatic_body { get; set; }
 		public bool construction { get; set; }
@@ -2321,10 +2349,14 @@ namespace Vala {
 		public Vala.DataType ulong_type;
 		public Vala.DataType unichar_type;
 		public Vala.DataType ushort_type;
+		public Vala.DataType va_list_type;
 		public Vala.DataType void_type;
 		public SemanticAnalyzer ();
 		public void analyze (Vala.CodeContext context);
 		public bool check_arguments (Vala.Expression expr, Vala.DataType mtype, Vala.List<Vala.Parameter> @params, Vala.List<Vala.Expression> args);
+		public bool check_print_format (string format, Vala.Iterator<Vala.Expression> arg_it, Vala.SourceReference source_reference);
+		public bool check_variadic_arguments (Vala.Iterator<Vala.Expression>? arg_it, int i, Vala.SourceReference source_reference);
+		public static Vala.Expression create_temp_access (Vala.LocalVariable local, Vala.DataType? target_type);
 		public Vala.Method? find_current_method ();
 		public Vala.Method? find_parent_method (Vala.Symbol sym);
 		public Vala.Symbol? find_parent_method_or_property_accessor (Vala.Symbol sym);
@@ -2371,6 +2403,7 @@ namespace Vala {
 		public SignalType (Vala.Signal signal_symbol);
 		public override bool compatible (Vala.DataType target_type);
 		public override Vala.DataType copy ();
+		public Vala.DelegateType get_handler_type ();
 		public override Vala.Symbol? get_member (string member_name);
 		public override Vala.List<Vala.Parameter>? get_parameters ();
 		public override Vala.DataType? get_return_type ();
@@ -2641,6 +2674,7 @@ namespace Vala {
 		public override void visit_member_access (Vala.MemberAccess expr);
 		public override void visit_method (Vala.Method m);
 		public override void visit_method_call (Vala.MethodCall expr);
+		public override void visit_named_argument (Vala.NamedArgument expr);
 		public override void visit_namespace (Vala.Namespace ns);
 		public override void visit_object_creation_expression (Vala.ObjectCreationExpression expr);
 		public override void visit_postfix_expression (Vala.PostfixExpression expr);
@@ -3133,13 +3167,14 @@ namespace Vala {
 	[CCode (cheader_filename = "valacodegen.h")]
 	public class CCodeAttribute : Vala.AttributeCache {
 		public CCodeAttribute (Vala.CodeNode node);
-		public bool array_length { get; private set; }
+		public bool array_length { get; }
 		public string? array_length_expr { get; private set; }
 		public string? array_length_name { get; private set; }
 		public string? array_length_type { get; private set; }
-		public bool array_null_terminated { get; private set; }
+		public bool array_null_terminated { get; }
 		public string const_name { get; }
 		public string copy_function { get; }
+		public string ctype { get; }
 		public string default_value { get; }
 		public bool delegate_target { get; private set; }
 		public string delegate_target_name { get; }
@@ -3222,6 +3257,7 @@ namespace Vala {
 		public Vala.Class gsource_type;
 		public Vala.TypeSymbol gstringbuilder_type;
 		public Vala.TypeSymbol gthreadpool_type;
+		public Vala.Class gtk_widget_type;
 		public Vala.TypeSymbol gtype_type;
 		public Vala.Struct gvalue_type;
 		public Vala.Class gvaluearray_type;
@@ -3334,8 +3370,9 @@ namespace Vala {
 		public static Vala.CCodeAttribute get_ccode_attribute (Vala.CodeNode node);
 		public static string get_ccode_blurb (Vala.Property prop);
 		public static string get_ccode_const_name (Vala.CodeNode node);
+		public static string get_ccode_constructv_name (Vala.CreationMethod m);
 		public static string get_ccode_copy_function (Vala.TypeSymbol sym);
-		public static string get_ccode_declarator_suffix (Vala.DataType type);
+		public Vala.CCodeDeclaratorSuffix? get_ccode_declarator_suffix (Vala.DataType type);
 		public static string get_ccode_default_value (Vala.TypeSymbol sym);
 		public static bool get_ccode_delegate_target (Vala.CodeNode node);
 		public static string get_ccode_delegate_target_name (Vala.Variable variable);
@@ -3418,6 +3455,7 @@ namespace Vala {
 		public virtual string get_parameter_array_length_cname (Vala.Parameter param, int dim);
 		public abstract Vala.TargetValue get_parameter_cvalue (Vala.Parameter param);
 		public Vala.CCodeConstant get_property_canonical_cconstant (Vala.Property prop);
+		public static string get_quark_name (Vala.ErrorDomain edomain);
 		public Vala.CCodeExpression get_result_cexpression (string cname = "result");
 		public Vala.CCodeConstant get_signal_canonical_constant (Vala.Signal sig, string? detail = null);
 		public virtual Vala.CCodeFunctionCall get_signal_creation (Vala.Signal sig, Vala.TypeSymbol type);
@@ -3535,7 +3573,7 @@ namespace Vala {
 	[CCode (cheader_filename = "valacodegen.h")]
 	public class CCodeCompiler {
 		public CCodeCompiler ();
-		public void compile (Vala.CodeContext context, string? cc_command, string[] cc_options);
+		public void compile (Vala.CodeContext context, string? cc_command, string[] cc_options, string? pkg_config_command = null);
 	}
 	[CCode (cheader_filename = "valacodegen.h")]
 	public abstract class CCodeControlFlowModule : Vala.CCodeMethodModule {
@@ -3552,6 +3590,7 @@ namespace Vala {
 	public class CCodeDelegateModule : Vala.CCodeArrayModule {
 		public CCodeDelegateModule ();
 		public override void generate_delegate_declaration (Vala.Delegate d, Vala.CCodeFile decl_space);
+		public string generate_delegate_wrapper (Vala.Method m, Vala.DelegateType dt, Vala.CodeNode? node);
 		public override Vala.CCodeParameter generate_parameter (Vala.Parameter param, Vala.CCodeFile decl_space, Vala.Map<int,Vala.CCodeParameter> cparam_map, Vala.Map<int,Vala.CCodeExpression>? carg_map);
 		public override Vala.CCodeExpression get_delegate_target_cexpression (Vala.Expression delegate_expr, out Vala.CCodeExpression delegate_target_destroy_notify);
 		public override string get_delegate_target_cname (string delegate_cname);
@@ -3636,7 +3675,7 @@ namespace Vala {
 		public Vala.Enum enum_reference { get; set; }
 	}
 	[CCode (cheader_filename = "valacodegen.h")]
-	public class GAsyncModule : Vala.GSignalModule {
+	public class GAsyncModule : Vala.GtkModule {
 		public GAsyncModule ();
 		public string generate_async_callback_wrapper ();
 		public override void generate_cparameters (Vala.Method m, Vala.CCodeFile decl_space, Vala.Map<int,Vala.CCodeParameter> cparam_map, Vala.CCodeFunction func, Vala.CCodeFunctionDeclarator? vdeclarator = null, Vala.Map<int,Vala.CCodeExpression>? carg_map = null, Vala.CCodeFunctionCall? vcall = null, int direction = 3);
@@ -3663,20 +3702,23 @@ namespace Vala {
 	public class GDBusModule : Vala.GVariantModule {
 		public GDBusModule ();
 		public bool dbus_method_uses_file_descriptor (Vala.Method method);
+		public static string dbus_result_name (Vala.Method m);
 		public static string? get_dbus_name (Vala.TypeSymbol symbol);
 		public static string get_dbus_name_for_member (Vala.Symbol symbol);
+		protected Vala.CCodeExpression get_interface_info (Vala.ObjectTypeSymbol sym);
 		public static bool is_dbus_no_reply (Vala.Method m);
+		public static bool is_dbus_visible (Vala.CodeNode node);
 		public void receive_dbus_value (Vala.DataType type, Vala.CCodeExpression message_expr, Vala.CCodeExpression iter_expr, Vala.CCodeExpression target_expr, Vala.Symbol? sym, Vala.CCodeExpression? error_expr = null, out bool may_fail = null);
 		public void send_dbus_value (Vala.DataType type, Vala.CCodeExpression builder_expr, Vala.CCodeExpression expr, Vala.Symbol? sym);
+		public override void visit_class (Vala.Class cl);
 		public override void visit_error_domain (Vala.ErrorDomain edomain);
+		public override void visit_interface (Vala.Interface iface);
 	}
 	[CCode (cheader_filename = "valacodegen.h")]
 	public class GDBusServerModule : Vala.GDBusClientModule {
 		public GDBusServerModule ();
-		public static string dbus_result_name (Vala.Method m);
 		public override void generate_class_declaration (Vala.Class cl, Vala.CCodeFile decl_space);
 		public override void generate_interface_declaration (Vala.Interface iface, Vala.CCodeFile decl_space);
-		public static bool is_dbus_visible (Vala.CodeNode node);
 		public override void register_dbus_info (Vala.CCodeBlock block, Vala.ObjectTypeSymbol sym);
 		public override void visit_class (Vala.Class cl);
 		public override void visit_interface (Vala.Interface iface);
@@ -3729,7 +3771,7 @@ namespace Vala {
 		public override void visit_property (Vala.Property prop);
 		public override void visit_signal (Vala.Signal sig);
 		public override void visit_struct (Vala.Struct st);
-		public void write_file (Vala.CodeContext context, string directory, string gir_namespace, string gir_version, string package);
+		public void write_file (Vala.CodeContext context, string directory, string gir_filename, string gir_namespace, string gir_version, string package);
 		public void write_includes ();
 	}
 	[CCode (cheader_filename = "valacodegen.h")]
@@ -3777,6 +3819,7 @@ namespace Vala {
 	public class GTypeModule : Vala.GErrorModule {
 		public GTypeModule ();
 		public override void create_type_check_statement (Vala.CodeNode method_node, Vala.DataType ret_type, Vala.TypeSymbol t, bool non_null, string var_name);
+		public virtual void end_instance_init (Vala.Class cl);
 		public override void generate_class_declaration (Vala.Class cl, Vala.CCodeFile decl_space);
 		public virtual void generate_class_init (Vala.Class cl);
 		public override void generate_class_struct_declaration (Vala.Class cl, Vala.CCodeFile decl_space);
@@ -3806,6 +3849,14 @@ namespace Vala {
 		public override Vala.CCodeExpression? serialize_expression (Vala.DataType type, Vala.CCodeExpression expr);
 		public override void visit_enum (Vala.Enum en);
 		public void write_expression (Vala.DataType type, Vala.CCodeExpression builder_expr, Vala.CCodeExpression expr, Vala.Symbol? sym);
+	}
+	[CCode (cheader_filename = "valacodegen.h")]
+	public class GtkModule : Vala.GSignalModule {
+		public GtkModule ();
+		public override void end_instance_init (Vala.Class cl);
+		public override void generate_class_init (Vala.Class cl);
+		public override void visit_field (Vala.Field f);
+		public override void visit_method (Vala.Method m);
 	}
 	[CCode (cheader_filename = "valacodegen.h")]
 	public class InterfaceRegisterFunction : Vala.TypeRegisterFunction {

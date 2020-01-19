@@ -3,7 +3,7 @@
 [CCode (cprefix = "Gst", gir_namespace = "GstNet", gir_version = "1.0", lower_case_cprefix = "gst_")]
 namespace Gst {
 	namespace Net {
-		[CCode (cheader_filename = "gst/net/gstnet.h", type_id = "gst_net_client_clock_get_type ()")]
+		[CCode (cheader_filename = "gst/net/net.h", type_id = "gst_net_client_clock_get_type ()")]
 		[GIR (name = "NetClientClock")]
 		public class ClientClock : Gst.SystemClock {
 			[CCode (has_construct_function = false, type = "GstClock*")]
@@ -12,8 +12,10 @@ namespace Gst {
 			public string address { owned get; set; }
 			[NoAccessorMethod]
 			public int port { get; set; }
+			[NoAccessorMethod]
+			public uint64 round_trip_limit { get; set; }
 		}
-		[CCode (cheader_filename = "gst/net/gstnet.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "gst_net_time_packet_get_type ()")]
+		[CCode (cheader_filename = "gst/net/net.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "gst_net_time_packet_get_type ()")]
 		[Compact]
 		[GIR (name = "NetTimePacket")]
 		public class TimePacket {
@@ -29,11 +31,11 @@ namespace Gst {
 			public bool send (GLib.Socket socket, GLib.SocketAddress dest_address) throws GLib.Error;
 			public uint8 serialize ();
 		}
-		[CCode (cheader_filename = "gst/net/gstnet.h", type_id = "gst_net_time_provider_get_type ()")]
+		[CCode (cheader_filename = "gst/net/net.h", type_id = "gst_net_time_provider_get_type ()")]
 		[GIR (name = "NetTimeProvider")]
 		public class TimeProvider : Gst.Object {
 			[CCode (has_construct_function = false)]
-			public TimeProvider (Gst.Clock clock, string address, int port);
+			public TimeProvider (Gst.Clock clock, string? address, int port);
 			[NoAccessorMethod]
 			public bool active { get; set; }
 			[NoAccessorMethod]
@@ -43,15 +45,17 @@ namespace Gst {
 			[NoAccessorMethod]
 			public int port { get; set; }
 		}
-		[CCode (cheader_filename = "gst/net/gstnet.h", has_type_id = false)]
+		[CCode (cheader_filename = "gst/net/net.h", has_type_id = false)]
 		[GIR (name = "NetAddressMeta")]
 		public struct AddressMeta {
 			public Gst.Meta meta;
 			public weak GLib.SocketAddress addr;
 		}
-		[CCode (cheader_filename = "gst/net/gstnet.h")]
+		[CCode (cheader_filename = "gst/net/net.h")]
 		public static GLib.Type address_meta_api_get_type ();
-		[CCode (cheader_filename = "gst/net/gstnet.h")]
+		[CCode (cheader_filename = "gst/net/net.h")]
 		public static unowned Gst.MetaInfo? address_meta_get_info ();
+		[CCode (cheader_filename = "gst/net/net.h", cname = "gst_buffer_add_net_address_meta")]
+		public static unowned Gst.Net.AddressMeta? buffer_add_net_address_meta (Gst.Buffer buffer, GLib.SocketAddress addr);
 	}
 }

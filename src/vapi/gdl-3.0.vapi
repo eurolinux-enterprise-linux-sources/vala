@@ -166,6 +166,10 @@ namespace Gdl {
 		public int locked { get; set; }
 		[NoAccessorMethod]
 		public Gdl.SwitcherStyle switcher_style { get; set; }
+		[NoAccessorMethod]
+		public Gtk.PositionType tab_pos { get; set; }
+		[NoAccessorMethod]
+		public bool tab_reorderable { get; set; }
 		public virtual signal void layout_changed ();
 	}
 	[CCode (cheader_filename = "gdl/gdl.h", type_id = "gdl_dock_notebook_get_type ()")]
@@ -237,7 +241,9 @@ namespace Gdl {
 	[CCode (cheader_filename = "gdl/gdl.h", type_id = "gdl_dock_placeholder_get_type ()")]
 	public class DockPlaceholder : Gdl.DockObject, Atk.Implementor, Gtk.Buildable {
 		[CCode (has_construct_function = false, type = "GtkWidget*")]
+		[Deprecated (since = "3.6")]
 		public DockPlaceholder (string name, Gdl.DockObject object, Gdl.DockPlacement position, bool sticky);
+		[Deprecated (since = "3.6")]
 		public void attach (Gdl.DockObject object);
 		[NoAccessorMethod]
 		public bool floating { get; construct; }
@@ -260,13 +266,15 @@ namespace Gdl {
 	public class DockTablabel : Gtk.Bin, Atk.Implementor, Gtk.Buildable {
 		public bool active;
 		public uint drag_handle_size;
-		public Gdk.EventButton drag_start_event;
+		public weak Gdk.EventButton drag_start_event;
 		public weak Gdk.Window event_window;
 		public bool pre_drag;
 		[CCode (has_construct_function = false, type = "GtkWidget*")]
 		[Deprecated (since = "3.6")]
 		public DockTablabel (Gdl.DockItem item);
+		[Deprecated (since = "3.6")]
 		public void activate ();
+		[Deprecated (since = "3.6")]
 		public void deactivate ();
 		[NoAccessorMethod]
 		public Gdl.DockItem item { owned get; set; }
@@ -285,6 +293,10 @@ namespace Gdl {
 		public int insert_page (Gtk.Widget page, Gtk.Widget tab_widget, string label, string tooltips, string stock_id, Gdk.Pixbuf pixbuf_icon, int position);
 		[NoAccessorMethod]
 		public Gdl.SwitcherStyle switcher_style { get; set; }
+		[NoAccessorMethod]
+		public Gtk.PositionType tab_pos { get; set; }
+		[NoAccessorMethod]
+		public bool tab_reorderable { get; set; }
 	}
 	[CCode (cheader_filename = "gdl/gdl.h", has_type_id = false)]
 	public struct DockRequest {

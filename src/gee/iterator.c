@@ -241,10 +241,10 @@ void vala_value_take_iterator (GValue* value, gpointer v_object) {
 
 static void vala_iterator_class_init (ValaIteratorClass * klass) {
 	vala_iterator_parent_class = g_type_class_peek_parent (klass);
-	VALA_ITERATOR_CLASS (klass)->finalize = vala_iterator_finalize;
+	((ValaIteratorClass *) klass)->finalize = vala_iterator_finalize;
 	g_type_class_add_private (klass, sizeof (ValaIteratorPrivate));
-	VALA_ITERATOR_CLASS (klass)->next = vala_iterator_real_next;
-	VALA_ITERATOR_CLASS (klass)->get = vala_iterator_real_get;
+	((ValaIteratorClass *) klass)->next = vala_iterator_real_next;
+	((ValaIteratorClass *) klass)->get = vala_iterator_real_get;
 }
 
 
@@ -257,6 +257,7 @@ static void vala_iterator_instance_init (ValaIterator * self) {
 static void vala_iterator_finalize (ValaIterator* obj) {
 	ValaIterator * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_ITERATOR, ValaIterator);
+	g_signal_handlers_destroy (self);
 }
 
 

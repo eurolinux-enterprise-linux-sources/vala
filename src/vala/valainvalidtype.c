@@ -284,7 +284,7 @@ ValaInvalidType* vala_invalid_type_new (void) {
 static ValaDataType* vala_invalid_type_real_copy (ValaDataType* base) {
 	ValaInvalidType * self;
 	ValaDataType* result = NULL;
-	ValaInvalidType* _tmp0_;
+	ValaInvalidType* _tmp0_ = NULL;
 	self = (ValaInvalidType*) base;
 	_tmp0_ = vala_invalid_type_new ();
 	result = (ValaDataType*) _tmp0_;
@@ -294,7 +294,7 @@ static ValaDataType* vala_invalid_type_real_copy (ValaDataType* base) {
 
 static void vala_invalid_type_class_init (ValaInvalidTypeClass * klass) {
 	vala_invalid_type_parent_class = g_type_class_peek_parent (klass);
-	VALA_DATA_TYPE_CLASS (klass)->copy = vala_invalid_type_real_copy;
+	((ValaDataTypeClass *) klass)->copy = vala_invalid_type_real_copy;
 }
 
 

@@ -1,3 +1,93 @@
+Vala 0.26.1
+===========
+
+ * Bug fixes and binding updates.
+
+Vala 0.26.0
+===========
+
+ * Bug fix and binding updates.
+
+Vala 0.25.4
+===========
+
+ * Add option --vapi-comments.
+ * Bug fixes and binding updates.
+
+Vala 0.25.3
+===========
+
+ * Bug fixes and binding updates.
+
+Vala 0.25.2
+===========
+
+ * Require and target GLib >= 2.24.
+ * Report warning for private struct fields.
+ * Replace webkit2gtk-3.0 bindings with webkit2gtk-4.0 bindings.
+ * Always build vapigen.
+ * Bug fixes and binding updates.
+
+Vala 0.25.1
+===========
+
+ * Support explicit interface method implementation.
+ * Support (unowned type)[] syntax.
+ * Support non-literal length in fixed-size arrays.
+ * Mark regular expression literals as stable.
+ * GIR parser updates.
+ * Add webkit2gtk-3.0 bindings.
+ * Add gstreamer-allocators-1.0 and gstreamer-riff-1.0 bindings.
+ * Bug fixes and binding updates.
+
+Vala 0.24.0
+===========
+
+ * Bug fixes and binding updates.
+
+Vala 0.23.3
+===========
+
+ * Bug fixes and binding updates.
+
+Vala 0.23.2
+===========
+
+ * Bind GDK event structures as compact classes.
+ * Switch gdk-x11-3.0 bindings to .gir.
+ * Switch librsvg-2.0 bindings to .gir.
+ * Bug fixes and binding updates.
+
+Vala 0.23.1
+===========
+
+ * GIR parser updates.
+ * Switch libnotify bindings to .gir.
+ * Add libpeas-gtk-1.0 bindings.
+ * Add xcb-icccm bindings.
+ * Bug fixes and binding updates.
+
+Vala 0.22.0
+===========
+
+ * Support chain up to constructv functions.
+ * Bug fixes and binding updates.
+
+Vala 0.21.2
+===========
+
+ * Recognize ref/unref functions in .gir files.
+ * Add geocode-glib bindings.
+ * Bug fixes and binding updates.
+
+Vala 0.21.1
+===========
+
+ * Support \uXXXX escape sequences.
+ * Support specifying vfunc order in interfaces to define ABI.
+ * Support GTK+ widget templates.
+ * Bug fixes and binding updates.
+
 Vala 0.20.1
 ===========
 

@@ -127,7 +127,16 @@ public class Vala.GDBusClientModule : GDBusModule {
 			}
 		}
 
-		result += "G_IMPLEMENT_INTERFACE (%s, %sproxy_%sinterface_init) ".printf (
+		string interface_macro;
+
+		if (in_plugin) {
+			interface_macro = "G_IMPLEMENT_INTERFACE_DYNAMIC";
+		} else {
+			interface_macro = "G_IMPLEMENT_INTERFACE";
+		}
+
+		result += "%s (%s, %sproxy_%sinterface_init) ".printf (
+			interface_macro,
 			get_ccode_upper_case_name (iface, "TYPE_"),
 			get_ccode_lower_case_prefix (main_iface),
 			get_ccode_lower_case_prefix (iface));
@@ -156,6 +165,12 @@ public class Vala.GDBusClientModule : GDBusModule {
 		var proxy_get_type = new CCodeFunction (get_type_name, "GType");
 		proxy_get_type.attributes = "G_GNUC_CONST";
 		decl_space.add_function_declaration (proxy_get_type);
+
+		if (in_plugin) {
+			var proxy_register_type = new CCodeFunction ("%sproxy_register_dynamic_type".printf (get_ccode_lower_case_prefix (iface)));
+			proxy_register_type.add_parameter (new CCodeParameter ("module", "GTypeModule*"));
+			decl_space.add_function_declaration (proxy_register_type);
+		}
 	}
 
 	public override void visit_interface (Interface iface) {
@@ -175,7 +190,15 @@ public class Vala.GDBusClientModule : GDBusModule {
 		cfile.add_type_declaration (new CCodeTypeDefinition ("GDBusProxy", new CCodeVariableDeclarator (cname)));
 		cfile.add_type_declaration (new CCodeTypeDefinition ("GDBusProxyClass", new CCodeVariableDeclarator (cname + "Class")));
 
-		var define_type = new CCodeFunctionCall (new CCodeIdentifier ("G_DEFINE_TYPE_EXTENDED"));
+		string type_macro;
+
+		if (in_plugin) {
+			type_macro = "G_DEFINE_DYNAMIC_TYPE_EXTENDED";
+		} else {
+			type_macro = "G_DEFINE_TYPE_EXTENDED";
+		}
+
+		var define_type = new CCodeFunctionCall (new CCodeIdentifier (type_macro));
 		define_type.add_argument (new CCodeIdentifier (cname));
 		define_type.add_argument (new CCodeIdentifier (lower_cname));
 		define_type.add_argument (new CCodeIdentifier ("G_TYPE_DBUS_PROXY"));
@@ -195,6 +218,22 @@ public class Vala.GDBusClientModule : GDBusModule {
 		cfile.add_function (proxy_class_init);
 
 		generate_signal_handler_function (iface);
+
+		if (in_plugin) {
+			var proxy_class_finalize = new CCodeFunction (lower_cname + "_class_finalize", "void");
+			proxy_class_finalize.add_parameter (new CCodeParameter ("klass", cname + "Class*"));
+			proxy_class_finalize.modifiers = CCodeModifiers.STATIC;
+			cfile.add_function (proxy_class_finalize);
+
+			var proxy_type_init = new CCodeFunction (lower_cname + "_register_dynamic_type", "void");
+			proxy_type_init.add_parameter (new CCodeParameter ("module", "GTypeModule*"));
+			push_function (proxy_type_init);
+			var call_register_type = new CCodeFunctionCall (new CCodeIdentifier (lower_cname + "_register_type"));
+			call_register_type.add_argument (new CCodeIdentifier ("module"));
+			ccode.add_expression (call_register_type);
+			pop_function ();
+			cfile.add_function(proxy_type_init);
+		}
 
 		var proxy_instance_init = new CCodeFunction (lower_cname + "_init", "void");
 		proxy_instance_init.add_parameter (new CCodeParameter ("self", cname + "*"));
@@ -220,6 +259,7 @@ public class Vala.GDBusClientModule : GDBusModule {
 
 		CCodeExpression proxy_type;
 		CCodeExpression dbus_iface_name;
+		CCodeExpression dbus_iface_info;
 
 		var object_type = type_arg as ObjectType;
 		if (object_type != null) {
@@ -253,6 +293,15 @@ public class Vala.GDBusClientModule : GDBusModule {
 
 			dbus_iface_name = get_qdata;
 		}
+
+		var quark = new CCodeFunctionCall (new CCodeIdentifier ("g_quark_from_static_string"));
+		quark.add_argument (new CCodeConstant ("\"vala-dbus-interface-info\""));
+
+		var get_qdata = new CCodeFunctionCall (new CCodeIdentifier ("g_type_get_qdata"));
+		get_qdata.add_argument (get_type_id_expression (type_arg));
+		get_qdata.add_argument (quark);
+
+		dbus_iface_info = get_qdata;
 
 		if (bus_get_proxy_async || conn_get_proxy_async) {
 			if (ma.member_name == "end" && ma.inner.symbol_reference == ma.symbol_reference) {
@@ -350,6 +399,10 @@ public class Vala.GDBusClientModule : GDBusModule {
 		ccall.add_argument (get_cvalue (object_path));
 		ccall.add_argument (new CCodeConstant ("\"g-interface-name\""));
 		ccall.add_argument (dbus_iface_name);
+		if (dbus_iface_info != null) {
+			ccall.add_argument (new CCodeConstant ("\"g-interface-info\""));
+			ccall.add_argument (dbus_iface_info);
+		}
 		ccall.add_argument (new CCodeConstant ("NULL"));
 
 		if (bus_get_proxy_async || conn_get_proxy_async) {
@@ -1119,6 +1172,16 @@ public class Vala.GDBusClientModule : GDBusModule {
 		set_qdata.add_argument (new CCodeIdentifier ("%s_type_id".printf (get_ccode_lower_case_name (sym, null))));
 		set_qdata.add_argument (quark);
 		set_qdata.add_argument (new CCodeConstant ("\"%s\"".printf (dbus_iface_name)));
+
+		block.add_statement (new CCodeExpressionStatement (set_qdata));
+
+		quark = new CCodeFunctionCall (new CCodeIdentifier ("g_quark_from_static_string"));
+		quark.add_argument (new CCodeConstant ("\"vala-dbus-interface-info\""));
+
+		set_qdata = new CCodeFunctionCall (new CCodeIdentifier ("g_type_set_qdata"));
+		set_qdata.add_argument (new CCodeIdentifier ("%s_type_id".printf (get_ccode_lower_case_name (sym, null))));
+		set_qdata.add_argument (quark);
+		set_qdata.add_argument (new CCodeCastExpression (new CCodeUnaryExpression (CCodeUnaryOperator.ADDRESS_OF, get_interface_info (sym)), "void*"));
 
 		block.add_statement (new CCodeExpressionStatement (set_qdata));
 	}

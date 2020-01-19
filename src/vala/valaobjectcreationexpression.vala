@@ -396,6 +396,22 @@ public class Vala.ObjectCreationExpression : Expression {
 					error = true;
 					Report.error (source_reference, "Invalid type for argument 1");
 				}
+
+				var format_literal = ex as StringLiteral;
+				if (format_literal != null) {
+					var format = format_literal.eval ();
+					if (!context.analyzer.check_print_format (format, arg_it, source_reference)) {
+						error = true;
+						return false;
+					}
+				}
+
+				arg_it = get_argument_list ().iterator ();
+				arg_it.next ();
+				if (!context.analyzer.check_variadic_arguments (arg_it, 1, source_reference)) {
+					error = true;
+					return false;
+				}
 			}
 		}
 
@@ -413,20 +429,16 @@ public class Vala.ObjectCreationExpression : Expression {
 				// store parent_node as we need to replace the expression in the old parent node later on
 				var old_parent_node = parent_node;
 
-				var local = new LocalVariable (value_type, get_temp_name (), null, source_reference);
-				// use floating variable to avoid unnecessary (and sometimes impossible) copies
-				local.floating = true;
+				var local = new LocalVariable (value_type.copy (), get_temp_name (), null, source_reference);
 				var decl = new DeclarationStatement (local, source_reference);
 
 				insert_statement (context.analyzer.insert_block, decl);
 
-				Expression temp_access = new MemberAccess.simple (local.name, source_reference);
-				temp_access.target_type = target_type;
-
+				var temp_access = SemanticAnalyzer.create_temp_access (local, target_type);
 				// don't set initializer earlier as this changes parent_node and parent_statement
 				local.initializer = this;
 				decl.check (context);
-				temp_access.check (context);
+
 
 				// move temp variable to insert block to ensure the
 				// variable is in the same block as the declaration
@@ -436,6 +448,7 @@ public class Vala.ObjectCreationExpression : Expression {
 				context.analyzer.insert_block.add_local_variable (local);
 
 				old_parent_node.replace_expression (this, temp_access);
+				temp_access.check (context);
 			}
 		}
 
@@ -465,6 +478,10 @@ public class Vala.ObjectCreationExpression : Expression {
 	public override void get_used_variables (Collection<Variable> collection) {
 		foreach (Expression arg in argument_list) {
 			arg.get_used_variables (collection);
+		}
+
+		foreach (MemberInitializer init in object_initializer) {
+			init.get_used_variables (collection);
 		}
 	}
 }

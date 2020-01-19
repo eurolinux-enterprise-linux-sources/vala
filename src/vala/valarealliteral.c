@@ -155,6 +155,26 @@ typedef struct _ValaRealLiteralPrivate ValaRealLiteralPrivate;
 typedef struct _ValaSourceReference ValaSourceReference;
 typedef struct _ValaSourceReferenceClass ValaSourceReferenceClass;
 
+#define VALA_TYPE_TYPESYMBOL (vala_typesymbol_get_type ())
+#define VALA_TYPESYMBOL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TYPESYMBOL, ValaTypeSymbol))
+#define VALA_TYPESYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_TYPESYMBOL, ValaTypeSymbolClass))
+#define VALA_IS_TYPESYMBOL(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_TYPESYMBOL))
+#define VALA_IS_TYPESYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_TYPESYMBOL))
+#define VALA_TYPESYMBOL_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_TYPESYMBOL, ValaTypeSymbolClass))
+
+typedef struct _ValaTypeSymbol ValaTypeSymbol;
+typedef struct _ValaTypeSymbolClass ValaTypeSymbolClass;
+
+#define VALA_TYPE_STRUCT (vala_struct_get_type ())
+#define VALA_STRUCT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_STRUCT, ValaStruct))
+#define VALA_STRUCT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_STRUCT, ValaStructClass))
+#define VALA_IS_STRUCT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_STRUCT))
+#define VALA_IS_STRUCT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_STRUCT))
+#define VALA_STRUCT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_STRUCT, ValaStructClass))
+
+typedef struct _ValaStruct ValaStruct;
+typedef struct _ValaStructClass ValaStructClass;
+
 #define VALA_TYPE_SEMANTIC_ANALYZER (vala_semantic_analyzer_get_type ())
 #define VALA_SEMANTIC_ANALYZER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SEMANTIC_ANALYZER, ValaSemanticAnalyzer))
 #define VALA_SEMANTIC_ANALYZER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SEMANTIC_ANALYZER, ValaSemanticAnalyzerClass))
@@ -186,16 +206,6 @@ typedef struct _ValaSourceFileClass ValaSourceFileClass;
 typedef struct _ValaNamespace ValaNamespace;
 typedef struct _ValaNamespaceClass ValaNamespaceClass;
 
-#define VALA_TYPE_TYPESYMBOL (vala_typesymbol_get_type ())
-#define VALA_TYPESYMBOL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TYPESYMBOL, ValaTypeSymbol))
-#define VALA_TYPESYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_TYPESYMBOL, ValaTypeSymbolClass))
-#define VALA_IS_TYPESYMBOL(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_TYPESYMBOL))
-#define VALA_IS_TYPESYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_TYPESYMBOL))
-#define VALA_TYPESYMBOL_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_TYPESYMBOL, ValaTypeSymbolClass))
-
-typedef struct _ValaTypeSymbol ValaTypeSymbol;
-typedef struct _ValaTypeSymbolClass ValaTypeSymbolClass;
-
 #define VALA_TYPE_OBJECT_TYPE_SYMBOL (vala_object_type_symbol_get_type ())
 #define VALA_OBJECT_TYPE_SYMBOL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_OBJECT_TYPE_SYMBOL, ValaObjectTypeSymbol))
 #define VALA_OBJECT_TYPE_SYMBOL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_OBJECT_TYPE_SYMBOL, ValaObjectTypeSymbolClass))
@@ -215,16 +225,6 @@ typedef struct _ValaObjectTypeSymbolClass ValaObjectTypeSymbolClass;
 
 typedef struct _ValaClass ValaClass;
 typedef struct _ValaClassClass ValaClassClass;
-
-#define VALA_TYPE_STRUCT (vala_struct_get_type ())
-#define VALA_STRUCT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_STRUCT, ValaStruct))
-#define VALA_STRUCT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_STRUCT, ValaStructClass))
-#define VALA_IS_STRUCT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_STRUCT))
-#define VALA_IS_STRUCT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_STRUCT))
-#define VALA_STRUCT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_STRUCT, ValaStructClass))
-
-typedef struct _ValaStruct ValaStruct;
-typedef struct _ValaStructClass ValaStructClass;
 
 #define VALA_TYPE_INTERFACE (vala_interface_get_type ())
 #define VALA_INTERFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_INTERFACE, ValaInterface))
@@ -1186,6 +1186,7 @@ struct _ValaSemanticAnalyzer {
 	ValaDataType* unichar_type;
 	ValaDataType* double_type;
 	ValaDataType* type_type;
+	ValaDataType* va_list_type;
 	ValaClass* object_type;
 	ValaStructValueType* gvalue_type;
 	ValaObjectType* gvariant_type;
@@ -1265,6 +1266,8 @@ static gboolean vala_real_literal_real_check (ValaCodeNode* base, ValaCodeContex
 gboolean vala_code_node_get_checked (ValaCodeNode* self);
 gboolean vala_code_node_get_error (ValaCodeNode* self);
 void vala_code_node_set_checked (ValaCodeNode* self, gboolean value);
+GType vala_typesymbol_get_type (void) G_GNUC_CONST;
+GType vala_struct_get_type (void) G_GNUC_CONST;
 GType vala_semantic_analyzer_get_type (void) G_GNUC_CONST;
 ValaSemanticAnalyzer* vala_code_context_get_analyzer (ValaCodeContext* self);
 gpointer vala_source_file_ref (gpointer instance);
@@ -1275,10 +1278,8 @@ void vala_value_take_source_file (GValue* value, gpointer v_object);
 gpointer vala_value_get_source_file (const GValue* value);
 GType vala_source_file_get_type (void) G_GNUC_CONST;
 GType vala_namespace_get_type (void) G_GNUC_CONST;
-GType vala_typesymbol_get_type (void) G_GNUC_CONST;
 GType vala_object_type_symbol_get_type (void) G_GNUC_CONST;
 GType vala_class_get_type (void) G_GNUC_CONST;
-GType vala_struct_get_type (void) G_GNUC_CONST;
 GType vala_interface_get_type (void) G_GNUC_CONST;
 GType vala_enum_get_type (void) G_GNUC_CONST;
 GType vala_constant_get_type (void) G_GNUC_CONST;
@@ -1383,8 +1384,8 @@ static void vala_real_literal_finalize (ValaCodeNode* obj);
  */
 ValaRealLiteral* vala_real_literal_construct (GType object_type, const gchar* r, ValaSourceReference* source) {
 	ValaRealLiteral* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	g_return_val_if_fail (r != NULL, NULL);
 	self = (ValaRealLiteral*) vala_literal_construct (object_type);
 	_tmp0_ = r;
@@ -1402,8 +1403,8 @@ ValaRealLiteral* vala_real_literal_new (const gchar* r, ValaSourceReference* sou
 
 static void vala_real_literal_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaRealLiteral * self;
-	ValaCodeVisitor* _tmp0_;
-	ValaCodeVisitor* _tmp1_;
+	ValaCodeVisitor* _tmp0_ = NULL;
+	ValaCodeVisitor* _tmp1_ = NULL;
 	self = (ValaRealLiteral*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -1421,31 +1422,29 @@ static void vala_real_literal_real_accept (ValaCodeNode* base, ValaCodeVisitor* 
 gchar* vala_real_literal_get_type_name (ValaRealLiteral* self) {
 	gchar* result = NULL;
 	gboolean _tmp0_ = FALSE;
-	const gchar* _tmp1_;
+	const gchar* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
-	gboolean _tmp5_;
-	gchar* _tmp7_;
+	gchar* _tmp6_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp1_ = self->priv->_value;
 	_tmp2_ = g_str_has_suffix (_tmp1_, "f");
 	if (_tmp2_) {
 		_tmp0_ = TRUE;
 	} else {
-		const gchar* _tmp3_;
+		const gchar* _tmp3_ = NULL;
 		gboolean _tmp4_ = FALSE;
 		_tmp3_ = self->priv->_value;
 		_tmp4_ = g_str_has_suffix (_tmp3_, "F");
 		_tmp0_ = _tmp4_;
 	}
-	_tmp5_ = _tmp0_;
-	if (_tmp5_) {
-		gchar* _tmp6_;
-		_tmp6_ = g_strdup ("float");
-		result = _tmp6_;
+	if (_tmp0_) {
+		gchar* _tmp5_ = NULL;
+		_tmp5_ = g_strdup ("float");
+		result = _tmp5_;
 		return result;
 	}
-	_tmp7_ = g_strdup ("double");
-	result = _tmp7_;
+	_tmp6_ = g_strdup ("double");
+	result = _tmp6_;
 	return result;
 }
 
@@ -1462,8 +1461,8 @@ static gboolean vala_real_literal_real_is_pure (ValaExpression* base) {
 static gchar* vala_real_literal_real_to_string (ValaCodeNode* base) {
 	ValaRealLiteral * self;
 	gchar* result = NULL;
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	self = (ValaRealLiteral*) base;
 	_tmp0_ = self->priv->_value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -1475,33 +1474,33 @@ static gchar* vala_real_literal_real_to_string (ValaCodeNode* base) {
 static gboolean vala_real_literal_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaRealLiteral * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaCodeContext* _tmp4_;
-	ValaSemanticAnalyzer* _tmp5_;
-	ValaSemanticAnalyzer* _tmp6_;
-	ValaSymbol* _tmp7_;
-	ValaScope* _tmp8_;
-	ValaScope* _tmp9_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaStruct* st = NULL;
+	ValaCodeContext* _tmp4_ = NULL;
+	ValaSemanticAnalyzer* _tmp5_ = NULL;
+	ValaSemanticAnalyzer* _tmp6_ = NULL;
+	ValaSymbol* _tmp7_ = NULL;
+	ValaScope* _tmp8_ = NULL;
+	ValaScope* _tmp9_ = NULL;
 	gchar* _tmp10_ = NULL;
-	gchar* _tmp11_;
+	gchar* _tmp11_ = NULL;
 	ValaSymbol* _tmp12_ = NULL;
-	ValaStruct* _tmp13_;
-	ValaStruct* st;
-	ValaStruct* _tmp14_;
-	ValaCodeContext* _tmp15_;
-	ValaStruct* _tmp16_;
-	ValaFloatingType* _tmp17_;
-	ValaFloatingType* _tmp18_;
-	gboolean _tmp19_;
-	gboolean _tmp20_;
+	ValaStruct* _tmp13_ = NULL;
+	ValaStruct* _tmp14_ = NULL;
+	ValaCodeContext* _tmp15_ = NULL;
+	ValaStruct* _tmp16_ = NULL;
+	ValaFloatingType* _tmp17_ = NULL;
+	ValaFloatingType* _tmp18_ = NULL;
+	gboolean _tmp19_ = FALSE;
+	gboolean _tmp20_ = FALSE;
 	self = (ValaRealLiteral*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -1538,8 +1537,8 @@ static gboolean vala_real_literal_real_check (ValaCodeNode* base, ValaCodeContex
 
 static void vala_real_literal_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaRealLiteral * self;
-	ValaCodeGenerator* _tmp0_;
-	ValaCodeGenerator* _tmp1_;
+	ValaCodeGenerator* _tmp0_ = NULL;
+	ValaCodeGenerator* _tmp1_ = NULL;
 	self = (ValaRealLiteral*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = codegen;
@@ -1551,7 +1550,7 @@ static void vala_real_literal_real_emit (ValaCodeNode* base, ValaCodeGenerator* 
 
 const gchar* vala_real_literal_get_value (ValaRealLiteral* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_value;
 	result = _tmp0_;
@@ -1560,8 +1559,8 @@ const gchar* vala_real_literal_get_value (ValaRealLiteral* self) {
 
 
 void vala_real_literal_set_value (ValaRealLiteral* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -1572,13 +1571,13 @@ void vala_real_literal_set_value (ValaRealLiteral* self, const gchar* value) {
 
 static void vala_real_literal_class_init (ValaRealLiteralClass * klass) {
 	vala_real_literal_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_real_literal_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_real_literal_finalize;
 	g_type_class_add_private (klass, sizeof (ValaRealLiteralPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_real_literal_real_accept;
-	VALA_EXPRESSION_CLASS (klass)->is_pure = vala_real_literal_real_is_pure;
-	VALA_CODE_NODE_CLASS (klass)->to_string = vala_real_literal_real_to_string;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_real_literal_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_real_literal_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_real_literal_real_accept;
+	((ValaExpressionClass *) klass)->is_pure = vala_real_literal_real_is_pure;
+	((ValaCodeNodeClass *) klass)->to_string = vala_real_literal_real_to_string;
+	((ValaCodeNodeClass *) klass)->check = vala_real_literal_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_real_literal_real_emit;
 }
 
 

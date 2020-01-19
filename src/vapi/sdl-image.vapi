@@ -3,7 +3,7 @@
 namespace SDLImage {
 	//! Defines
 
-	[CCode (cname = "int", cprefix = "IMG_INIT_")]
+	[CCode (cname = "int", cprefix = "IMG_INIT_", has_type_id = false)]
 	public enum InitFlags {
 	    JPG,
 	    PNG,
@@ -30,7 +30,7 @@ namespace SDLImage {
 	public static SDL.Surface? load_rw(SDL.RWops src, bool freesrc = false);
 
 	[CCode (cname = "IMG_LoadTyped_RW")]
-	public static SDL.Surface? load_rw_typed(SDL.RWops src, bool freesrc = false, string type);
+	public static SDL.Surface? load_rw_typed(SDL.RWops src, bool freesrc, string type);
 
 	[CCode (cname = "IMG_LoadCUR_RW")]
 	public static SDL.Surface? load_cur(SDL.RWops src);

@@ -252,7 +252,7 @@ static void vala_statement_list_finalize (ValaCodeNode* obj);
 
 ValaStatementList* vala_statement_list_construct (GType object_type, ValaSourceReference* source_reference) {
 	ValaStatementList* self = NULL;
-	ValaSourceReference* _tmp0_;
+	ValaSourceReference* _tmp0_ = NULL;
 	g_return_val_if_fail (source_reference != NULL, NULL);
 	self = (ValaStatementList*) vala_code_node_construct (object_type);
 	_tmp0_ = source_reference;
@@ -268,8 +268,8 @@ ValaStatementList* vala_statement_list_new (ValaSourceReference* source_referenc
 
 ValaStatement* vala_statement_list_get (ValaStatementList* self, gint index) {
 	ValaStatement* result = NULL;
-	ValaList* _tmp0_;
-	gint _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
 	gpointer _tmp2_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->list;
@@ -281,9 +281,9 @@ ValaStatement* vala_statement_list_get (ValaStatementList* self, gint index) {
 
 
 void vala_statement_list_set (ValaStatementList* self, gint index, ValaStatement* stmt) {
-	ValaList* _tmp0_;
-	gint _tmp1_;
-	ValaStatement* _tmp2_;
+	ValaList* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	ValaStatement* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (stmt != NULL);
 	_tmp0_ = self->priv->list;
@@ -294,8 +294,8 @@ void vala_statement_list_set (ValaStatementList* self, gint index, ValaStatement
 
 
 void vala_statement_list_add (ValaStatementList* self, ValaStatement* stmt) {
-	ValaList* _tmp0_;
-	ValaStatement* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaStatement* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (stmt != NULL);
 	_tmp0_ = self->priv->list;
@@ -305,9 +305,9 @@ void vala_statement_list_add (ValaStatementList* self, ValaStatement* stmt) {
 
 
 void vala_statement_list_insert (ValaStatementList* self, gint index, ValaStatement* stmt) {
-	ValaList* _tmp0_;
-	gint _tmp1_;
-	ValaStatement* _tmp2_;
+	ValaList* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	ValaStatement* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (stmt != NULL);
 	_tmp0_ = self->priv->list;
@@ -327,14 +327,14 @@ static void vala_statement_list_real_accept (ValaCodeNode* base, ValaCodeVisitor
 	self = (ValaStatementList*) base;
 	g_return_if_fail (visitor != NULL);
 	{
-		ValaList* _tmp0_;
-		ValaList* _tmp1_;
-		ValaList* _stmt_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _stmt_size;
-		gint _stmt_index;
+		ValaList* _stmt_list = NULL;
+		ValaList* _tmp0_ = NULL;
+		ValaList* _tmp1_ = NULL;
+		gint _stmt_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _stmt_index = 0;
 		_tmp0_ = self->priv->list;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
 		_stmt_list = _tmp1_;
@@ -344,15 +344,15 @@ static void vala_statement_list_real_accept (ValaCodeNode* base, ValaCodeVisitor
 		_stmt_size = _tmp4_;
 		_stmt_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaStatement* stmt = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaStatement* stmt;
-			ValaStatement* _tmp11_;
-			ValaCodeVisitor* _tmp12_;
+			ValaStatement* _tmp11_ = NULL;
+			ValaCodeVisitor* _tmp12_ = NULL;
 			_tmp5_ = _stmt_index;
 			_stmt_index = _tmp5_ + 1;
 			_tmp6_ = _stmt_index;
@@ -379,14 +379,14 @@ static void vala_statement_list_real_emit (ValaCodeNode* base, ValaCodeGenerator
 	self = (ValaStatementList*) base;
 	g_return_if_fail (codegen != NULL);
 	{
-		ValaList* _tmp0_;
-		ValaList* _tmp1_;
-		ValaList* _stmt_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _stmt_size;
-		gint _stmt_index;
+		ValaList* _stmt_list = NULL;
+		ValaList* _tmp0_ = NULL;
+		ValaList* _tmp1_ = NULL;
+		gint _stmt_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _stmt_index = 0;
 		_tmp0_ = self->priv->list;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
 		_stmt_list = _tmp1_;
@@ -396,15 +396,15 @@ static void vala_statement_list_real_emit (ValaCodeNode* base, ValaCodeGenerator
 		_stmt_size = _tmp4_;
 		_stmt_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaStatement* stmt = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaStatement* stmt;
-			ValaStatement* _tmp11_;
-			ValaCodeGenerator* _tmp12_;
+			ValaStatement* _tmp11_ = NULL;
+			ValaCodeGenerator* _tmp12_ = NULL;
 			_tmp5_ = _stmt_index;
 			_stmt_index = _tmp5_ + 1;
 			_tmp6_ = _stmt_index;
@@ -428,9 +428,9 @@ static void vala_statement_list_real_emit (ValaCodeNode* base, ValaCodeGenerator
 
 gint vala_statement_list_get_length (ValaStatementList* self) {
 	gint result;
-	ValaList* _tmp0_;
-	gint _tmp1_;
-	gint _tmp2_;
+	ValaList* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	gint _tmp2_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->list;
 	_tmp1_ = vala_collection_get_size ((ValaCollection*) _tmp0_);
@@ -442,10 +442,10 @@ gint vala_statement_list_get_length (ValaStatementList* self) {
 
 static void vala_statement_list_class_init (ValaStatementListClass * klass) {
 	vala_statement_list_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_statement_list_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_statement_list_finalize;
 	g_type_class_add_private (klass, sizeof (ValaStatementListPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_statement_list_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_statement_list_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_statement_list_real_accept;
+	((ValaCodeNodeClass *) klass)->emit = vala_statement_list_real_emit;
 }
 
 
@@ -455,8 +455,8 @@ static void vala_statement_list_vala_statement_interface_init (ValaStatementIfac
 
 
 static void vala_statement_list_instance_init (ValaStatementList * self) {
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_STATEMENT_LIST_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_STATEMENT, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);

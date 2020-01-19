@@ -164,6 +164,16 @@ typedef struct _ValaMemberAccessClass ValaMemberAccessClass;
 typedef struct _ValaElementAccess ValaElementAccess;
 typedef struct _ValaElementAccessClass ValaElementAccessClass;
 
+#define VALA_TYPE_DELEGATE_TYPE (vala_delegate_type_get_type ())
+#define VALA_DELEGATE_TYPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_DELEGATE_TYPE, ValaDelegateType))
+#define VALA_DELEGATE_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_DELEGATE_TYPE, ValaDelegateTypeClass))
+#define VALA_IS_DELEGATE_TYPE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_DELEGATE_TYPE))
+#define VALA_IS_DELEGATE_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_DELEGATE_TYPE))
+#define VALA_DELEGATE_TYPE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_DELEGATE_TYPE, ValaDelegateTypeClass))
+
+typedef struct _ValaDelegateType ValaDelegateType;
+typedef struct _ValaDelegateTypeClass ValaDelegateTypeClass;
+
 #define VALA_TYPE_POINTER_TYPE (vala_pointer_type_get_type ())
 #define VALA_POINTER_TYPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_POINTER_TYPE, ValaPointerType))
 #define VALA_POINTER_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_POINTER_TYPE, ValaPointerTypeClass))
@@ -315,6 +325,8 @@ GType vala_element_access_get_type (void) G_GNUC_CONST;
 void vala_report_error (ValaSourceReference* source, const gchar* message);
 ValaSourceReference* vala_code_node_get_source_reference (ValaCodeNode* self);
 ValaDataType* vala_expression_get_value_type (ValaExpression* self);
+GType vala_delegate_type_get_type (void) G_GNUC_CONST;
+gboolean vala_data_type_get_value_owned (ValaDataType* self);
 gboolean vala_data_type_is_disposable (ValaDataType* self);
 GType vala_pointer_type_get_type (void) G_GNUC_CONST;
 ValaDataType* vala_data_type_copy (ValaDataType* self);
@@ -324,8 +336,8 @@ static void vala_reference_transfer_expression_real_emit (ValaCodeNode* base, Va
 void vala_code_node_emit (ValaCodeNode* self, ValaCodeGenerator* codegen);
 static void vala_reference_transfer_expression_real_get_defined_variables (ValaCodeNode* base, ValaCollection* collection);
 void vala_code_node_get_defined_variables (ValaCodeNode* self, ValaCollection* collection);
-ValaSymbol* vala_expression_get_symbol_reference (ValaExpression* self);
 GType vala_local_variable_get_type (void) G_GNUC_CONST;
+ValaSymbol* vala_expression_get_symbol_reference (ValaExpression* self);
 GType vala_parameter_get_type (void) G_GNUC_CONST;
 GType vala_parameter_direction_get_type (void) G_GNUC_CONST;
 ValaParameterDirection vala_parameter_get_direction (ValaParameter* self);
@@ -343,8 +355,8 @@ static void vala_reference_transfer_expression_finalize (ValaCodeNode* obj);
  */
 ValaReferenceTransferExpression* vala_reference_transfer_expression_construct (GType object_type, ValaExpression* inner, ValaSourceReference* source_reference) {
 	ValaReferenceTransferExpression* self = NULL;
-	ValaExpression* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	g_return_val_if_fail (inner != NULL, NULL);
 	self = (ValaReferenceTransferExpression*) vala_expression_construct (object_type);
 	_tmp0_ = inner;
@@ -362,8 +374,8 @@ ValaReferenceTransferExpression* vala_reference_transfer_expression_new (ValaExp
 
 static void vala_reference_transfer_expression_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaReferenceTransferExpression * self;
-	ValaCodeVisitor* _tmp0_;
-	ValaCodeVisitor* _tmp1_;
+	ValaCodeVisitor* _tmp0_ = NULL;
+	ValaCodeVisitor* _tmp1_ = NULL;
 	self = (ValaReferenceTransferExpression*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -375,9 +387,9 @@ static void vala_reference_transfer_expression_real_accept (ValaCodeNode* base, 
 
 static void vala_reference_transfer_expression_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaReferenceTransferExpression * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeVisitor* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeVisitor* _tmp2_ = NULL;
 	self = (ValaReferenceTransferExpression*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_reference_transfer_expression_get_inner (self);
@@ -389,9 +401,9 @@ static void vala_reference_transfer_expression_real_accept_children (ValaCodeNod
 
 static void vala_reference_transfer_expression_real_replace_expression (ValaCodeNode* base, ValaExpression* old_node, ValaExpression* new_node) {
 	ValaReferenceTransferExpression * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	self = (ValaReferenceTransferExpression*) base;
 	g_return_if_fail (old_node != NULL);
 	g_return_if_fail (new_node != NULL);
@@ -399,7 +411,7 @@ static void vala_reference_transfer_expression_real_replace_expression (ValaCode
 	_tmp1_ = _tmp0_;
 	_tmp2_ = old_node;
 	if (_tmp1_ == _tmp2_) {
-		ValaExpression* _tmp3_;
+		ValaExpression* _tmp3_ = NULL;
 		_tmp3_ = new_node;
 		vala_reference_transfer_expression_set_inner (self, _tmp3_);
 	}
@@ -418,45 +430,50 @@ static gboolean vala_reference_transfer_expression_real_is_pure (ValaExpression*
 static gboolean vala_reference_transfer_expression_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaReferenceTransferExpression * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaExpression* _tmp4_;
-	ValaExpression* _tmp5_;
-	ValaExpression* _tmp6_;
-	ValaExpression* _tmp7_;
-	ValaCodeContext* _tmp8_;
-	ValaExpression* _tmp9_;
-	ValaExpression* _tmp10_;
-	gboolean _tmp11_;
-	gboolean _tmp12_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaExpression* _tmp4_ = NULL;
+	ValaExpression* _tmp5_ = NULL;
+	ValaExpression* _tmp6_ = NULL;
+	ValaExpression* _tmp7_ = NULL;
+	ValaCodeContext* _tmp8_ = NULL;
+	ValaExpression* _tmp9_ = NULL;
+	ValaExpression* _tmp10_ = NULL;
+	gboolean _tmp11_ = FALSE;
+	gboolean _tmp12_ = FALSE;
 	gboolean _tmp13_ = FALSE;
-	ValaExpression* _tmp14_;
-	ValaExpression* _tmp15_;
-	gboolean _tmp18_;
-	gboolean _tmp21_ = FALSE;
-	ValaExpression* _tmp22_;
-	ValaExpression* _tmp23_;
-	ValaDataType* _tmp24_;
-	ValaDataType* _tmp25_;
-	gboolean _tmp26_ = FALSE;
-	gboolean _tmp31_;
-	ValaExpression* _tmp34_;
-	ValaExpression* _tmp35_;
-	ValaDataType* _tmp36_;
-	ValaDataType* _tmp37_;
-	ValaDataType* _tmp38_ = NULL;
-	ValaDataType* _tmp39_;
-	ValaDataType* _tmp40_;
-	ValaDataType* _tmp41_;
-	gboolean _tmp42_;
-	gboolean _tmp43_;
+	ValaExpression* _tmp14_ = NULL;
+	ValaExpression* _tmp15_ = NULL;
+	gboolean _tmp20_ = FALSE;
+	ValaExpression* _tmp21_ = NULL;
+	ValaExpression* _tmp22_ = NULL;
+	ValaDataType* _tmp23_ = NULL;
+	ValaDataType* _tmp24_ = NULL;
+	gboolean is_owned_delegate = FALSE;
+	gboolean _tmp31_ = FALSE;
+	gboolean _tmp32_ = FALSE;
+	ValaExpression* _tmp33_ = NULL;
+	ValaExpression* _tmp34_ = NULL;
+	ValaDataType* _tmp35_ = NULL;
+	ValaDataType* _tmp36_ = NULL;
+	gboolean _tmp37_ = FALSE;
+	ValaExpression* _tmp45_ = NULL;
+	ValaExpression* _tmp46_ = NULL;
+	ValaDataType* _tmp47_ = NULL;
+	ValaDataType* _tmp48_ = NULL;
+	ValaDataType* _tmp49_ = NULL;
+	ValaDataType* _tmp50_ = NULL;
+	ValaDataType* _tmp51_ = NULL;
+	ValaDataType* _tmp52_ = NULL;
+	gboolean _tmp53_ = FALSE;
+	gboolean _tmp54_ = FALSE;
 	self = (ValaReferenceTransferExpression*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -484,77 +501,104 @@ static gboolean vala_reference_transfer_expression_real_check (ValaCodeNode* bas
 	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp15_, VALA_TYPE_MEMBER_ACCESS)) {
 		_tmp13_ = TRUE;
 	} else {
-		ValaExpression* _tmp16_;
-		ValaExpression* _tmp17_;
+		ValaExpression* _tmp16_ = NULL;
+		ValaExpression* _tmp17_ = NULL;
 		_tmp16_ = vala_reference_transfer_expression_get_inner (self);
 		_tmp17_ = _tmp16_;
 		_tmp13_ = G_TYPE_CHECK_INSTANCE_TYPE (_tmp17_, VALA_TYPE_ELEMENT_ACCESS);
 	}
-	_tmp18_ = _tmp13_;
-	if (!_tmp18_) {
-		ValaSourceReference* _tmp19_;
-		ValaSourceReference* _tmp20_;
+	if (!_tmp13_) {
+		ValaSourceReference* _tmp18_ = NULL;
+		ValaSourceReference* _tmp19_ = NULL;
 		vala_code_node_set_error ((ValaCodeNode*) self, TRUE);
-		_tmp19_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
-		_tmp20_ = _tmp19_;
-		vala_report_error (_tmp20_, "Reference transfer not supported for this expression");
+		_tmp18_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+		_tmp19_ = _tmp18_;
+		vala_report_error (_tmp19_, "Reference transfer not supported for this expression");
 		result = FALSE;
 		return result;
 	}
-	_tmp22_ = vala_reference_transfer_expression_get_inner (self);
-	_tmp23_ = _tmp22_;
-	_tmp24_ = vala_expression_get_value_type (_tmp23_);
-	_tmp25_ = _tmp24_;
-	_tmp26_ = vala_data_type_is_disposable (_tmp25_);
-	if (!_tmp26_) {
-		ValaExpression* _tmp27_;
-		ValaExpression* _tmp28_;
-		ValaDataType* _tmp29_;
-		ValaDataType* _tmp30_;
-		_tmp27_ = vala_reference_transfer_expression_get_inner (self);
+	_tmp21_ = vala_reference_transfer_expression_get_inner (self);
+	_tmp22_ = _tmp21_;
+	_tmp23_ = vala_expression_get_value_type (_tmp22_);
+	_tmp24_ = _tmp23_;
+	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp24_, VALA_TYPE_DELEGATE_TYPE)) {
+		ValaExpression* _tmp25_ = NULL;
+		ValaExpression* _tmp26_ = NULL;
+		ValaDataType* _tmp27_ = NULL;
+		ValaDataType* _tmp28_ = NULL;
+		gboolean _tmp29_ = FALSE;
+		gboolean _tmp30_ = FALSE;
+		_tmp25_ = vala_reference_transfer_expression_get_inner (self);
+		_tmp26_ = _tmp25_;
+		_tmp27_ = vala_expression_get_value_type (_tmp26_);
 		_tmp28_ = _tmp27_;
-		_tmp29_ = vala_expression_get_value_type (_tmp28_);
+		_tmp29_ = vala_data_type_get_value_owned (_tmp28_);
 		_tmp30_ = _tmp29_;
-		_tmp21_ = !G_TYPE_CHECK_INSTANCE_TYPE (_tmp30_, VALA_TYPE_POINTER_TYPE);
+		_tmp20_ = _tmp30_;
 	} else {
-		_tmp21_ = FALSE;
+		_tmp20_ = FALSE;
 	}
-	_tmp31_ = _tmp21_;
+	is_owned_delegate = _tmp20_;
+	_tmp33_ = vala_reference_transfer_expression_get_inner (self);
+	_tmp34_ = _tmp33_;
+	_tmp35_ = vala_expression_get_value_type (_tmp34_);
+	_tmp36_ = _tmp35_;
+	_tmp37_ = vala_data_type_is_disposable (_tmp36_);
+	if (!_tmp37_) {
+		ValaExpression* _tmp38_ = NULL;
+		ValaExpression* _tmp39_ = NULL;
+		ValaDataType* _tmp40_ = NULL;
+		ValaDataType* _tmp41_ = NULL;
+		_tmp38_ = vala_reference_transfer_expression_get_inner (self);
+		_tmp39_ = _tmp38_;
+		_tmp40_ = vala_expression_get_value_type (_tmp39_);
+		_tmp41_ = _tmp40_;
+		_tmp32_ = !G_TYPE_CHECK_INSTANCE_TYPE (_tmp41_, VALA_TYPE_POINTER_TYPE);
+	} else {
+		_tmp32_ = FALSE;
+	}
+	if (_tmp32_) {
+		gboolean _tmp42_ = FALSE;
+		_tmp42_ = is_owned_delegate;
+		_tmp31_ = !_tmp42_;
+	} else {
+		_tmp31_ = FALSE;
+	}
 	if (_tmp31_) {
-		ValaSourceReference* _tmp32_;
-		ValaSourceReference* _tmp33_;
+		ValaSourceReference* _tmp43_ = NULL;
+		ValaSourceReference* _tmp44_ = NULL;
 		vala_code_node_set_error ((ValaCodeNode*) self, TRUE);
-		_tmp32_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
-		_tmp33_ = _tmp32_;
-		vala_report_error (_tmp33_, "No reference to be transferred");
+		_tmp43_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+		_tmp44_ = _tmp43_;
+		vala_report_error (_tmp44_, "No reference to be transferred");
 		result = FALSE;
 		return result;
 	}
-	_tmp34_ = vala_reference_transfer_expression_get_inner (self);
-	_tmp35_ = _tmp34_;
-	_tmp36_ = vala_expression_get_value_type (_tmp35_);
-	_tmp37_ = _tmp36_;
-	_tmp38_ = vala_data_type_copy (_tmp37_);
-	_tmp39_ = _tmp38_;
-	vala_expression_set_value_type ((ValaExpression*) self, _tmp39_);
-	_vala_code_node_unref0 (_tmp39_);
-	_tmp40_ = vala_expression_get_value_type ((ValaExpression*) self);
-	_tmp41_ = _tmp40_;
-	vala_data_type_set_value_owned (_tmp41_, TRUE);
-	_tmp42_ = vala_code_node_get_error ((ValaCodeNode*) self);
-	_tmp43_ = _tmp42_;
-	result = !_tmp43_;
+	_tmp45_ = vala_reference_transfer_expression_get_inner (self);
+	_tmp46_ = _tmp45_;
+	_tmp47_ = vala_expression_get_value_type (_tmp46_);
+	_tmp48_ = _tmp47_;
+	_tmp49_ = vala_data_type_copy (_tmp48_);
+	_tmp50_ = _tmp49_;
+	vala_expression_set_value_type ((ValaExpression*) self, _tmp50_);
+	_vala_code_node_unref0 (_tmp50_);
+	_tmp51_ = vala_expression_get_value_type ((ValaExpression*) self);
+	_tmp52_ = _tmp51_;
+	vala_data_type_set_value_owned (_tmp52_, TRUE);
+	_tmp53_ = vala_code_node_get_error ((ValaCodeNode*) self);
+	_tmp54_ = _tmp53_;
+	result = !_tmp54_;
 	return result;
 }
 
 
 static void vala_reference_transfer_expression_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaReferenceTransferExpression * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeGenerator* _tmp2_;
-	ValaCodeGenerator* _tmp3_;
-	ValaCodeGenerator* _tmp4_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeGenerator* _tmp2_ = NULL;
+	ValaCodeGenerator* _tmp3_ = NULL;
+	ValaCodeGenerator* _tmp4_ = NULL;
 	self = (ValaReferenceTransferExpression*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = vala_reference_transfer_expression_get_inner (self);
@@ -575,22 +619,22 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 static void vala_reference_transfer_expression_real_get_defined_variables (ValaCodeNode* base, ValaCollection* collection) {
 	ValaReferenceTransferExpression * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCollection* _tmp2_;
-	ValaExpression* _tmp3_;
-	ValaExpression* _tmp4_;
-	ValaSymbol* _tmp5_;
-	ValaSymbol* _tmp6_;
-	ValaLocalVariable* _tmp7_;
-	ValaLocalVariable* local;
-	ValaExpression* _tmp8_;
-	ValaExpression* _tmp9_;
-	ValaSymbol* _tmp10_;
-	ValaSymbol* _tmp11_;
-	ValaParameter* _tmp12_;
-	ValaParameter* param;
-	ValaLocalVariable* _tmp13_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCollection* _tmp2_ = NULL;
+	ValaLocalVariable* local = NULL;
+	ValaExpression* _tmp3_ = NULL;
+	ValaExpression* _tmp4_ = NULL;
+	ValaSymbol* _tmp5_ = NULL;
+	ValaSymbol* _tmp6_ = NULL;
+	ValaLocalVariable* _tmp7_ = NULL;
+	ValaParameter* param = NULL;
+	ValaExpression* _tmp8_ = NULL;
+	ValaExpression* _tmp9_ = NULL;
+	ValaSymbol* _tmp10_ = NULL;
+	ValaSymbol* _tmp11_ = NULL;
+	ValaParameter* _tmp12_ = NULL;
+	ValaLocalVariable* _tmp13_ = NULL;
 	self = (ValaReferenceTransferExpression*) base;
 	g_return_if_fail (collection != NULL);
 	_tmp0_ = vala_reference_transfer_expression_get_inner (self);
@@ -611,20 +655,19 @@ static void vala_reference_transfer_expression_real_get_defined_variables (ValaC
 	param = _tmp12_;
 	_tmp13_ = local;
 	if (_tmp13_ != NULL) {
-		ValaCollection* _tmp14_;
-		ValaLocalVariable* _tmp15_;
+		ValaCollection* _tmp14_ = NULL;
+		ValaLocalVariable* _tmp15_ = NULL;
 		_tmp14_ = collection;
 		_tmp15_ = local;
 		vala_collection_add (_tmp14_, (ValaVariable*) _tmp15_);
 	} else {
 		gboolean _tmp16_ = FALSE;
-		ValaParameter* _tmp17_;
-		gboolean _tmp21_;
+		ValaParameter* _tmp17_ = NULL;
 		_tmp17_ = param;
 		if (_tmp17_ != NULL) {
-			ValaParameter* _tmp18_;
-			ValaParameterDirection _tmp19_;
-			ValaParameterDirection _tmp20_;
+			ValaParameter* _tmp18_ = NULL;
+			ValaParameterDirection _tmp19_ = 0;
+			ValaParameterDirection _tmp20_ = 0;
 			_tmp18_ = param;
 			_tmp19_ = vala_parameter_get_direction (_tmp18_);
 			_tmp20_ = _tmp19_;
@@ -632,13 +675,12 @@ static void vala_reference_transfer_expression_real_get_defined_variables (ValaC
 		} else {
 			_tmp16_ = FALSE;
 		}
-		_tmp21_ = _tmp16_;
-		if (_tmp21_) {
-			ValaCollection* _tmp22_;
-			ValaParameter* _tmp23_;
-			_tmp22_ = collection;
-			_tmp23_ = param;
-			vala_collection_add (_tmp22_, (ValaVariable*) _tmp23_);
+		if (_tmp16_) {
+			ValaCollection* _tmp21_ = NULL;
+			ValaParameter* _tmp22_ = NULL;
+			_tmp21_ = collection;
+			_tmp22_ = param;
+			vala_collection_add (_tmp21_, (ValaVariable*) _tmp22_);
 		}
 	}
 	_vala_code_node_unref0 (param);
@@ -648,22 +690,22 @@ static void vala_reference_transfer_expression_real_get_defined_variables (ValaC
 
 static void vala_reference_transfer_expression_real_get_used_variables (ValaCodeNode* base, ValaCollection* collection) {
 	ValaReferenceTransferExpression * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCollection* _tmp2_;
-	ValaExpression* _tmp3_;
-	ValaExpression* _tmp4_;
-	ValaSymbol* _tmp5_;
-	ValaSymbol* _tmp6_;
-	ValaLocalVariable* _tmp7_;
-	ValaLocalVariable* local;
-	ValaExpression* _tmp8_;
-	ValaExpression* _tmp9_;
-	ValaSymbol* _tmp10_;
-	ValaSymbol* _tmp11_;
-	ValaParameter* _tmp12_;
-	ValaParameter* param;
-	ValaLocalVariable* _tmp13_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCollection* _tmp2_ = NULL;
+	ValaLocalVariable* local = NULL;
+	ValaExpression* _tmp3_ = NULL;
+	ValaExpression* _tmp4_ = NULL;
+	ValaSymbol* _tmp5_ = NULL;
+	ValaSymbol* _tmp6_ = NULL;
+	ValaLocalVariable* _tmp7_ = NULL;
+	ValaParameter* param = NULL;
+	ValaExpression* _tmp8_ = NULL;
+	ValaExpression* _tmp9_ = NULL;
+	ValaSymbol* _tmp10_ = NULL;
+	ValaSymbol* _tmp11_ = NULL;
+	ValaParameter* _tmp12_ = NULL;
+	ValaLocalVariable* _tmp13_ = NULL;
 	self = (ValaReferenceTransferExpression*) base;
 	g_return_if_fail (collection != NULL);
 	_tmp0_ = vala_reference_transfer_expression_get_inner (self);
@@ -684,20 +726,19 @@ static void vala_reference_transfer_expression_real_get_used_variables (ValaCode
 	param = _tmp12_;
 	_tmp13_ = local;
 	if (_tmp13_ != NULL) {
-		ValaCollection* _tmp14_;
-		ValaLocalVariable* _tmp15_;
+		ValaCollection* _tmp14_ = NULL;
+		ValaLocalVariable* _tmp15_ = NULL;
 		_tmp14_ = collection;
 		_tmp15_ = local;
 		vala_collection_add (_tmp14_, (ValaVariable*) _tmp15_);
 	} else {
 		gboolean _tmp16_ = FALSE;
-		ValaParameter* _tmp17_;
-		gboolean _tmp21_;
+		ValaParameter* _tmp17_ = NULL;
 		_tmp17_ = param;
 		if (_tmp17_ != NULL) {
-			ValaParameter* _tmp18_;
-			ValaParameterDirection _tmp19_;
-			ValaParameterDirection _tmp20_;
+			ValaParameter* _tmp18_ = NULL;
+			ValaParameterDirection _tmp19_ = 0;
+			ValaParameterDirection _tmp20_ = 0;
 			_tmp18_ = param;
 			_tmp19_ = vala_parameter_get_direction (_tmp18_);
 			_tmp20_ = _tmp19_;
@@ -705,13 +746,12 @@ static void vala_reference_transfer_expression_real_get_used_variables (ValaCode
 		} else {
 			_tmp16_ = FALSE;
 		}
-		_tmp21_ = _tmp16_;
-		if (_tmp21_) {
-			ValaCollection* _tmp22_;
-			ValaParameter* _tmp23_;
-			_tmp22_ = collection;
-			_tmp23_ = param;
-			vala_collection_add (_tmp22_, (ValaVariable*) _tmp23_);
+		if (_tmp16_) {
+			ValaCollection* _tmp21_ = NULL;
+			ValaParameter* _tmp22_ = NULL;
+			_tmp21_ = collection;
+			_tmp22_ = param;
+			vala_collection_add (_tmp21_, (ValaVariable*) _tmp22_);
 		}
 	}
 	_vala_code_node_unref0 (param);
@@ -721,7 +761,7 @@ static void vala_reference_transfer_expression_real_get_used_variables (ValaCode
 
 ValaExpression* vala_reference_transfer_expression_get_inner (ValaReferenceTransferExpression* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_inner;
 	result = _tmp0_;
@@ -730,9 +770,9 @@ ValaExpression* vala_reference_transfer_expression_get_inner (ValaReferenceTrans
 
 
 void vala_reference_transfer_expression_set_inner (ValaReferenceTransferExpression* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -745,16 +785,16 @@ void vala_reference_transfer_expression_set_inner (ValaReferenceTransferExpressi
 
 static void vala_reference_transfer_expression_class_init (ValaReferenceTransferExpressionClass * klass) {
 	vala_reference_transfer_expression_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_reference_transfer_expression_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_reference_transfer_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaReferenceTransferExpressionPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_reference_transfer_expression_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_reference_transfer_expression_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->replace_expression = vala_reference_transfer_expression_real_replace_expression;
-	VALA_EXPRESSION_CLASS (klass)->is_pure = vala_reference_transfer_expression_real_is_pure;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_reference_transfer_expression_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_reference_transfer_expression_real_emit;
-	VALA_CODE_NODE_CLASS (klass)->get_defined_variables = vala_reference_transfer_expression_real_get_defined_variables;
-	VALA_CODE_NODE_CLASS (klass)->get_used_variables = vala_reference_transfer_expression_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->accept = vala_reference_transfer_expression_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_reference_transfer_expression_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = vala_reference_transfer_expression_real_replace_expression;
+	((ValaExpressionClass *) klass)->is_pure = vala_reference_transfer_expression_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = vala_reference_transfer_expression_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_reference_transfer_expression_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_reference_transfer_expression_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = vala_reference_transfer_expression_real_get_used_variables;
 }
 
 

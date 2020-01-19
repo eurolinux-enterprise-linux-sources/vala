@@ -156,8 +156,8 @@ static void vala_ccode_type_definition_finalize (ValaCCodeNode* obj);
 
 ValaCCodeTypeDefinition* vala_ccode_type_definition_construct (GType object_type, const gchar* type, ValaCCodeDeclarator* decl) {
 	ValaCCodeTypeDefinition* self = NULL;
-	const gchar* _tmp0_;
-	ValaCCodeDeclarator* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	ValaCCodeDeclarator* _tmp1_ = NULL;
 	g_return_val_if_fail (type != NULL, NULL);
 	g_return_val_if_fail (decl != NULL, NULL);
 	self = (ValaCCodeTypeDefinition*) vala_ccode_node_construct (object_type);
@@ -183,16 +183,16 @@ static void vala_ccode_type_definition_real_write (ValaCCodeNode* base, ValaCCod
 
 static void vala_ccode_type_definition_real_write_declaration (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeTypeDefinition * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	ValaCCodeWriter* _tmp2_;
-	const gchar* _tmp3_;
-	ValaCCodeWriter* _tmp4_;
-	ValaCCodeDeclarator* _tmp5_;
-	ValaCCodeWriter* _tmp6_;
-	gboolean _tmp7_;
-	ValaCCodeWriter* _tmp9_;
-	ValaCCodeWriter* _tmp10_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	ValaCCodeWriter* _tmp2_ = NULL;
+	const gchar* _tmp3_ = NULL;
+	ValaCCodeWriter* _tmp4_ = NULL;
+	ValaCCodeDeclarator* _tmp5_ = NULL;
+	ValaCCodeWriter* _tmp6_ = NULL;
+	gboolean _tmp7_ = FALSE;
+	ValaCCodeWriter* _tmp9_ = NULL;
+	ValaCCodeWriter* _tmp10_ = NULL;
 	self = (ValaCCodeTypeDefinition*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -209,7 +209,7 @@ static void vala_ccode_type_definition_real_write_declaration (ValaCCodeNode* ba
 	vala_ccode_node_write_declaration ((ValaCCodeNode*) _tmp5_, _tmp6_);
 	_tmp7_ = self->priv->_deprecated;
 	if (_tmp7_) {
-		ValaCCodeWriter* _tmp8_;
+		ValaCCodeWriter* _tmp8_ = NULL;
 		_tmp8_ = writer;
 		vala_ccode_writer_write_string (_tmp8_, " G_GNUC_DEPRECATED");
 	}
@@ -222,7 +222,7 @@ static void vala_ccode_type_definition_real_write_declaration (ValaCCodeNode* ba
 
 const gchar* vala_ccode_type_definition_get_type_name (ValaCCodeTypeDefinition* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_type_name;
 	result = _tmp0_;
@@ -231,8 +231,8 @@ const gchar* vala_ccode_type_definition_get_type_name (ValaCCodeTypeDefinition* 
 
 
 void vala_ccode_type_definition_set_type_name (ValaCCodeTypeDefinition* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -243,7 +243,7 @@ void vala_ccode_type_definition_set_type_name (ValaCCodeTypeDefinition* self, co
 
 ValaCCodeDeclarator* vala_ccode_type_definition_get_declarator (ValaCCodeTypeDefinition* self) {
 	ValaCCodeDeclarator* result;
-	ValaCCodeDeclarator* _tmp0_;
+	ValaCCodeDeclarator* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_declarator;
 	result = _tmp0_;
@@ -257,8 +257,8 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 
 void vala_ccode_type_definition_set_declarator (ValaCCodeTypeDefinition* self, ValaCCodeDeclarator* value) {
-	ValaCCodeDeclarator* _tmp0_;
-	ValaCCodeDeclarator* _tmp1_;
+	ValaCCodeDeclarator* _tmp0_ = NULL;
+	ValaCCodeDeclarator* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -269,7 +269,7 @@ void vala_ccode_type_definition_set_declarator (ValaCCodeTypeDefinition* self, V
 
 gboolean vala_ccode_type_definition_get_deprecated (ValaCCodeTypeDefinition* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_deprecated;
 	result = _tmp0_;
@@ -278,7 +278,7 @@ gboolean vala_ccode_type_definition_get_deprecated (ValaCCodeTypeDefinition* sel
 
 
 void vala_ccode_type_definition_set_deprecated (ValaCCodeTypeDefinition* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_deprecated = _tmp0_;
@@ -287,10 +287,10 @@ void vala_ccode_type_definition_set_deprecated (ValaCCodeTypeDefinition* self, g
 
 static void vala_ccode_type_definition_class_init (ValaCCodeTypeDefinitionClass * klass) {
 	vala_ccode_type_definition_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_type_definition_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_type_definition_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeTypeDefinitionPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_type_definition_real_write;
-	VALA_CCODE_NODE_CLASS (klass)->write_declaration = vala_ccode_type_definition_real_write_declaration;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_type_definition_real_write;
+	((ValaCCodeNodeClass *) klass)->write_declaration = vala_ccode_type_definition_real_write_declaration;
 }
 
 

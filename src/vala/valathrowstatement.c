@@ -337,8 +337,8 @@ static void vala_throw_statement_finalize (ValaCodeNode* obj);
  */
 ValaThrowStatement* vala_throw_statement_construct (GType object_type, ValaExpression* error_expression, ValaSourceReference* source_reference) {
 	ValaThrowStatement* self = NULL;
-	ValaSourceReference* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaSourceReference* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	g_return_val_if_fail (error_expression != NULL, NULL);
 	self = (ValaThrowStatement*) vala_code_node_construct (object_type);
 	_tmp0_ = source_reference;
@@ -356,7 +356,7 @@ ValaThrowStatement* vala_throw_statement_new (ValaExpression* error_expression, 
 
 static void vala_throw_statement_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaThrowStatement * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaThrowStatement*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -366,19 +366,19 @@ static void vala_throw_statement_real_accept (ValaCodeNode* base, ValaCodeVisito
 
 static void vala_throw_statement_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaThrowStatement * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	self = (ValaThrowStatement*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_throw_statement_get_error_expression (self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_ != NULL) {
-		ValaExpression* _tmp2_;
-		ValaExpression* _tmp3_;
-		ValaCodeVisitor* _tmp4_;
-		ValaCodeVisitor* _tmp5_;
-		ValaExpression* _tmp6_;
-		ValaExpression* _tmp7_;
+		ValaExpression* _tmp2_ = NULL;
+		ValaExpression* _tmp3_ = NULL;
+		ValaCodeVisitor* _tmp4_ = NULL;
+		ValaCodeVisitor* _tmp5_ = NULL;
+		ValaExpression* _tmp6_ = NULL;
+		ValaExpression* _tmp7_ = NULL;
 		_tmp2_ = vala_throw_statement_get_error_expression (self);
 		_tmp3_ = _tmp2_;
 		_tmp4_ = visitor;
@@ -393,9 +393,9 @@ static void vala_throw_statement_real_accept_children (ValaCodeNode* base, ValaC
 
 static void vala_throw_statement_real_replace_expression (ValaCodeNode* base, ValaExpression* old_node, ValaExpression* new_node) {
 	ValaThrowStatement * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	self = (ValaThrowStatement*) base;
 	g_return_if_fail (old_node != NULL);
 	g_return_if_fail (new_node != NULL);
@@ -403,7 +403,7 @@ static void vala_throw_statement_real_replace_expression (ValaCodeNode* base, Va
 	_tmp1_ = _tmp0_;
 	_tmp2_ = old_node;
 	if (_tmp1_ == _tmp2_) {
-		ValaExpression* _tmp3_;
+		ValaExpression* _tmp3_ = NULL;
 		_tmp3_ = new_node;
 		vala_throw_statement_set_error_expression (self, _tmp3_);
 	}
@@ -413,39 +413,39 @@ static void vala_throw_statement_real_replace_expression (ValaCodeNode* base, Va
 static gboolean vala_throw_statement_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaThrowStatement * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaExpression* _tmp4_;
-	ValaExpression* _tmp5_;
-	ValaSourceReference* _tmp6_;
-	ValaSourceReference* _tmp7_;
-	ValaErrorType* _tmp8_;
-	ValaErrorType* _tmp9_;
-	ValaExpression* _tmp10_;
-	ValaExpression* _tmp11_;
-	ValaDataType* _tmp12_;
-	ValaDataType* _tmp13_;
-	ValaExpression* _tmp14_;
-	ValaExpression* _tmp15_;
-	ValaExpression* _tmp44_;
-	ValaExpression* _tmp45_;
-	ValaDataType* _tmp46_;
-	ValaDataType* _tmp47_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaExpression* _tmp4_ = NULL;
+	ValaExpression* _tmp5_ = NULL;
+	ValaSourceReference* _tmp6_ = NULL;
+	ValaSourceReference* _tmp7_ = NULL;
+	ValaErrorType* _tmp8_ = NULL;
+	ValaErrorType* _tmp9_ = NULL;
+	ValaExpression* _tmp10_ = NULL;
+	ValaExpression* _tmp11_ = NULL;
+	ValaDataType* _tmp12_ = NULL;
+	ValaDataType* _tmp13_ = NULL;
+	ValaExpression* _tmp14_ = NULL;
+	ValaExpression* _tmp15_ = NULL;
+	ValaDataType* error_type = NULL;
+	ValaExpression* _tmp44_ = NULL;
+	ValaExpression* _tmp45_ = NULL;
+	ValaDataType* _tmp46_ = NULL;
+	ValaDataType* _tmp47_ = NULL;
 	ValaDataType* _tmp48_ = NULL;
-	ValaDataType* error_type;
-	ValaDataType* _tmp49_;
-	ValaSourceReference* _tmp50_;
-	ValaSourceReference* _tmp51_;
-	ValaDataType* _tmp52_;
-	gboolean _tmp53_;
-	gboolean _tmp54_;
+	ValaDataType* _tmp49_ = NULL;
+	ValaSourceReference* _tmp50_ = NULL;
+	ValaSourceReference* _tmp51_ = NULL;
+	ValaDataType* _tmp52_ = NULL;
+	gboolean _tmp53_ = FALSE;
+	gboolean _tmp54_ = FALSE;
 	self = (ValaThrowStatement*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -468,18 +468,18 @@ static gboolean vala_throw_statement_real_check (ValaCodeNode* base, ValaCodeCon
 	_tmp14_ = vala_throw_statement_get_error_expression (self);
 	_tmp15_ = _tmp14_;
 	if (_tmp15_ != NULL) {
-		ValaExpression* _tmp16_;
-		ValaExpression* _tmp17_;
-		ValaCodeContext* _tmp18_;
+		ValaExpression* _tmp16_ = NULL;
+		ValaExpression* _tmp17_ = NULL;
+		ValaCodeContext* _tmp18_ = NULL;
 		gboolean _tmp19_ = FALSE;
-		ValaExpression* _tmp20_;
-		ValaExpression* _tmp21_;
-		ValaDataType* _tmp22_;
-		ValaDataType* _tmp23_;
-		ValaExpression* _tmp28_;
-		ValaExpression* _tmp29_;
-		ValaDataType* _tmp30_;
-		ValaDataType* _tmp31_;
+		ValaExpression* _tmp20_ = NULL;
+		ValaExpression* _tmp21_ = NULL;
+		ValaDataType* _tmp22_ = NULL;
+		ValaDataType* _tmp23_ = NULL;
+		ValaExpression* _tmp28_ = NULL;
+		ValaExpression* _tmp29_ = NULL;
+		ValaDataType* _tmp30_ = NULL;
+		ValaDataType* _tmp31_ = NULL;
 		_tmp16_ = vala_throw_statement_get_error_expression (self);
 		_tmp17_ = _tmp16_;
 		_tmp18_ = context;
@@ -494,10 +494,10 @@ static gboolean vala_throw_statement_real_check (ValaCodeNode* base, ValaCodeCon
 		_tmp22_ = vala_expression_get_value_type (_tmp21_);
 		_tmp23_ = _tmp22_;
 		if (_tmp23_ == NULL) {
-			ValaExpression* _tmp24_;
-			ValaExpression* _tmp25_;
-			ValaSourceReference* _tmp26_;
-			ValaSourceReference* _tmp27_;
+			ValaExpression* _tmp24_ = NULL;
+			ValaExpression* _tmp25_ = NULL;
+			ValaSourceReference* _tmp26_ = NULL;
+			ValaSourceReference* _tmp27_ = NULL;
 			_tmp24_ = vala_throw_statement_get_error_expression (self);
 			_tmp25_ = _tmp24_;
 			_tmp26_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp25_);
@@ -512,18 +512,18 @@ static gboolean vala_throw_statement_real_check (ValaCodeNode* base, ValaCodeCon
 		_tmp30_ = vala_expression_get_value_type (_tmp29_);
 		_tmp31_ = _tmp30_;
 		if (!G_TYPE_CHECK_INSTANCE_TYPE (_tmp31_, VALA_TYPE_ERROR_TYPE)) {
-			ValaExpression* _tmp32_;
-			ValaExpression* _tmp33_;
-			ValaSourceReference* _tmp34_;
-			ValaSourceReference* _tmp35_;
-			ValaExpression* _tmp36_;
-			ValaExpression* _tmp37_;
-			ValaDataType* _tmp38_;
-			ValaDataType* _tmp39_;
+			ValaExpression* _tmp32_ = NULL;
+			ValaExpression* _tmp33_ = NULL;
+			ValaSourceReference* _tmp34_ = NULL;
+			ValaSourceReference* _tmp35_ = NULL;
+			ValaExpression* _tmp36_ = NULL;
+			ValaExpression* _tmp37_ = NULL;
+			ValaDataType* _tmp38_ = NULL;
+			ValaDataType* _tmp39_ = NULL;
 			gchar* _tmp40_ = NULL;
-			gchar* _tmp41_;
+			gchar* _tmp41_ = NULL;
 			gchar* _tmp42_ = NULL;
-			gchar* _tmp43_;
+			gchar* _tmp43_ = NULL;
 			_tmp32_ = vala_throw_statement_get_error_expression (self);
 			_tmp33_ = _tmp32_;
 			_tmp34_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp33_);
@@ -566,20 +566,20 @@ static gboolean vala_throw_statement_real_check (ValaCodeNode* base, ValaCodeCon
 
 static void vala_throw_statement_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaThrowStatement * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeGenerator* _tmp8_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeGenerator* _tmp8_ = NULL;
 	self = (ValaThrowStatement*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = vala_throw_statement_get_error_expression (self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_ != NULL) {
-		ValaExpression* _tmp2_;
-		ValaExpression* _tmp3_;
-		ValaCodeGenerator* _tmp4_;
-		ValaCodeGenerator* _tmp5_;
-		ValaExpression* _tmp6_;
-		ValaExpression* _tmp7_;
+		ValaExpression* _tmp2_ = NULL;
+		ValaExpression* _tmp3_ = NULL;
+		ValaCodeGenerator* _tmp4_ = NULL;
+		ValaCodeGenerator* _tmp5_ = NULL;
+		ValaExpression* _tmp6_ = NULL;
+		ValaExpression* _tmp7_ = NULL;
 		_tmp2_ = vala_throw_statement_get_error_expression (self);
 		_tmp3_ = _tmp2_;
 		_tmp4_ = codegen;
@@ -596,9 +596,9 @@ static void vala_throw_statement_real_emit (ValaCodeNode* base, ValaCodeGenerato
 
 static void vala_throw_statement_real_get_defined_variables (ValaCodeNode* base, ValaCollection* collection) {
 	ValaThrowStatement * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCollection* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCollection* _tmp2_ = NULL;
 	self = (ValaThrowStatement*) base;
 	g_return_if_fail (collection != NULL);
 	_tmp0_ = vala_throw_statement_get_error_expression (self);
@@ -610,9 +610,9 @@ static void vala_throw_statement_real_get_defined_variables (ValaCodeNode* base,
 
 static void vala_throw_statement_real_get_used_variables (ValaCodeNode* base, ValaCollection* collection) {
 	ValaThrowStatement * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCollection* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCollection* _tmp2_ = NULL;
 	self = (ValaThrowStatement*) base;
 	g_return_if_fail (collection != NULL);
 	_tmp0_ = vala_throw_statement_get_error_expression (self);
@@ -624,7 +624,7 @@ static void vala_throw_statement_real_get_used_variables (ValaCodeNode* base, Va
 
 ValaExpression* vala_throw_statement_get_error_expression (ValaThrowStatement* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_error_expression;
 	result = _tmp0_;
@@ -638,9 +638,9 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_throw_statement_set_error_expression (ValaThrowStatement* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -648,7 +648,7 @@ void vala_throw_statement_set_error_expression (ValaThrowStatement* self, ValaEx
 	self->priv->_error_expression = _tmp1_;
 	_tmp2_ = self->priv->_error_expression;
 	if (_tmp2_ != NULL) {
-		ValaExpression* _tmp3_;
+		ValaExpression* _tmp3_ = NULL;
 		_tmp3_ = self->priv->_error_expression;
 		vala_code_node_set_parent_node ((ValaCodeNode*) _tmp3_, (ValaCodeNode*) self);
 	}
@@ -657,15 +657,15 @@ void vala_throw_statement_set_error_expression (ValaThrowStatement* self, ValaEx
 
 static void vala_throw_statement_class_init (ValaThrowStatementClass * klass) {
 	vala_throw_statement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_throw_statement_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_throw_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaThrowStatementPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_throw_statement_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_throw_statement_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->replace_expression = vala_throw_statement_real_replace_expression;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_throw_statement_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_throw_statement_real_emit;
-	VALA_CODE_NODE_CLASS (klass)->get_defined_variables = vala_throw_statement_real_get_defined_variables;
-	VALA_CODE_NODE_CLASS (klass)->get_used_variables = vala_throw_statement_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->accept = vala_throw_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_throw_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = vala_throw_statement_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = vala_throw_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_throw_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_throw_statement_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = vala_throw_statement_real_get_used_variables;
 }
 
 

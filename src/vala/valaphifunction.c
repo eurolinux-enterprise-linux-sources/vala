@@ -127,10 +127,10 @@ static void vala_phi_function_finalize (ValaPhiFunction* obj);
 
 ValaPhiFunction* vala_phi_function_construct (GType object_type, ValaVariable* variable, gint num_of_ops) {
 	ValaPhiFunction* self = NULL;
-	ValaVariable* _tmp0_;
-	GEqualFunc _tmp1_;
-	ValaArrayList* _tmp2_;
-	ValaArrayList* _tmp3_;
+	ValaVariable* _tmp0_ = NULL;
+	GEqualFunc _tmp1_ = NULL;
+	ValaArrayList* _tmp2_ = NULL;
+	ValaArrayList* _tmp3_ = NULL;
 	g_return_val_if_fail (variable != NULL, NULL);
 	self = (ValaPhiFunction*) g_type_create_instance (object_type);
 	_tmp0_ = variable;
@@ -141,30 +141,28 @@ ValaPhiFunction* vala_phi_function_construct (GType object_type, ValaVariable* v
 	vala_phi_function_set_operands (self, (ValaList*) _tmp3_);
 	_vala_iterable_unref0 (_tmp3_);
 	{
-		gint i;
+		gint i = 0;
 		i = 0;
 		{
-			gboolean _tmp4_;
+			gboolean _tmp4_ = FALSE;
 			_tmp4_ = TRUE;
 			while (TRUE) {
-				gboolean _tmp5_;
-				gint _tmp7_;
-				gint _tmp8_;
-				ValaList* _tmp9_;
-				_tmp5_ = _tmp4_;
-				if (!_tmp5_) {
-					gint _tmp6_;
-					_tmp6_ = i;
-					i = _tmp6_ + 1;
+				gint _tmp6_ = 0;
+				gint _tmp7_ = 0;
+				ValaList* _tmp8_ = NULL;
+				if (!_tmp4_) {
+					gint _tmp5_ = 0;
+					_tmp5_ = i;
+					i = _tmp5_ + 1;
 				}
 				_tmp4_ = FALSE;
-				_tmp7_ = i;
-				_tmp8_ = num_of_ops;
-				if (!(_tmp7_ < _tmp8_)) {
+				_tmp6_ = i;
+				_tmp7_ = num_of_ops;
+				if (!(_tmp6_ < _tmp7_)) {
 					break;
 				}
-				_tmp9_ = self->priv->_operands;
-				vala_collection_add ((ValaCollection*) _tmp9_, G_TYPE_CHECK_INSTANCE_CAST (NULL, VALA_TYPE_VARIABLE, ValaVariable));
+				_tmp8_ = self->priv->_operands;
+				vala_collection_add ((ValaCollection*) _tmp8_, G_TYPE_CHECK_INSTANCE_CAST (NULL, VALA_TYPE_VARIABLE, ValaVariable));
 			}
 		}
 	}
@@ -179,7 +177,7 @@ ValaPhiFunction* vala_phi_function_new (ValaVariable* variable, gint num_of_ops)
 
 ValaVariable* vala_phi_function_get_original_variable (ValaPhiFunction* self) {
 	ValaVariable* result;
-	ValaVariable* _tmp0_;
+	ValaVariable* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_original_variable;
 	result = _tmp0_;
@@ -193,8 +191,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 static void vala_phi_function_set_original_variable (ValaPhiFunction* self, ValaVariable* value) {
-	ValaVariable* _tmp0_;
-	ValaVariable* _tmp1_;
+	ValaVariable* _tmp0_ = NULL;
+	ValaVariable* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -205,7 +203,7 @@ static void vala_phi_function_set_original_variable (ValaPhiFunction* self, Vala
 
 ValaList* vala_phi_function_get_operands (ValaPhiFunction* self) {
 	ValaList* result;
-	ValaList* _tmp0_;
+	ValaList* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_operands;
 	result = _tmp0_;
@@ -219,8 +217,8 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 
 
 static void vala_phi_function_set_operands (ValaPhiFunction* self, ValaList* value) {
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -341,7 +339,7 @@ void vala_value_take_phi_function (GValue* value, gpointer v_object) {
 
 static void vala_phi_function_class_init (ValaPhiFunctionClass * klass) {
 	vala_phi_function_parent_class = g_type_class_peek_parent (klass);
-	VALA_PHI_FUNCTION_CLASS (klass)->finalize = vala_phi_function_finalize;
+	((ValaPhiFunctionClass *) klass)->finalize = vala_phi_function_finalize;
 	g_type_class_add_private (klass, sizeof (ValaPhiFunctionPrivate));
 }
 
@@ -355,6 +353,7 @@ static void vala_phi_function_instance_init (ValaPhiFunction * self) {
 static void vala_phi_function_finalize (ValaPhiFunction* obj) {
 	ValaPhiFunction * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_PHI_FUNCTION, ValaPhiFunction);
+	g_signal_handlers_destroy (self);
 	_vala_code_node_unref0 (self->priv->_original_variable);
 	_vala_iterable_unref0 (self->priv->_operands);
 }

@@ -152,8 +152,8 @@ static void vala_ccode_cast_expression_finalize (ValaCCodeNode* obj);
 
 ValaCCodeCastExpression* vala_ccode_cast_expression_construct (GType object_type, ValaCCodeExpression* expr, const gchar* type) {
 	ValaCCodeCastExpression* self = NULL;
-	ValaCCodeExpression* _tmp0_;
-	const gchar* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	g_return_val_if_fail (expr != NULL, NULL);
 	g_return_val_if_fail (type != NULL, NULL);
 	self = (ValaCCodeCastExpression*) vala_ccode_expression_construct (object_type);
@@ -172,12 +172,12 @@ ValaCCodeCastExpression* vala_ccode_cast_expression_new (ValaCCodeExpression* ex
 
 static void vala_ccode_cast_expression_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeCastExpression * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	const gchar* _tmp2_;
-	ValaCCodeWriter* _tmp3_;
-	ValaCCodeExpression* _tmp4_;
-	ValaCCodeWriter* _tmp5_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	const gchar* _tmp2_ = NULL;
+	ValaCCodeWriter* _tmp3_ = NULL;
+	ValaCCodeExpression* _tmp4_ = NULL;
+	ValaCCodeWriter* _tmp5_ = NULL;
 	self = (ValaCCodeCastExpression*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -195,9 +195,9 @@ static void vala_ccode_cast_expression_real_write (ValaCCodeNode* base, ValaCCod
 
 static void vala_ccode_cast_expression_real_write_inner (ValaCCodeExpression* base, ValaCCodeWriter* writer) {
 	ValaCCodeCastExpression * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	ValaCCodeWriter* _tmp2_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	ValaCCodeWriter* _tmp2_ = NULL;
 	self = (ValaCCodeCastExpression*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -211,7 +211,7 @@ static void vala_ccode_cast_expression_real_write_inner (ValaCCodeExpression* ba
 
 ValaCCodeExpression* vala_ccode_cast_expression_get_inner (ValaCCodeCastExpression* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_inner;
 	result = _tmp0_;
@@ -225,8 +225,8 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 
 void vala_ccode_cast_expression_set_inner (ValaCCodeCastExpression* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -237,7 +237,7 @@ void vala_ccode_cast_expression_set_inner (ValaCCodeCastExpression* self, ValaCC
 
 const gchar* vala_ccode_cast_expression_get_type_name (ValaCCodeCastExpression* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_type_name;
 	result = _tmp0_;
@@ -246,8 +246,8 @@ const gchar* vala_ccode_cast_expression_get_type_name (ValaCCodeCastExpression* 
 
 
 void vala_ccode_cast_expression_set_type_name (ValaCCodeCastExpression* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -258,10 +258,10 @@ void vala_ccode_cast_expression_set_type_name (ValaCCodeCastExpression* self, co
 
 static void vala_ccode_cast_expression_class_init (ValaCCodeCastExpressionClass * klass) {
 	vala_ccode_cast_expression_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_cast_expression_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_cast_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeCastExpressionPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_cast_expression_real_write;
-	VALA_CCODE_EXPRESSION_CLASS (klass)->write_inner = vala_ccode_cast_expression_real_write_inner;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_cast_expression_real_write;
+	((ValaCCodeExpressionClass *) klass)->write_inner = vala_ccode_cast_expression_real_write_inner;
 }
 
 

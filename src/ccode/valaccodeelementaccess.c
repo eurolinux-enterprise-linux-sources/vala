@@ -152,8 +152,8 @@ static void vala_ccode_element_access_finalize (ValaCCodeNode* obj);
 
 ValaCCodeElementAccess* vala_ccode_element_access_construct (GType object_type, ValaCCodeExpression* cont, ValaCCodeExpression* i) {
 	ValaCCodeElementAccess* self = NULL;
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_val_if_fail (cont != NULL, NULL);
 	g_return_val_if_fail (i != NULL, NULL);
 	self = (ValaCCodeElementAccess*) vala_ccode_expression_construct (object_type);
@@ -172,12 +172,12 @@ ValaCCodeElementAccess* vala_ccode_element_access_new (ValaCCodeExpression* cont
 
 static void vala_ccode_element_access_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeElementAccess * self;
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	ValaCCodeWriter* _tmp2_;
-	ValaCCodeExpression* _tmp3_;
-	ValaCCodeWriter* _tmp4_;
-	ValaCCodeWriter* _tmp5_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	ValaCCodeWriter* _tmp2_ = NULL;
+	ValaCCodeExpression* _tmp3_ = NULL;
+	ValaCCodeWriter* _tmp4_ = NULL;
+	ValaCCodeWriter* _tmp5_ = NULL;
 	self = (ValaCCodeElementAccess*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = self->priv->_container;
@@ -195,7 +195,7 @@ static void vala_ccode_element_access_real_write (ValaCCodeNode* base, ValaCCode
 
 ValaCCodeExpression* vala_ccode_element_access_get_container (ValaCCodeElementAccess* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_container;
 	result = _tmp0_;
@@ -209,8 +209,8 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 
 void vala_ccode_element_access_set_container (ValaCCodeElementAccess* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -221,7 +221,7 @@ void vala_ccode_element_access_set_container (ValaCCodeElementAccess* self, Vala
 
 ValaCCodeExpression* vala_ccode_element_access_get_index (ValaCCodeElementAccess* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_index;
 	result = _tmp0_;
@@ -230,8 +230,8 @@ ValaCCodeExpression* vala_ccode_element_access_get_index (ValaCCodeElementAccess
 
 
 void vala_ccode_element_access_set_index (ValaCCodeElementAccess* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -242,9 +242,9 @@ void vala_ccode_element_access_set_index (ValaCCodeElementAccess* self, ValaCCod
 
 static void vala_ccode_element_access_class_init (ValaCCodeElementAccessClass * klass) {
 	vala_ccode_element_access_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_element_access_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_element_access_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeElementAccessPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_element_access_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_element_access_real_write;
 }
 
 

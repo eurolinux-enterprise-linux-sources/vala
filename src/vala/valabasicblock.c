@@ -181,8 +181,8 @@ ValaBasicBlock* vala_basic_block_new_exit (void) {
 
 
 void vala_basic_block_add_node (ValaBasicBlock* self, ValaCodeNode* node) {
-	ValaList* _tmp0_;
-	ValaCodeNode* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaCodeNode* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (node != NULL);
 	_tmp0_ = self->priv->nodes;
@@ -198,8 +198,8 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 
 ValaList* vala_basic_block_get_nodes (ValaBasicBlock* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->nodes;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -209,11 +209,11 @@ ValaList* vala_basic_block_get_nodes (ValaBasicBlock* self) {
 
 
 void vala_basic_block_connect (ValaBasicBlock* self, ValaBasicBlock* target) {
-	ValaList* _tmp0_;
-	ValaBasicBlock* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaBasicBlock* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
-	ValaBasicBlock* _tmp5_;
-	ValaList* _tmp6_;
+	ValaBasicBlock* _tmp5_ = NULL;
+	ValaList* _tmp6_ = NULL;
 	gboolean _tmp7_ = FALSE;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (target != NULL);
@@ -221,8 +221,8 @@ void vala_basic_block_connect (ValaBasicBlock* self, ValaBasicBlock* target) {
 	_tmp1_ = target;
 	_tmp2_ = vala_collection_contains ((ValaCollection*) _tmp0_, _tmp1_);
 	if (!_tmp2_) {
-		ValaList* _tmp3_;
-		ValaBasicBlock* _tmp4_;
+		ValaList* _tmp3_ = NULL;
+		ValaBasicBlock* _tmp4_ = NULL;
 		_tmp3_ = self->priv->successors;
 		_tmp4_ = target;
 		vala_collection_add ((ValaCollection*) _tmp3_, _tmp4_);
@@ -231,8 +231,8 @@ void vala_basic_block_connect (ValaBasicBlock* self, ValaBasicBlock* target) {
 	_tmp6_ = _tmp5_->priv->predecessors;
 	_tmp7_ = vala_collection_contains ((ValaCollection*) _tmp6_, self);
 	if (!_tmp7_) {
-		ValaBasicBlock* _tmp8_;
-		ValaList* _tmp9_;
+		ValaBasicBlock* _tmp8_ = NULL;
+		ValaList* _tmp9_ = NULL;
 		_tmp8_ = target;
 		_tmp9_ = _tmp8_->priv->predecessors;
 		vala_collection_add ((ValaCollection*) _tmp9_, self);
@@ -242,8 +242,8 @@ void vala_basic_block_connect (ValaBasicBlock* self, ValaBasicBlock* target) {
 
 ValaList* vala_basic_block_get_predecessors (ValaBasicBlock* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->predecessors;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -254,8 +254,8 @@ ValaList* vala_basic_block_get_predecessors (ValaBasicBlock* self) {
 
 ValaList* vala_basic_block_get_successors (ValaBasicBlock* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->successors;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -265,9 +265,9 @@ ValaList* vala_basic_block_get_successors (ValaBasicBlock* self) {
 
 
 void vala_basic_block_add_child (ValaBasicBlock* self, ValaBasicBlock* block) {
-	ValaList* _tmp0_;
-	ValaBasicBlock* _tmp1_;
-	ValaBasicBlock* _tmp2_;
+	ValaList* _tmp0_ = NULL;
+	ValaBasicBlock* _tmp1_ = NULL;
+	ValaBasicBlock* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (block != NULL);
 	_tmp0_ = self->priv->children;
@@ -280,8 +280,8 @@ void vala_basic_block_add_child (ValaBasicBlock* self, ValaBasicBlock* block) {
 
 ValaList* vala_basic_block_get_children (ValaBasicBlock* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->children;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -291,8 +291,8 @@ ValaList* vala_basic_block_get_children (ValaBasicBlock* self) {
 
 
 void vala_basic_block_add_dominator_frontier (ValaBasicBlock* self, ValaBasicBlock* block) {
-	ValaSet* _tmp0_;
-	ValaBasicBlock* _tmp1_;
+	ValaSet* _tmp0_ = NULL;
+	ValaBasicBlock* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (block != NULL);
 	_tmp0_ = self->priv->df;
@@ -303,8 +303,8 @@ void vala_basic_block_add_dominator_frontier (ValaBasicBlock* self, ValaBasicBlo
 
 ValaSet* vala_basic_block_get_dominator_frontier (ValaBasicBlock* self) {
 	ValaSet* result = NULL;
-	ValaSet* _tmp0_;
-	ValaSet* _tmp1_;
+	ValaSet* _tmp0_ = NULL;
+	ValaSet* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->df;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -314,8 +314,8 @@ ValaSet* vala_basic_block_get_dominator_frontier (ValaBasicBlock* self) {
 
 
 void vala_basic_block_add_phi_function (ValaBasicBlock* self, ValaPhiFunction* phi) {
-	ValaSet* _tmp0_;
-	ValaPhiFunction* _tmp1_;
+	ValaSet* _tmp0_ = NULL;
+	ValaPhiFunction* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (phi != NULL);
 	_tmp0_ = self->priv->phi_functions;
@@ -326,8 +326,8 @@ void vala_basic_block_add_phi_function (ValaBasicBlock* self, ValaPhiFunction* p
 
 ValaSet* vala_basic_block_get_phi_functions (ValaBasicBlock* self) {
 	ValaSet* result = NULL;
-	ValaSet* _tmp0_;
-	ValaSet* _tmp1_;
+	ValaSet* _tmp0_ = NULL;
+	ValaSet* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->phi_functions;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -338,7 +338,7 @@ ValaSet* vala_basic_block_get_phi_functions (ValaBasicBlock* self) {
 
 ValaBasicBlock* vala_basic_block_get_parent (ValaBasicBlock* self) {
 	ValaBasicBlock* result;
-	ValaBasicBlock* _tmp0_;
+	ValaBasicBlock* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_parent;
 	result = _tmp0_;
@@ -352,8 +352,8 @@ static gpointer _vala_basic_block_ref0 (gpointer self) {
 
 
 static void vala_basic_block_set_parent (ValaBasicBlock* self, ValaBasicBlock* value) {
-	ValaBasicBlock* _tmp0_;
-	ValaBasicBlock* _tmp1_;
+	ValaBasicBlock* _tmp0_ = NULL;
+	ValaBasicBlock* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_basic_block_ref0 (_tmp0_);
@@ -364,7 +364,7 @@ static void vala_basic_block_set_parent (ValaBasicBlock* self, ValaBasicBlock* v
 
 gboolean vala_basic_block_get_postorder_visited (ValaBasicBlock* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_postorder_visited;
 	result = _tmp0_;
@@ -373,7 +373,7 @@ gboolean vala_basic_block_get_postorder_visited (ValaBasicBlock* self) {
 
 
 void vala_basic_block_set_postorder_visited (ValaBasicBlock* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_postorder_visited = _tmp0_;
@@ -382,7 +382,7 @@ void vala_basic_block_set_postorder_visited (ValaBasicBlock* self, gboolean valu
 
 gint vala_basic_block_get_postorder_number (ValaBasicBlock* self) {
 	gint result;
-	gint _tmp0_;
+	gint _tmp0_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->_postorder_number;
 	result = _tmp0_;
@@ -391,7 +391,7 @@ gint vala_basic_block_get_postorder_number (ValaBasicBlock* self) {
 
 
 void vala_basic_block_set_postorder_number (ValaBasicBlock* self, gint value) {
-	gint _tmp0_;
+	gint _tmp0_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_postorder_number = _tmp0_;
@@ -510,26 +510,26 @@ void vala_value_take_basic_block (GValue* value, gpointer v_object) {
 
 static void vala_basic_block_class_init (ValaBasicBlockClass * klass) {
 	vala_basic_block_parent_class = g_type_class_peek_parent (klass);
-	VALA_BASIC_BLOCK_CLASS (klass)->finalize = vala_basic_block_finalize;
+	((ValaBasicBlockClass *) klass)->finalize = vala_basic_block_finalize;
 	g_type_class_add_private (klass, sizeof (ValaBasicBlockPrivate));
 }
 
 
 static void vala_basic_block_instance_init (ValaBasicBlock * self) {
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
-	GEqualFunc _tmp2_;
-	ValaArrayList* _tmp3_;
-	GEqualFunc _tmp4_;
-	ValaArrayList* _tmp5_;
-	GEqualFunc _tmp6_;
-	ValaArrayList* _tmp7_;
-	GHashFunc _tmp8_;
-	GEqualFunc _tmp9_;
-	ValaHashSet* _tmp10_;
-	GHashFunc _tmp11_;
-	GEqualFunc _tmp12_;
-	ValaHashSet* _tmp13_;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
+	GEqualFunc _tmp2_ = NULL;
+	ValaArrayList* _tmp3_ = NULL;
+	GEqualFunc _tmp4_ = NULL;
+	ValaArrayList* _tmp5_ = NULL;
+	GEqualFunc _tmp6_ = NULL;
+	ValaArrayList* _tmp7_ = NULL;
+	GHashFunc _tmp8_ = NULL;
+	GEqualFunc _tmp9_ = NULL;
+	ValaHashSet* _tmp10_ = NULL;
+	GHashFunc _tmp11_ = NULL;
+	GEqualFunc _tmp12_ = NULL;
+	ValaHashSet* _tmp13_ = NULL;
 	self->priv = VALA_BASIC_BLOCK_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_CODE_NODE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);
@@ -558,6 +558,7 @@ static void vala_basic_block_instance_init (ValaBasicBlock * self) {
 static void vala_basic_block_finalize (ValaBasicBlock* obj) {
 	ValaBasicBlock * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_BASIC_BLOCK, ValaBasicBlock);
+	g_signal_handlers_destroy (self);
 	_vala_iterable_unref0 (self->priv->nodes);
 	_vala_iterable_unref0 (self->priv->predecessors);
 	_vala_iterable_unref0 (self->priv->successors);

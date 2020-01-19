@@ -79,9 +79,9 @@ public class Vala.GObjectModule : GTypeModule {
 			CCodeConstant func_name_constant;
 			CCodeFunctionCall cinst, cspec;
 
-			func_name = "%s_type".printf (type_param.name.down ());
-			func_name_constant = new CCodeConstant ("\"%s-type\"".printf (type_param.name.down ()));
-			enum_value = "%s_%s".printf (get_ccode_lower_case_name (cl, null), func_name).up ();
+			func_name = "%s_type".printf (type_param.name.ascii_down ());
+			func_name_constant = new CCodeConstant ("\"%s-type\"".printf (type_param.name.ascii_down ()));
+			enum_value = "%s_%s".printf (get_ccode_lower_case_name (cl, null), func_name).ascii_up ();
 			cinst = new CCodeFunctionCall (new CCodeIdentifier ("g_object_class_install_property"));
 			cinst.add_argument (ccall);
 			cinst.add_argument (new CCodeConstant (enum_value));
@@ -96,9 +96,9 @@ public class Vala.GObjectModule : GTypeModule {
 			prop_enum.add_value (new CCodeEnumValue (enum_value));
 
 
-			func_name = "%s_dup_func".printf (type_param.name.down ());
-			func_name_constant = new CCodeConstant ("\"%s-dup-func\"".printf (type_param.name.down ()));
-			enum_value = "%s_%s".printf (get_ccode_lower_case_name (cl, null), func_name).up ();
+			func_name = "%s_dup_func".printf (type_param.name.ascii_down ());
+			func_name_constant = new CCodeConstant ("\"%s-dup-func\"".printf (type_param.name.ascii_down ()));
+			enum_value = "%s_%s".printf (get_ccode_lower_case_name (cl, null), func_name).ascii_up ();
 			cinst = new CCodeFunctionCall (new CCodeIdentifier ("g_object_class_install_property"));
 			cinst.add_argument (ccall);
 			cinst.add_argument (new CCodeConstant (enum_value));
@@ -112,9 +112,9 @@ public class Vala.GObjectModule : GTypeModule {
 			prop_enum.add_value (new CCodeEnumValue (enum_value));
 
 
-			func_name = "%s_destroy_func".printf (type_param.name.down ());
-			func_name_constant = new CCodeConstant ("\"%s-destroy-func\"".printf (type_param.name.down ()));
-			enum_value = "%s_%s".printf (get_ccode_lower_case_name (cl, null), func_name).up ();
+			func_name = "%s_destroy_func".printf (type_param.name.ascii_down ());
+			func_name_constant = new CCodeConstant ("\"%s-destroy-func\"".printf (type_param.name.ascii_down ()));
+			enum_value = "%s_%s".printf (get_ccode_lower_case_name (cl, null), func_name).ascii_up ();
 			cinst = new CCodeFunctionCall (new CCodeIdentifier ("g_object_class_install_property"));
 			cinst.add_argument (ccall);
 			cinst.add_argument (new CCodeConstant (enum_value));
@@ -358,8 +358,8 @@ public class Vala.GObjectModule : GTypeModule {
 			CCodeMemberAccess cfield;
 			CCodeFunctionCall cgetcall;
 
-			func_name = "%s_type".printf (type_param.name.down ());
-			enum_value = "%s_%s".printf (get_ccode_lower_case_name (cl, null), func_name).up ();
+			func_name = "%s_type".printf (type_param.name.ascii_down ());
+			enum_value = "%s_%s".printf (get_ccode_lower_case_name (cl, null), func_name).ascii_up ();
 			ccode.add_case (new CCodeIdentifier (enum_value));
 			cfield = new CCodeMemberAccess.pointer (new CCodeMemberAccess.pointer (new CCodeIdentifier ("self"), "priv"), func_name);
 			cgetcall = new CCodeFunctionCall (new CCodeIdentifier ("g_value_get_gtype"));
@@ -367,8 +367,8 @@ public class Vala.GObjectModule : GTypeModule {
 			ccode.add_assignment (cfield, cgetcall);
 			ccode.add_break ();
 
-			func_name = "%s_dup_func".printf (type_param.name.down ());
-			enum_value = "%s_%s".printf (get_ccode_lower_case_name (cl, null), func_name).up ();
+			func_name = "%s_dup_func".printf (type_param.name.ascii_down ());
+			enum_value = "%s_%s".printf (get_ccode_lower_case_name (cl, null), func_name).ascii_up ();
 			ccode.add_case (new CCodeIdentifier (enum_value));
 			cfield = new CCodeMemberAccess.pointer (new CCodeMemberAccess.pointer (new CCodeIdentifier ("self"), "priv"), func_name);
 			cgetcall = new CCodeFunctionCall (new CCodeIdentifier ("g_value_get_pointer"));
@@ -376,8 +376,8 @@ public class Vala.GObjectModule : GTypeModule {
 			ccode.add_assignment (cfield, cgetcall);
 			ccode.add_break ();
 
-			func_name = "%s_destroy_func".printf (type_param.name.down ());
-			enum_value = "%s_%s".printf (get_ccode_lower_case_name (cl, null), func_name).up ();
+			func_name = "%s_destroy_func".printf (type_param.name.ascii_down ());
+			enum_value = "%s_%s".printf (get_ccode_lower_case_name (cl, null), func_name).ascii_up ();
 			ccode.add_case (new CCodeIdentifier (enum_value));
 			cfield = new CCodeMemberAccess.pointer (new CCodeMemberAccess.pointer (new CCodeIdentifier ("self"), "priv"), func_name);
 			cgetcall = new CCodeFunctionCall (new CCodeIdentifier ("g_value_get_pointer"));
@@ -594,7 +594,7 @@ public class Vala.GObjectModule : GTypeModule {
 		}
 
 		string connect_wrapper_name = "_%sconnect".printf (get_dynamic_signal_cname (sig));
-		var func = new CCodeFunction (connect_wrapper_name, "void");
+		var func = new CCodeFunction (connect_wrapper_name, "gulong");
 		func.add_parameter (new CCodeParameter ("obj", "gpointer"));
 		func.add_parameter (new CCodeParameter ("signal_name", "const char *"));
 		func.add_parameter (new CCodeParameter ("handler", "GCallback"));
@@ -617,7 +617,7 @@ public class Vala.GObjectModule : GTypeModule {
 		}
 
 		string connect_wrapper_name = "_%sconnect_after".printf (get_dynamic_signal_cname (sig));
-		var func = new CCodeFunction (connect_wrapper_name, "void");
+		var func = new CCodeFunction (connect_wrapper_name, "gulong");
 		func.add_parameter (new CCodeParameter ("obj", "gpointer"));
 		func.add_parameter (new CCodeParameter ("signal_name", "const char *"));
 		func.add_parameter (new CCodeParameter ("handler", "GCallback"));
@@ -660,7 +660,7 @@ public class Vala.GObjectModule : GTypeModule {
 			}
 		}
 
-		ccode.add_expression (call);
+		ccode.add_return (call);
 	}
 
 	public override void visit_property (Property prop) {
@@ -668,6 +668,27 @@ public class Vala.GObjectModule : GTypeModule {
 
 		if (is_gobject_property (prop) && prop.parent_symbol is Class) {
 			prop_enum.add_value (new CCodeEnumValue (get_ccode_upper_case_name (prop)));
+
+			if (prop.initializer != null && prop.set_accessor != null && !prop.set_accessor.automatic_body) {
+				// generate a custom initializer if it couldn't be done at class_init time
+				bool has_spec_initializer = prop.property_type.data_type is Enum;
+				if (!has_spec_initializer && prop.property_type.data_type is Struct) {
+					var param_spec_func = get_ccode_param_spec_function (prop.property_type.data_type);
+					has_spec_initializer = param_spec_func != "g_param_spec_boxed";
+				}
+				if (!has_spec_initializer) {
+					push_context (instance_init_context);
+
+					prop.initializer.emit (this);
+
+					var inst_ma = new MemberAccess.simple ("this");
+					inst_ma.target_value = new GLibValue (get_data_type_for_symbol ((Class) prop.parent_symbol), new CCodeIdentifier ("self"), true);
+					store_property (prop, inst_ma, prop.initializer.target_value);
+
+					temp_ref_values.clear ();			
+					pop_context ();
+				}
+			}
 		}
 	}
 
@@ -709,8 +730,9 @@ public class Vala.GObjectModule : GTypeModule {
 			return false;
 		}
 
-		if (type_sym is Interface && prop.is_virtual) {
-			// GObject does not support virtual interface properties
+		if (type_sym is Interface && !prop.is_abstract && !prop.external && !prop.external_package) {
+			// GObject does not support non-abstract interface properties,
+			// however we assume external properties always are GObject properties
 			return false;
 		}
 

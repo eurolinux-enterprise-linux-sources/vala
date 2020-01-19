@@ -150,7 +150,7 @@ static void vala_ccode_constant_finalize (ValaCCodeNode* obj);
 
 ValaCCodeConstant* vala_ccode_constant_construct (GType object_type, const gchar* _name) {
 	ValaCCodeConstant* self = NULL;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (_name != NULL, NULL);
 	self = (ValaCCodeConstant*) vala_ccode_expression_construct (object_type);
 	_tmp0_ = _name;
@@ -166,8 +166,8 @@ ValaCCodeConstant* vala_ccode_constant_new (const gchar* _name) {
 
 static gchar string_get (const gchar* self, glong index) {
 	gchar result = '\0';
-	glong _tmp0_;
-	gchar _tmp1_;
+	glong _tmp0_ = 0L;
+	gchar _tmp1_ = '\0';
 	g_return_val_if_fail (self != NULL, '\0');
 	_tmp0_ = index;
 	_tmp1_ = ((gchar*) self)[_tmp0_];
@@ -178,7 +178,7 @@ static gchar string_get (const gchar* self, glong index) {
 
 static gunichar string_get_char (const gchar* self, glong index) {
 	gunichar result = 0U;
-	glong _tmp0_;
+	glong _tmp0_ = 0L;
 	gunichar _tmp1_ = 0U;
 	g_return_val_if_fail (self != NULL, 0U);
 	_tmp0_ = index;
@@ -190,26 +190,26 @@ static gunichar string_get_char (const gchar* self, glong index) {
 
 ValaCCodeConstant* vala_ccode_constant_construct_string (GType object_type, const gchar* _name) {
 	ValaCCodeConstant* self = NULL;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	gchar _tmp1_ = '\0';
-	const gchar* _tmp2_;
-	gint _tmp3_;
-	gint _tmp4_;
-	GString* _tmp6_;
-	GString* builder;
-	const gchar* _tmp7_;
-	gchar* p;
-	gchar* _tmp8_;
-	const gchar* _tmp9_;
-	gint _tmp10_;
-	gint _tmp11_;
-	gchar* end;
-	gchar* _tmp12_;
-	gchar* _tmp13_;
-	gint col;
-	GString* _tmp64_;
-	GString* _tmp65_;
-	const gchar* _tmp66_;
+	const gchar* _tmp2_ = NULL;
+	gint _tmp3_ = 0;
+	gint _tmp4_ = 0;
+	GString* builder = NULL;
+	GString* _tmp6_ = NULL;
+	gchar* p = NULL;
+	const gchar* _tmp7_ = NULL;
+	gchar* end = NULL;
+	gchar* _tmp8_ = NULL;
+	const gchar* _tmp9_ = NULL;
+	gint _tmp10_ = 0;
+	gint _tmp11_ = 0;
+	gchar* _tmp12_ = NULL;
+	gchar* _tmp13_ = NULL;
+	gint col = 0;
+	GString* _tmp60_ = NULL;
+	GString* _tmp61_ = NULL;
+	const gchar* _tmp62_ = NULL;
 	g_return_val_if_fail (_name != NULL, NULL);
 	self = (ValaCCodeConstant*) vala_ccode_expression_construct (object_type);
 	_tmp0_ = _name;
@@ -219,7 +219,7 @@ ValaCCodeConstant* vala_ccode_constant_construct_string (GType object_type, cons
 	_tmp3_ = strlen (_tmp2_);
 	_tmp4_ = _tmp3_;
 	if (_tmp4_ <= VALA_CCODE_CONSTANT_LINE_LENGTH) {
-		const gchar* _tmp5_;
+		const gchar* _tmp5_ = NULL;
 		_tmp5_ = _name;
 		vala_ccode_constant_set_name (self, _tmp5_);
 		return self;
@@ -239,10 +239,10 @@ ValaCCodeConstant* vala_ccode_constant_construct_string (GType object_type, cons
 	end = _tmp13_ - 1;
 	col = 0;
 	while (TRUE) {
-		gchar* _tmp14_;
-		gchar* _tmp15_;
-		gint _tmp16_;
-		gchar* _tmp18_;
+		gchar* _tmp14_ = NULL;
+		gchar* _tmp15_ = NULL;
+		gint _tmp16_ = 0;
+		gchar* _tmp18_ = NULL;
 		_tmp14_ = p;
 		_tmp15_ = end;
 		if (!(_tmp14_ < _tmp15_)) {
@@ -250,27 +250,27 @@ ValaCCodeConstant* vala_ccode_constant_construct_string (GType object_type, cons
 		}
 		_tmp16_ = col;
 		if (_tmp16_ >= VALA_CCODE_CONSTANT_LINE_LENGTH) {
-			GString* _tmp17_;
+			GString* _tmp17_ = NULL;
 			_tmp17_ = builder;
 			g_string_append (_tmp17_, "\" \\\n\"");
 			col = 0;
 		}
 		_tmp18_ = p;
 		if ((*_tmp18_) == '\\') {
-			gchar* _tmp19_;
-			gchar* begin_of_char;
-			GString* _tmp20_;
-			gchar* _tmp21_;
-			gchar _tmp22_;
-			GString* _tmp23_;
-			gchar* _tmp24_;
-			gchar _tmp25_;
-			gchar* _tmp26_;
-			gchar* _tmp27_;
-			gchar _tmp28_;
-			gint _tmp53_;
-			gchar* _tmp54_;
-			gchar* _tmp55_;
+			gchar* begin_of_char = NULL;
+			gchar* _tmp19_ = NULL;
+			GString* _tmp20_ = NULL;
+			gchar* _tmp21_ = NULL;
+			gchar _tmp22_ = '\0';
+			GString* _tmp23_ = NULL;
+			gchar* _tmp24_ = NULL;
+			gchar _tmp25_ = '\0';
+			gchar* _tmp26_ = NULL;
+			gchar* _tmp27_ = NULL;
+			gchar _tmp28_ = '\0';
+			gint _tmp49_ = 0;
+			gchar* _tmp50_ = NULL;
+			gchar* _tmp51_ = NULL;
 			_tmp19_ = p;
 			begin_of_char = _tmp19_;
 			_tmp20_ = builder;
@@ -290,16 +290,15 @@ ValaCCodeConstant* vala_ccode_constant_construct_string (GType object_type, cons
 				{
 					while (TRUE) {
 						gboolean _tmp29_ = FALSE;
-						gchar* _tmp30_;
-						gchar* _tmp31_;
-						gboolean _tmp34_;
-						GString* _tmp35_;
-						gchar* _tmp36_;
-						gchar* _tmp37_;
+						gchar* _tmp30_ = NULL;
+						gchar* _tmp31_ = NULL;
+						GString* _tmp34_ = NULL;
+						gchar* _tmp35_ = NULL;
+						gchar* _tmp36_ = NULL;
 						_tmp30_ = p;
 						_tmp31_ = end;
 						if (_tmp30_ < _tmp31_) {
-							gchar* _tmp32_;
+							gchar* _tmp32_ = NULL;
 							gboolean _tmp33_ = FALSE;
 							_tmp32_ = p;
 							_tmp33_ = g_ascii_isxdigit (*_tmp32_);
@@ -307,15 +306,14 @@ ValaCCodeConstant* vala_ccode_constant_construct_string (GType object_type, cons
 						} else {
 							_tmp29_ = FALSE;
 						}
-						_tmp34_ = _tmp29_;
-						if (!_tmp34_) {
+						if (!_tmp29_) {
 							break;
 						}
-						_tmp35_ = builder;
+						_tmp34_ = builder;
+						_tmp35_ = p;
+						g_string_append_c (_tmp34_, *_tmp35_);
 						_tmp36_ = p;
-						g_string_append_c (_tmp35_, *_tmp36_);
-						_tmp37_ = p;
-						p = _tmp37_ + 1;
+						p = _tmp36_ + 1;
 					}
 					break;
 				}
@@ -329,53 +327,47 @@ ValaCCodeConstant* vala_ccode_constant_construct_string (GType object_type, cons
 				case '7':
 				{
 					while (TRUE) {
+						gboolean _tmp37_ = FALSE;
 						gboolean _tmp38_ = FALSE;
 						gboolean _tmp39_ = FALSE;
-						gboolean _tmp40_ = FALSE;
-						gchar* _tmp41_;
-						gchar* _tmp42_;
-						gboolean _tmp45_;
-						gboolean _tmp47_;
-						gboolean _tmp49_;
-						GString* _tmp50_;
-						gchar* _tmp51_;
-						gchar* _tmp52_;
-						_tmp41_ = p;
-						_tmp42_ = end;
-						if (_tmp41_ < _tmp42_) {
-							gchar* _tmp43_;
-							gchar* _tmp44_;
-							_tmp43_ = p;
-							_tmp44_ = begin_of_char;
-							_tmp40_ = (_tmp43_ - _tmp44_) <= ((gsize) 3);
-						} else {
-							_tmp40_ = FALSE;
-						}
-						_tmp45_ = _tmp40_;
-						if (_tmp45_) {
-							gchar* _tmp46_;
-							_tmp46_ = p;
-							_tmp39_ = (*_tmp46_) >= '0';
+						gchar* _tmp40_ = NULL;
+						gchar* _tmp41_ = NULL;
+						GString* _tmp46_ = NULL;
+						gchar* _tmp47_ = NULL;
+						gchar* _tmp48_ = NULL;
+						_tmp40_ = p;
+						_tmp41_ = end;
+						if (_tmp40_ < _tmp41_) {
+							gchar* _tmp42_ = NULL;
+							gchar* _tmp43_ = NULL;
+							_tmp42_ = p;
+							_tmp43_ = begin_of_char;
+							_tmp39_ = (_tmp42_ - _tmp43_) <= ((gsize) 3);
 						} else {
 							_tmp39_ = FALSE;
 						}
-						_tmp47_ = _tmp39_;
-						if (_tmp47_) {
-							gchar* _tmp48_;
-							_tmp48_ = p;
-							_tmp38_ = (*_tmp48_) <= '7';
+						if (_tmp39_) {
+							gchar* _tmp44_ = NULL;
+							_tmp44_ = p;
+							_tmp38_ = (*_tmp44_) >= '0';
 						} else {
 							_tmp38_ = FALSE;
 						}
-						_tmp49_ = _tmp38_;
-						if (!_tmp49_) {
+						if (_tmp38_) {
+							gchar* _tmp45_ = NULL;
+							_tmp45_ = p;
+							_tmp37_ = (*_tmp45_) <= '7';
+						} else {
+							_tmp37_ = FALSE;
+						}
+						if (!_tmp37_) {
 							break;
 						}
-						_tmp50_ = builder;
-						_tmp51_ = p;
-						g_string_append_c (_tmp50_, *_tmp51_);
-						_tmp52_ = p;
-						p = _tmp52_ + 1;
+						_tmp46_ = builder;
+						_tmp47_ = p;
+						g_string_append_c (_tmp46_, *_tmp47_);
+						_tmp48_ = p;
+						p = _tmp48_ + 1;
 					}
 					break;
 				}
@@ -387,37 +379,37 @@ ValaCCodeConstant* vala_ccode_constant_construct_string (GType object_type, cons
 				default:
 				break;
 			}
-			_tmp53_ = col;
-			_tmp54_ = p;
-			_tmp55_ = begin_of_char;
-			col = _tmp53_ + ((gint) (_tmp54_ - _tmp55_));
+			_tmp49_ = col;
+			_tmp50_ = p;
+			_tmp51_ = begin_of_char;
+			col = _tmp49_ + ((gint) (_tmp50_ - _tmp51_));
 		} else {
-			GString* _tmp56_;
-			gchar* _tmp57_;
-			gunichar _tmp58_ = 0U;
-			gchar* _tmp59_;
-			gchar* _tmp60_;
-			const gchar* _tmp61_ = NULL;
-			gchar* _tmp62_;
-			gint _tmp63_;
-			_tmp56_ = builder;
-			_tmp57_ = p;
-			_tmp58_ = string_get_char ((const gchar*) _tmp57_, (glong) 0);
-			g_string_append_unichar (_tmp56_, _tmp58_);
-			_tmp59_ = p;
-			_tmp60_ = p;
-			_tmp61_ = g_utf8_next_char ((const gchar*) _tmp60_);
-			_tmp62_ = p;
-			p = _tmp59_ + (((gchar*) _tmp61_) - _tmp62_);
-			_tmp63_ = col;
-			col = _tmp63_ + 1;
+			GString* _tmp52_ = NULL;
+			gchar* _tmp53_ = NULL;
+			gunichar _tmp54_ = 0U;
+			gchar* _tmp55_ = NULL;
+			gchar* _tmp56_ = NULL;
+			const gchar* _tmp57_ = NULL;
+			gchar* _tmp58_ = NULL;
+			gint _tmp59_ = 0;
+			_tmp52_ = builder;
+			_tmp53_ = p;
+			_tmp54_ = string_get_char ((const gchar*) _tmp53_, (glong) 0);
+			g_string_append_unichar (_tmp52_, _tmp54_);
+			_tmp55_ = p;
+			_tmp56_ = p;
+			_tmp57_ = g_utf8_next_char ((const gchar*) _tmp56_);
+			_tmp58_ = p;
+			p = _tmp55_ + (((gchar*) _tmp57_) - _tmp58_);
+			_tmp59_ = col;
+			col = _tmp59_ + 1;
 		}
 	}
-	_tmp64_ = builder;
-	g_string_append_c (_tmp64_, '"');
-	_tmp65_ = builder;
-	_tmp66_ = _tmp65_->str;
-	vala_ccode_constant_set_name (self, _tmp66_);
+	_tmp60_ = builder;
+	g_string_append_c (_tmp60_, '"');
+	_tmp61_ = builder;
+	_tmp62_ = _tmp61_->str;
+	vala_ccode_constant_set_name (self, _tmp62_);
 	_g_string_free0 (builder);
 	return self;
 }
@@ -430,8 +422,8 @@ ValaCCodeConstant* vala_ccode_constant_new_string (const gchar* _name) {
 
 static void vala_ccode_constant_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeConstant * self;
-	ValaCCodeWriter* _tmp0_;
-	const gchar* _tmp1_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	self = (ValaCCodeConstant*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -442,7 +434,7 @@ static void vala_ccode_constant_real_write (ValaCCodeNode* base, ValaCCodeWriter
 
 const gchar* vala_ccode_constant_get_name (ValaCCodeConstant* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_name;
 	result = _tmp0_;
@@ -451,8 +443,8 @@ const gchar* vala_ccode_constant_get_name (ValaCCodeConstant* self) {
 
 
 void vala_ccode_constant_set_name (ValaCCodeConstant* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -463,9 +455,9 @@ void vala_ccode_constant_set_name (ValaCCodeConstant* self, const gchar* value) 
 
 static void vala_ccode_constant_class_init (ValaCCodeConstantClass * klass) {
 	vala_ccode_constant_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_constant_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_constant_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeConstantPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_constant_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_constant_real_write;
 }
 
 

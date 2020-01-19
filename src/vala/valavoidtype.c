@@ -290,7 +290,7 @@ ValaSourceReference* vala_code_node_get_source_reference (ValaCodeNode* self);
 
 ValaVoidType* vala_void_type_construct (GType object_type, ValaSourceReference* source_reference) {
 	ValaVoidType* self = NULL;
-	ValaSourceReference* _tmp0_;
+	ValaSourceReference* _tmp0_ = NULL;
 	self = (ValaVoidType*) vala_data_type_construct (object_type);
 	_tmp0_ = source_reference;
 	vala_code_node_set_source_reference ((ValaCodeNode*) self, _tmp0_);
@@ -306,7 +306,7 @@ ValaVoidType* vala_void_type_new (ValaSourceReference* source_reference) {
 static gboolean vala_void_type_real_stricter (ValaDataType* base, ValaDataType* type2) {
 	ValaVoidType * self;
 	gboolean result = FALSE;
-	ValaDataType* _tmp0_;
+	ValaDataType* _tmp0_ = NULL;
 	self = (ValaVoidType*) base;
 	g_return_val_if_fail (type2 != NULL, FALSE);
 	_tmp0_ = type2;
@@ -318,7 +318,7 @@ static gboolean vala_void_type_real_stricter (ValaDataType* base, ValaDataType* 
 static gchar* vala_void_type_real_to_qualified_string (ValaDataType* base, ValaScope* scope) {
 	ValaVoidType * self;
 	gchar* result = NULL;
-	gchar* _tmp0_;
+	gchar* _tmp0_ = NULL;
 	self = (ValaVoidType*) base;
 	_tmp0_ = g_strdup ("void");
 	result = _tmp0_;
@@ -329,9 +329,9 @@ static gchar* vala_void_type_real_to_qualified_string (ValaDataType* base, ValaS
 static ValaDataType* vala_void_type_real_copy (ValaDataType* base) {
 	ValaVoidType * self;
 	ValaDataType* result = NULL;
-	ValaSourceReference* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaVoidType* _tmp2_;
+	ValaSourceReference* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaVoidType* _tmp2_ = NULL;
 	self = (ValaVoidType*) base;
 	_tmp0_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
@@ -343,9 +343,9 @@ static ValaDataType* vala_void_type_real_copy (ValaDataType* base) {
 
 static void vala_void_type_class_init (ValaVoidTypeClass * klass) {
 	vala_void_type_parent_class = g_type_class_peek_parent (klass);
-	VALA_DATA_TYPE_CLASS (klass)->stricter = vala_void_type_real_stricter;
-	VALA_DATA_TYPE_CLASS (klass)->to_qualified_string = vala_void_type_real_to_qualified_string;
-	VALA_DATA_TYPE_CLASS (klass)->copy = vala_void_type_real_copy;
+	((ValaDataTypeClass *) klass)->stricter = vala_void_type_real_stricter;
+	((ValaDataTypeClass *) klass)->to_qualified_string = vala_void_type_real_to_qualified_string;
+	((ValaDataTypeClass *) klass)->copy = vala_void_type_real_copy;
 }
 
 

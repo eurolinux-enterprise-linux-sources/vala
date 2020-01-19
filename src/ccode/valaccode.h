@@ -424,6 +424,17 @@ typedef struct _ValaCCodeLabelClass ValaCCodeLabelClass;
 typedef struct _ValaCCodeLabelPrivate ValaCCodeLabelPrivate;
 typedef struct _ValaCCodeLineDirectivePrivate ValaCCodeLineDirectivePrivate;
 
+#define VALA_TYPE_CCODE_IF_SECTION (vala_ccode_if_section_get_type ())
+#define VALA_CCODE_IF_SECTION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_IF_SECTION, ValaCCodeIfSection))
+#define VALA_CCODE_IF_SECTION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_IF_SECTION, ValaCCodeIfSectionClass))
+#define VALA_IS_CCODE_IF_SECTION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_IF_SECTION))
+#define VALA_IS_CCODE_IF_SECTION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_IF_SECTION))
+#define VALA_CCODE_IF_SECTION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_IF_SECTION, ValaCCodeIfSectionClass))
+
+typedef struct _ValaCCodeIfSection ValaCCodeIfSection;
+typedef struct _ValaCCodeIfSectionClass ValaCCodeIfSectionClass;
+typedef struct _ValaCCodeIfSectionPrivate ValaCCodeIfSectionPrivate;
+
 #define VALA_TYPE_CCODE_MACRO_REPLACEMENT (vala_ccode_macro_replacement_get_type ())
 #define VALA_CCODE_MACRO_REPLACEMENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_MACRO_REPLACEMENT, ValaCCodeMacroReplacement))
 #define VALA_CCODE_MACRO_REPLACEMENT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_MACRO_REPLACEMENT, ValaCCodeMacroReplacementClass))
@@ -502,6 +513,16 @@ typedef struct _ValaCCodeStruct ValaCCodeStruct;
 typedef struct _ValaCCodeStructClass ValaCCodeStructClass;
 typedef struct _ValaCCodeStructPrivate ValaCCodeStructPrivate;
 
+#define VALA_TYPE_CCODE_DECLARATOR_SUFFIX (vala_ccode_declarator_suffix_get_type ())
+#define VALA_CCODE_DECLARATOR_SUFFIX(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_DECLARATOR_SUFFIX, ValaCCodeDeclaratorSuffix))
+#define VALA_CCODE_DECLARATOR_SUFFIX_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_DECLARATOR_SUFFIX, ValaCCodeDeclaratorSuffixClass))
+#define VALA_IS_CCODE_DECLARATOR_SUFFIX(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_DECLARATOR_SUFFIX))
+#define VALA_IS_CCODE_DECLARATOR_SUFFIX_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_DECLARATOR_SUFFIX))
+#define VALA_CCODE_DECLARATOR_SUFFIX_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_DECLARATOR_SUFFIX, ValaCCodeDeclaratorSuffixClass))
+
+typedef struct _ValaCCodeDeclaratorSuffix ValaCCodeDeclaratorSuffix;
+typedef struct _ValaCCodeDeclaratorSuffixClass ValaCCodeDeclaratorSuffixClass;
+
 #define VALA_TYPE_CCODE_SWITCH_STATEMENT (vala_ccode_switch_statement_get_type ())
 #define VALA_CCODE_SWITCH_STATEMENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_SWITCH_STATEMENT, ValaCCodeSwitchStatement))
 #define VALA_CCODE_SWITCH_STATEMENT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_SWITCH_STATEMENT, ValaCCodeSwitchStatementClass))
@@ -547,6 +568,7 @@ typedef struct _ValaCCodeUnaryExpressionPrivate ValaCCodeUnaryExpressionPrivate;
 typedef struct _ValaCCodeVariableDeclarator ValaCCodeVariableDeclarator;
 typedef struct _ValaCCodeVariableDeclaratorClass ValaCCodeVariableDeclaratorClass;
 typedef struct _ValaCCodeVariableDeclaratorPrivate ValaCCodeVariableDeclaratorPrivate;
+typedef struct _ValaCCodeDeclaratorSuffixPrivate ValaCCodeDeclaratorSuffixPrivate;
 
 #define VALA_TYPE_CCODE_WHILE_STATEMENT (vala_ccode_while_statement_get_type ())
 #define VALA_CCODE_WHILE_STATEMENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_WHILE_STATEMENT, ValaCCodeWhileStatement))
@@ -755,7 +777,8 @@ typedef enum  {
 	VALA_CCODE_MODIFIERS_INLINE = 1 << 3,
 	VALA_CCODE_MODIFIERS_VOLATILE = 1 << 4,
 	VALA_CCODE_MODIFIERS_DEPRECATED = 1 << 5,
-	VALA_CCODE_MODIFIERS_THREAD_LOCAL = 1 << 6
+	VALA_CCODE_MODIFIERS_THREAD_LOCAL = 1 << 6,
+	VALA_CCODE_MODIFIERS_INTERNAL = 1 << 7
 } ValaCCodeModifiers;
 
 struct _ValaCCodeDeclarator {
@@ -941,6 +964,15 @@ struct _ValaCCodeLineDirectiveClass {
 	ValaCCodeNodeClass parent_class;
 };
 
+struct _ValaCCodeIfSection {
+	ValaCCodeFragment parent_instance;
+	ValaCCodeIfSectionPrivate * priv;
+};
+
+struct _ValaCCodeIfSectionClass {
+	ValaCCodeFragmentClass parent_class;
+};
+
 struct _ValaCCodeMacroReplacement {
 	ValaCCodeNode parent_instance;
 	ValaCCodeMacroReplacementPrivate * priv;
@@ -1060,6 +1092,20 @@ struct _ValaCCodeVariableDeclarator {
 
 struct _ValaCCodeVariableDeclaratorClass {
 	ValaCCodeDeclaratorClass parent_class;
+};
+
+struct _ValaCCodeDeclaratorSuffix {
+	GTypeInstance parent_instance;
+	volatile int ref_count;
+	ValaCCodeDeclaratorSuffixPrivate * priv;
+	gboolean array;
+	ValaCCodeExpression* array_length;
+	gboolean deprecated;
+};
+
+struct _ValaCCodeDeclaratorSuffixClass {
+	GTypeClass parent_class;
+	void (*finalize) (ValaCCodeDeclaratorSuffix *self);
 };
 
 struct _ValaCCodeWhileStatement {
@@ -1366,6 +1412,11 @@ const gchar* vala_ccode_line_directive_get_filename (ValaCCodeLineDirective* sel
 void vala_ccode_line_directive_set_filename (ValaCCodeLineDirective* self, const gchar* value);
 gint vala_ccode_line_directive_get_line_number (ValaCCodeLineDirective* self);
 void vala_ccode_line_directive_set_line_number (ValaCCodeLineDirective* self, gint value);
+GType vala_ccode_if_section_get_type (void) G_GNUC_CONST;
+ValaCCodeIfSection* vala_ccode_if_section_new (const gchar* expr);
+ValaCCodeIfSection* vala_ccode_if_section_construct (GType object_type, const gchar* expr);
+const gchar* vala_ccode_if_section_get_expression (ValaCCodeIfSection* self);
+void vala_ccode_if_section_set_expression (ValaCCodeIfSection* self, const gchar* value);
 GType vala_ccode_macro_replacement_get_type (void) G_GNUC_CONST;
 ValaCCodeMacroReplacement* vala_ccode_macro_replacement_new (const gchar* name, const gchar* replacement);
 ValaCCodeMacroReplacement* vala_ccode_macro_replacement_construct (GType object_type, const gchar* name, const gchar* replacement);
@@ -1427,7 +1478,14 @@ GType vala_ccode_struct_get_type (void) G_GNUC_CONST;
 ValaCCodeStruct* vala_ccode_struct_new (const gchar* name);
 ValaCCodeStruct* vala_ccode_struct_construct (GType object_type, const gchar* name);
 void vala_ccode_struct_add_declaration (ValaCCodeStruct* self, ValaCCodeDeclaration* decl);
-void vala_ccode_struct_add_field (ValaCCodeStruct* self, const gchar* type_name, const gchar* name, const gchar* declarator_suffix);
+gpointer vala_ccode_declarator_suffix_ref (gpointer instance);
+void vala_ccode_declarator_suffix_unref (gpointer instance);
+GParamSpec* vala_param_spec_ccode_declarator_suffix (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void vala_value_set_ccode_declarator_suffix (GValue* value, gpointer v_object);
+void vala_value_take_ccode_declarator_suffix (GValue* value, gpointer v_object);
+gpointer vala_value_get_ccode_declarator_suffix (const GValue* value);
+GType vala_ccode_declarator_suffix_get_type (void) G_GNUC_CONST;
+void vala_ccode_struct_add_field (ValaCCodeStruct* self, const gchar* type_name, const gchar* name, ValaCCodeDeclaratorSuffix* declarator_suffix);
 const gchar* vala_ccode_struct_get_name (ValaCCodeStruct* self);
 void vala_ccode_struct_set_name (ValaCCodeStruct* self, const gchar* value);
 gboolean vala_ccode_struct_get_deprecated (ValaCCodeStruct* self);
@@ -1456,18 +1514,23 @@ void vala_ccode_unary_expression_set_operator (ValaCCodeUnaryExpression* self, V
 ValaCCodeExpression* vala_ccode_unary_expression_get_inner (ValaCCodeUnaryExpression* self);
 void vala_ccode_unary_expression_set_inner (ValaCCodeUnaryExpression* self, ValaCCodeExpression* value);
 GType vala_ccode_variable_declarator_get_type (void) G_GNUC_CONST;
-ValaCCodeVariableDeclarator* vala_ccode_variable_declarator_new (const gchar* name, ValaCCodeExpression* initializer, const gchar* declarator_suffix);
-ValaCCodeVariableDeclarator* vala_ccode_variable_declarator_construct (GType object_type, const gchar* name, ValaCCodeExpression* initializer, const gchar* declarator_suffix);
-ValaCCodeVariableDeclarator* vala_ccode_variable_declarator_new_zero (const gchar* name, ValaCCodeExpression* initializer, const gchar* declarator_suffix);
-ValaCCodeVariableDeclarator* vala_ccode_variable_declarator_construct_zero (GType object_type, const gchar* name, ValaCCodeExpression* initializer, const gchar* declarator_suffix);
+ValaCCodeVariableDeclarator* vala_ccode_variable_declarator_new (const gchar* name, ValaCCodeExpression* initializer, ValaCCodeDeclaratorSuffix* declarator_suffix);
+ValaCCodeVariableDeclarator* vala_ccode_variable_declarator_construct (GType object_type, const gchar* name, ValaCCodeExpression* initializer, ValaCCodeDeclaratorSuffix* declarator_suffix);
+ValaCCodeVariableDeclarator* vala_ccode_variable_declarator_new_zero (const gchar* name, ValaCCodeExpression* initializer, ValaCCodeDeclaratorSuffix* declarator_suffix);
+ValaCCodeVariableDeclarator* vala_ccode_variable_declarator_construct_zero (GType object_type, const gchar* name, ValaCCodeExpression* initializer, ValaCCodeDeclaratorSuffix* declarator_suffix);
 const gchar* vala_ccode_variable_declarator_get_name (ValaCCodeVariableDeclarator* self);
 void vala_ccode_variable_declarator_set_name (ValaCCodeVariableDeclarator* self, const gchar* value);
 ValaCCodeExpression* vala_ccode_variable_declarator_get_initializer (ValaCCodeVariableDeclarator* self);
 void vala_ccode_variable_declarator_set_initializer (ValaCCodeVariableDeclarator* self, ValaCCodeExpression* value);
-const gchar* vala_ccode_variable_declarator_get_declarator_suffix (ValaCCodeVariableDeclarator* self);
-void vala_ccode_variable_declarator_set_declarator_suffix (ValaCCodeVariableDeclarator* self, const gchar* value);
+ValaCCodeDeclaratorSuffix* vala_ccode_variable_declarator_get_declarator_suffix (ValaCCodeVariableDeclarator* self);
+void vala_ccode_variable_declarator_set_declarator_suffix (ValaCCodeVariableDeclarator* self, ValaCCodeDeclaratorSuffix* value);
 gboolean vala_ccode_variable_declarator_get_init0 (ValaCCodeVariableDeclarator* self);
 void vala_ccode_variable_declarator_set_init0 (ValaCCodeVariableDeclarator* self, gboolean value);
+ValaCCodeDeclaratorSuffix* vala_ccode_declarator_suffix_new_with_array (ValaCCodeExpression* array_length);
+ValaCCodeDeclaratorSuffix* vala_ccode_declarator_suffix_construct_with_array (GType object_type, ValaCCodeExpression* array_length);
+void vala_ccode_declarator_suffix_write (ValaCCodeDeclaratorSuffix* self, ValaCCodeWriter* writer);
+ValaCCodeDeclaratorSuffix* vala_ccode_declarator_suffix_new (void);
+ValaCCodeDeclaratorSuffix* vala_ccode_declarator_suffix_construct (GType object_type);
 GType vala_ccode_while_statement_get_type (void) G_GNUC_CONST;
 ValaCCodeWhileStatement* vala_ccode_while_statement_new (ValaCCodeExpression* cond, ValaCCodeStatement* stmt);
 ValaCCodeWhileStatement* vala_ccode_while_statement_construct (GType object_type, ValaCCodeExpression* cond, ValaCCodeStatement* stmt);

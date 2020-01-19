@@ -576,9 +576,9 @@ static void vala_error_domain_finalize (ValaCodeNode* obj);
  */
 ValaErrorDomain* vala_error_domain_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaErrorDomain* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaComment* _tmp2_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaComment* _tmp2_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	_tmp0_ = name;
 	_tmp1_ = source_reference;
@@ -599,14 +599,14 @@ ValaErrorDomain* vala_error_domain_new (const gchar* name, ValaSourceReference* 
  * @param ecode an error code
  */
 void vala_error_domain_add_code (ValaErrorDomain* self, ValaErrorCode* ecode) {
-	ValaList* _tmp0_;
-	ValaErrorCode* _tmp1_;
-	ValaScope* _tmp2_;
-	ValaScope* _tmp3_;
-	ValaErrorCode* _tmp4_;
-	const gchar* _tmp5_;
-	const gchar* _tmp6_;
-	ValaErrorCode* _tmp7_;
+	ValaList* _tmp0_ = NULL;
+	ValaErrorCode* _tmp1_ = NULL;
+	ValaScope* _tmp2_ = NULL;
+	ValaScope* _tmp3_ = NULL;
+	ValaErrorCode* _tmp4_ = NULL;
+	const gchar* _tmp5_ = NULL;
+	const gchar* _tmp6_ = NULL;
+	ValaErrorCode* _tmp7_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (ecode != NULL);
 	_tmp0_ = self->priv->codes;
@@ -629,26 +629,26 @@ void vala_error_domain_add_code (ValaErrorDomain* self, ValaErrorCode* ecode) {
  */
 static void vala_error_domain_real_add_method (ValaSymbol* base, ValaMethod* m) {
 	ValaErrorDomain * self;
-	ValaMethod* _tmp0_;
-	ValaMethod* _tmp5_;
-	ValaMemberBinding _tmp6_;
-	ValaMemberBinding _tmp7_;
-	ValaList* _tmp24_;
-	ValaMethod* _tmp25_;
-	ValaScope* _tmp26_;
-	ValaScope* _tmp27_;
-	ValaMethod* _tmp28_;
-	const gchar* _tmp29_;
-	const gchar* _tmp30_;
-	ValaMethod* _tmp31_;
+	ValaMethod* _tmp0_ = NULL;
+	ValaMethod* _tmp5_ = NULL;
+	ValaMemberBinding _tmp6_ = 0;
+	ValaMemberBinding _tmp7_ = 0;
+	ValaList* _tmp24_ = NULL;
+	ValaMethod* _tmp25_ = NULL;
+	ValaScope* _tmp26_ = NULL;
+	ValaScope* _tmp27_ = NULL;
+	ValaMethod* _tmp28_ = NULL;
+	const gchar* _tmp29_ = NULL;
+	const gchar* _tmp30_ = NULL;
+	ValaMethod* _tmp31_ = NULL;
 	self = (ValaErrorDomain*) base;
 	g_return_if_fail (m != NULL);
 	_tmp0_ = m;
 	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp0_, VALA_TYPE_CREATION_METHOD)) {
-		ValaMethod* _tmp1_;
-		ValaSourceReference* _tmp2_;
-		ValaSourceReference* _tmp3_;
-		ValaMethod* _tmp4_;
+		ValaMethod* _tmp1_ = NULL;
+		ValaSourceReference* _tmp2_ = NULL;
+		ValaSourceReference* _tmp3_ = NULL;
+		ValaMethod* _tmp4_ = NULL;
 		_tmp1_ = m;
 		_tmp2_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp1_);
 		_tmp3_ = _tmp2_;
@@ -661,22 +661,22 @@ static void vala_error_domain_real_add_method (ValaSymbol* base, ValaMethod* m) 
 	_tmp6_ = vala_method_get_binding (_tmp5_);
 	_tmp7_ = _tmp6_;
 	if (_tmp7_ == VALA_MEMBER_BINDING_INSTANCE) {
-		ValaMethod* _tmp8_;
-		ValaErrorType* _tmp9_;
-		ValaErrorType* _tmp10_;
-		ValaParameter* _tmp11_;
-		ValaParameter* _tmp12_;
-		ValaMethod* _tmp13_;
-		ValaScope* _tmp14_;
-		ValaScope* _tmp15_;
-		ValaMethod* _tmp16_;
-		ValaParameter* _tmp17_;
-		ValaParameter* _tmp18_;
-		const gchar* _tmp19_;
-		const gchar* _tmp20_;
-		ValaMethod* _tmp21_;
-		ValaParameter* _tmp22_;
-		ValaParameter* _tmp23_;
+		ValaMethod* _tmp8_ = NULL;
+		ValaErrorType* _tmp9_ = NULL;
+		ValaErrorType* _tmp10_ = NULL;
+		ValaParameter* _tmp11_ = NULL;
+		ValaParameter* _tmp12_ = NULL;
+		ValaMethod* _tmp13_ = NULL;
+		ValaScope* _tmp14_ = NULL;
+		ValaScope* _tmp15_ = NULL;
+		ValaMethod* _tmp16_ = NULL;
+		ValaParameter* _tmp17_ = NULL;
+		ValaParameter* _tmp18_ = NULL;
+		const gchar* _tmp19_ = NULL;
+		const gchar* _tmp20_ = NULL;
+		ValaMethod* _tmp21_ = NULL;
+		ValaParameter* _tmp22_ = NULL;
+		ValaParameter* _tmp23_ = NULL;
 		_tmp8_ = m;
 		_tmp9_ = vala_error_type_new (self, NULL, NULL);
 		_tmp10_ = _tmp9_;
@@ -723,8 +723,8 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 
 ValaList* vala_error_domain_get_codes (ValaErrorDomain* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->codes;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -740,8 +740,8 @@ ValaList* vala_error_domain_get_codes (ValaErrorDomain* self) {
  */
 ValaList* vala_error_domain_get_methods (ValaErrorDomain* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->methods;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -752,7 +752,7 @@ ValaList* vala_error_domain_get_methods (ValaErrorDomain* self) {
 
 static void vala_error_domain_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaErrorDomain * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaErrorDomain*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -765,14 +765,14 @@ static void vala_error_domain_real_accept_children (ValaCodeNode* base, ValaCode
 	self = (ValaErrorDomain*) base;
 	g_return_if_fail (visitor != NULL);
 	{
-		ValaList* _tmp0_;
-		ValaList* _tmp1_;
-		ValaList* _ecode_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _ecode_size;
-		gint _ecode_index;
+		ValaList* _ecode_list = NULL;
+		ValaList* _tmp0_ = NULL;
+		ValaList* _tmp1_ = NULL;
+		gint _ecode_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _ecode_index = 0;
 		_tmp0_ = self->priv->codes;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
 		_ecode_list = _tmp1_;
@@ -782,15 +782,15 @@ static void vala_error_domain_real_accept_children (ValaCodeNode* base, ValaCode
 		_ecode_size = _tmp4_;
 		_ecode_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaErrorCode* ecode = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaErrorCode* ecode;
-			ValaErrorCode* _tmp11_;
-			ValaCodeVisitor* _tmp12_;
+			ValaErrorCode* _tmp11_ = NULL;
+			ValaCodeVisitor* _tmp12_ = NULL;
 			_tmp5_ = _ecode_index;
 			_ecode_index = _tmp5_ + 1;
 			_tmp6_ = _ecode_index;
@@ -810,14 +810,14 @@ static void vala_error_domain_real_accept_children (ValaCodeNode* base, ValaCode
 		_vala_iterable_unref0 (_ecode_list);
 	}
 	{
-		ValaList* _tmp13_;
-		ValaList* _tmp14_;
-		ValaList* _m_list;
-		ValaList* _tmp15_;
-		gint _tmp16_;
-		gint _tmp17_;
-		gint _m_size;
-		gint _m_index;
+		ValaList* _m_list = NULL;
+		ValaList* _tmp13_ = NULL;
+		ValaList* _tmp14_ = NULL;
+		gint _m_size = 0;
+		ValaList* _tmp15_ = NULL;
+		gint _tmp16_ = 0;
+		gint _tmp17_ = 0;
+		gint _m_index = 0;
 		_tmp13_ = self->priv->methods;
 		_tmp14_ = _vala_iterable_ref0 (_tmp13_);
 		_m_list = _tmp14_;
@@ -827,15 +827,15 @@ static void vala_error_domain_real_accept_children (ValaCodeNode* base, ValaCode
 		_m_size = _tmp17_;
 		_m_index = -1;
 		while (TRUE) {
-			gint _tmp18_;
-			gint _tmp19_;
-			gint _tmp20_;
-			ValaList* _tmp21_;
-			gint _tmp22_;
+			gint _tmp18_ = 0;
+			gint _tmp19_ = 0;
+			gint _tmp20_ = 0;
+			ValaMethod* m = NULL;
+			ValaList* _tmp21_ = NULL;
+			gint _tmp22_ = 0;
 			gpointer _tmp23_ = NULL;
-			ValaMethod* m;
-			ValaMethod* _tmp24_;
-			ValaCodeVisitor* _tmp25_;
+			ValaMethod* _tmp24_ = NULL;
+			ValaCodeVisitor* _tmp25_ = NULL;
 			_tmp18_ = _m_index;
 			_m_index = _tmp18_ + 1;
 			_tmp19_ = _m_index;
@@ -869,17 +869,17 @@ static gboolean vala_error_domain_real_is_reference_type (ValaTypeSymbol* base) 
 static gboolean vala_error_domain_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaErrorDomain * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	gboolean _tmp30_;
-	gboolean _tmp31_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	gboolean _tmp30_ = FALSE;
+	gboolean _tmp31_ = FALSE;
 	self = (ValaErrorDomain*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -887,14 +887,14 @@ static gboolean vala_error_domain_real_check (ValaCodeNode* base, ValaCodeContex
 	}
 	vala_code_node_set_checked ((ValaCodeNode*) self, TRUE);
 	{
-		ValaList* _tmp4_;
-		ValaList* _tmp5_;
-		ValaList* _ecode_list;
-		ValaList* _tmp6_;
-		gint _tmp7_;
-		gint _tmp8_;
-		gint _ecode_size;
-		gint _ecode_index;
+		ValaList* _ecode_list = NULL;
+		ValaList* _tmp4_ = NULL;
+		ValaList* _tmp5_ = NULL;
+		gint _ecode_size = 0;
+		ValaList* _tmp6_ = NULL;
+		gint _tmp7_ = 0;
+		gint _tmp8_ = 0;
+		gint _ecode_index = 0;
 		_tmp4_ = self->priv->codes;
 		_tmp5_ = _vala_iterable_ref0 (_tmp4_);
 		_ecode_list = _tmp5_;
@@ -904,15 +904,15 @@ static gboolean vala_error_domain_real_check (ValaCodeNode* base, ValaCodeContex
 		_ecode_size = _tmp8_;
 		_ecode_index = -1;
 		while (TRUE) {
-			gint _tmp9_;
-			gint _tmp10_;
-			gint _tmp11_;
-			ValaList* _tmp12_;
-			gint _tmp13_;
+			gint _tmp9_ = 0;
+			gint _tmp10_ = 0;
+			gint _tmp11_ = 0;
+			ValaErrorCode* ecode = NULL;
+			ValaList* _tmp12_ = NULL;
+			gint _tmp13_ = 0;
 			gpointer _tmp14_ = NULL;
-			ValaErrorCode* ecode;
-			ValaErrorCode* _tmp15_;
-			ValaCodeContext* _tmp16_;
+			ValaErrorCode* _tmp15_ = NULL;
+			ValaCodeContext* _tmp16_ = NULL;
 			_tmp9_ = _ecode_index;
 			_ecode_index = _tmp9_ + 1;
 			_tmp10_ = _ecode_index;
@@ -932,14 +932,14 @@ static gboolean vala_error_domain_real_check (ValaCodeNode* base, ValaCodeContex
 		_vala_iterable_unref0 (_ecode_list);
 	}
 	{
-		ValaList* _tmp17_;
-		ValaList* _tmp18_;
-		ValaList* _m_list;
-		ValaList* _tmp19_;
-		gint _tmp20_;
-		gint _tmp21_;
-		gint _m_size;
-		gint _m_index;
+		ValaList* _m_list = NULL;
+		ValaList* _tmp17_ = NULL;
+		ValaList* _tmp18_ = NULL;
+		gint _m_size = 0;
+		ValaList* _tmp19_ = NULL;
+		gint _tmp20_ = 0;
+		gint _tmp21_ = 0;
+		gint _m_index = 0;
 		_tmp17_ = self->priv->methods;
 		_tmp18_ = _vala_iterable_ref0 (_tmp17_);
 		_m_list = _tmp18_;
@@ -949,15 +949,15 @@ static gboolean vala_error_domain_real_check (ValaCodeNode* base, ValaCodeContex
 		_m_size = _tmp21_;
 		_m_index = -1;
 		while (TRUE) {
-			gint _tmp22_;
-			gint _tmp23_;
-			gint _tmp24_;
-			ValaList* _tmp25_;
-			gint _tmp26_;
+			gint _tmp22_ = 0;
+			gint _tmp23_ = 0;
+			gint _tmp24_ = 0;
+			ValaMethod* m = NULL;
+			ValaList* _tmp25_ = NULL;
+			gint _tmp26_ = 0;
 			gpointer _tmp27_ = NULL;
-			ValaMethod* m;
-			ValaMethod* _tmp28_;
-			ValaCodeContext* _tmp29_;
+			ValaMethod* _tmp28_ = NULL;
+			ValaCodeContext* _tmp29_ = NULL;
 			_tmp22_ = _m_index;
 			_m_index = _tmp22_ + 1;
 			_tmp23_ = _m_index;
@@ -985,21 +985,21 @@ static gboolean vala_error_domain_real_check (ValaCodeNode* base, ValaCodeContex
 
 static void vala_error_domain_class_init (ValaErrorDomainClass * klass) {
 	vala_error_domain_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_error_domain_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_error_domain_finalize;
 	g_type_class_add_private (klass, sizeof (ValaErrorDomainPrivate));
-	VALA_SYMBOL_CLASS (klass)->add_method = vala_error_domain_real_add_method;
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_error_domain_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_error_domain_real_accept_children;
-	VALA_TYPESYMBOL_CLASS (klass)->is_reference_type = vala_error_domain_real_is_reference_type;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_error_domain_real_check;
+	((ValaSymbolClass *) klass)->add_method = vala_error_domain_real_add_method;
+	((ValaCodeNodeClass *) klass)->accept = vala_error_domain_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_error_domain_real_accept_children;
+	((ValaTypeSymbolClass *) klass)->is_reference_type = vala_error_domain_real_is_reference_type;
+	((ValaCodeNodeClass *) klass)->check = vala_error_domain_real_check;
 }
 
 
 static void vala_error_domain_instance_init (ValaErrorDomain * self) {
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
-	GEqualFunc _tmp2_;
-	ValaArrayList* _tmp3_;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
+	GEqualFunc _tmp2_ = NULL;
+	ValaArrayList* _tmp3_ = NULL;
 	self->priv = VALA_ERROR_DOMAIN_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_ERROR_CODE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);

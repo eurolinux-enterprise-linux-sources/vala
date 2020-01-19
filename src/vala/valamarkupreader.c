@@ -41,7 +41,7 @@ typedef struct _ValaMarkupReader ValaMarkupReader;
 typedef struct _ValaMarkupReaderClass ValaMarkupReaderClass;
 typedef struct _ValaMarkupReaderPrivate ValaMarkupReaderPrivate;
 #define _g_free0(var) (var = (g_free (var), NULL))
-#define _g_mapped_file_free0(var) ((var == NULL) ? NULL : (var = (g_mapped_file_free (var), NULL)))
+#define _g_mapped_file_unref0(var) ((var == NULL) ? NULL : (var = (g_mapped_file_unref (var), NULL)))
 #define _vala_map_unref0(var) ((var == NULL) ? NULL : (var = (vala_map_unref (var), NULL)))
 
 #define VALA_TYPE_SOURCE_REFERENCE (vala_source_reference_get_type ())
@@ -146,69 +146,73 @@ const gchar* vala_markup_token_type_to_string (ValaMarkupTokenType self);
 
 ValaMarkupReader* vala_markup_reader_construct (GType object_type, const gchar* filename) {
 	ValaMarkupReader * self = NULL;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	GError * _inner_error_ = NULL;
 	g_return_val_if_fail (filename != NULL, NULL);
 	self = (ValaMarkupReader*) g_object_new (object_type, NULL);
 	_tmp0_ = filename;
 	vala_markup_reader_set_filename (self, _tmp0_);
 	{
-		const gchar* _tmp1_;
-		GMappedFile* _tmp2_;
-		GMappedFile* _tmp3_;
-		GMappedFile* _tmp4_;
-		gchar* _tmp5_ = NULL;
-		gchar* _tmp6_;
-		GMappedFile* _tmp7_;
-		gsize _tmp8_ = 0UL;
-		gchar* _tmp9_;
-		_tmp1_ = filename;
-		_tmp2_ = g_mapped_file_new (_tmp1_, FALSE, &_inner_error_);
-		_tmp3_ = _tmp2_;
-		if (_inner_error_ != NULL) {
+		GMappedFile* _tmp1_ = NULL;
+		const gchar* _tmp2_ = NULL;
+		GMappedFile* _tmp3_ = NULL;
+		GMappedFile* _tmp4_ = NULL;
+		GMappedFile* _tmp5_ = NULL;
+		gchar* _tmp6_ = NULL;
+		gchar* _tmp7_ = NULL;
+		GMappedFile* _tmp8_ = NULL;
+		gsize _tmp9_ = 0UL;
+		gchar* _tmp10_ = NULL;
+		_tmp2_ = filename;
+		_tmp3_ = g_mapped_file_new (_tmp2_, FALSE, &_inner_error_);
+		_tmp1_ = _tmp3_;
+		if (G_UNLIKELY (_inner_error_ != NULL)) {
 			if (_inner_error_->domain == G_FILE_ERROR) {
-				goto __catch9_g_file_error;
+				goto __catch11_g_file_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-		_g_mapped_file_free0 (self->priv->mapped_file);
-		self->priv->mapped_file = _tmp3_;
-		_tmp4_ = self->priv->mapped_file;
-		_tmp5_ = g_mapped_file_get_contents (_tmp4_);
-		self->priv->begin = _tmp5_;
-		_tmp6_ = self->priv->begin;
-		_tmp7_ = self->priv->mapped_file;
-		_tmp8_ = g_mapped_file_get_length (_tmp7_);
-		self->priv->end = _tmp6_ + _tmp8_;
-		_tmp9_ = self->priv->begin;
-		self->priv->current = _tmp9_;
+		_tmp4_ = _tmp1_;
+		_tmp1_ = NULL;
+		_g_mapped_file_unref0 (self->priv->mapped_file);
+		self->priv->mapped_file = _tmp4_;
+		_tmp5_ = self->priv->mapped_file;
+		_tmp6_ = g_mapped_file_get_contents (_tmp5_);
+		self->priv->begin = _tmp6_;
+		_tmp7_ = self->priv->begin;
+		_tmp8_ = self->priv->mapped_file;
+		_tmp9_ = g_mapped_file_get_length (_tmp8_);
+		self->priv->end = _tmp7_ + _tmp9_;
+		_tmp10_ = self->priv->begin;
+		self->priv->current = _tmp10_;
 		self->priv->line = 1;
 		self->priv->column = 1;
+		_g_mapped_file_unref0 (_tmp1_);
 	}
-	goto __finally9;
-	__catch9_g_file_error:
+	goto __finally11;
+	__catch11_g_file_error:
 	{
 		GError* e = NULL;
-		const gchar* _tmp10_;
-		GError* _tmp11_;
-		const gchar* _tmp12_;
-		gchar* _tmp13_ = NULL;
-		gchar* _tmp14_;
+		const gchar* _tmp11_ = NULL;
+		GError* _tmp12_ = NULL;
+		const gchar* _tmp13_ = NULL;
+		gchar* _tmp14_ = NULL;
+		gchar* _tmp15_ = NULL;
 		e = _inner_error_;
 		_inner_error_ = NULL;
-		_tmp10_ = filename;
-		_tmp11_ = e;
-		_tmp12_ = _tmp11_->message;
-		_tmp13_ = g_strdup_printf ("Unable to map file `%s': %s", _tmp10_, _tmp12_);
-		_tmp14_ = _tmp13_;
-		vala_report_error (NULL, _tmp14_);
-		_g_free0 (_tmp14_);
+		_tmp11_ = filename;
+		_tmp12_ = e;
+		_tmp13_ = _tmp12_->message;
+		_tmp14_ = g_strdup_printf ("Unable to map file `%s': %s", _tmp11_, _tmp13_);
+		_tmp15_ = _tmp14_;
+		vala_report_error (NULL, _tmp15_);
+		_g_free0 (_tmp15_);
 		_g_error_free0 (e);
 	}
-	__finally9:
-	if (_inner_error_ != NULL) {
+	__finally11:
+	if (G_UNLIKELY (_inner_error_ != NULL)) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
@@ -224,8 +228,8 @@ ValaMarkupReader* vala_markup_reader_new (const gchar* filename) {
 
 gchar* vala_markup_reader_get_attribute (ValaMarkupReader* self, const gchar* attr) {
 	gchar* result = NULL;
-	ValaMap* _tmp0_;
-	const gchar* _tmp1_;
+	ValaMap* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	gpointer _tmp2_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (attr != NULL, NULL);
@@ -239,11 +243,11 @@ gchar* vala_markup_reader_get_attribute (ValaMarkupReader* self, const gchar* at
 
 ValaMap* vala_markup_reader_get_attributes (ValaMarkupReader* self) {
 	ValaMap* result = NULL;
-	GHashFunc _tmp0_;
-	GEqualFunc _tmp1_;
-	GEqualFunc _tmp2_;
-	ValaHashMap* _tmp3_;
-	ValaHashMap* _result_;
+	ValaHashMap* _result_ = NULL;
+	GHashFunc _tmp0_ = NULL;
+	GEqualFunc _tmp1_ = NULL;
+	GEqualFunc _tmp2_ = NULL;
+	ValaHashMap* _tmp3_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_str_hash;
 	_tmp1_ = g_str_equal;
@@ -251,12 +255,12 @@ ValaMap* vala_markup_reader_get_attributes (ValaMarkupReader* self) {
 	_tmp3_ = vala_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp0_, _tmp1_, _tmp2_);
 	_result_ = _tmp3_;
 	{
-		ValaMap* _tmp4_;
+		ValaIterator* _key_it = NULL;
+		ValaMap* _tmp4_ = NULL;
 		ValaSet* _tmp5_ = NULL;
-		ValaSet* _tmp6_;
+		ValaSet* _tmp6_ = NULL;
 		ValaIterator* _tmp7_ = NULL;
-		ValaIterator* _tmp8_;
-		ValaIterator* _key_it;
+		ValaIterator* _tmp8_ = NULL;
 		_tmp4_ = self->priv->attributes;
 		_tmp5_ = vala_map_get_keys (_tmp4_);
 		_tmp6_ = _tmp5_;
@@ -265,17 +269,17 @@ ValaMap* vala_markup_reader_get_attributes (ValaMarkupReader* self) {
 		_vala_iterable_unref0 (_tmp6_);
 		_key_it = _tmp8_;
 		while (TRUE) {
-			ValaIterator* _tmp9_;
+			ValaIterator* _tmp9_ = NULL;
 			gboolean _tmp10_ = FALSE;
-			ValaIterator* _tmp11_;
+			gchar* key = NULL;
+			ValaIterator* _tmp11_ = NULL;
 			gpointer _tmp12_ = NULL;
-			gchar* key;
-			ValaHashMap* _tmp13_;
-			const gchar* _tmp14_;
-			ValaMap* _tmp15_;
-			const gchar* _tmp16_;
+			ValaHashMap* _tmp13_ = NULL;
+			const gchar* _tmp14_ = NULL;
+			ValaMap* _tmp15_ = NULL;
+			const gchar* _tmp16_ = NULL;
 			gpointer _tmp17_ = NULL;
-			gchar* _tmp18_;
+			gchar* _tmp18_ = NULL;
 			_tmp9_ = _key_it;
 			_tmp10_ = vala_iterator_next (_tmp9_);
 			if (!_tmp10_) {
@@ -303,24 +307,24 @@ ValaMap* vala_markup_reader_get_attributes (ValaMarkupReader* self) {
 
 static glong string_strnlen (gchar* str, glong maxlen) {
 	glong result = 0L;
-	gchar* _tmp0_;
-	glong _tmp1_;
+	gchar* end = NULL;
+	gchar* _tmp0_ = NULL;
+	glong _tmp1_ = 0L;
 	gchar* _tmp2_ = NULL;
-	gchar* end;
-	gchar* _tmp3_;
+	gchar* _tmp3_ = NULL;
 	_tmp0_ = str;
 	_tmp1_ = maxlen;
 	_tmp2_ = memchr (_tmp0_, 0, (gsize) _tmp1_);
 	end = _tmp2_;
 	_tmp3_ = end;
 	if (_tmp3_ == NULL) {
-		glong _tmp4_;
+		glong _tmp4_ = 0L;
 		_tmp4_ = maxlen;
 		result = _tmp4_;
 		return result;
 	} else {
-		gchar* _tmp5_;
-		gchar* _tmp6_;
+		gchar* _tmp5_ = NULL;
+		gchar* _tmp6_ = NULL;
 		_tmp5_ = end;
 		_tmp6_ = str;
 		result = (glong) (_tmp5_ - _tmp6_);
@@ -333,112 +337,105 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 	gchar* result = NULL;
 	glong string_length = 0L;
 	gboolean _tmp0_ = FALSE;
-	glong _tmp1_;
-	gboolean _tmp3_;
-	glong _tmp9_;
-	glong _tmp15_;
-	glong _tmp18_;
-	glong _tmp19_;
-	glong _tmp20_;
-	glong _tmp21_;
-	glong _tmp22_;
-	gchar* _tmp23_ = NULL;
+	glong _tmp1_ = 0L;
+	glong _tmp8_ = 0L;
+	glong _tmp14_ = 0L;
+	glong _tmp17_ = 0L;
+	glong _tmp18_ = 0L;
+	glong _tmp19_ = 0L;
+	glong _tmp20_ = 0L;
+	glong _tmp21_ = 0L;
+	gchar* _tmp22_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp1_ = offset;
 	if (_tmp1_ >= ((glong) 0)) {
-		glong _tmp2_;
+		glong _tmp2_ = 0L;
 		_tmp2_ = len;
 		_tmp0_ = _tmp2_ >= ((glong) 0);
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp3_ = _tmp0_;
-	if (_tmp3_) {
-		glong _tmp4_;
-		glong _tmp5_;
-		glong _tmp6_ = 0L;
-		_tmp4_ = offset;
-		_tmp5_ = len;
-		_tmp6_ = string_strnlen ((gchar*) self, _tmp4_ + _tmp5_);
-		string_length = _tmp6_;
+	if (_tmp0_) {
+		glong _tmp3_ = 0L;
+		glong _tmp4_ = 0L;
+		glong _tmp5_ = 0L;
+		_tmp3_ = offset;
+		_tmp4_ = len;
+		_tmp5_ = string_strnlen ((gchar*) self, _tmp3_ + _tmp4_);
+		string_length = _tmp5_;
 	} else {
-		gint _tmp7_;
-		gint _tmp8_;
-		_tmp7_ = strlen (self);
-		_tmp8_ = _tmp7_;
-		string_length = (glong) _tmp8_;
+		gint _tmp6_ = 0;
+		gint _tmp7_ = 0;
+		_tmp6_ = strlen (self);
+		_tmp7_ = _tmp6_;
+		string_length = (glong) _tmp7_;
 	}
-	_tmp9_ = offset;
-	if (_tmp9_ < ((glong) 0)) {
-		glong _tmp10_;
-		glong _tmp11_;
-		glong _tmp12_;
-		_tmp10_ = string_length;
+	_tmp8_ = offset;
+	if (_tmp8_ < ((glong) 0)) {
+		glong _tmp9_ = 0L;
+		glong _tmp10_ = 0L;
+		glong _tmp11_ = 0L;
+		_tmp9_ = string_length;
+		_tmp10_ = offset;
+		offset = _tmp9_ + _tmp10_;
 		_tmp11_ = offset;
-		offset = _tmp10_ + _tmp11_;
-		_tmp12_ = offset;
-		g_return_val_if_fail (_tmp12_ >= ((glong) 0), NULL);
+		g_return_val_if_fail (_tmp11_ >= ((glong) 0), NULL);
 	} else {
-		glong _tmp13_;
-		glong _tmp14_;
-		_tmp13_ = offset;
-		_tmp14_ = string_length;
-		g_return_val_if_fail (_tmp13_ <= _tmp14_, NULL);
+		glong _tmp12_ = 0L;
+		glong _tmp13_ = 0L;
+		_tmp12_ = offset;
+		_tmp13_ = string_length;
+		g_return_val_if_fail (_tmp12_ <= _tmp13_, NULL);
 	}
-	_tmp15_ = len;
-	if (_tmp15_ < ((glong) 0)) {
-		glong _tmp16_;
-		glong _tmp17_;
-		_tmp16_ = string_length;
-		_tmp17_ = offset;
-		len = _tmp16_ - _tmp17_;
+	_tmp14_ = len;
+	if (_tmp14_ < ((glong) 0)) {
+		glong _tmp15_ = 0L;
+		glong _tmp16_ = 0L;
+		_tmp15_ = string_length;
+		_tmp16_ = offset;
+		len = _tmp15_ - _tmp16_;
 	}
-	_tmp18_ = offset;
-	_tmp19_ = len;
-	_tmp20_ = string_length;
-	g_return_val_if_fail ((_tmp18_ + _tmp19_) <= _tmp20_, NULL);
-	_tmp21_ = offset;
-	_tmp22_ = len;
-	_tmp23_ = g_strndup (((gchar*) self) + _tmp21_, (gsize) _tmp22_);
-	result = _tmp23_;
+	_tmp17_ = offset;
+	_tmp18_ = len;
+	_tmp19_ = string_length;
+	g_return_val_if_fail ((_tmp17_ + _tmp18_) <= _tmp19_, NULL);
+	_tmp20_ = offset;
+	_tmp21_ = len;
+	_tmp22_ = g_strndup (((gchar*) self) + _tmp20_, (gsize) _tmp21_);
+	result = _tmp22_;
 	return result;
 }
 
 
 static gchar* vala_markup_reader_read_name (ValaMarkupReader* self) {
 	gchar* result = NULL;
-	gchar* _tmp0_;
-	gchar* begin;
-	gchar* _tmp33_;
-	gchar* _tmp34_;
-	gchar* _tmp35_;
-	gchar* _tmp36_;
-	gchar* _tmp37_;
-	gchar* _tmp38_ = NULL;
+	gchar* begin = NULL;
+	gchar* _tmp0_ = NULL;
+	gchar* _tmp28_ = NULL;
+	gchar* _tmp29_ = NULL;
+	gchar* _tmp30_ = NULL;
+	gchar* _tmp31_ = NULL;
+	gchar* _tmp32_ = NULL;
+	gchar* _tmp33_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->current;
 	begin = _tmp0_;
 	while (TRUE) {
-		gchar* _tmp1_;
-		gchar* _tmp2_;
+		gchar* _tmp1_ = NULL;
+		gchar* _tmp2_ = NULL;
 		gboolean _tmp3_ = FALSE;
 		gboolean _tmp4_ = FALSE;
 		gboolean _tmp5_ = FALSE;
 		gboolean _tmp6_ = FALSE;
 		gboolean _tmp7_ = FALSE;
-		gchar* _tmp8_;
-		gchar _tmp9_;
-		gboolean _tmp12_;
-		gboolean _tmp15_;
-		gboolean _tmp18_;
-		gboolean _tmp21_;
-		gboolean _tmp24_;
-		gchar* _tmp25_;
-		gchar* _tmp26_;
-		gchar* _tmp27_;
-		gunichar _tmp28_ = 0U;
-		gunichar u;
-		gunichar _tmp29_;
+		gchar* _tmp8_ = NULL;
+		gchar _tmp9_ = '\0';
+		gunichar u = 0U;
+		gchar* _tmp20_ = NULL;
+		gchar* _tmp21_ = NULL;
+		gchar* _tmp22_ = NULL;
+		gunichar _tmp23_ = 0U;
+		gunichar _tmp24_ = 0U;
 		_tmp1_ = self->priv->current;
 		_tmp2_ = self->priv->end;
 		if (!(_tmp1_ < _tmp2_)) {
@@ -449,83 +446,78 @@ static gchar* vala_markup_reader_read_name (ValaMarkupReader* self) {
 		if (_tmp9_ == ' ') {
 			_tmp7_ = TRUE;
 		} else {
-			gchar* _tmp10_;
-			gchar _tmp11_;
+			gchar* _tmp10_ = NULL;
+			gchar _tmp11_ = '\0';
 			_tmp10_ = self->priv->current;
 			_tmp11_ = _tmp10_[0];
 			_tmp7_ = _tmp11_ == '\t';
 		}
-		_tmp12_ = _tmp7_;
-		if (_tmp12_) {
+		if (_tmp7_) {
 			_tmp6_ = TRUE;
 		} else {
-			gchar* _tmp13_;
-			gchar _tmp14_;
-			_tmp13_ = self->priv->current;
-			_tmp14_ = _tmp13_[0];
-			_tmp6_ = _tmp14_ == '>';
+			gchar* _tmp12_ = NULL;
+			gchar _tmp13_ = '\0';
+			_tmp12_ = self->priv->current;
+			_tmp13_ = _tmp12_[0];
+			_tmp6_ = _tmp13_ == '>';
 		}
-		_tmp15_ = _tmp6_;
-		if (_tmp15_) {
+		if (_tmp6_) {
 			_tmp5_ = TRUE;
 		} else {
-			gchar* _tmp16_;
-			gchar _tmp17_;
-			_tmp16_ = self->priv->current;
-			_tmp17_ = _tmp16_[0];
-			_tmp5_ = _tmp17_ == '/';
+			gchar* _tmp14_ = NULL;
+			gchar _tmp15_ = '\0';
+			_tmp14_ = self->priv->current;
+			_tmp15_ = _tmp14_[0];
+			_tmp5_ = _tmp15_ == '/';
 		}
-		_tmp18_ = _tmp5_;
-		if (_tmp18_) {
+		if (_tmp5_) {
 			_tmp4_ = TRUE;
 		} else {
-			gchar* _tmp19_;
-			gchar _tmp20_;
-			_tmp19_ = self->priv->current;
-			_tmp20_ = _tmp19_[0];
-			_tmp4_ = _tmp20_ == '=';
+			gchar* _tmp16_ = NULL;
+			gchar _tmp17_ = '\0';
+			_tmp16_ = self->priv->current;
+			_tmp17_ = _tmp16_[0];
+			_tmp4_ = _tmp17_ == '=';
 		}
-		_tmp21_ = _tmp4_;
-		if (_tmp21_) {
+		if (_tmp4_) {
 			_tmp3_ = TRUE;
 		} else {
-			gchar* _tmp22_;
-			gchar _tmp23_;
-			_tmp22_ = self->priv->current;
-			_tmp23_ = _tmp22_[0];
-			_tmp3_ = _tmp23_ == '\n';
+			gchar* _tmp18_ = NULL;
+			gchar _tmp19_ = '\0';
+			_tmp18_ = self->priv->current;
+			_tmp19_ = _tmp18_[0];
+			_tmp3_ = _tmp19_ == '\n';
 		}
-		_tmp24_ = _tmp3_;
-		if (_tmp24_) {
+		if (_tmp3_) {
 			break;
 		}
-		_tmp25_ = self->priv->current;
-		_tmp26_ = self->priv->end;
-		_tmp27_ = self->priv->current;
-		_tmp28_ = g_utf8_get_char_validated ((const gchar*) _tmp25_, (gssize) ((glong) (_tmp26_ - _tmp27_)));
-		u = _tmp28_;
-		_tmp29_ = u;
-		if (_tmp29_ != ((gunichar) (-1))) {
-			gchar* _tmp30_;
-			gunichar _tmp31_;
-			gint _tmp32_ = 0;
-			_tmp30_ = self->priv->current;
-			_tmp31_ = u;
-			_tmp32_ = g_unichar_to_utf8 (_tmp31_, NULL);
-			self->priv->current = _tmp30_ + _tmp32_;
+		_tmp20_ = self->priv->current;
+		_tmp21_ = self->priv->end;
+		_tmp22_ = self->priv->current;
+		_tmp23_ = g_utf8_get_char_validated ((const gchar*) _tmp20_, (gssize) ((glong) (_tmp21_ - _tmp22_)));
+		u = _tmp23_;
+		_tmp24_ = u;
+		if (_tmp24_ != ((gunichar) (-1))) {
+			gchar* _tmp25_ = NULL;
+			gunichar _tmp26_ = 0U;
+			gint _tmp27_ = 0;
+			_tmp25_ = self->priv->current;
+			_tmp26_ = u;
+			_tmp27_ = g_unichar_to_utf8 (_tmp26_, NULL);
+			self->priv->current = _tmp25_ + _tmp27_;
 		} else {
 			vala_report_error (NULL, "invalid UTF-8 character");
 		}
 	}
-	_tmp33_ = self->priv->current;
-	_tmp34_ = begin;
-	if (_tmp33_ == _tmp34_) {
+	_tmp28_ = self->priv->current;
+	_tmp29_ = begin;
+	if (_tmp28_ == _tmp29_) {
 	}
-	_tmp35_ = begin;
-	_tmp36_ = self->priv->current;
-	_tmp37_ = begin;
-	_tmp38_ = string_substring ((const gchar*) _tmp35_, (glong) 0, (glong) ((gint) (_tmp36_ - _tmp37_)));
-	result = _tmp38_;
+	_tmp30_ = begin;
+	_tmp31_ = self->priv->current;
+	_tmp32_ = begin;
+	_tmp33_ = string_substring ((const gchar*) _tmp30_, (glong) 0, (glong) ((gint) (_tmp31_ - _tmp32_)));
+	result = _tmp33_;
 	return result;
 }
 
@@ -534,30 +526,30 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 	ValaSourceLocation _vala_token_begin = {0};
 	ValaSourceLocation _vala_token_end = {0};
 	ValaMarkupTokenType result = 0;
-	ValaMap* _tmp0_;
-	gboolean _tmp1_;
-	ValaMarkupTokenType type;
-	gchar* _tmp8_;
-	gchar* begin;
-	gchar* _tmp9_;
-	gint _tmp10_;
-	gint _tmp11_;
-	gchar* _tmp12_;
-	gchar* _tmp13_;
-	gchar* _tmp122_;
-	gint _tmp123_;
-	gint _tmp124_;
+	ValaMap* _tmp0_ = NULL;
+	gboolean _tmp1_ = FALSE;
+	ValaMarkupTokenType type = 0;
+	gchar* begin = NULL;
+	gchar* _tmp8_ = NULL;
+	gchar* _tmp9_ = NULL;
+	gint _tmp10_ = 0;
+	gint _tmp11_ = 0;
+	gchar* _tmp12_ = NULL;
+	gchar* _tmp13_ = NULL;
+	gchar* _tmp118_ = NULL;
+	gint _tmp119_ = 0;
+	gint _tmp120_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->attributes;
 	vala_map_clear (_tmp0_);
 	_tmp1_ = self->priv->empty_element;
 	if (_tmp1_) {
-		gchar* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gchar* _tmp5_;
-		gint _tmp6_;
-		gint _tmp7_;
+		gchar* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gchar* _tmp5_ = NULL;
+		gint _tmp6_ = 0;
+		gint _tmp7_ = 0;
 		self->priv->empty_element = FALSE;
 		_tmp2_ = self->priv->begin;
 		_tmp3_ = self->priv->line;
@@ -589,130 +581,122 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 	if (_tmp12_ >= _tmp13_) {
 		type = VALA_MARKUP_TOKEN_TYPE_EOF;
 	} else {
-		gchar* _tmp14_;
-		gchar _tmp15_;
+		gchar* _tmp14_ = NULL;
+		gchar _tmp15_ = '\0';
 		_tmp14_ = self->priv->current;
 		_tmp15_ = _tmp14_[0];
 		if (_tmp15_ == '<') {
-			gchar* _tmp16_;
-			gchar* _tmp17_;
-			gchar* _tmp18_;
+			gchar* _tmp16_ = NULL;
+			gchar* _tmp17_ = NULL;
+			gchar* _tmp18_ = NULL;
 			_tmp16_ = self->priv->current;
 			self->priv->current = _tmp16_ + 1;
 			_tmp17_ = self->priv->current;
 			_tmp18_ = self->priv->end;
 			if (_tmp17_ >= _tmp18_) {
 			} else {
-				gchar* _tmp19_;
-				gchar _tmp20_;
+				gchar* _tmp19_ = NULL;
+				gchar _tmp20_ = '\0';
 				_tmp19_ = self->priv->current;
 				_tmp20_ = _tmp19_[0];
 				if (_tmp20_ == '?') {
 				} else {
-					gchar* _tmp21_;
-					gchar _tmp22_;
+					gchar* _tmp21_ = NULL;
+					gchar _tmp22_ = '\0';
 					_tmp21_ = self->priv->current;
 					_tmp22_ = _tmp21_[0];
 					if (_tmp22_ == '!') {
-						gchar* _tmp23_;
+						gchar* _tmp23_ = NULL;
 						gboolean _tmp24_ = FALSE;
 						gboolean _tmp25_ = FALSE;
-						gchar* _tmp26_;
-						gchar* _tmp27_;
-						gboolean _tmp30_;
-						gboolean _tmp33_;
+						gchar* _tmp26_ = NULL;
+						gchar* _tmp27_ = NULL;
 						_tmp23_ = self->priv->current;
 						self->priv->current = _tmp23_ + 1;
 						_tmp26_ = self->priv->current;
 						_tmp27_ = self->priv->end;
 						if (_tmp26_ < (_tmp27_ - 1)) {
-							gchar* _tmp28_;
-							gchar _tmp29_;
+							gchar* _tmp28_ = NULL;
+							gchar _tmp29_ = '\0';
 							_tmp28_ = self->priv->current;
 							_tmp29_ = _tmp28_[0];
 							_tmp25_ = _tmp29_ == '-';
 						} else {
 							_tmp25_ = FALSE;
 						}
-						_tmp30_ = _tmp25_;
-						if (_tmp30_) {
-							gchar* _tmp31_;
-							gchar _tmp32_;
-							_tmp31_ = self->priv->current;
-							_tmp32_ = _tmp31_[1];
-							_tmp24_ = _tmp32_ == '-';
+						if (_tmp25_) {
+							gchar* _tmp30_ = NULL;
+							gchar _tmp31_ = '\0';
+							_tmp30_ = self->priv->current;
+							_tmp31_ = _tmp30_[1];
+							_tmp24_ = _tmp31_ == '-';
 						} else {
 							_tmp24_ = FALSE;
 						}
-						_tmp33_ = _tmp24_;
-						if (_tmp33_) {
-							gchar* _tmp34_;
-							ValaSourceLocation _tmp52_ = {0};
-							ValaSourceLocation _tmp53_ = {0};
-							ValaMarkupTokenType _tmp54_ = 0;
-							_tmp34_ = self->priv->current;
-							self->priv->current = _tmp34_ + 2;
+						if (_tmp24_) {
+							gchar* _tmp32_ = NULL;
+							ValaSourceLocation _tmp48_ = {0};
+							ValaSourceLocation _tmp49_ = {0};
+							ValaMarkupTokenType _tmp50_ = 0;
+							_tmp32_ = self->priv->current;
+							self->priv->current = _tmp32_ + 2;
 							while (TRUE) {
-								gchar* _tmp35_;
-								gchar* _tmp36_;
-								gboolean _tmp37_ = FALSE;
-								gboolean _tmp38_ = FALSE;
-								gchar* _tmp39_;
-								gchar _tmp40_;
-								gboolean _tmp43_;
-								gboolean _tmp46_;
-								gchar* _tmp51_;
-								_tmp35_ = self->priv->current;
-								_tmp36_ = self->priv->end;
-								if (!(_tmp35_ < (_tmp36_ - 2))) {
+								gchar* _tmp33_ = NULL;
+								gchar* _tmp34_ = NULL;
+								gboolean _tmp35_ = FALSE;
+								gboolean _tmp36_ = FALSE;
+								gchar* _tmp37_ = NULL;
+								gchar _tmp38_ = '\0';
+								gchar* _tmp47_ = NULL;
+								_tmp33_ = self->priv->current;
+								_tmp34_ = self->priv->end;
+								if (!(_tmp33_ < (_tmp34_ - 2))) {
 									break;
 								}
-								_tmp39_ = self->priv->current;
-								_tmp40_ = _tmp39_[0];
-								if (_tmp40_ == '-') {
-									gchar* _tmp41_;
-									gchar _tmp42_;
+								_tmp37_ = self->priv->current;
+								_tmp38_ = _tmp37_[0];
+								if (_tmp38_ == '-') {
+									gchar* _tmp39_ = NULL;
+									gchar _tmp40_ = '\0';
+									_tmp39_ = self->priv->current;
+									_tmp40_ = _tmp39_[1];
+									_tmp36_ = _tmp40_ == '-';
+								} else {
+									_tmp36_ = FALSE;
+								}
+								if (_tmp36_) {
+									gchar* _tmp41_ = NULL;
+									gchar _tmp42_ = '\0';
 									_tmp41_ = self->priv->current;
-									_tmp42_ = _tmp41_[1];
-									_tmp38_ = _tmp42_ == '-';
+									_tmp42_ = _tmp41_[2];
+									_tmp35_ = _tmp42_ == '>';
 								} else {
-									_tmp38_ = FALSE;
+									_tmp35_ = FALSE;
 								}
-								_tmp43_ = _tmp38_;
-								if (_tmp43_) {
-									gchar* _tmp44_;
-									gchar _tmp45_;
-									_tmp44_ = self->priv->current;
-									_tmp45_ = _tmp44_[2];
-									_tmp37_ = _tmp45_ == '>';
-								} else {
-									_tmp37_ = FALSE;
-								}
-								_tmp46_ = _tmp37_;
-								if (_tmp46_) {
-									gchar* _tmp47_;
-									_tmp47_ = self->priv->current;
-									self->priv->current = _tmp47_ + 3;
+								if (_tmp35_) {
+									gchar* _tmp43_ = NULL;
+									_tmp43_ = self->priv->current;
+									self->priv->current = _tmp43_ + 3;
 									break;
 								} else {
-									gchar* _tmp48_;
-									gchar _tmp49_;
-									_tmp48_ = self->priv->current;
-									_tmp49_ = _tmp48_[0];
-									if (_tmp49_ == '\n') {
-										gint _tmp50_;
-										_tmp50_ = self->priv->line;
-										self->priv->line = _tmp50_ + 1;
+									gchar* _tmp44_ = NULL;
+									gchar _tmp45_ = '\0';
+									_tmp44_ = self->priv->current;
+									_tmp45_ = _tmp44_[0];
+									if (_tmp45_ == '\n') {
+										gint _tmp46_ = 0;
+										_tmp46_ = self->priv->line;
+										self->priv->line = _tmp46_ + 1;
 										self->priv->column = 0;
 									}
 								}
-								_tmp51_ = self->priv->current;
-								self->priv->current = _tmp51_ + 1;
+								_tmp47_ = self->priv->current;
+								self->priv->current = _tmp47_ + 1;
 							}
-							_tmp54_ = vala_markup_reader_read_token (self, &_tmp52_, &_tmp53_);
-							_vala_token_begin = _tmp52_;
-							_vala_token_end = _tmp53_;
-							result = _tmp54_;
+							_tmp50_ = vala_markup_reader_read_token (self, &_tmp48_, &_tmp49_);
+							_vala_token_begin = _tmp48_;
+							_vala_token_end = _tmp49_;
+							result = _tmp50_;
 							if (token_begin) {
 								*token_begin = _vala_token_begin;
 							}
@@ -722,224 +706,230 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 							return result;
 						}
 					} else {
-						gchar* _tmp55_;
-						gchar _tmp56_;
-						_tmp55_ = self->priv->current;
-						_tmp56_ = _tmp55_[0];
-						if (_tmp56_ == '/') {
-							gchar* _tmp57_;
+						gchar* _tmp51_ = NULL;
+						gchar _tmp52_ = '\0';
+						_tmp51_ = self->priv->current;
+						_tmp52_ = _tmp51_[0];
+						if (_tmp52_ == '/') {
+							gchar* _tmp53_ = NULL;
+							gchar* _tmp54_ = NULL;
+							gchar* _tmp55_ = NULL;
+							gboolean _tmp56_ = FALSE;
+							gchar* _tmp57_ = NULL;
 							gchar* _tmp58_ = NULL;
-							gchar* _tmp59_;
-							gboolean _tmp60_ = FALSE;
-							gchar* _tmp61_;
-							gchar* _tmp62_;
-							gboolean _tmp65_;
-							gchar* _tmp66_;
+							gchar* _tmp61_ = NULL;
 							type = VALA_MARKUP_TOKEN_TYPE_END_ELEMENT;
+							_tmp53_ = self->priv->current;
+							self->priv->current = _tmp53_ + 1;
+							_tmp54_ = vala_markup_reader_read_name (self);
+							_tmp55_ = _tmp54_;
+							vala_markup_reader_set_name (self, _tmp55_);
+							_g_free0 (_tmp55_);
 							_tmp57_ = self->priv->current;
-							self->priv->current = _tmp57_ + 1;
-							_tmp58_ = vala_markup_reader_read_name (self);
-							_tmp59_ = _tmp58_;
-							vala_markup_reader_set_name (self, _tmp59_);
-							_g_free0 (_tmp59_);
-							_tmp61_ = self->priv->current;
-							_tmp62_ = self->priv->end;
-							if (_tmp61_ >= _tmp62_) {
-								_tmp60_ = TRUE;
+							_tmp58_ = self->priv->end;
+							if (_tmp57_ >= _tmp58_) {
+								_tmp56_ = TRUE;
 							} else {
-								gchar* _tmp63_;
-								gchar _tmp64_;
-								_tmp63_ = self->priv->current;
-								_tmp64_ = _tmp63_[0];
-								_tmp60_ = _tmp64_ != '>';
+								gchar* _tmp59_ = NULL;
+								gchar _tmp60_ = '\0';
+								_tmp59_ = self->priv->current;
+								_tmp60_ = _tmp59_[0];
+								_tmp56_ = _tmp60_ != '>';
 							}
-							_tmp65_ = _tmp60_;
-							if (_tmp65_) {
+							if (_tmp56_) {
 							}
-							_tmp66_ = self->priv->current;
-							self->priv->current = _tmp66_ + 1;
+							_tmp61_ = self->priv->current;
+							self->priv->current = _tmp61_ + 1;
 						} else {
-							gchar* _tmp67_ = NULL;
-							gchar* _tmp68_;
-							gchar* _tmp105_;
-							gchar _tmp106_;
-							gboolean _tmp108_ = FALSE;
-							gchar* _tmp109_;
-							gchar* _tmp110_;
-							gboolean _tmp113_;
-							gchar* _tmp114_;
+							gchar* _tmp62_ = NULL;
+							gchar* _tmp63_ = NULL;
+							gchar* _tmp102_ = NULL;
+							gchar _tmp103_ = '\0';
+							gboolean _tmp105_ = FALSE;
+							gchar* _tmp106_ = NULL;
+							gchar* _tmp107_ = NULL;
+							gchar* _tmp110_ = NULL;
 							type = VALA_MARKUP_TOKEN_TYPE_START_ELEMENT;
-							_tmp67_ = vala_markup_reader_read_name (self);
-							_tmp68_ = _tmp67_;
-							vala_markup_reader_set_name (self, _tmp68_);
-							_g_free0 (_tmp68_);
+							_tmp62_ = vala_markup_reader_read_name (self);
+							_tmp63_ = _tmp62_;
+							vala_markup_reader_set_name (self, _tmp63_);
+							_g_free0 (_tmp63_);
 							vala_markup_reader_space (self);
 							while (TRUE) {
-								gboolean _tmp69_ = FALSE;
-								gboolean _tmp70_ = FALSE;
-								gchar* _tmp71_;
-								gchar* _tmp72_;
-								gboolean _tmp75_;
-								gboolean _tmp78_;
-								gchar* _tmp79_ = NULL;
-								gchar* attr_name;
+								gboolean _tmp64_ = FALSE;
+								gboolean _tmp65_ = FALSE;
+								gchar* _tmp66_ = NULL;
+								gchar* _tmp67_ = NULL;
+								gchar* attr_name = NULL;
+								gchar* _tmp72_ = NULL;
+								gboolean _tmp73_ = FALSE;
+								gchar* _tmp74_ = NULL;
+								gchar* _tmp75_ = NULL;
+								gchar* _tmp78_ = NULL;
+								gboolean _tmp79_ = FALSE;
 								gboolean _tmp80_ = FALSE;
-								gchar* _tmp81_;
-								gchar* _tmp82_;
-								gboolean _tmp85_;
-								gchar* _tmp86_;
-								gboolean _tmp87_ = FALSE;
-								gchar* _tmp88_;
-								gchar* _tmp89_;
-								gboolean _tmp92_;
-								gchar* _tmp93_;
+								gchar* _tmp81_ = NULL;
+								gchar* _tmp82_ = NULL;
+								gchar quote = '\0';
+								gchar* _tmp87_ = NULL;
+								gchar _tmp88_ = '\0';
+								gchar* _tmp89_ = NULL;
+								gchar* attr_value = NULL;
+								gchar _tmp90_ = '\0';
+								gchar* _tmp91_ = NULL;
+								gboolean _tmp92_ = FALSE;
+								gchar* _tmp93_ = NULL;
 								gchar* _tmp94_ = NULL;
-								gchar* attr_value;
-								gboolean _tmp95_ = FALSE;
-								gchar* _tmp96_;
-								gchar* _tmp97_;
-								gboolean _tmp100_;
-								gchar* _tmp101_;
-								ValaMap* _tmp102_;
-								const gchar* _tmp103_;
-								const gchar* _tmp104_;
-								_tmp71_ = self->priv->current;
-								_tmp72_ = self->priv->end;
-								if (_tmp71_ < _tmp72_) {
-									gchar* _tmp73_;
-									gchar _tmp74_;
-									_tmp73_ = self->priv->current;
-									_tmp74_ = _tmp73_[0];
-									_tmp70_ = _tmp74_ != '>';
+								gchar* _tmp98_ = NULL;
+								ValaMap* _tmp99_ = NULL;
+								const gchar* _tmp100_ = NULL;
+								const gchar* _tmp101_ = NULL;
+								_tmp66_ = self->priv->current;
+								_tmp67_ = self->priv->end;
+								if (_tmp66_ < _tmp67_) {
+									gchar* _tmp68_ = NULL;
+									gchar _tmp69_ = '\0';
+									_tmp68_ = self->priv->current;
+									_tmp69_ = _tmp68_[0];
+									_tmp65_ = _tmp69_ != '>';
 								} else {
-									_tmp70_ = FALSE;
+									_tmp65_ = FALSE;
 								}
-								_tmp75_ = _tmp70_;
-								if (_tmp75_) {
-									gchar* _tmp76_;
-									gchar _tmp77_;
-									_tmp76_ = self->priv->current;
-									_tmp77_ = _tmp76_[0];
-									_tmp69_ = _tmp77_ != '/';
+								if (_tmp65_) {
+									gchar* _tmp70_ = NULL;
+									gchar _tmp71_ = '\0';
+									_tmp70_ = self->priv->current;
+									_tmp71_ = _tmp70_[0];
+									_tmp64_ = _tmp71_ != '/';
 								} else {
-									_tmp69_ = FALSE;
+									_tmp64_ = FALSE;
 								}
-								_tmp78_ = _tmp69_;
-								if (!_tmp78_) {
+								if (!_tmp64_) {
 									break;
 								}
-								_tmp79_ = vala_markup_reader_read_name (self);
-								attr_name = _tmp79_;
+								_tmp72_ = vala_markup_reader_read_name (self);
+								attr_name = _tmp72_;
+								_tmp74_ = self->priv->current;
+								_tmp75_ = self->priv->end;
+								if (_tmp74_ >= _tmp75_) {
+									_tmp73_ = TRUE;
+								} else {
+									gchar* _tmp76_ = NULL;
+									gchar _tmp77_ = '\0';
+									_tmp76_ = self->priv->current;
+									_tmp77_ = _tmp76_[0];
+									_tmp73_ = _tmp77_ != '=';
+								}
+								if (_tmp73_) {
+								}
+								_tmp78_ = self->priv->current;
+								self->priv->current = _tmp78_ + 1;
 								_tmp81_ = self->priv->current;
 								_tmp82_ = self->priv->end;
 								if (_tmp81_ >= _tmp82_) {
 									_tmp80_ = TRUE;
 								} else {
-									gchar* _tmp83_;
-									gchar _tmp84_;
+									gchar* _tmp83_ = NULL;
+									gchar _tmp84_ = '\0';
 									_tmp83_ = self->priv->current;
 									_tmp84_ = _tmp83_[0];
-									_tmp80_ = _tmp84_ != '=';
+									_tmp80_ = _tmp84_ != '"';
 								}
-								_tmp85_ = _tmp80_;
-								if (_tmp85_) {
-								}
-								_tmp86_ = self->priv->current;
-								self->priv->current = _tmp86_ + 1;
-								_tmp88_ = self->priv->current;
-								_tmp89_ = self->priv->end;
-								if (_tmp88_ >= _tmp89_) {
-									_tmp87_ = TRUE;
+								if (_tmp80_) {
+									_tmp79_ = TRUE;
 								} else {
-									gchar* _tmp90_;
-									gchar _tmp91_;
-									_tmp90_ = self->priv->current;
-									_tmp91_ = _tmp90_[0];
-									_tmp87_ = _tmp91_ != '"';
+									gchar* _tmp85_ = NULL;
+									gchar _tmp86_ = '\0';
+									_tmp85_ = self->priv->current;
+									_tmp86_ = _tmp85_[0];
+									_tmp79_ = _tmp86_ != '\'';
 								}
-								_tmp92_ = _tmp87_;
+								if (_tmp79_) {
+								}
+								_tmp87_ = self->priv->current;
+								_tmp88_ = _tmp87_[0];
+								quote = _tmp88_;
+								_tmp89_ = self->priv->current;
+								self->priv->current = _tmp89_ + 1;
+								_tmp90_ = quote;
+								_tmp91_ = vala_markup_reader_text (self, _tmp90_, FALSE);
+								attr_value = _tmp91_;
+								_tmp93_ = self->priv->current;
+								_tmp94_ = self->priv->end;
+								if (_tmp93_ >= _tmp94_) {
+									_tmp92_ = TRUE;
+								} else {
+									gchar* _tmp95_ = NULL;
+									gchar _tmp96_ = '\0';
+									gchar _tmp97_ = '\0';
+									_tmp95_ = self->priv->current;
+									_tmp96_ = _tmp95_[0];
+									_tmp97_ = quote;
+									_tmp92_ = _tmp96_ != _tmp97_;
+								}
 								if (_tmp92_) {
 								}
-								_tmp93_ = self->priv->current;
-								self->priv->current = _tmp93_ + 1;
-								_tmp94_ = vala_markup_reader_text (self, '"', FALSE);
-								attr_value = _tmp94_;
-								_tmp96_ = self->priv->current;
-								_tmp97_ = self->priv->end;
-								if (_tmp96_ >= _tmp97_) {
-									_tmp95_ = TRUE;
-								} else {
-									gchar* _tmp98_;
-									gchar _tmp99_;
-									_tmp98_ = self->priv->current;
-									_tmp99_ = _tmp98_[0];
-									_tmp95_ = _tmp99_ != '"';
-								}
-								_tmp100_ = _tmp95_;
-								if (_tmp100_) {
-								}
-								_tmp101_ = self->priv->current;
-								self->priv->current = _tmp101_ + 1;
-								_tmp102_ = self->priv->attributes;
-								_tmp103_ = attr_name;
-								_tmp104_ = attr_value;
-								vala_map_set (_tmp102_, _tmp103_, _tmp104_);
+								_tmp98_ = self->priv->current;
+								self->priv->current = _tmp98_ + 1;
+								_tmp99_ = self->priv->attributes;
+								_tmp100_ = attr_name;
+								_tmp101_ = attr_value;
+								vala_map_set (_tmp99_, _tmp100_, _tmp101_);
 								vala_markup_reader_space (self);
 								_g_free0 (attr_value);
 								_g_free0 (attr_name);
 							}
-							_tmp105_ = self->priv->current;
-							_tmp106_ = _tmp105_[0];
-							if (_tmp106_ == '/') {
-								gchar* _tmp107_;
+							_tmp102_ = self->priv->current;
+							_tmp103_ = _tmp102_[0];
+							if (_tmp103_ == '/') {
+								gchar* _tmp104_ = NULL;
 								self->priv->empty_element = TRUE;
-								_tmp107_ = self->priv->current;
-								self->priv->current = _tmp107_ + 1;
+								_tmp104_ = self->priv->current;
+								self->priv->current = _tmp104_ + 1;
 								vala_markup_reader_space (self);
 							} else {
 								self->priv->empty_element = FALSE;
 							}
-							_tmp109_ = self->priv->current;
-							_tmp110_ = self->priv->end;
-							if (_tmp109_ >= _tmp110_) {
-								_tmp108_ = TRUE;
+							_tmp106_ = self->priv->current;
+							_tmp107_ = self->priv->end;
+							if (_tmp106_ >= _tmp107_) {
+								_tmp105_ = TRUE;
 							} else {
-								gchar* _tmp111_;
-								gchar _tmp112_;
-								_tmp111_ = self->priv->current;
-								_tmp112_ = _tmp111_[0];
-								_tmp108_ = _tmp112_ != '>';
+								gchar* _tmp108_ = NULL;
+								gchar _tmp109_ = '\0';
+								_tmp108_ = self->priv->current;
+								_tmp109_ = _tmp108_[0];
+								_tmp105_ = _tmp109_ != '>';
 							}
-							_tmp113_ = _tmp108_;
-							if (_tmp113_) {
+							if (_tmp105_) {
 							}
-							_tmp114_ = self->priv->current;
-							self->priv->current = _tmp114_ + 1;
+							_tmp110_ = self->priv->current;
+							self->priv->current = _tmp110_ + 1;
 						}
 					}
 				}
 			}
 		} else {
-			gchar* _tmp115_;
-			gchar _tmp116_;
+			gchar* _tmp111_ = NULL;
+			gchar _tmp112_ = '\0';
 			vala_markup_reader_space (self);
-			_tmp115_ = self->priv->current;
-			_tmp116_ = _tmp115_[0];
-			if (_tmp116_ != '<') {
-				gchar* _tmp117_ = NULL;
-				gchar* _tmp118_;
-				_tmp117_ = vala_markup_reader_text (self, '<', TRUE);
-				_tmp118_ = _tmp117_;
-				vala_markup_reader_set_content (self, _tmp118_);
-				_g_free0 (_tmp118_);
+			_tmp111_ = self->priv->current;
+			_tmp112_ = _tmp111_[0];
+			if (_tmp112_ != '<') {
+				gchar* _tmp113_ = NULL;
+				gchar* _tmp114_ = NULL;
+				_tmp113_ = vala_markup_reader_text (self, '<', TRUE);
+				_tmp114_ = _tmp113_;
+				vala_markup_reader_set_content (self, _tmp114_);
+				_g_free0 (_tmp114_);
 			} else {
-				ValaSourceLocation _tmp119_ = {0};
-				ValaSourceLocation _tmp120_ = {0};
-				ValaMarkupTokenType _tmp121_ = 0;
-				_tmp121_ = vala_markup_reader_read_token (self, &_tmp119_, &_tmp120_);
-				_vala_token_begin = _tmp119_;
-				_vala_token_end = _tmp120_;
-				result = _tmp121_;
+				ValaSourceLocation _tmp115_ = {0};
+				ValaSourceLocation _tmp116_ = {0};
+				ValaMarkupTokenType _tmp117_ = 0;
+				_tmp117_ = vala_markup_reader_read_token (self, &_tmp115_, &_tmp116_);
+				_vala_token_begin = _tmp115_;
+				_vala_token_end = _tmp116_;
+				result = _tmp117_;
 				if (token_begin) {
 					*token_begin = _vala_token_begin;
 				}
@@ -951,10 +941,10 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 			type = VALA_MARKUP_TOKEN_TYPE_TEXT;
 		}
 	}
-	_tmp122_ = self->priv->current;
-	_tmp123_ = self->priv->line;
-	_tmp124_ = self->priv->column;
-	vala_source_location_init (&_vala_token_end, _tmp122_, _tmp123_, _tmp124_ - 1);
+	_tmp118_ = self->priv->current;
+	_tmp119_ = self->priv->line;
+	_tmp120_ = self->priv->column;
+	vala_source_location_init (&_vala_token_end, _tmp118_, _tmp119_, _tmp120_ - 1);
 	result = type;
 	if (token_begin) {
 		*token_begin = _vala_token_begin;
@@ -968,21 +958,21 @@ ValaMarkupTokenType vala_markup_reader_read_token (ValaMarkupReader* self, ValaS
 
 static gchar* vala_markup_reader_text (ValaMarkupReader* self, gchar end_char, gboolean rm_trailing_whitespace) {
 	gchar* result = NULL;
-	GString* _tmp0_;
-	GString* content;
-	gchar* _tmp1_;
-	gchar* text_begin;
-	gchar* _tmp2_;
-	gchar* last_linebreak;
-	gchar* _tmp84_;
-	gchar* _tmp85_;
-	gint _tmp92_;
-	gchar* _tmp93_;
-	gchar* _tmp94_;
-	gboolean _tmp95_;
-	GString* _tmp116_;
-	const gchar* _tmp117_;
-	gchar* _tmp118_;
+	GString* content = NULL;
+	GString* _tmp0_ = NULL;
+	gchar* text_begin = NULL;
+	gchar* _tmp1_ = NULL;
+	gchar* last_linebreak = NULL;
+	gchar* _tmp2_ = NULL;
+	gchar* _tmp83_ = NULL;
+	gchar* _tmp84_ = NULL;
+	gint _tmp91_ = 0;
+	gchar* _tmp92_ = NULL;
+	gchar* _tmp93_ = NULL;
+	gboolean _tmp94_ = FALSE;
+	GString* _tmp113_ = NULL;
+	const gchar* _tmp114_ = NULL;
+	gchar* _tmp115_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_string_new ("");
 	content = _tmp0_;
@@ -992,21 +982,20 @@ static gchar* vala_markup_reader_text (ValaMarkupReader* self, gchar end_char, g
 	last_linebreak = _tmp2_;
 	while (TRUE) {
 		gboolean _tmp3_ = FALSE;
-		gchar* _tmp4_;
-		gchar* _tmp5_;
-		gboolean _tmp9_;
-		gchar* _tmp10_;
-		gchar* _tmp11_;
-		gchar* _tmp12_;
+		gchar* _tmp4_ = NULL;
+		gchar* _tmp5_ = NULL;
+		gunichar u = 0U;
+		gchar* _tmp9_ = NULL;
+		gchar* _tmp10_ = NULL;
+		gchar* _tmp11_ = NULL;
+		gunichar _tmp12_ = 0U;
 		gunichar _tmp13_ = 0U;
-		gunichar u;
-		gunichar _tmp14_;
 		_tmp4_ = self->priv->current;
 		_tmp5_ = self->priv->end;
 		if (_tmp4_ < _tmp5_) {
-			gchar* _tmp6_;
-			gchar _tmp7_;
-			gchar _tmp8_;
+			gchar* _tmp6_ = NULL;
+			gchar _tmp7_ = '\0';
+			gchar _tmp8_ = '\0';
 			_tmp6_ = self->priv->current;
 			_tmp7_ = _tmp6_[0];
 			_tmp8_ = end_char;
@@ -1014,300 +1003,295 @@ static gchar* vala_markup_reader_text (ValaMarkupReader* self, gchar end_char, g
 		} else {
 			_tmp3_ = FALSE;
 		}
-		_tmp9_ = _tmp3_;
-		if (!_tmp9_) {
+		if (!_tmp3_) {
 			break;
 		}
-		_tmp10_ = self->priv->current;
-		_tmp11_ = self->priv->end;
-		_tmp12_ = self->priv->current;
-		_tmp13_ = g_utf8_get_char_validated ((const gchar*) _tmp10_, (gssize) ((glong) (_tmp11_ - _tmp12_)));
-		u = _tmp13_;
-		_tmp14_ = u;
-		if (_tmp14_ == ((gunichar) (-1))) {
+		_tmp9_ = self->priv->current;
+		_tmp10_ = self->priv->end;
+		_tmp11_ = self->priv->current;
+		_tmp12_ = g_utf8_get_char_validated ((const gchar*) _tmp9_, (gssize) ((glong) (_tmp10_ - _tmp11_)));
+		u = _tmp12_;
+		_tmp13_ = u;
+		if (_tmp13_ == ((gunichar) (-1))) {
 			vala_report_error (NULL, "invalid UTF-8 character");
 		} else {
-			gunichar _tmp15_;
-			_tmp15_ = u;
-			if (_tmp15_ == ((gunichar) '&')) {
-				gchar* _tmp16_;
-				gunichar _tmp17_;
-				gint _tmp18_ = 0;
-				gchar* next_pos;
-				gchar* _tmp19_;
-				gboolean _tmp20_ = FALSE;
-				_tmp16_ = self->priv->current;
-				_tmp17_ = u;
-				_tmp18_ = g_unichar_to_utf8 (_tmp17_, NULL);
-				next_pos = _tmp16_ + _tmp18_;
-				_tmp19_ = next_pos;
-				_tmp20_ = g_str_has_prefix ((const gchar*) _tmp19_, "amp;");
-				if (_tmp20_) {
-					GString* _tmp21_;
-					gchar* _tmp22_;
-					gchar* _tmp23_;
-					gchar* _tmp24_;
+			gunichar _tmp14_ = 0U;
+			_tmp14_ = u;
+			if (_tmp14_ == ((gunichar) '&')) {
+				gchar* next_pos = NULL;
+				gchar* _tmp15_ = NULL;
+				gunichar _tmp16_ = 0U;
+				gint _tmp17_ = 0;
+				gchar* _tmp18_ = NULL;
+				gboolean _tmp19_ = FALSE;
+				_tmp15_ = self->priv->current;
+				_tmp16_ = u;
+				_tmp17_ = g_unichar_to_utf8 (_tmp16_, NULL);
+				next_pos = _tmp15_ + _tmp17_;
+				_tmp18_ = next_pos;
+				_tmp19_ = g_str_has_prefix ((const gchar*) _tmp18_, "amp;");
+				if (_tmp19_) {
+					GString* _tmp20_ = NULL;
+					gchar* _tmp21_ = NULL;
+					gchar* _tmp22_ = NULL;
+					gchar* _tmp23_ = NULL;
+					gchar* _tmp24_ = NULL;
 					gchar* _tmp25_ = NULL;
-					gchar* _tmp26_;
-					GString* _tmp27_;
-					gchar* _tmp28_;
-					gchar* _tmp29_;
-					_tmp21_ = content;
-					_tmp22_ = text_begin;
-					_tmp23_ = self->priv->current;
-					_tmp24_ = text_begin;
-					_tmp25_ = string_substring ((const gchar*) _tmp22_, (glong) 0, (glong) ((gint) (_tmp23_ - _tmp24_)));
-					_tmp26_ = _tmp25_;
-					g_string_append (_tmp21_, _tmp26_);
-					_g_free0 (_tmp26_);
-					_tmp27_ = content;
-					g_string_append_c (_tmp27_, '&');
+					GString* _tmp26_ = NULL;
+					gchar* _tmp27_ = NULL;
+					gchar* _tmp28_ = NULL;
+					_tmp20_ = content;
+					_tmp21_ = text_begin;
+					_tmp22_ = self->priv->current;
+					_tmp23_ = text_begin;
+					_tmp24_ = string_substring ((const gchar*) _tmp21_, (glong) 0, (glong) ((gint) (_tmp22_ - _tmp23_)));
+					_tmp25_ = _tmp24_;
+					g_string_append (_tmp20_, _tmp25_);
+					_g_free0 (_tmp25_);
+					_tmp26_ = content;
+					g_string_append_c (_tmp26_, '&');
+					_tmp27_ = self->priv->current;
+					self->priv->current = _tmp27_ + 5;
 					_tmp28_ = self->priv->current;
-					self->priv->current = _tmp28_ + 5;
-					_tmp29_ = self->priv->current;
-					text_begin = _tmp29_;
+					text_begin = _tmp28_;
 				} else {
-					gchar* _tmp30_;
-					gboolean _tmp31_ = FALSE;
-					_tmp30_ = next_pos;
-					_tmp31_ = g_str_has_prefix ((const gchar*) _tmp30_, "quot;");
-					if (_tmp31_) {
-						GString* _tmp32_;
-						gchar* _tmp33_;
-						gchar* _tmp34_;
-						gchar* _tmp35_;
+					gchar* _tmp29_ = NULL;
+					gboolean _tmp30_ = FALSE;
+					_tmp29_ = next_pos;
+					_tmp30_ = g_str_has_prefix ((const gchar*) _tmp29_, "quot;");
+					if (_tmp30_) {
+						GString* _tmp31_ = NULL;
+						gchar* _tmp32_ = NULL;
+						gchar* _tmp33_ = NULL;
+						gchar* _tmp34_ = NULL;
+						gchar* _tmp35_ = NULL;
 						gchar* _tmp36_ = NULL;
-						gchar* _tmp37_;
-						GString* _tmp38_;
-						gchar* _tmp39_;
-						gchar* _tmp40_;
-						_tmp32_ = content;
-						_tmp33_ = text_begin;
-						_tmp34_ = self->priv->current;
-						_tmp35_ = text_begin;
-						_tmp36_ = string_substring ((const gchar*) _tmp33_, (glong) 0, (glong) ((gint) (_tmp34_ - _tmp35_)));
-						_tmp37_ = _tmp36_;
-						g_string_append (_tmp32_, _tmp37_);
-						_g_free0 (_tmp37_);
-						_tmp38_ = content;
-						g_string_append_c (_tmp38_, '"');
+						GString* _tmp37_ = NULL;
+						gchar* _tmp38_ = NULL;
+						gchar* _tmp39_ = NULL;
+						_tmp31_ = content;
+						_tmp32_ = text_begin;
+						_tmp33_ = self->priv->current;
+						_tmp34_ = text_begin;
+						_tmp35_ = string_substring ((const gchar*) _tmp32_, (glong) 0, (glong) ((gint) (_tmp33_ - _tmp34_)));
+						_tmp36_ = _tmp35_;
+						g_string_append (_tmp31_, _tmp36_);
+						_g_free0 (_tmp36_);
+						_tmp37_ = content;
+						g_string_append_c (_tmp37_, '"');
+						_tmp38_ = self->priv->current;
+						self->priv->current = _tmp38_ + 6;
 						_tmp39_ = self->priv->current;
-						self->priv->current = _tmp39_ + 6;
-						_tmp40_ = self->priv->current;
-						text_begin = _tmp40_;
+						text_begin = _tmp39_;
 					} else {
-						gchar* _tmp41_;
-						gboolean _tmp42_ = FALSE;
-						_tmp41_ = next_pos;
-						_tmp42_ = g_str_has_prefix ((const gchar*) _tmp41_, "apos;");
-						if (_tmp42_) {
-							GString* _tmp43_;
-							gchar* _tmp44_;
-							gchar* _tmp45_;
-							gchar* _tmp46_;
+						gchar* _tmp40_ = NULL;
+						gboolean _tmp41_ = FALSE;
+						_tmp40_ = next_pos;
+						_tmp41_ = g_str_has_prefix ((const gchar*) _tmp40_, "apos;");
+						if (_tmp41_) {
+							GString* _tmp42_ = NULL;
+							gchar* _tmp43_ = NULL;
+							gchar* _tmp44_ = NULL;
+							gchar* _tmp45_ = NULL;
+							gchar* _tmp46_ = NULL;
 							gchar* _tmp47_ = NULL;
-							gchar* _tmp48_;
-							GString* _tmp49_;
-							gchar* _tmp50_;
-							gchar* _tmp51_;
-							_tmp43_ = content;
-							_tmp44_ = text_begin;
-							_tmp45_ = self->priv->current;
-							_tmp46_ = text_begin;
-							_tmp47_ = string_substring ((const gchar*) _tmp44_, (glong) 0, (glong) ((gint) (_tmp45_ - _tmp46_)));
-							_tmp48_ = _tmp47_;
-							g_string_append (_tmp43_, _tmp48_);
-							_g_free0 (_tmp48_);
-							_tmp49_ = content;
-							g_string_append_c (_tmp49_, '\'');
+							GString* _tmp48_ = NULL;
+							gchar* _tmp49_ = NULL;
+							gchar* _tmp50_ = NULL;
+							_tmp42_ = content;
+							_tmp43_ = text_begin;
+							_tmp44_ = self->priv->current;
+							_tmp45_ = text_begin;
+							_tmp46_ = string_substring ((const gchar*) _tmp43_, (glong) 0, (glong) ((gint) (_tmp44_ - _tmp45_)));
+							_tmp47_ = _tmp46_;
+							g_string_append (_tmp42_, _tmp47_);
+							_g_free0 (_tmp47_);
+							_tmp48_ = content;
+							g_string_append_c (_tmp48_, '\'');
+							_tmp49_ = self->priv->current;
+							self->priv->current = _tmp49_ + 6;
 							_tmp50_ = self->priv->current;
-							self->priv->current = _tmp50_ + 6;
-							_tmp51_ = self->priv->current;
-							text_begin = _tmp51_;
+							text_begin = _tmp50_;
 						} else {
-							gchar* _tmp52_;
-							gboolean _tmp53_ = FALSE;
-							_tmp52_ = next_pos;
-							_tmp53_ = g_str_has_prefix ((const gchar*) _tmp52_, "lt;");
-							if (_tmp53_) {
-								GString* _tmp54_;
-								gchar* _tmp55_;
-								gchar* _tmp56_;
-								gchar* _tmp57_;
+							gchar* _tmp51_ = NULL;
+							gboolean _tmp52_ = FALSE;
+							_tmp51_ = next_pos;
+							_tmp52_ = g_str_has_prefix ((const gchar*) _tmp51_, "lt;");
+							if (_tmp52_) {
+								GString* _tmp53_ = NULL;
+								gchar* _tmp54_ = NULL;
+								gchar* _tmp55_ = NULL;
+								gchar* _tmp56_ = NULL;
+								gchar* _tmp57_ = NULL;
 								gchar* _tmp58_ = NULL;
-								gchar* _tmp59_;
-								GString* _tmp60_;
-								gchar* _tmp61_;
-								gchar* _tmp62_;
-								_tmp54_ = content;
-								_tmp55_ = text_begin;
-								_tmp56_ = self->priv->current;
-								_tmp57_ = text_begin;
-								_tmp58_ = string_substring ((const gchar*) _tmp55_, (glong) 0, (glong) ((gint) (_tmp56_ - _tmp57_)));
-								_tmp59_ = _tmp58_;
-								g_string_append (_tmp54_, _tmp59_);
-								_g_free0 (_tmp59_);
-								_tmp60_ = content;
-								g_string_append_c (_tmp60_, '<');
+								GString* _tmp59_ = NULL;
+								gchar* _tmp60_ = NULL;
+								gchar* _tmp61_ = NULL;
+								_tmp53_ = content;
+								_tmp54_ = text_begin;
+								_tmp55_ = self->priv->current;
+								_tmp56_ = text_begin;
+								_tmp57_ = string_substring ((const gchar*) _tmp54_, (glong) 0, (glong) ((gint) (_tmp55_ - _tmp56_)));
+								_tmp58_ = _tmp57_;
+								g_string_append (_tmp53_, _tmp58_);
+								_g_free0 (_tmp58_);
+								_tmp59_ = content;
+								g_string_append_c (_tmp59_, '<');
+								_tmp60_ = self->priv->current;
+								self->priv->current = _tmp60_ + 4;
 								_tmp61_ = self->priv->current;
-								self->priv->current = _tmp61_ + 4;
-								_tmp62_ = self->priv->current;
-								text_begin = _tmp62_;
+								text_begin = _tmp61_;
 							} else {
-								gchar* _tmp63_;
-								gboolean _tmp64_ = FALSE;
-								_tmp63_ = next_pos;
-								_tmp64_ = g_str_has_prefix ((const gchar*) _tmp63_, "gt;");
-								if (_tmp64_) {
-									GString* _tmp65_;
-									gchar* _tmp66_;
-									gchar* _tmp67_;
-									gchar* _tmp68_;
+								gchar* _tmp62_ = NULL;
+								gboolean _tmp63_ = FALSE;
+								_tmp62_ = next_pos;
+								_tmp63_ = g_str_has_prefix ((const gchar*) _tmp62_, "gt;");
+								if (_tmp63_) {
+									GString* _tmp64_ = NULL;
+									gchar* _tmp65_ = NULL;
+									gchar* _tmp66_ = NULL;
+									gchar* _tmp67_ = NULL;
+									gchar* _tmp68_ = NULL;
 									gchar* _tmp69_ = NULL;
-									gchar* _tmp70_;
-									GString* _tmp71_;
-									gchar* _tmp72_;
-									gchar* _tmp73_;
-									_tmp65_ = content;
-									_tmp66_ = text_begin;
-									_tmp67_ = self->priv->current;
-									_tmp68_ = text_begin;
-									_tmp69_ = string_substring ((const gchar*) _tmp66_, (glong) 0, (glong) ((gint) (_tmp67_ - _tmp68_)));
-									_tmp70_ = _tmp69_;
-									g_string_append (_tmp65_, _tmp70_);
-									_g_free0 (_tmp70_);
-									_tmp71_ = content;
-									g_string_append_c (_tmp71_, '>');
+									GString* _tmp70_ = NULL;
+									gchar* _tmp71_ = NULL;
+									gchar* _tmp72_ = NULL;
+									_tmp64_ = content;
+									_tmp65_ = text_begin;
+									_tmp66_ = self->priv->current;
+									_tmp67_ = text_begin;
+									_tmp68_ = string_substring ((const gchar*) _tmp65_, (glong) 0, (glong) ((gint) (_tmp66_ - _tmp67_)));
+									_tmp69_ = _tmp68_;
+									g_string_append (_tmp64_, _tmp69_);
+									_g_free0 (_tmp69_);
+									_tmp70_ = content;
+									g_string_append_c (_tmp70_, '>');
+									_tmp71_ = self->priv->current;
+									self->priv->current = _tmp71_ + 4;
 									_tmp72_ = self->priv->current;
-									self->priv->current = _tmp72_ + 4;
-									_tmp73_ = self->priv->current;
-									text_begin = _tmp73_;
+									text_begin = _tmp72_;
 								} else {
-									gchar* _tmp74_;
-									gunichar _tmp75_;
-									gint _tmp76_ = 0;
-									_tmp74_ = self->priv->current;
-									_tmp75_ = u;
-									_tmp76_ = g_unichar_to_utf8 (_tmp75_, NULL);
-									self->priv->current = _tmp74_ + _tmp76_;
+									gchar* _tmp73_ = NULL;
+									gunichar _tmp74_ = 0U;
+									gint _tmp75_ = 0;
+									_tmp73_ = self->priv->current;
+									_tmp74_ = u;
+									_tmp75_ = g_unichar_to_utf8 (_tmp74_, NULL);
+									self->priv->current = _tmp73_ + _tmp75_;
 								}
 							}
 						}
 					}
 				}
 			} else {
-				gunichar _tmp77_;
-				gchar* _tmp80_;
-				gunichar _tmp81_;
+				gunichar _tmp76_ = 0U;
+				gchar* _tmp79_ = NULL;
+				gunichar _tmp80_ = 0U;
+				gint _tmp81_ = 0;
 				gint _tmp82_ = 0;
-				gint _tmp83_;
-				_tmp77_ = u;
-				if (_tmp77_ == ((gunichar) '\n')) {
-					gint _tmp78_;
-					gchar* _tmp79_;
-					_tmp78_ = self->priv->line;
-					self->priv->line = _tmp78_ + 1;
+				_tmp76_ = u;
+				if (_tmp76_ == ((gunichar) '\n')) {
+					gint _tmp77_ = 0;
+					gchar* _tmp78_ = NULL;
+					_tmp77_ = self->priv->line;
+					self->priv->line = _tmp77_ + 1;
 					self->priv->column = 0;
-					_tmp79_ = self->priv->current;
-					last_linebreak = _tmp79_;
+					_tmp78_ = self->priv->current;
+					last_linebreak = _tmp78_;
 				}
-				_tmp80_ = self->priv->current;
-				_tmp81_ = u;
-				_tmp82_ = g_unichar_to_utf8 (_tmp81_, NULL);
-				self->priv->current = _tmp80_ + _tmp82_;
-				_tmp83_ = self->priv->column;
-				self->priv->column = _tmp83_ + 1;
+				_tmp79_ = self->priv->current;
+				_tmp80_ = u;
+				_tmp81_ = g_unichar_to_utf8 (_tmp80_, NULL);
+				self->priv->current = _tmp79_ + _tmp81_;
+				_tmp82_ = self->priv->column;
+				self->priv->column = _tmp82_ + 1;
 			}
 		}
 	}
-	_tmp84_ = text_begin;
-	_tmp85_ = self->priv->current;
-	if (_tmp84_ != _tmp85_) {
-		GString* _tmp86_;
-		gchar* _tmp87_;
-		gchar* _tmp88_;
-		gchar* _tmp89_;
+	_tmp83_ = text_begin;
+	_tmp84_ = self->priv->current;
+	if (_tmp83_ != _tmp84_) {
+		GString* _tmp85_ = NULL;
+		gchar* _tmp86_ = NULL;
+		gchar* _tmp87_ = NULL;
+		gchar* _tmp88_ = NULL;
+		gchar* _tmp89_ = NULL;
 		gchar* _tmp90_ = NULL;
-		gchar* _tmp91_;
-		_tmp86_ = content;
-		_tmp87_ = text_begin;
-		_tmp88_ = self->priv->current;
-		_tmp89_ = text_begin;
-		_tmp90_ = string_substring ((const gchar*) _tmp87_, (glong) 0, (glong) ((gint) (_tmp88_ - _tmp89_)));
-		_tmp91_ = _tmp90_;
-		g_string_append (_tmp86_, _tmp91_);
-		_g_free0 (_tmp91_);
+		_tmp85_ = content;
+		_tmp86_ = text_begin;
+		_tmp87_ = self->priv->current;
+		_tmp88_ = text_begin;
+		_tmp89_ = string_substring ((const gchar*) _tmp86_, (glong) 0, (glong) ((gint) (_tmp87_ - _tmp88_)));
+		_tmp90_ = _tmp89_;
+		g_string_append (_tmp85_, _tmp90_);
+		_g_free0 (_tmp90_);
 	}
-	_tmp92_ = self->priv->column;
-	_tmp93_ = self->priv->current;
-	_tmp94_ = last_linebreak;
-	self->priv->column = _tmp92_ + ((gint) (_tmp93_ - _tmp94_));
-	_tmp95_ = rm_trailing_whitespace;
-	if (_tmp95_) {
-		GString* _tmp96_;
-		const gchar* _tmp97_;
-		GString* _tmp98_;
-		gssize _tmp99_;
-		gchar* str_pos;
-		GString* _tmp112_;
-		gchar* _tmp113_;
-		GString* _tmp114_;
-		const gchar* _tmp115_;
-		_tmp96_ = content;
-		_tmp97_ = _tmp96_->str;
-		_tmp98_ = content;
-		_tmp99_ = _tmp98_->len;
-		str_pos = ((gchar*) _tmp97_) + _tmp99_;
+	_tmp91_ = self->priv->column;
+	_tmp92_ = self->priv->current;
+	_tmp93_ = last_linebreak;
+	self->priv->column = _tmp91_ + ((gint) (_tmp92_ - _tmp93_));
+	_tmp94_ = rm_trailing_whitespace;
+	if (_tmp94_) {
+		gchar* str_pos = NULL;
+		GString* _tmp95_ = NULL;
+		const gchar* _tmp96_ = NULL;
+		GString* _tmp97_ = NULL;
+		gssize _tmp98_ = 0L;
+		GString* _tmp109_ = NULL;
+		gchar* _tmp110_ = NULL;
+		GString* _tmp111_ = NULL;
+		const gchar* _tmp112_ = NULL;
+		_tmp95_ = content;
+		_tmp96_ = _tmp95_->str;
+		_tmp97_ = content;
+		_tmp98_ = _tmp97_->len;
+		str_pos = ((gchar*) _tmp96_) + _tmp98_;
 		{
-			gchar* _tmp100_;
-			gboolean _tmp101_;
-			_tmp100_ = str_pos;
-			str_pos = _tmp100_ - 1;
-			_tmp101_ = TRUE;
+			gchar* _tmp99_ = NULL;
+			gboolean _tmp100_ = FALSE;
+			_tmp99_ = str_pos;
+			str_pos = _tmp99_ - 1;
+			_tmp100_ = TRUE;
 			while (TRUE) {
-				gboolean _tmp102_;
-				gboolean _tmp104_ = FALSE;
-				gchar* _tmp105_;
-				GString* _tmp106_;
-				const gchar* _tmp107_;
-				gboolean _tmp111_;
-				_tmp102_ = _tmp101_;
-				if (!_tmp102_) {
-					gchar* _tmp103_;
-					_tmp103_ = str_pos;
-					str_pos = _tmp103_ - 1;
+				gboolean _tmp102_ = FALSE;
+				gchar* _tmp103_ = NULL;
+				GString* _tmp104_ = NULL;
+				const gchar* _tmp105_ = NULL;
+				if (!_tmp100_) {
+					gchar* _tmp101_ = NULL;
+					_tmp101_ = str_pos;
+					str_pos = _tmp101_ - 1;
 				}
-				_tmp101_ = FALSE;
-				_tmp105_ = str_pos;
-				_tmp106_ = content;
-				_tmp107_ = _tmp106_->str;
-				if (_tmp105_ > ((gchar*) _tmp107_)) {
-					gchar* _tmp108_;
-					gchar _tmp109_;
-					gboolean _tmp110_ = FALSE;
-					_tmp108_ = str_pos;
-					_tmp109_ = _tmp108_[0];
-					_tmp110_ = g_ascii_isspace (_tmp109_);
-					_tmp104_ = _tmp110_;
+				_tmp100_ = FALSE;
+				_tmp103_ = str_pos;
+				_tmp104_ = content;
+				_tmp105_ = _tmp104_->str;
+				if (_tmp103_ > ((gchar*) _tmp105_)) {
+					gchar* _tmp106_ = NULL;
+					gchar _tmp107_ = '\0';
+					gboolean _tmp108_ = FALSE;
+					_tmp106_ = str_pos;
+					_tmp107_ = _tmp106_[0];
+					_tmp108_ = g_ascii_isspace (_tmp107_);
+					_tmp102_ = _tmp108_;
 				} else {
-					_tmp104_ = FALSE;
+					_tmp102_ = FALSE;
 				}
-				_tmp111_ = _tmp104_;
-				if (!_tmp111_) {
+				if (!_tmp102_) {
 					break;
 				}
 			}
 		}
-		_tmp112_ = content;
-		_tmp113_ = str_pos;
-		_tmp114_ = content;
-		_tmp115_ = _tmp114_->str;
-		g_string_erase (_tmp112_, (gssize) ((_tmp113_ - ((gchar*) _tmp115_)) + 1), (gssize) (-1));
+		_tmp109_ = content;
+		_tmp110_ = str_pos;
+		_tmp111_ = content;
+		_tmp112_ = _tmp111_->str;
+		g_string_erase (_tmp109_, (gssize) ((_tmp110_ - ((gchar*) _tmp112_)) + 1), (gssize) (-1));
 	}
-	_tmp116_ = content;
-	_tmp117_ = _tmp116_->str;
-	_tmp118_ = g_strdup (_tmp117_);
-	result = _tmp118_;
+	_tmp113_ = content;
+	_tmp114_ = _tmp113_->str;
+	_tmp115_ = g_strdup (_tmp114_);
+	result = _tmp115_;
 	_g_string_free0 (content);
 	return result;
 }
@@ -1317,18 +1301,17 @@ static void vala_markup_reader_space (ValaMarkupReader* self) {
 	g_return_if_fail (self != NULL);
 	while (TRUE) {
 		gboolean _tmp0_ = FALSE;
-		gchar* _tmp1_;
-		gchar* _tmp2_;
-		gboolean _tmp6_;
-		gchar* _tmp7_;
-		gchar _tmp8_;
-		gchar* _tmp10_;
-		gint _tmp11_;
+		gchar* _tmp1_ = NULL;
+		gchar* _tmp2_ = NULL;
+		gchar* _tmp6_ = NULL;
+		gchar _tmp7_ = '\0';
+		gchar* _tmp9_ = NULL;
+		gint _tmp10_ = 0;
 		_tmp1_ = self->priv->current;
 		_tmp2_ = self->priv->end;
 		if (_tmp1_ < _tmp2_) {
-			gchar* _tmp3_;
-			gchar _tmp4_;
+			gchar* _tmp3_ = NULL;
+			gchar _tmp4_ = '\0';
 			gboolean _tmp5_ = FALSE;
 			_tmp3_ = self->priv->current;
 			_tmp4_ = _tmp3_[0];
@@ -1337,29 +1320,28 @@ static void vala_markup_reader_space (ValaMarkupReader* self) {
 		} else {
 			_tmp0_ = FALSE;
 		}
-		_tmp6_ = _tmp0_;
-		if (!_tmp6_) {
+		if (!_tmp0_) {
 			break;
 		}
-		_tmp7_ = self->priv->current;
-		_tmp8_ = _tmp7_[0];
-		if (_tmp8_ == '\n') {
-			gint _tmp9_;
-			_tmp9_ = self->priv->line;
-			self->priv->line = _tmp9_ + 1;
+		_tmp6_ = self->priv->current;
+		_tmp7_ = _tmp6_[0];
+		if (_tmp7_ == '\n') {
+			gint _tmp8_ = 0;
+			_tmp8_ = self->priv->line;
+			self->priv->line = _tmp8_ + 1;
 			self->priv->column = 0;
 		}
-		_tmp10_ = self->priv->current;
-		self->priv->current = _tmp10_ + 1;
-		_tmp11_ = self->priv->column;
-		self->priv->column = _tmp11_ + 1;
+		_tmp9_ = self->priv->current;
+		self->priv->current = _tmp9_ + 1;
+		_tmp10_ = self->priv->column;
+		self->priv->column = _tmp10_ + 1;
 	}
 }
 
 
 const gchar* vala_markup_reader_get_filename (ValaMarkupReader* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_filename;
 	result = _tmp0_;
@@ -1368,8 +1350,8 @@ const gchar* vala_markup_reader_get_filename (ValaMarkupReader* self) {
 
 
 static void vala_markup_reader_set_filename (ValaMarkupReader* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -1381,7 +1363,7 @@ static void vala_markup_reader_set_filename (ValaMarkupReader* self, const gchar
 
 const gchar* vala_markup_reader_get_name (ValaMarkupReader* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_name;
 	result = _tmp0_;
@@ -1390,8 +1372,8 @@ const gchar* vala_markup_reader_get_name (ValaMarkupReader* self) {
 
 
 static void vala_markup_reader_set_name (ValaMarkupReader* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -1403,7 +1385,7 @@ static void vala_markup_reader_set_name (ValaMarkupReader* self, const gchar* va
 
 const gchar* vala_markup_reader_get_content (ValaMarkupReader* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_content;
 	result = _tmp0_;
@@ -1412,8 +1394,8 @@ const gchar* vala_markup_reader_get_content (ValaMarkupReader* self) {
 
 
 static void vala_markup_reader_set_content (ValaMarkupReader* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -1436,10 +1418,10 @@ static void vala_markup_reader_class_init (ValaMarkupReaderClass * klass) {
 
 
 static void vala_markup_reader_instance_init (ValaMarkupReader * self) {
-	GHashFunc _tmp0_;
-	GEqualFunc _tmp1_;
-	GEqualFunc _tmp2_;
-	ValaHashMap* _tmp3_;
+	GHashFunc _tmp0_ = NULL;
+	GEqualFunc _tmp1_ = NULL;
+	GEqualFunc _tmp2_ = NULL;
+	ValaHashMap* _tmp3_ = NULL;
 	self->priv = VALA_MARKUP_READER_GET_PRIVATE (self);
 	_tmp0_ = g_str_hash;
 	_tmp1_ = g_str_equal;
@@ -1455,7 +1437,7 @@ static void vala_markup_reader_finalize (GObject* obj) {
 	_g_free0 (self->priv->_filename);
 	_g_free0 (self->priv->_name);
 	_g_free0 (self->priv->_content);
-	_g_mapped_file_free0 (self->priv->mapped_file);
+	_g_mapped_file_unref0 (self->priv->mapped_file);
 	_vala_map_unref0 (self->priv->attributes);
 	G_OBJECT_CLASS (vala_markup_reader_parent_class)->finalize (obj);
 }

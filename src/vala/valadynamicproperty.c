@@ -497,10 +497,10 @@ static void vala_dynamic_property_finalize (ValaCodeNode* obj);
 
 ValaDynamicProperty* vala_dynamic_property_construct (GType object_type, ValaDataType* dynamic_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaDynamicProperty* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaComment* _tmp2_;
-	ValaDataType* _tmp3_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaComment* _tmp2_ = NULL;
+	ValaDataType* _tmp3_ = NULL;
 	g_return_val_if_fail (dynamic_type != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 	_tmp0_ = name;
@@ -530,7 +530,7 @@ static gboolean vala_dynamic_property_real_check (ValaCodeNode* base, ValaCodeCo
 
 ValaDataType* vala_dynamic_property_get_dynamic_type (ValaDynamicProperty* self) {
 	ValaDataType* result;
-	ValaDataType* _tmp0_;
+	ValaDataType* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_dynamic_type;
 	result = _tmp0_;
@@ -544,8 +544,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_dynamic_property_set_dynamic_type (ValaDynamicProperty* self, ValaDataType* value) {
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -556,9 +556,9 @@ void vala_dynamic_property_set_dynamic_type (ValaDynamicProperty* self, ValaData
 
 static void vala_dynamic_property_class_init (ValaDynamicPropertyClass * klass) {
 	vala_dynamic_property_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_dynamic_property_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_dynamic_property_finalize;
 	g_type_class_add_private (klass, sizeof (ValaDynamicPropertyPrivate));
-	VALA_CODE_NODE_CLASS (klass)->check = vala_dynamic_property_real_check;
+	((ValaCodeNodeClass *) klass)->check = vala_dynamic_property_real_check;
 }
 
 

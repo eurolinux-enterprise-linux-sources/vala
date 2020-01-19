@@ -89,7 +89,7 @@ namespace GLib {
 	}
 
 	[Compact]
-	[CCode (ref_function = "g_type_class_ref", unref_function = "g_type_class_unref")]
+	[CCode (free_function = "g_type_class_unref")]
 	public class TypeClass {
 		[CCode (cname = "G_TYPE_FROM_CLASS")]
 		public Type get_type ();
@@ -282,6 +282,7 @@ namespace GLib {
 		READWRITE,
 		STATIC_STRINGS,
 		USER_SHIFT,
+		EXPLICIT_NOTIFY,
 		DEPRECATED,
 		MASK
 	}
@@ -293,7 +294,7 @@ namespace GLib {
 		public unowned ParamSpec[] list_properties ();
 		public void install_property (uint property_id, ParamSpec pspec);
 	}
-	
+
 	public struct ObjectConstructParam {
 	}
 
@@ -314,6 +315,7 @@ namespace GLib {
 		public weak GLib.Object target { get; }
 		public string target_property { get; }
 		public GLib.BindingFlags flags { get; }
+		public void unbind ();
 	}
 
 	[CCode (has_target = false)]
@@ -384,7 +386,7 @@ namespace GLib {
 		public unowned GLib.Binding bind_property (string source_property, GLib.Object target, string target_property, GLib.BindingFlags flags = GLib.BindingFlags.DEFAULT, [CCode (type = "GClosure*")] owned GLib.BindingTransformFunc? transform_to = null, [CCode (type = "GClosure*")] owned GLib.BindingTransformFunc? transform_from = null);
 	}
 
-	[CCode (destroy_function = "g_weak_ref_clear")]
+	[CCode (destroy_function = "g_weak_ref_clear", lvalue_access = false)]
 	public struct WeakRef {
 		public WeakRef (GLib.Object? object);
 		public GLib.Object? get ();
@@ -459,6 +461,7 @@ namespace GLib {
 		public void copy (ref Value dest_value);
 		public unowned Value? reset ();
 		public void init (Type g_type);
+		public void init_from_instance (void* instance);
 		public void unset ();
 		public void set_instance (void* instance);
 		public bool fits_pointer ();

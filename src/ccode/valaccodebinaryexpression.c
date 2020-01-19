@@ -178,9 +178,9 @@ static void vala_ccode_binary_expression_finalize (ValaCCodeNode* obj);
 
 ValaCCodeBinaryExpression* vala_ccode_binary_expression_construct (GType object_type, ValaCCodeBinaryOperator op, ValaCCodeExpression* l, ValaCCodeExpression* r) {
 	ValaCCodeBinaryExpression* self = NULL;
-	ValaCCodeBinaryOperator _tmp0_;
-	ValaCCodeExpression* _tmp1_;
-	ValaCCodeExpression* _tmp2_;
+	ValaCCodeBinaryOperator _tmp0_ = 0;
+	ValaCCodeExpression* _tmp1_ = NULL;
+	ValaCCodeExpression* _tmp2_ = NULL;
 	g_return_val_if_fail (l != NULL, NULL);
 	g_return_val_if_fail (r != NULL, NULL);
 	self = (ValaCCodeBinaryExpression*) vala_ccode_expression_construct (object_type);
@@ -201,13 +201,13 @@ ValaCCodeBinaryExpression* vala_ccode_binary_expression_new (ValaCCodeBinaryOper
 
 static void vala_ccode_binary_expression_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeBinaryExpression * self;
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	ValaCCodeWriter* _tmp2_;
-	ValaCCodeBinaryOperator _tmp3_;
-	ValaCCodeWriter* _tmp39_;
-	ValaCCodeExpression* _tmp40_;
-	ValaCCodeWriter* _tmp41_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	ValaCCodeWriter* _tmp2_ = NULL;
+	ValaCCodeBinaryOperator _tmp3_ = 0;
+	ValaCCodeWriter* _tmp39_ = NULL;
+	ValaCCodeExpression* _tmp40_ = NULL;
+	ValaCCodeWriter* _tmp41_ = NULL;
 	self = (ValaCCodeBinaryExpression*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = self->priv->_left;
@@ -217,126 +217,126 @@ static void vala_ccode_binary_expression_real_write (ValaCCodeNode* base, ValaCC
 	vala_ccode_writer_write_string (_tmp2_, " ");
 	_tmp3_ = self->priv->_operator;
 	if (_tmp3_ == VALA_CCODE_BINARY_OPERATOR_PLUS) {
-		ValaCCodeWriter* _tmp4_;
+		ValaCCodeWriter* _tmp4_ = NULL;
 		_tmp4_ = writer;
 		vala_ccode_writer_write_string (_tmp4_, "+");
 	} else {
-		ValaCCodeBinaryOperator _tmp5_;
+		ValaCCodeBinaryOperator _tmp5_ = 0;
 		_tmp5_ = self->priv->_operator;
 		if (_tmp5_ == VALA_CCODE_BINARY_OPERATOR_MINUS) {
-			ValaCCodeWriter* _tmp6_;
+			ValaCCodeWriter* _tmp6_ = NULL;
 			_tmp6_ = writer;
 			vala_ccode_writer_write_string (_tmp6_, "-");
 		} else {
-			ValaCCodeBinaryOperator _tmp7_;
+			ValaCCodeBinaryOperator _tmp7_ = 0;
 			_tmp7_ = self->priv->_operator;
 			if (_tmp7_ == VALA_CCODE_BINARY_OPERATOR_MUL) {
-				ValaCCodeWriter* _tmp8_;
+				ValaCCodeWriter* _tmp8_ = NULL;
 				_tmp8_ = writer;
 				vala_ccode_writer_write_string (_tmp8_, "*");
 			} else {
-				ValaCCodeBinaryOperator _tmp9_;
+				ValaCCodeBinaryOperator _tmp9_ = 0;
 				_tmp9_ = self->priv->_operator;
 				if (_tmp9_ == VALA_CCODE_BINARY_OPERATOR_DIV) {
-					ValaCCodeWriter* _tmp10_;
+					ValaCCodeWriter* _tmp10_ = NULL;
 					_tmp10_ = writer;
 					vala_ccode_writer_write_string (_tmp10_, "/");
 				} else {
-					ValaCCodeBinaryOperator _tmp11_;
+					ValaCCodeBinaryOperator _tmp11_ = 0;
 					_tmp11_ = self->priv->_operator;
 					if (_tmp11_ == VALA_CCODE_BINARY_OPERATOR_MOD) {
-						ValaCCodeWriter* _tmp12_;
+						ValaCCodeWriter* _tmp12_ = NULL;
 						_tmp12_ = writer;
 						vala_ccode_writer_write_string (_tmp12_, "%");
 					} else {
-						ValaCCodeBinaryOperator _tmp13_;
+						ValaCCodeBinaryOperator _tmp13_ = 0;
 						_tmp13_ = self->priv->_operator;
 						if (_tmp13_ == VALA_CCODE_BINARY_OPERATOR_SHIFT_LEFT) {
-							ValaCCodeWriter* _tmp14_;
+							ValaCCodeWriter* _tmp14_ = NULL;
 							_tmp14_ = writer;
 							vala_ccode_writer_write_string (_tmp14_, "<<");
 						} else {
-							ValaCCodeBinaryOperator _tmp15_;
+							ValaCCodeBinaryOperator _tmp15_ = 0;
 							_tmp15_ = self->priv->_operator;
 							if (_tmp15_ == VALA_CCODE_BINARY_OPERATOR_SHIFT_RIGHT) {
-								ValaCCodeWriter* _tmp16_;
+								ValaCCodeWriter* _tmp16_ = NULL;
 								_tmp16_ = writer;
 								vala_ccode_writer_write_string (_tmp16_, ">>");
 							} else {
-								ValaCCodeBinaryOperator _tmp17_;
+								ValaCCodeBinaryOperator _tmp17_ = 0;
 								_tmp17_ = self->priv->_operator;
 								if (_tmp17_ == VALA_CCODE_BINARY_OPERATOR_LESS_THAN) {
-									ValaCCodeWriter* _tmp18_;
+									ValaCCodeWriter* _tmp18_ = NULL;
 									_tmp18_ = writer;
 									vala_ccode_writer_write_string (_tmp18_, "<");
 								} else {
-									ValaCCodeBinaryOperator _tmp19_;
+									ValaCCodeBinaryOperator _tmp19_ = 0;
 									_tmp19_ = self->priv->_operator;
 									if (_tmp19_ == VALA_CCODE_BINARY_OPERATOR_GREATER_THAN) {
-										ValaCCodeWriter* _tmp20_;
+										ValaCCodeWriter* _tmp20_ = NULL;
 										_tmp20_ = writer;
 										vala_ccode_writer_write_string (_tmp20_, ">");
 									} else {
-										ValaCCodeBinaryOperator _tmp21_;
+										ValaCCodeBinaryOperator _tmp21_ = 0;
 										_tmp21_ = self->priv->_operator;
 										if (_tmp21_ == VALA_CCODE_BINARY_OPERATOR_LESS_THAN_OR_EQUAL) {
-											ValaCCodeWriter* _tmp22_;
+											ValaCCodeWriter* _tmp22_ = NULL;
 											_tmp22_ = writer;
 											vala_ccode_writer_write_string (_tmp22_, "<=");
 										} else {
-											ValaCCodeBinaryOperator _tmp23_;
+											ValaCCodeBinaryOperator _tmp23_ = 0;
 											_tmp23_ = self->priv->_operator;
 											if (_tmp23_ == VALA_CCODE_BINARY_OPERATOR_GREATER_THAN_OR_EQUAL) {
-												ValaCCodeWriter* _tmp24_;
+												ValaCCodeWriter* _tmp24_ = NULL;
 												_tmp24_ = writer;
 												vala_ccode_writer_write_string (_tmp24_, ">=");
 											} else {
-												ValaCCodeBinaryOperator _tmp25_;
+												ValaCCodeBinaryOperator _tmp25_ = 0;
 												_tmp25_ = self->priv->_operator;
 												if (_tmp25_ == VALA_CCODE_BINARY_OPERATOR_EQUALITY) {
-													ValaCCodeWriter* _tmp26_;
+													ValaCCodeWriter* _tmp26_ = NULL;
 													_tmp26_ = writer;
 													vala_ccode_writer_write_string (_tmp26_, "==");
 												} else {
-													ValaCCodeBinaryOperator _tmp27_;
+													ValaCCodeBinaryOperator _tmp27_ = 0;
 													_tmp27_ = self->priv->_operator;
 													if (_tmp27_ == VALA_CCODE_BINARY_OPERATOR_INEQUALITY) {
-														ValaCCodeWriter* _tmp28_;
+														ValaCCodeWriter* _tmp28_ = NULL;
 														_tmp28_ = writer;
 														vala_ccode_writer_write_string (_tmp28_, "!=");
 													} else {
-														ValaCCodeBinaryOperator _tmp29_;
+														ValaCCodeBinaryOperator _tmp29_ = 0;
 														_tmp29_ = self->priv->_operator;
 														if (_tmp29_ == VALA_CCODE_BINARY_OPERATOR_BITWISE_AND) {
-															ValaCCodeWriter* _tmp30_;
+															ValaCCodeWriter* _tmp30_ = NULL;
 															_tmp30_ = writer;
 															vala_ccode_writer_write_string (_tmp30_, "&");
 														} else {
-															ValaCCodeBinaryOperator _tmp31_;
+															ValaCCodeBinaryOperator _tmp31_ = 0;
 															_tmp31_ = self->priv->_operator;
 															if (_tmp31_ == VALA_CCODE_BINARY_OPERATOR_BITWISE_OR) {
-																ValaCCodeWriter* _tmp32_;
+																ValaCCodeWriter* _tmp32_ = NULL;
 																_tmp32_ = writer;
 																vala_ccode_writer_write_string (_tmp32_, "|");
 															} else {
-																ValaCCodeBinaryOperator _tmp33_;
+																ValaCCodeBinaryOperator _tmp33_ = 0;
 																_tmp33_ = self->priv->_operator;
 																if (_tmp33_ == VALA_CCODE_BINARY_OPERATOR_BITWISE_XOR) {
-																	ValaCCodeWriter* _tmp34_;
+																	ValaCCodeWriter* _tmp34_ = NULL;
 																	_tmp34_ = writer;
 																	vala_ccode_writer_write_string (_tmp34_, "^");
 																} else {
-																	ValaCCodeBinaryOperator _tmp35_;
+																	ValaCCodeBinaryOperator _tmp35_ = 0;
 																	_tmp35_ = self->priv->_operator;
 																	if (_tmp35_ == VALA_CCODE_BINARY_OPERATOR_AND) {
-																		ValaCCodeWriter* _tmp36_;
+																		ValaCCodeWriter* _tmp36_ = NULL;
 																		_tmp36_ = writer;
 																		vala_ccode_writer_write_string (_tmp36_, "&&");
 																	} else {
-																		ValaCCodeBinaryOperator _tmp37_;
+																		ValaCCodeBinaryOperator _tmp37_ = 0;
 																		_tmp37_ = self->priv->_operator;
 																		if (_tmp37_ == VALA_CCODE_BINARY_OPERATOR_OR) {
-																			ValaCCodeWriter* _tmp38_;
+																			ValaCCodeWriter* _tmp38_ = NULL;
 																			_tmp38_ = writer;
 																			vala_ccode_writer_write_string (_tmp38_, "||");
 																		}
@@ -367,9 +367,9 @@ static void vala_ccode_binary_expression_real_write (ValaCCodeNode* base, ValaCC
 
 static void vala_ccode_binary_expression_real_write_inner (ValaCCodeExpression* base, ValaCCodeWriter* writer) {
 	ValaCCodeBinaryExpression * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	ValaCCodeWriter* _tmp2_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	ValaCCodeWriter* _tmp2_ = NULL;
 	self = (ValaCCodeBinaryExpression*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -383,7 +383,7 @@ static void vala_ccode_binary_expression_real_write_inner (ValaCCodeExpression* 
 
 ValaCCodeBinaryOperator vala_ccode_binary_expression_get_operator (ValaCCodeBinaryExpression* self) {
 	ValaCCodeBinaryOperator result;
-	ValaCCodeBinaryOperator _tmp0_;
+	ValaCCodeBinaryOperator _tmp0_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->_operator;
 	result = _tmp0_;
@@ -392,7 +392,7 @@ ValaCCodeBinaryOperator vala_ccode_binary_expression_get_operator (ValaCCodeBina
 
 
 void vala_ccode_binary_expression_set_operator (ValaCCodeBinaryExpression* self, ValaCCodeBinaryOperator value) {
-	ValaCCodeBinaryOperator _tmp0_;
+	ValaCCodeBinaryOperator _tmp0_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_operator = _tmp0_;
@@ -401,7 +401,7 @@ void vala_ccode_binary_expression_set_operator (ValaCCodeBinaryExpression* self,
 
 ValaCCodeExpression* vala_ccode_binary_expression_get_left (ValaCCodeBinaryExpression* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_left;
 	result = _tmp0_;
@@ -415,8 +415,8 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 
 void vala_ccode_binary_expression_set_left (ValaCCodeBinaryExpression* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -427,7 +427,7 @@ void vala_ccode_binary_expression_set_left (ValaCCodeBinaryExpression* self, Val
 
 ValaCCodeExpression* vala_ccode_binary_expression_get_right (ValaCCodeBinaryExpression* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_right;
 	result = _tmp0_;
@@ -436,8 +436,8 @@ ValaCCodeExpression* vala_ccode_binary_expression_get_right (ValaCCodeBinaryExpr
 
 
 void vala_ccode_binary_expression_set_right (ValaCCodeBinaryExpression* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -448,10 +448,10 @@ void vala_ccode_binary_expression_set_right (ValaCCodeBinaryExpression* self, Va
 
 static void vala_ccode_binary_expression_class_init (ValaCCodeBinaryExpressionClass * klass) {
 	vala_ccode_binary_expression_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_binary_expression_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_binary_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeBinaryExpressionPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_binary_expression_real_write;
-	VALA_CCODE_EXPRESSION_CLASS (klass)->write_inner = vala_ccode_binary_expression_real_write_inner;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_binary_expression_real_write;
+	((ValaCCodeExpressionClass *) klass)->write_inner = vala_ccode_binary_expression_real_write_inner;
 }
 
 

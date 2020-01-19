@@ -244,7 +244,7 @@ static void vala_continue_statement_real_emit (ValaCodeNode* base, ValaCodeGener
  */
 ValaContinueStatement* vala_continue_statement_construct (GType object_type, ValaSourceReference* source) {
 	ValaContinueStatement* self = NULL;
-	ValaSourceReference* _tmp0_;
+	ValaSourceReference* _tmp0_ = NULL;
 	g_return_val_if_fail (source != NULL, NULL);
 	self = (ValaContinueStatement*) vala_code_node_construct (object_type);
 	_tmp0_ = source;
@@ -260,7 +260,7 @@ ValaContinueStatement* vala_continue_statement_new (ValaSourceReference* source)
 
 static void vala_continue_statement_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaContinueStatement * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaContinueStatement*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -270,7 +270,7 @@ static void vala_continue_statement_real_accept (ValaCodeNode* base, ValaCodeVis
 
 static void vala_continue_statement_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaContinueStatement * self;
-	ValaCodeGenerator* _tmp0_;
+	ValaCodeGenerator* _tmp0_ = NULL;
 	self = (ValaContinueStatement*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = codegen;
@@ -280,8 +280,8 @@ static void vala_continue_statement_real_emit (ValaCodeNode* base, ValaCodeGener
 
 static void vala_continue_statement_class_init (ValaContinueStatementClass * klass) {
 	vala_continue_statement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_continue_statement_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_continue_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_continue_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->emit = vala_continue_statement_real_emit;
 }
 
 

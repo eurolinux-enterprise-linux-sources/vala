@@ -191,7 +191,7 @@ static void vala_ccode_switch_statement_finalize (ValaCCodeNode* obj);
 
 ValaCCodeSwitchStatement* vala_ccode_switch_statement_construct (GType object_type, ValaCCodeExpression* expression) {
 	ValaCCodeSwitchStatement* self = NULL;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (expression != NULL, NULL);
 	self = (ValaCCodeSwitchStatement*) vala_ccode_block_construct (object_type);
 	_tmp0_ = expression;
@@ -207,14 +207,14 @@ ValaCCodeSwitchStatement* vala_ccode_switch_statement_new (ValaCCodeExpression* 
 
 static void vala_ccode_switch_statement_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeSwitchStatement * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeLineDirective* _tmp1_;
-	ValaCCodeLineDirective* _tmp2_;
-	ValaCCodeWriter* _tmp3_;
-	ValaCCodeExpression* _tmp4_;
-	ValaCCodeWriter* _tmp5_;
-	ValaCCodeWriter* _tmp6_;
-	ValaCCodeWriter* _tmp7_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeLineDirective* _tmp1_ = NULL;
+	ValaCCodeLineDirective* _tmp2_ = NULL;
+	ValaCCodeWriter* _tmp3_ = NULL;
+	ValaCCodeExpression* _tmp4_ = NULL;
+	ValaCCodeWriter* _tmp5_ = NULL;
+	ValaCCodeWriter* _tmp6_ = NULL;
+	ValaCCodeWriter* _tmp7_ = NULL;
 	self = (ValaCCodeSwitchStatement*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -235,7 +235,7 @@ static void vala_ccode_switch_statement_real_write (ValaCCodeNode* base, ValaCCo
 
 ValaCCodeExpression* vala_ccode_switch_statement_get_expression (ValaCCodeSwitchStatement* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_expression;
 	result = _tmp0_;
@@ -249,8 +249,8 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 
 void vala_ccode_switch_statement_set_expression (ValaCCodeSwitchStatement* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -261,9 +261,9 @@ void vala_ccode_switch_statement_set_expression (ValaCCodeSwitchStatement* self,
 
 static void vala_ccode_switch_statement_class_init (ValaCCodeSwitchStatementClass * klass) {
 	vala_ccode_switch_statement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_switch_statement_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_switch_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeSwitchStatementPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_switch_statement_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_switch_statement_real_write;
 }
 
 

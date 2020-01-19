@@ -401,16 +401,6 @@ typedef struct _ValaVoidTypeClass ValaVoidTypeClass;
 typedef struct _ValaLocalVariable ValaLocalVariable;
 typedef struct _ValaLocalVariableClass ValaLocalVariableClass;
 
-#define VALA_TYPE_SEMANTIC_ANALYZER (vala_semantic_analyzer_get_type ())
-#define VALA_SEMANTIC_ANALYZER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SEMANTIC_ANALYZER, ValaSemanticAnalyzer))
-#define VALA_SEMANTIC_ANALYZER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SEMANTIC_ANALYZER, ValaSemanticAnalyzerClass))
-#define VALA_IS_SEMANTIC_ANALYZER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SEMANTIC_ANALYZER))
-#define VALA_IS_SEMANTIC_ANALYZER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SEMANTIC_ANALYZER))
-#define VALA_SEMANTIC_ANALYZER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SEMANTIC_ANALYZER, ValaSemanticAnalyzerClass))
-
-typedef struct _ValaSemanticAnalyzer ValaSemanticAnalyzer;
-typedef struct _ValaSemanticAnalyzerClass ValaSemanticAnalyzerClass;
-
 #define VALA_TYPE_SOURCE_FILE (vala_source_file_get_type ())
 #define VALA_SOURCE_FILE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SOURCE_FILE, ValaSourceFile))
 #define VALA_SOURCE_FILE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SOURCE_FILE, ValaSourceFileClass))
@@ -420,6 +410,16 @@ typedef struct _ValaSemanticAnalyzerClass ValaSemanticAnalyzerClass;
 
 typedef struct _ValaSourceFile ValaSourceFile;
 typedef struct _ValaSourceFileClass ValaSourceFileClass;
+
+#define VALA_TYPE_SEMANTIC_ANALYZER (vala_semantic_analyzer_get_type ())
+#define VALA_SEMANTIC_ANALYZER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SEMANTIC_ANALYZER, ValaSemanticAnalyzer))
+#define VALA_SEMANTIC_ANALYZER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SEMANTIC_ANALYZER, ValaSemanticAnalyzerClass))
+#define VALA_IS_SEMANTIC_ANALYZER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SEMANTIC_ANALYZER))
+#define VALA_IS_SEMANTIC_ANALYZER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SEMANTIC_ANALYZER))
+#define VALA_SEMANTIC_ANALYZER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SEMANTIC_ANALYZER, ValaSemanticAnalyzerClass))
+
+typedef struct _ValaSemanticAnalyzer ValaSemanticAnalyzer;
+typedef struct _ValaSemanticAnalyzerClass ValaSemanticAnalyzerClass;
 #define _vala_source_file_unref0(var) ((var == NULL) ? NULL : (var = (vala_source_file_unref (var), NULL)))
 
 struct _ValaCodeNode {
@@ -631,8 +631,6 @@ static gboolean vala_enum_real_check (ValaCodeNode* base, ValaCodeContext* conte
 gboolean vala_code_node_get_checked (ValaCodeNode* self);
 gboolean vala_code_node_get_error (ValaCodeNode* self);
 void vala_code_node_set_checked (ValaCodeNode* self, gboolean value);
-GType vala_semantic_analyzer_get_type (void) G_GNUC_CONST;
-ValaSemanticAnalyzer* vala_code_context_get_analyzer (ValaCodeContext* self);
 gpointer vala_source_file_ref (gpointer instance);
 void vala_source_file_unref (gpointer instance);
 GParamSpec* vala_param_spec_source_file (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
@@ -640,6 +638,8 @@ void vala_value_set_source_file (GValue* value, gpointer v_object);
 void vala_value_take_source_file (GValue* value, gpointer v_object);
 gpointer vala_value_get_source_file (const GValue* value);
 GType vala_source_file_get_type (void) G_GNUC_CONST;
+GType vala_semantic_analyzer_get_type (void) G_GNUC_CONST;
+ValaSemanticAnalyzer* vala_code_context_get_analyzer (ValaCodeContext* self);
 ValaSourceFile* vala_semantic_analyzer_get_current_source_file (ValaSemanticAnalyzer* self);
 ValaSymbol* vala_semantic_analyzer_get_current_symbol (ValaSemanticAnalyzer* self);
 ValaSourceFile* vala_source_reference_get_file (ValaSourceReference* self);
@@ -661,9 +661,9 @@ static void vala_enum_finalize (ValaCodeNode* obj);
  */
 ValaEnum* vala_enum_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaEnum* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaComment* _tmp2_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaComment* _tmp2_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	_tmp0_ = name;
 	_tmp1_ = source_reference;
@@ -684,15 +684,15 @@ ValaEnum* vala_enum_new (const gchar* name, ValaSourceReference* source_referenc
  * @param value an enum value
  */
 void vala_enum_add_value (ValaEnum* self, ValaEnumValue* value) {
-	ValaEnumValue* _tmp0_;
-	ValaList* _tmp1_;
-	ValaEnumValue* _tmp2_;
-	ValaScope* _tmp3_;
-	ValaScope* _tmp4_;
-	ValaEnumValue* _tmp5_;
-	const gchar* _tmp6_;
-	const gchar* _tmp7_;
-	ValaEnumValue* _tmp8_;
+	ValaEnumValue* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
+	ValaEnumValue* _tmp2_ = NULL;
+	ValaScope* _tmp3_ = NULL;
+	ValaScope* _tmp4_ = NULL;
+	ValaEnumValue* _tmp5_ = NULL;
+	const gchar* _tmp6_ = NULL;
+	const gchar* _tmp7_ = NULL;
+	ValaEnumValue* _tmp8_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (value != NULL);
 	_tmp0_ = value;
@@ -717,31 +717,30 @@ void vala_enum_add_value (ValaEnum* self, ValaEnumValue* value) {
  */
 static void vala_enum_real_add_method (ValaSymbol* base, ValaMethod* m) {
 	ValaEnum * self;
-	ValaMethod* _tmp0_;
-	ValaMethod* _tmp5_;
-	ValaMemberBinding _tmp6_;
-	ValaMemberBinding _tmp7_;
+	ValaMethod* _tmp0_ = NULL;
+	ValaMethod* _tmp5_ = NULL;
+	ValaMemberBinding _tmp6_ = 0;
+	ValaMemberBinding _tmp7_ = 0;
 	gboolean _tmp24_ = FALSE;
-	ValaMethod* _tmp25_;
-	ValaDataType* _tmp26_;
-	ValaDataType* _tmp27_;
-	gboolean _tmp33_;
-	ValaList* _tmp47_;
-	ValaMethod* _tmp48_;
-	ValaScope* _tmp49_;
-	ValaScope* _tmp50_;
-	ValaMethod* _tmp51_;
-	const gchar* _tmp52_;
-	const gchar* _tmp53_;
-	ValaMethod* _tmp54_;
+	ValaMethod* _tmp25_ = NULL;
+	ValaDataType* _tmp26_ = NULL;
+	ValaDataType* _tmp27_ = NULL;
+	ValaList* _tmp46_ = NULL;
+	ValaMethod* _tmp47_ = NULL;
+	ValaScope* _tmp48_ = NULL;
+	ValaScope* _tmp49_ = NULL;
+	ValaMethod* _tmp50_ = NULL;
+	const gchar* _tmp51_ = NULL;
+	const gchar* _tmp52_ = NULL;
+	ValaMethod* _tmp53_ = NULL;
 	self = (ValaEnum*) base;
 	g_return_if_fail (m != NULL);
 	_tmp0_ = m;
 	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp0_, VALA_TYPE_CREATION_METHOD)) {
-		ValaMethod* _tmp1_;
-		ValaSourceReference* _tmp2_;
-		ValaSourceReference* _tmp3_;
-		ValaMethod* _tmp4_;
+		ValaMethod* _tmp1_ = NULL;
+		ValaSourceReference* _tmp2_ = NULL;
+		ValaSourceReference* _tmp3_ = NULL;
+		ValaMethod* _tmp4_ = NULL;
 		_tmp1_ = m;
 		_tmp2_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp1_);
 		_tmp3_ = _tmp2_;
@@ -754,22 +753,22 @@ static void vala_enum_real_add_method (ValaSymbol* base, ValaMethod* m) {
 	_tmp6_ = vala_method_get_binding (_tmp5_);
 	_tmp7_ = _tmp6_;
 	if (_tmp7_ == VALA_MEMBER_BINDING_INSTANCE) {
-		ValaMethod* _tmp8_;
-		ValaEnumValueType* _tmp9_;
-		ValaEnumValueType* _tmp10_;
-		ValaParameter* _tmp11_;
-		ValaParameter* _tmp12_;
-		ValaMethod* _tmp13_;
-		ValaScope* _tmp14_;
-		ValaScope* _tmp15_;
-		ValaMethod* _tmp16_;
-		ValaParameter* _tmp17_;
-		ValaParameter* _tmp18_;
-		const gchar* _tmp19_;
-		const gchar* _tmp20_;
-		ValaMethod* _tmp21_;
-		ValaParameter* _tmp22_;
-		ValaParameter* _tmp23_;
+		ValaMethod* _tmp8_ = NULL;
+		ValaEnumValueType* _tmp9_ = NULL;
+		ValaEnumValueType* _tmp10_ = NULL;
+		ValaParameter* _tmp11_ = NULL;
+		ValaParameter* _tmp12_ = NULL;
+		ValaMethod* _tmp13_ = NULL;
+		ValaScope* _tmp14_ = NULL;
+		ValaScope* _tmp15_ = NULL;
+		ValaMethod* _tmp16_ = NULL;
+		ValaParameter* _tmp17_ = NULL;
+		ValaParameter* _tmp18_ = NULL;
+		const gchar* _tmp19_ = NULL;
+		const gchar* _tmp20_ = NULL;
+		ValaMethod* _tmp21_ = NULL;
+		ValaParameter* _tmp22_ = NULL;
+		ValaParameter* _tmp23_ = NULL;
 		_tmp8_ = m;
 		_tmp9_ = vala_enum_value_type_new (self);
 		_tmp10_ = _tmp9_;
@@ -795,11 +794,11 @@ static void vala_enum_real_add_method (ValaSymbol* base, ValaMethod* m) {
 	_tmp26_ = vala_method_get_return_type (_tmp25_);
 	_tmp27_ = _tmp26_;
 	if (!G_TYPE_CHECK_INSTANCE_TYPE (_tmp27_, VALA_TYPE_VOID_TYPE)) {
-		ValaMethod* _tmp28_;
+		ValaMethod* _tmp28_ = NULL;
 		ValaList* _tmp29_ = NULL;
-		ValaList* _tmp30_;
-		gint _tmp31_;
-		gint _tmp32_;
+		ValaList* _tmp30_ = NULL;
+		gint _tmp31_ = 0;
+		gint _tmp32_ = 0;
 		_tmp28_ = m;
 		_tmp29_ = vala_method_get_postconditions (_tmp28_);
 		_tmp30_ = _tmp29_;
@@ -810,49 +809,48 @@ static void vala_enum_real_add_method (ValaSymbol* base, ValaMethod* m) {
 	} else {
 		_tmp24_ = FALSE;
 	}
-	_tmp33_ = _tmp24_;
-	if (_tmp33_) {
-		ValaMethod* _tmp34_;
-		ValaMethod* _tmp35_;
-		ValaDataType* _tmp36_;
-		ValaDataType* _tmp37_;
+	if (_tmp24_) {
+		ValaMethod* _tmp33_ = NULL;
+		ValaMethod* _tmp34_ = NULL;
+		ValaDataType* _tmp35_ = NULL;
+		ValaDataType* _tmp36_ = NULL;
+		ValaDataType* _tmp37_ = NULL;
 		ValaDataType* _tmp38_ = NULL;
-		ValaDataType* _tmp39_;
-		ValaSourceReference* _tmp40_;
-		ValaSourceReference* _tmp41_;
-		ValaLocalVariable* _tmp42_;
-		ValaLocalVariable* _tmp43_;
-		ValaMethod* _tmp44_;
-		ValaLocalVariable* _tmp45_;
-		ValaLocalVariable* _tmp46_;
+		ValaSourceReference* _tmp39_ = NULL;
+		ValaSourceReference* _tmp40_ = NULL;
+		ValaLocalVariable* _tmp41_ = NULL;
+		ValaLocalVariable* _tmp42_ = NULL;
+		ValaMethod* _tmp43_ = NULL;
+		ValaLocalVariable* _tmp44_ = NULL;
+		ValaLocalVariable* _tmp45_ = NULL;
+		_tmp33_ = m;
 		_tmp34_ = m;
-		_tmp35_ = m;
-		_tmp36_ = vala_method_get_return_type (_tmp35_);
-		_tmp37_ = _tmp36_;
-		_tmp38_ = vala_data_type_copy (_tmp37_);
-		_tmp39_ = _tmp38_;
-		_tmp40_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
-		_tmp41_ = _tmp40_;
-		_tmp42_ = vala_local_variable_new (_tmp39_, "result", NULL, _tmp41_);
-		_tmp43_ = _tmp42_;
-		vala_subroutine_set_result_var ((ValaSubroutine*) _tmp34_, _tmp43_);
-		_vala_code_node_unref0 (_tmp43_);
-		_vala_code_node_unref0 (_tmp39_);
-		_tmp44_ = m;
-		_tmp45_ = vala_subroutine_get_result_var ((ValaSubroutine*) _tmp44_);
-		_tmp46_ = _tmp45_;
-		vala_local_variable_set_is_result (_tmp46_, TRUE);
+		_tmp35_ = vala_method_get_return_type (_tmp34_);
+		_tmp36_ = _tmp35_;
+		_tmp37_ = vala_data_type_copy (_tmp36_);
+		_tmp38_ = _tmp37_;
+		_tmp39_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+		_tmp40_ = _tmp39_;
+		_tmp41_ = vala_local_variable_new (_tmp38_, "result", NULL, _tmp40_);
+		_tmp42_ = _tmp41_;
+		vala_subroutine_set_result_var ((ValaSubroutine*) _tmp33_, _tmp42_);
+		_vala_code_node_unref0 (_tmp42_);
+		_vala_code_node_unref0 (_tmp38_);
+		_tmp43_ = m;
+		_tmp44_ = vala_subroutine_get_result_var ((ValaSubroutine*) _tmp43_);
+		_tmp45_ = _tmp44_;
+		vala_local_variable_set_is_result (_tmp45_, TRUE);
 	}
-	_tmp47_ = self->priv->methods;
-	_tmp48_ = m;
-	vala_collection_add ((ValaCollection*) _tmp47_, _tmp48_);
-	_tmp49_ = vala_symbol_get_scope ((ValaSymbol*) self);
-	_tmp50_ = _tmp49_;
-	_tmp51_ = m;
-	_tmp52_ = vala_symbol_get_name ((ValaSymbol*) _tmp51_);
-	_tmp53_ = _tmp52_;
-	_tmp54_ = m;
-	vala_scope_add (_tmp50_, _tmp53_, (ValaSymbol*) _tmp54_);
+	_tmp46_ = self->priv->methods;
+	_tmp47_ = m;
+	vala_collection_add ((ValaCollection*) _tmp46_, _tmp47_);
+	_tmp48_ = vala_symbol_get_scope ((ValaSymbol*) self);
+	_tmp49_ = _tmp48_;
+	_tmp50_ = m;
+	_tmp51_ = vala_symbol_get_name ((ValaSymbol*) _tmp50_);
+	_tmp52_ = _tmp51_;
+	_tmp53_ = m;
+	vala_scope_add (_tmp49_, _tmp52_, (ValaSymbol*) _tmp53_);
 }
 
 
@@ -863,14 +861,14 @@ static void vala_enum_real_add_method (ValaSymbol* base, ValaMethod* m) {
  */
 static void vala_enum_real_add_constant (ValaSymbol* base, ValaConstant* c) {
 	ValaEnum * self;
-	ValaList* _tmp0_;
-	ValaConstant* _tmp1_;
-	ValaScope* _tmp2_;
-	ValaScope* _tmp3_;
-	ValaConstant* _tmp4_;
-	const gchar* _tmp5_;
-	const gchar* _tmp6_;
-	ValaConstant* _tmp7_;
+	ValaList* _tmp0_ = NULL;
+	ValaConstant* _tmp1_ = NULL;
+	ValaScope* _tmp2_ = NULL;
+	ValaScope* _tmp3_ = NULL;
+	ValaConstant* _tmp4_ = NULL;
+	const gchar* _tmp5_ = NULL;
+	const gchar* _tmp6_ = NULL;
+	ValaConstant* _tmp7_ = NULL;
 	self = (ValaEnum*) base;
 	g_return_if_fail (c != NULL);
 	_tmp0_ = self->priv->constants;
@@ -898,8 +896,8 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 
 ValaList* vala_enum_get_values (ValaEnum* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->values;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -909,7 +907,7 @@ ValaList* vala_enum_get_values (ValaEnum* self) {
 
 
 void vala_enum_remove_all_values (ValaEnum* self) {
-	ValaList* _tmp0_;
+	ValaList* _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = self->priv->values;
 	vala_collection_clear ((ValaCollection*) _tmp0_);
@@ -923,8 +921,8 @@ void vala_enum_remove_all_values (ValaEnum* self) {
  */
 ValaList* vala_enum_get_methods (ValaEnum* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->methods;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -940,8 +938,8 @@ ValaList* vala_enum_get_methods (ValaEnum* self) {
  */
 ValaList* vala_enum_get_constants (ValaEnum* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->constants;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -952,7 +950,7 @@ ValaList* vala_enum_get_constants (ValaEnum* self) {
 
 static void vala_enum_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaEnum * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaEnum*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -965,14 +963,14 @@ static void vala_enum_real_accept_children (ValaCodeNode* base, ValaCodeVisitor*
 	self = (ValaEnum*) base;
 	g_return_if_fail (visitor != NULL);
 	{
-		ValaList* _tmp0_;
-		ValaList* _tmp1_;
-		ValaList* _value_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _value_size;
-		gint _value_index;
+		ValaList* _value_list = NULL;
+		ValaList* _tmp0_ = NULL;
+		ValaList* _tmp1_ = NULL;
+		gint _value_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _value_index = 0;
 		_tmp0_ = self->priv->values;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
 		_value_list = _tmp1_;
@@ -982,15 +980,15 @@ static void vala_enum_real_accept_children (ValaCodeNode* base, ValaCodeVisitor*
 		_value_size = _tmp4_;
 		_value_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaEnumValue* value = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaEnumValue* value;
-			ValaEnumValue* _tmp11_;
-			ValaCodeVisitor* _tmp12_;
+			ValaEnumValue* _tmp11_ = NULL;
+			ValaCodeVisitor* _tmp12_ = NULL;
 			_tmp5_ = _value_index;
 			_value_index = _tmp5_ + 1;
 			_tmp6_ = _value_index;
@@ -1010,14 +1008,14 @@ static void vala_enum_real_accept_children (ValaCodeNode* base, ValaCodeVisitor*
 		_vala_iterable_unref0 (_value_list);
 	}
 	{
-		ValaList* _tmp13_;
-		ValaList* _tmp14_;
-		ValaList* _m_list;
-		ValaList* _tmp15_;
-		gint _tmp16_;
-		gint _tmp17_;
-		gint _m_size;
-		gint _m_index;
+		ValaList* _m_list = NULL;
+		ValaList* _tmp13_ = NULL;
+		ValaList* _tmp14_ = NULL;
+		gint _m_size = 0;
+		ValaList* _tmp15_ = NULL;
+		gint _tmp16_ = 0;
+		gint _tmp17_ = 0;
+		gint _m_index = 0;
 		_tmp13_ = self->priv->methods;
 		_tmp14_ = _vala_iterable_ref0 (_tmp13_);
 		_m_list = _tmp14_;
@@ -1027,15 +1025,15 @@ static void vala_enum_real_accept_children (ValaCodeNode* base, ValaCodeVisitor*
 		_m_size = _tmp17_;
 		_m_index = -1;
 		while (TRUE) {
-			gint _tmp18_;
-			gint _tmp19_;
-			gint _tmp20_;
-			ValaList* _tmp21_;
-			gint _tmp22_;
+			gint _tmp18_ = 0;
+			gint _tmp19_ = 0;
+			gint _tmp20_ = 0;
+			ValaMethod* m = NULL;
+			ValaList* _tmp21_ = NULL;
+			gint _tmp22_ = 0;
 			gpointer _tmp23_ = NULL;
-			ValaMethod* m;
-			ValaMethod* _tmp24_;
-			ValaCodeVisitor* _tmp25_;
+			ValaMethod* _tmp24_ = NULL;
+			ValaCodeVisitor* _tmp25_ = NULL;
 			_tmp18_ = _m_index;
 			_m_index = _tmp18_ + 1;
 			_tmp19_ = _m_index;
@@ -1055,14 +1053,14 @@ static void vala_enum_real_accept_children (ValaCodeNode* base, ValaCodeVisitor*
 		_vala_iterable_unref0 (_m_list);
 	}
 	{
-		ValaList* _tmp26_;
-		ValaList* _tmp27_;
-		ValaList* _c_list;
-		ValaList* _tmp28_;
-		gint _tmp29_;
-		gint _tmp30_;
-		gint _c_size;
-		gint _c_index;
+		ValaList* _c_list = NULL;
+		ValaList* _tmp26_ = NULL;
+		ValaList* _tmp27_ = NULL;
+		gint _c_size = 0;
+		ValaList* _tmp28_ = NULL;
+		gint _tmp29_ = 0;
+		gint _tmp30_ = 0;
+		gint _c_index = 0;
 		_tmp26_ = self->priv->constants;
 		_tmp27_ = _vala_iterable_ref0 (_tmp26_);
 		_c_list = _tmp27_;
@@ -1072,15 +1070,15 @@ static void vala_enum_real_accept_children (ValaCodeNode* base, ValaCodeVisitor*
 		_c_size = _tmp30_;
 		_c_index = -1;
 		while (TRUE) {
-			gint _tmp31_;
-			gint _tmp32_;
-			gint _tmp33_;
-			ValaList* _tmp34_;
-			gint _tmp35_;
+			gint _tmp31_ = 0;
+			gint _tmp32_ = 0;
+			gint _tmp33_ = 0;
+			ValaConstant* c = NULL;
+			ValaList* _tmp34_ = NULL;
+			gint _tmp35_ = 0;
 			gpointer _tmp36_ = NULL;
-			ValaConstant* c;
-			ValaConstant* _tmp37_;
-			ValaCodeVisitor* _tmp38_;
+			ValaConstant* _tmp37_ = NULL;
+			ValaCodeVisitor* _tmp38_ = NULL;
 			_tmp31_ = _c_index;
 			_c_index = _tmp31_ + 1;
 			_tmp32_ = _c_index;
@@ -1124,44 +1122,44 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 static gboolean vala_enum_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaEnum * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaCodeContext* _tmp4_;
-	ValaSemanticAnalyzer* _tmp5_;
-	ValaSemanticAnalyzer* _tmp6_;
-	ValaSourceFile* _tmp7_;
-	ValaSourceFile* _tmp8_;
-	ValaSourceFile* _tmp9_;
-	ValaSourceFile* old_source_file;
-	ValaCodeContext* _tmp10_;
-	ValaSemanticAnalyzer* _tmp11_;
-	ValaSemanticAnalyzer* _tmp12_;
-	ValaSymbol* _tmp13_;
-	ValaSymbol* _tmp14_;
-	ValaSymbol* _tmp15_;
-	ValaSymbol* old_symbol;
-	ValaSourceReference* _tmp16_;
-	ValaSourceReference* _tmp17_;
-	ValaCodeContext* _tmp25_;
-	ValaSemanticAnalyzer* _tmp26_;
-	ValaSemanticAnalyzer* _tmp27_;
-	ValaCodeContext* _tmp67_;
-	ValaSemanticAnalyzer* _tmp68_;
-	ValaSemanticAnalyzer* _tmp69_;
-	ValaSourceFile* _tmp70_;
-	ValaCodeContext* _tmp71_;
-	ValaSemanticAnalyzer* _tmp72_;
-	ValaSemanticAnalyzer* _tmp73_;
-	ValaSymbol* _tmp74_;
-	gboolean _tmp75_;
-	gboolean _tmp76_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaSourceFile* old_source_file = NULL;
+	ValaCodeContext* _tmp4_ = NULL;
+	ValaSemanticAnalyzer* _tmp5_ = NULL;
+	ValaSemanticAnalyzer* _tmp6_ = NULL;
+	ValaSourceFile* _tmp7_ = NULL;
+	ValaSourceFile* _tmp8_ = NULL;
+	ValaSourceFile* _tmp9_ = NULL;
+	ValaSymbol* old_symbol = NULL;
+	ValaCodeContext* _tmp10_ = NULL;
+	ValaSemanticAnalyzer* _tmp11_ = NULL;
+	ValaSemanticAnalyzer* _tmp12_ = NULL;
+	ValaSymbol* _tmp13_ = NULL;
+	ValaSymbol* _tmp14_ = NULL;
+	ValaSymbol* _tmp15_ = NULL;
+	ValaSourceReference* _tmp16_ = NULL;
+	ValaSourceReference* _tmp17_ = NULL;
+	ValaCodeContext* _tmp25_ = NULL;
+	ValaSemanticAnalyzer* _tmp26_ = NULL;
+	ValaSemanticAnalyzer* _tmp27_ = NULL;
+	ValaCodeContext* _tmp67_ = NULL;
+	ValaSemanticAnalyzer* _tmp68_ = NULL;
+	ValaSemanticAnalyzer* _tmp69_ = NULL;
+	ValaSourceFile* _tmp70_ = NULL;
+	ValaCodeContext* _tmp71_ = NULL;
+	ValaSemanticAnalyzer* _tmp72_ = NULL;
+	ValaSemanticAnalyzer* _tmp73_ = NULL;
+	ValaSymbol* _tmp74_ = NULL;
+	gboolean _tmp75_ = FALSE;
+	gboolean _tmp76_ = FALSE;
 	self = (ValaEnum*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -1185,13 +1183,13 @@ static gboolean vala_enum_real_check (ValaCodeNode* base, ValaCodeContext* conte
 	_tmp16_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
 	_tmp17_ = _tmp16_;
 	if (_tmp17_ != NULL) {
-		ValaCodeContext* _tmp18_;
-		ValaSemanticAnalyzer* _tmp19_;
-		ValaSemanticAnalyzer* _tmp20_;
-		ValaSourceReference* _tmp21_;
-		ValaSourceReference* _tmp22_;
-		ValaSourceFile* _tmp23_;
-		ValaSourceFile* _tmp24_;
+		ValaCodeContext* _tmp18_ = NULL;
+		ValaSemanticAnalyzer* _tmp19_ = NULL;
+		ValaSemanticAnalyzer* _tmp20_ = NULL;
+		ValaSourceReference* _tmp21_ = NULL;
+		ValaSourceReference* _tmp22_ = NULL;
+		ValaSourceFile* _tmp23_ = NULL;
+		ValaSourceFile* _tmp24_ = NULL;
 		_tmp18_ = context;
 		_tmp19_ = vala_code_context_get_analyzer (_tmp18_);
 		_tmp20_ = _tmp19_;
@@ -1206,14 +1204,14 @@ static gboolean vala_enum_real_check (ValaCodeNode* base, ValaCodeContext* conte
 	_tmp27_ = _tmp26_;
 	vala_semantic_analyzer_set_current_symbol (_tmp27_, (ValaSymbol*) self);
 	{
-		ValaList* _tmp28_;
-		ValaList* _tmp29_;
-		ValaList* _value_list;
-		ValaList* _tmp30_;
-		gint _tmp31_;
-		gint _tmp32_;
-		gint _value_size;
-		gint _value_index;
+		ValaList* _value_list = NULL;
+		ValaList* _tmp28_ = NULL;
+		ValaList* _tmp29_ = NULL;
+		gint _value_size = 0;
+		ValaList* _tmp30_ = NULL;
+		gint _tmp31_ = 0;
+		gint _tmp32_ = 0;
+		gint _value_index = 0;
 		_tmp28_ = self->priv->values;
 		_tmp29_ = _vala_iterable_ref0 (_tmp28_);
 		_value_list = _tmp29_;
@@ -1223,15 +1221,15 @@ static gboolean vala_enum_real_check (ValaCodeNode* base, ValaCodeContext* conte
 		_value_size = _tmp32_;
 		_value_index = -1;
 		while (TRUE) {
-			gint _tmp33_;
-			gint _tmp34_;
-			gint _tmp35_;
-			ValaList* _tmp36_;
-			gint _tmp37_;
+			gint _tmp33_ = 0;
+			gint _tmp34_ = 0;
+			gint _tmp35_ = 0;
+			ValaEnumValue* value = NULL;
+			ValaList* _tmp36_ = NULL;
+			gint _tmp37_ = 0;
 			gpointer _tmp38_ = NULL;
-			ValaEnumValue* value;
-			ValaEnumValue* _tmp39_;
-			ValaCodeContext* _tmp40_;
+			ValaEnumValue* _tmp39_ = NULL;
+			ValaCodeContext* _tmp40_ = NULL;
 			_tmp33_ = _value_index;
 			_value_index = _tmp33_ + 1;
 			_tmp34_ = _value_index;
@@ -1251,14 +1249,14 @@ static gboolean vala_enum_real_check (ValaCodeNode* base, ValaCodeContext* conte
 		_vala_iterable_unref0 (_value_list);
 	}
 	{
-		ValaList* _tmp41_;
-		ValaList* _tmp42_;
-		ValaList* _m_list;
-		ValaList* _tmp43_;
-		gint _tmp44_;
-		gint _tmp45_;
-		gint _m_size;
-		gint _m_index;
+		ValaList* _m_list = NULL;
+		ValaList* _tmp41_ = NULL;
+		ValaList* _tmp42_ = NULL;
+		gint _m_size = 0;
+		ValaList* _tmp43_ = NULL;
+		gint _tmp44_ = 0;
+		gint _tmp45_ = 0;
+		gint _m_index = 0;
 		_tmp41_ = self->priv->methods;
 		_tmp42_ = _vala_iterable_ref0 (_tmp41_);
 		_m_list = _tmp42_;
@@ -1268,15 +1266,15 @@ static gboolean vala_enum_real_check (ValaCodeNode* base, ValaCodeContext* conte
 		_m_size = _tmp45_;
 		_m_index = -1;
 		while (TRUE) {
-			gint _tmp46_;
-			gint _tmp47_;
-			gint _tmp48_;
-			ValaList* _tmp49_;
-			gint _tmp50_;
+			gint _tmp46_ = 0;
+			gint _tmp47_ = 0;
+			gint _tmp48_ = 0;
+			ValaMethod* m = NULL;
+			ValaList* _tmp49_ = NULL;
+			gint _tmp50_ = 0;
 			gpointer _tmp51_ = NULL;
-			ValaMethod* m;
-			ValaMethod* _tmp52_;
-			ValaCodeContext* _tmp53_;
+			ValaMethod* _tmp52_ = NULL;
+			ValaCodeContext* _tmp53_ = NULL;
 			_tmp46_ = _m_index;
 			_m_index = _tmp46_ + 1;
 			_tmp47_ = _m_index;
@@ -1296,14 +1294,14 @@ static gboolean vala_enum_real_check (ValaCodeNode* base, ValaCodeContext* conte
 		_vala_iterable_unref0 (_m_list);
 	}
 	{
-		ValaList* _tmp54_;
-		ValaList* _tmp55_;
-		ValaList* _c_list;
-		ValaList* _tmp56_;
-		gint _tmp57_;
-		gint _tmp58_;
-		gint _c_size;
-		gint _c_index;
+		ValaList* _c_list = NULL;
+		ValaList* _tmp54_ = NULL;
+		ValaList* _tmp55_ = NULL;
+		gint _c_size = 0;
+		ValaList* _tmp56_ = NULL;
+		gint _tmp57_ = 0;
+		gint _tmp58_ = 0;
+		gint _c_index = 0;
 		_tmp54_ = self->priv->constants;
 		_tmp55_ = _vala_iterable_ref0 (_tmp54_);
 		_c_list = _tmp55_;
@@ -1313,15 +1311,15 @@ static gboolean vala_enum_real_check (ValaCodeNode* base, ValaCodeContext* conte
 		_c_size = _tmp58_;
 		_c_index = -1;
 		while (TRUE) {
-			gint _tmp59_;
-			gint _tmp60_;
-			gint _tmp61_;
-			ValaList* _tmp62_;
-			gint _tmp63_;
+			gint _tmp59_ = 0;
+			gint _tmp60_ = 0;
+			gint _tmp61_ = 0;
+			ValaConstant* c = NULL;
+			ValaList* _tmp62_ = NULL;
+			gint _tmp63_ = 0;
 			gpointer _tmp64_ = NULL;
-			ValaConstant* c;
-			ValaConstant* _tmp65_;
-			ValaCodeContext* _tmp66_;
+			ValaConstant* _tmp65_ = NULL;
+			ValaCodeContext* _tmp66_ = NULL;
 			_tmp59_ = _c_index;
 			_c_index = _tmp59_ + 1;
 			_tmp60_ = _c_index;
@@ -1374,15 +1372,15 @@ static gpointer __bool_dup0 (gpointer self) {
 
 gboolean vala_enum_get_is_flags (ValaEnum* self) {
 	gboolean result;
-	gboolean* _tmp0_;
-	gboolean* _tmp5_;
+	gboolean* _tmp0_ = NULL;
+	gboolean* _tmp5_ = NULL;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_is_flags;
 	if (_tmp0_ == NULL) {
 		ValaAttribute* _tmp1_ = NULL;
-		ValaAttribute* _tmp2_;
-		gboolean _tmp3_;
-		gboolean* _tmp4_;
+		ValaAttribute* _tmp2_ = NULL;
+		gboolean _tmp3_ = FALSE;
+		gboolean* _tmp4_ = NULL;
 		_tmp1_ = vala_code_node_get_attribute ((ValaCodeNode*) self, "Flags");
 		_tmp2_ = _tmp1_;
 		_tmp3_ = _tmp2_ != NULL;
@@ -1399,24 +1397,24 @@ gboolean vala_enum_get_is_flags (ValaEnum* self) {
 
 static void vala_enum_class_init (ValaEnumClass * klass) {
 	vala_enum_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_enum_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_enum_finalize;
 	g_type_class_add_private (klass, sizeof (ValaEnumPrivate));
-	VALA_SYMBOL_CLASS (klass)->add_method = vala_enum_real_add_method;
-	VALA_SYMBOL_CLASS (klass)->add_constant = vala_enum_real_add_constant;
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_enum_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_enum_real_accept_children;
-	VALA_TYPESYMBOL_CLASS (klass)->is_reference_type = vala_enum_real_is_reference_type;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_enum_real_check;
+	((ValaSymbolClass *) klass)->add_method = vala_enum_real_add_method;
+	((ValaSymbolClass *) klass)->add_constant = vala_enum_real_add_constant;
+	((ValaCodeNodeClass *) klass)->accept = vala_enum_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_enum_real_accept_children;
+	((ValaTypeSymbolClass *) klass)->is_reference_type = vala_enum_real_is_reference_type;
+	((ValaCodeNodeClass *) klass)->check = vala_enum_real_check;
 }
 
 
 static void vala_enum_instance_init (ValaEnum * self) {
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
-	GEqualFunc _tmp2_;
-	ValaArrayList* _tmp3_;
-	GEqualFunc _tmp4_;
-	ValaArrayList* _tmp5_;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
+	GEqualFunc _tmp2_ = NULL;
+	ValaArrayList* _tmp3_ = NULL;
+	GEqualFunc _tmp4_ = NULL;
+	ValaArrayList* _tmp5_ = NULL;
 	self->priv = VALA_ENUM_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_ENUM_VALUE, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);

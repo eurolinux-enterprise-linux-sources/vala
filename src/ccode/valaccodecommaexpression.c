@@ -153,8 +153,8 @@ static void vala_ccode_comma_expression_finalize (ValaCCodeNode* obj);
  * @param expr a C code expression
  */
 void vala_ccode_comma_expression_append_expression (ValaCCodeCommaExpression* self, ValaCCodeExpression* expr) {
-	ValaList* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (expr != NULL);
 	_tmp0_ = self->priv->inner;
@@ -164,9 +164,9 @@ void vala_ccode_comma_expression_append_expression (ValaCCodeCommaExpression* se
 
 
 void vala_ccode_comma_expression_set_expression (ValaCCodeCommaExpression* self, gint index, ValaCCodeExpression* expr) {
-	ValaList* _tmp0_;
-	gint _tmp1_;
-	ValaCCodeExpression* _tmp2_;
+	ValaList* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	ValaCCodeExpression* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (expr != NULL);
 	_tmp0_ = self->priv->inner;
@@ -183,8 +183,8 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 
 ValaList* vala_ccode_comma_expression_get_inner (ValaCCodeCommaExpression* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->inner;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -195,23 +195,23 @@ ValaList* vala_ccode_comma_expression_get_inner (ValaCCodeCommaExpression* self)
 
 static void vala_ccode_comma_expression_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeCommaExpression * self;
-	gboolean first;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeWriter* _tmp16_;
+	gboolean first = FALSE;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp16_ = NULL;
 	self = (ValaCCodeCommaExpression*) base;
 	g_return_if_fail (writer != NULL);
 	first = TRUE;
 	_tmp0_ = writer;
 	vala_ccode_writer_write_string (_tmp0_, "(");
 	{
-		ValaList* _tmp1_;
-		ValaList* _tmp2_;
-		ValaList* _expr_list;
-		ValaList* _tmp3_;
-		gint _tmp4_;
-		gint _tmp5_;
-		gint _expr_size;
-		gint _expr_index;
+		ValaList* _expr_list = NULL;
+		ValaList* _tmp1_ = NULL;
+		ValaList* _tmp2_ = NULL;
+		gint _expr_size = 0;
+		ValaList* _tmp3_ = NULL;
+		gint _tmp4_ = 0;
+		gint _tmp5_ = 0;
+		gint _expr_index = 0;
 		_tmp1_ = self->priv->inner;
 		_tmp2_ = _vala_iterable_ref0 (_tmp1_);
 		_expr_list = _tmp2_;
@@ -221,16 +221,16 @@ static void vala_ccode_comma_expression_real_write (ValaCCodeNode* base, ValaCCo
 		_expr_size = _tmp5_;
 		_expr_index = -1;
 		while (TRUE) {
-			gint _tmp6_;
-			gint _tmp7_;
-			gint _tmp8_;
-			ValaList* _tmp9_;
-			gint _tmp10_;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			gint _tmp8_ = 0;
+			ValaCCodeExpression* expr = NULL;
+			ValaList* _tmp9_ = NULL;
+			gint _tmp10_ = 0;
 			gpointer _tmp11_ = NULL;
-			ValaCCodeExpression* expr;
-			gboolean _tmp12_;
-			ValaCCodeExpression* _tmp14_;
-			ValaCCodeWriter* _tmp15_;
+			gboolean _tmp12_ = FALSE;
+			ValaCCodeExpression* _tmp14_ = NULL;
+			ValaCCodeWriter* _tmp15_ = NULL;
 			_tmp6_ = _expr_index;
 			_expr_index = _tmp6_ + 1;
 			_tmp7_ = _expr_index;
@@ -244,7 +244,7 @@ static void vala_ccode_comma_expression_real_write (ValaCCodeNode* base, ValaCCo
 			expr = (ValaCCodeExpression*) _tmp11_;
 			_tmp12_ = first;
 			if (!_tmp12_) {
-				ValaCCodeWriter* _tmp13_;
+				ValaCCodeWriter* _tmp13_ = NULL;
 				_tmp13_ = writer;
 				vala_ccode_writer_write_string (_tmp13_, ", ");
 			} else {
@@ -276,15 +276,15 @@ ValaCCodeCommaExpression* vala_ccode_comma_expression_new (void) {
 
 static void vala_ccode_comma_expression_class_init (ValaCCodeCommaExpressionClass * klass) {
 	vala_ccode_comma_expression_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_comma_expression_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_comma_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeCommaExpressionPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_comma_expression_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_comma_expression_real_write;
 }
 
 
 static void vala_ccode_comma_expression_instance_init (ValaCCodeCommaExpression * self) {
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_CCODE_COMMA_EXPRESSION_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_CCODE_EXPRESSION, (GBoxedCopyFunc) vala_ccode_node_ref, vala_ccode_node_unref, _tmp0_);

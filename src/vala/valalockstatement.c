@@ -380,9 +380,9 @@ static void vala_lock_statement_finalize (ValaCodeNode* obj);
 
 ValaLockStatement* vala_lock_statement_construct (GType object_type, ValaExpression* resource, ValaBlock* body, ValaSourceReference* source_reference) {
 	ValaLockStatement* self = NULL;
-	ValaBlock* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaBlock* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_val_if_fail (resource != NULL, NULL);
 	self = (ValaLockStatement*) vala_code_node_construct (object_type);
 	_tmp0_ = body;
@@ -402,10 +402,10 @@ ValaLockStatement* vala_lock_statement_new (ValaExpression* resource, ValaBlock*
 
 static void vala_lock_statement_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaLockStatement * self;
-	ValaExpression* _tmp0_;
-	ValaCodeVisitor* _tmp1_;
-	ValaBlock* _tmp2_;
-	ValaCodeVisitor* _tmp5_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaCodeVisitor* _tmp1_ = NULL;
+	ValaBlock* _tmp2_ = NULL;
+	ValaCodeVisitor* _tmp5_ = NULL;
 	self = (ValaLockStatement*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = self->priv->_resource;
@@ -413,8 +413,8 @@ static void vala_lock_statement_real_accept (ValaCodeNode* base, ValaCodeVisitor
 	vala_code_node_accept ((ValaCodeNode*) _tmp0_, _tmp1_);
 	_tmp2_ = self->priv->_body;
 	if (_tmp2_ != NULL) {
-		ValaBlock* _tmp3_;
-		ValaCodeVisitor* _tmp4_;
+		ValaBlock* _tmp3_ = NULL;
+		ValaCodeVisitor* _tmp4_ = NULL;
 		_tmp3_ = self->priv->_body;
 		_tmp4_ = visitor;
 		vala_code_node_accept ((ValaCodeNode*) _tmp3_, _tmp4_);
@@ -432,68 +432,67 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 static gboolean vala_lock_statement_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaLockStatement * self;
 	gboolean result = FALSE;
-	ValaBlock* _tmp0_;
-	gboolean _tmp34_;
-	gboolean _tmp35_;
-	ValaExpression* _tmp38_;
-	ValaCodeContext* _tmp39_;
+	ValaBlock* _tmp0_ = NULL;
+	gboolean _tmp34_ = FALSE;
+	gboolean _tmp35_ = FALSE;
+	ValaExpression* _tmp38_ = NULL;
+	ValaCodeContext* _tmp39_ = NULL;
 	gboolean _tmp40_ = FALSE;
-	ValaExpression* _tmp41_;
-	gboolean _tmp45_;
-	ValaExpression* _tmp50_;
-	ValaSymbol* _tmp51_;
-	ValaSymbol* _tmp52_;
-	ValaSymbol* _tmp53_;
-	ValaSymbol* _tmp54_;
-	ValaCodeContext* _tmp55_;
-	ValaSemanticAnalyzer* _tmp56_;
-	ValaSemanticAnalyzer* _tmp57_;
-	ValaClass* _tmp58_;
-	ValaClass* _tmp59_;
-	ValaExpression* _tmp64_;
-	ValaSymbol* _tmp65_;
-	ValaSymbol* _tmp66_;
-	gboolean _tmp67_;
-	gboolean _tmp68_;
+	ValaExpression* _tmp41_ = NULL;
+	ValaExpression* _tmp49_ = NULL;
+	ValaSymbol* _tmp50_ = NULL;
+	ValaSymbol* _tmp51_ = NULL;
+	ValaSymbol* _tmp52_ = NULL;
+	ValaSymbol* _tmp53_ = NULL;
+	ValaCodeContext* _tmp54_ = NULL;
+	ValaSemanticAnalyzer* _tmp55_ = NULL;
+	ValaSemanticAnalyzer* _tmp56_ = NULL;
+	ValaClass* _tmp57_ = NULL;
+	ValaClass* _tmp58_ = NULL;
+	ValaExpression* _tmp63_ = NULL;
+	ValaSymbol* _tmp64_ = NULL;
+	ValaSymbol* _tmp65_ = NULL;
+	gboolean _tmp66_ = FALSE;
+	gboolean _tmp67_ = FALSE;
 	self = (ValaLockStatement*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = self->priv->_body;
 	if (_tmp0_ != NULL) {
-		ValaSourceReference* _tmp1_;
-		ValaSourceReference* _tmp2_;
-		ValaBlock* _tmp3_;
-		ValaBlock* fin_body;
-		ValaBlock* _tmp4_;
-		ValaExpression* _tmp5_;
-		ValaSourceReference* _tmp6_;
-		ValaSourceReference* _tmp7_;
-		ValaUnlockStatement* _tmp8_;
-		ValaUnlockStatement* _tmp9_;
-		ValaSourceReference* _tmp10_;
-		ValaSourceReference* _tmp11_;
-		ValaBlock* _tmp12_;
-		ValaBlock* block;
-		ValaBlock* _tmp13_;
-		ValaExpression* _tmp14_;
-		ValaSourceReference* _tmp15_;
-		ValaSourceReference* _tmp16_;
-		ValaLockStatement* _tmp17_;
-		ValaLockStatement* _tmp18_;
-		ValaBlock* _tmp19_;
-		ValaBlock* _tmp20_;
-		ValaBlock* _tmp21_;
-		ValaSourceReference* _tmp22_;
-		ValaSourceReference* _tmp23_;
-		ValaTryStatement* _tmp24_;
-		ValaTryStatement* _tmp25_;
-		ValaCodeNode* _tmp26_;
-		ValaCodeNode* _tmp27_;
-		ValaBlock* _tmp28_;
-		ValaBlock* parent_block;
-		ValaBlock* _tmp29_;
-		ValaBlock* _tmp30_;
-		ValaBlock* _tmp31_;
-		ValaCodeContext* _tmp32_;
+		ValaBlock* fin_body = NULL;
+		ValaSourceReference* _tmp1_ = NULL;
+		ValaSourceReference* _tmp2_ = NULL;
+		ValaBlock* _tmp3_ = NULL;
+		ValaBlock* _tmp4_ = NULL;
+		ValaExpression* _tmp5_ = NULL;
+		ValaSourceReference* _tmp6_ = NULL;
+		ValaSourceReference* _tmp7_ = NULL;
+		ValaUnlockStatement* _tmp8_ = NULL;
+		ValaUnlockStatement* _tmp9_ = NULL;
+		ValaBlock* block = NULL;
+		ValaSourceReference* _tmp10_ = NULL;
+		ValaSourceReference* _tmp11_ = NULL;
+		ValaBlock* _tmp12_ = NULL;
+		ValaBlock* _tmp13_ = NULL;
+		ValaExpression* _tmp14_ = NULL;
+		ValaSourceReference* _tmp15_ = NULL;
+		ValaSourceReference* _tmp16_ = NULL;
+		ValaLockStatement* _tmp17_ = NULL;
+		ValaLockStatement* _tmp18_ = NULL;
+		ValaBlock* _tmp19_ = NULL;
+		ValaBlock* _tmp20_ = NULL;
+		ValaBlock* _tmp21_ = NULL;
+		ValaSourceReference* _tmp22_ = NULL;
+		ValaSourceReference* _tmp23_ = NULL;
+		ValaTryStatement* _tmp24_ = NULL;
+		ValaTryStatement* _tmp25_ = NULL;
+		ValaBlock* parent_block = NULL;
+		ValaCodeNode* _tmp26_ = NULL;
+		ValaCodeNode* _tmp27_ = NULL;
+		ValaBlock* _tmp28_ = NULL;
+		ValaBlock* _tmp29_ = NULL;
+		ValaBlock* _tmp30_ = NULL;
+		ValaBlock* _tmp31_ = NULL;
+		ValaCodeContext* _tmp32_ = NULL;
 		gboolean _tmp33_ = FALSE;
 		_tmp1_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
 		_tmp2_ = _tmp1_;
@@ -547,8 +546,8 @@ static gboolean vala_lock_statement_real_check (ValaCodeNode* base, ValaCodeCont
 	_tmp34_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp35_ = _tmp34_;
 	if (_tmp35_) {
-		gboolean _tmp36_;
-		gboolean _tmp37_;
+		gboolean _tmp36_ = FALSE;
+		gboolean _tmp37_ = FALSE;
 		_tmp36_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp37_ = _tmp36_;
 		result = !_tmp37_;
@@ -560,9 +559,9 @@ static gboolean vala_lock_statement_real_check (ValaCodeNode* base, ValaCodeCont
 	vala_code_node_check ((ValaCodeNode*) _tmp38_, _tmp39_);
 	_tmp41_ = self->priv->_resource;
 	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp41_, VALA_TYPE_MEMBER_ACCESS)) {
-		ValaExpression* _tmp42_;
-		ValaSymbol* _tmp43_;
-		ValaSymbol* _tmp44_;
+		ValaExpression* _tmp42_ = NULL;
+		ValaSymbol* _tmp43_ = NULL;
+		ValaSymbol* _tmp44_ = NULL;
 		_tmp42_ = self->priv->_resource;
 		_tmp43_ = vala_expression_get_symbol_reference (_tmp42_);
 		_tmp44_ = _tmp43_;
@@ -570,62 +569,61 @@ static gboolean vala_lock_statement_real_check (ValaCodeNode* base, ValaCodeCont
 	} else {
 		_tmp40_ = FALSE;
 	}
-	_tmp45_ = _tmp40_;
-	if (!_tmp45_) {
-		ValaExpression* _tmp46_;
-		ValaExpression* _tmp47_;
-		ValaSourceReference* _tmp48_;
-		ValaSourceReference* _tmp49_;
+	if (!_tmp40_) {
+		ValaExpression* _tmp45_ = NULL;
+		ValaExpression* _tmp46_ = NULL;
+		ValaSourceReference* _tmp47_ = NULL;
+		ValaSourceReference* _tmp48_ = NULL;
 		vala_code_node_set_error ((ValaCodeNode*) self, TRUE);
+		_tmp45_ = self->priv->_resource;
+		vala_code_node_set_error ((ValaCodeNode*) _tmp45_, TRUE);
 		_tmp46_ = self->priv->_resource;
-		vala_code_node_set_error ((ValaCodeNode*) _tmp46_, TRUE);
-		_tmp47_ = self->priv->_resource;
-		_tmp48_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp47_);
-		_tmp49_ = _tmp48_;
-		vala_report_error (_tmp49_, "Expression is either not a member access or does not denote a lockable" \
+		_tmp47_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp46_);
+		_tmp48_ = _tmp47_;
+		vala_report_error (_tmp48_, "Expression is either not a member access or does not denote a lockable" \
 " member");
 		result = FALSE;
 		return result;
 	}
-	_tmp50_ = self->priv->_resource;
-	_tmp51_ = vala_expression_get_symbol_reference (_tmp50_);
-	_tmp52_ = _tmp51_;
-	_tmp53_ = vala_symbol_get_parent_symbol (_tmp52_);
-	_tmp54_ = _tmp53_;
-	_tmp55_ = context;
-	_tmp56_ = vala_code_context_get_analyzer (_tmp55_);
-	_tmp57_ = _tmp56_;
-	_tmp58_ = vala_semantic_analyzer_get_current_class (_tmp57_);
-	_tmp59_ = _tmp58_;
-	if (_tmp54_ != G_TYPE_CHECK_INSTANCE_CAST (_tmp59_, VALA_TYPE_SYMBOL, ValaSymbol)) {
-		ValaExpression* _tmp60_;
-		ValaExpression* _tmp61_;
-		ValaSourceReference* _tmp62_;
-		ValaSourceReference* _tmp63_;
+	_tmp49_ = self->priv->_resource;
+	_tmp50_ = vala_expression_get_symbol_reference (_tmp49_);
+	_tmp51_ = _tmp50_;
+	_tmp52_ = vala_symbol_get_parent_symbol (_tmp51_);
+	_tmp53_ = _tmp52_;
+	_tmp54_ = context;
+	_tmp55_ = vala_code_context_get_analyzer (_tmp54_);
+	_tmp56_ = _tmp55_;
+	_tmp57_ = vala_semantic_analyzer_get_current_class (_tmp56_);
+	_tmp58_ = _tmp57_;
+	if (_tmp53_ != G_TYPE_CHECK_INSTANCE_CAST (_tmp58_, VALA_TYPE_SYMBOL, ValaSymbol)) {
+		ValaExpression* _tmp59_ = NULL;
+		ValaExpression* _tmp60_ = NULL;
+		ValaSourceReference* _tmp61_ = NULL;
+		ValaSourceReference* _tmp62_ = NULL;
 		vala_code_node_set_error ((ValaCodeNode*) self, TRUE);
+		_tmp59_ = self->priv->_resource;
+		vala_code_node_set_error ((ValaCodeNode*) _tmp59_, TRUE);
 		_tmp60_ = self->priv->_resource;
-		vala_code_node_set_error ((ValaCodeNode*) _tmp60_, TRUE);
-		_tmp61_ = self->priv->_resource;
-		_tmp62_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp61_);
-		_tmp63_ = _tmp62_;
-		vala_report_error (_tmp63_, "Only members of the current class are lockable");
+		_tmp61_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp60_);
+		_tmp62_ = _tmp61_;
+		vala_report_error (_tmp62_, "Only members of the current class are lockable");
 	}
-	_tmp64_ = self->priv->_resource;
-	_tmp65_ = vala_expression_get_symbol_reference (_tmp64_);
-	_tmp66_ = _tmp65_;
-	vala_lockable_set_lock_used (G_TYPE_CHECK_INSTANCE_CAST (_tmp66_, VALA_TYPE_LOCKABLE, ValaLockable), TRUE);
-	_tmp67_ = vala_code_node_get_error ((ValaCodeNode*) self);
-	_tmp68_ = _tmp67_;
-	result = !_tmp68_;
+	_tmp63_ = self->priv->_resource;
+	_tmp64_ = vala_expression_get_symbol_reference (_tmp63_);
+	_tmp65_ = _tmp64_;
+	vala_lockable_set_lock_used (G_TYPE_CHECK_INSTANCE_CAST (_tmp65_, VALA_TYPE_LOCKABLE, ValaLockable), TRUE);
+	_tmp66_ = vala_code_node_get_error ((ValaCodeNode*) self);
+	_tmp67_ = _tmp66_;
+	result = !_tmp67_;
 	return result;
 }
 
 
 static void vala_lock_statement_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaLockStatement * self;
-	ValaExpression* _tmp0_;
-	ValaCodeGenerator* _tmp1_;
-	ValaCodeGenerator* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaCodeGenerator* _tmp1_ = NULL;
+	ValaCodeGenerator* _tmp2_ = NULL;
 	self = (ValaLockStatement*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = self->priv->_resource;
@@ -638,7 +636,7 @@ static void vala_lock_statement_real_emit (ValaCodeNode* base, ValaCodeGenerator
 
 ValaExpression* vala_lock_statement_get_resource (ValaLockStatement* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_resource;
 	result = _tmp0_;
@@ -647,8 +645,8 @@ ValaExpression* vala_lock_statement_get_resource (ValaLockStatement* self) {
 
 
 void vala_lock_statement_set_resource (ValaLockStatement* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -659,7 +657,7 @@ void vala_lock_statement_set_resource (ValaLockStatement* self, ValaExpression* 
 
 ValaBlock* vala_lock_statement_get_body (ValaLockStatement* self) {
 	ValaBlock* result;
-	ValaBlock* _tmp0_;
+	ValaBlock* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_body;
 	result = _tmp0_;
@@ -668,8 +666,8 @@ ValaBlock* vala_lock_statement_get_body (ValaLockStatement* self) {
 
 
 void vala_lock_statement_set_body (ValaLockStatement* self, ValaBlock* value) {
-	ValaBlock* _tmp0_;
-	ValaBlock* _tmp1_;
+	ValaBlock* _tmp0_ = NULL;
+	ValaBlock* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -680,11 +678,11 @@ void vala_lock_statement_set_body (ValaLockStatement* self, ValaBlock* value) {
 
 static void vala_lock_statement_class_init (ValaLockStatementClass * klass) {
 	vala_lock_statement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_lock_statement_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_lock_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaLockStatementPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_lock_statement_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_lock_statement_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_lock_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_lock_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->check = vala_lock_statement_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_lock_statement_real_emit;
 }
 
 

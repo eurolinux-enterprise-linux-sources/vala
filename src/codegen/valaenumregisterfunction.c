@@ -131,8 +131,8 @@ static void vala_enum_register_function_finalize (ValaTypeRegisterFunction* obj)
  */
 ValaEnumRegisterFunction* vala_enum_register_function_construct (GType object_type, ValaEnum* en, ValaCodeContext* context) {
 	ValaEnumRegisterFunction* self = NULL;
-	ValaEnum* _tmp0_;
-	ValaCodeContext* _tmp1_;
+	ValaEnum* _tmp0_ = NULL;
+	ValaCodeContext* _tmp1_ = NULL;
 	g_return_val_if_fail (en != NULL, NULL);
 	g_return_val_if_fail (context != NULL, NULL);
 	self = (ValaEnumRegisterFunction*) vala_typeregister_function_construct (object_type);
@@ -157,8 +157,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 static ValaTypeSymbol* vala_enum_register_function_real_get_type_declaration (ValaTypeRegisterFunction* base) {
 	ValaEnumRegisterFunction * self;
 	ValaTypeSymbol* result = NULL;
-	ValaEnum* _tmp0_;
-	ValaTypeSymbol* _tmp1_;
+	ValaEnum* _tmp0_ = NULL;
+	ValaTypeSymbol* _tmp1_ = NULL;
 	self = (ValaEnumRegisterFunction*) base;
 	_tmp0_ = self->priv->_enum_reference;
 	_tmp1_ = _vala_code_node_ref0 ((ValaTypeSymbol*) _tmp0_);
@@ -170,9 +170,9 @@ static ValaTypeSymbol* vala_enum_register_function_real_get_type_declaration (Va
 static ValaSymbolAccessibility vala_enum_register_function_real_get_accessibility (ValaTypeRegisterFunction* base) {
 	ValaEnumRegisterFunction * self;
 	ValaSymbolAccessibility result = 0;
-	ValaEnum* _tmp0_;
-	ValaSymbolAccessibility _tmp1_;
-	ValaSymbolAccessibility _tmp2_;
+	ValaEnum* _tmp0_ = NULL;
+	ValaSymbolAccessibility _tmp1_ = 0;
+	ValaSymbolAccessibility _tmp2_ = 0;
 	self = (ValaEnumRegisterFunction*) base;
 	_tmp0_ = self->priv->_enum_reference;
 	_tmp1_ = vala_symbol_get_access ((ValaSymbol*) _tmp0_);
@@ -184,7 +184,7 @@ static ValaSymbolAccessibility vala_enum_register_function_real_get_accessibilit
 
 ValaEnum* vala_enum_register_function_get_enum_reference (ValaEnumRegisterFunction* self) {
 	ValaEnum* result;
-	ValaEnum* _tmp0_;
+	ValaEnum* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_enum_reference;
 	result = _tmp0_;
@@ -193,7 +193,7 @@ ValaEnum* vala_enum_register_function_get_enum_reference (ValaEnumRegisterFuncti
 
 
 void vala_enum_register_function_set_enum_reference (ValaEnumRegisterFunction* self, ValaEnum* value) {
-	ValaEnum* _tmp0_;
+	ValaEnum* _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_enum_reference = _tmp0_;
@@ -202,10 +202,10 @@ void vala_enum_register_function_set_enum_reference (ValaEnumRegisterFunction* s
 
 static void vala_enum_register_function_class_init (ValaEnumRegisterFunctionClass * klass) {
 	vala_enum_register_function_parent_class = g_type_class_peek_parent (klass);
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->finalize = vala_enum_register_function_finalize;
+	((ValaTypeRegisterFunctionClass *) klass)->finalize = vala_enum_register_function_finalize;
 	g_type_class_add_private (klass, sizeof (ValaEnumRegisterFunctionPrivate));
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_type_declaration = vala_enum_register_function_real_get_type_declaration;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_accessibility = vala_enum_register_function_real_get_accessibility;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_declaration = vala_enum_register_function_real_get_type_declaration;
+	((ValaTypeRegisterFunctionClass *) klass)->get_accessibility = vala_enum_register_function_real_get_accessibility;
 }
 
 

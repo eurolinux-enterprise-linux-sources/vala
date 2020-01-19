@@ -2,7 +2,7 @@
 
 [CCode (cprefix = "Json", gir_namespace = "Json", gir_version = "1.0", lower_case_cprefix = "json_")]
 namespace Json {
-	[CCode (cheader_filename = "json-glib/json-glib.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "json_array_get_type ()")]
+	[CCode (cheader_filename = "json-glib/json-glib.h", ref_function = "json_array_ref", type_id = "json_array_get_type ()", unref_function = "json_array_unref")]
 	[Compact]
 	public class Array {
 		[CCode (has_construct_function = false)]
@@ -27,7 +27,7 @@ namespace Json {
 		public bool get_null_element (uint index_);
 		public unowned Json.Object get_object_element (uint index_);
 		public unowned string get_string_element (uint index_);
-		public Json.Array @ref ();
+		public unowned Json.Array @ref ();
 		public void remove_element (uint index_);
 		[CCode (cname = "json_array_sized_new", has_construct_function = false)]
 		public Array.sized (uint n_elements);
@@ -76,7 +76,8 @@ namespace Json {
 	public class Node {
 		[CCode (has_construct_function = false)]
 		public Node (Json.NodeType type);
-		public static Json.Node alloc ();
+		[CCode (cname = "json_node_alloc", has_construct_function = false)]
+		public Node.alloc ();
 		public Json.Node copy ();
 		public Json.Array dup_array ();
 		public Json.Object dup_object ();
@@ -113,7 +114,7 @@ namespace Json {
 		public void take_object (owned Json.Object object);
 		public unowned string type_name ();
 	}
-	[CCode (cheader_filename = "json-glib/json-glib.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "json_object_get_type ()")]
+	[CCode (cheader_filename = "json-glib/json-glib.h", ref_function = "json_object_ref", type_id = "json_object_get_type ()", unref_function = "json_object_unref")]
 	[Compact]
 	public class Object {
 		[CCode (has_construct_function = false)]
@@ -134,7 +135,7 @@ namespace Json {
 		public unowned string get_string_member (string member_name);
 		public GLib.List<weak Json.Node> get_values ();
 		public bool has_member (string member_name);
-		public Json.Object @ref ();
+		public unowned Json.Object @ref ();
 		public void remove_member (string member_name);
 		public void set_array_member (string member_name, owned Json.Array value);
 		public void set_boolean_member (string member_name, bool value);
@@ -150,7 +151,6 @@ namespace Json {
 	public class Parser : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Parser ();
-		public static GLib.Quark error_quark ();
 		public uint get_current_line ();
 		public uint get_current_pos ();
 		public unowned Json.Node? get_root ();
@@ -174,7 +174,6 @@ namespace Json {
 		[CCode (has_construct_function = false)]
 		public Path ();
 		public bool compile (string expression) throws GLib.Error;
-		public static GLib.Quark error_quark ();
 		public Json.Node match (Json.Node root);
 		public static Json.Node query (string expression, Json.Node root) throws GLib.Error;
 	}
@@ -186,7 +185,6 @@ namespace Json {
 		public int count_members ();
 		public void end_element ();
 		public void end_member ();
-		public static GLib.Quark error_quark ();
 		public bool get_boolean_value ();
 		public double get_double_value ();
 		public unowned GLib.Error get_error ();
@@ -218,37 +216,40 @@ namespace Json {
 		public abstract Json.Node serialize_property (string property_name, GLib.Value value, GLib.ParamSpec pspec);
 		public abstract void set_property (GLib.ParamSpec pspec, GLib.Value value);
 	}
-	[CCode (cheader_filename = "json-glib/json-glib.h", cprefix = "JSON_NODE_", has_type_id = false)]
+	[CCode (cheader_filename = "json-glib/json-glib.h", cprefix = "JSON_NODE_", type_id = "json_node_type_get_type ()")]
 	public enum NodeType {
 		OBJECT,
 		ARRAY,
 		VALUE,
 		NULL
 	}
-	[CCode (cheader_filename = "json-glib/json-glib.h", cprefix = "JSON_PARSER_ERROR_", has_type_id = false)]
-	public enum ParserError {
+	[CCode (cheader_filename = "json-glib/json-glib.h", cprefix = "JSON_PARSER_ERROR_")]
+	public errordomain ParserError {
 		PARSE,
 		TRAILING_COMMA,
 		MISSING_COMMA,
 		MISSING_COLON,
 		INVALID_BAREWORD,
 		EMPTY_MEMBER_NAME,
-		UNKNOWN
+		INVALID_DATA,
+		UNKNOWN;
+		public static GLib.Quark quark ();
 	}
-	[CCode (cheader_filename = "json-glib/json-glib.h", cprefix = "JSON_PATH_ERROR_INVALID_", has_type_id = false)]
-	public enum PathError {
-		[CCode (cname = "JSON_PATH_ERROR_INVALID_QUERY")]
-		PATH_ERROR_INVALID_QUERY
+	[CCode (cheader_filename = "json-glib/json-glib.h", cprefix = "JSON_PATH_ERROR_INVALID_")]
+	public errordomain PathError {
+		QUERY;
+		public static GLib.Quark quark ();
 	}
-	[CCode (cheader_filename = "json-glib/json-glib.h", cprefix = "JSON_READER_ERROR_", has_type_id = false)]
-	public enum ReaderError {
+	[CCode (cheader_filename = "json-glib/json-glib.h", cprefix = "JSON_READER_ERROR_")]
+	public errordomain ReaderError {
 		NO_ARRAY,
 		INVALID_INDEX,
 		NO_OBJECT,
 		INVALID_MEMBER,
 		INVALID_NODE,
 		NO_VALUE,
-		INVALID_TYPE
+		INVALID_TYPE;
+		public static GLib.Quark quark ();
 	}
 	[CCode (cheader_filename = "json-glib/json-glib.h", instance_pos = 3.9)]
 	public delegate void ArrayForeach (Json.Array array, uint index_, Json.Node element_node);
@@ -258,15 +259,15 @@ namespace Json {
 	public delegate Json.Node BoxedSerializeFunc (void* boxed);
 	[CCode (cheader_filename = "json-glib/json-glib.h", instance_pos = 3.9)]
 	public delegate void ObjectForeach (Json.Object object, string member_name, Json.Node member_node);
-	[CCode (cheader_filename = "json-glib/json-glib.h")]
+	[CCode (cheader_filename = "json-glib/json-glib.h", cname = "JSON_MAJOR_VERSION")]
 	public const int MAJOR_VERSION;
-	[CCode (cheader_filename = "json-glib/json-glib.h")]
+	[CCode (cheader_filename = "json-glib/json-glib.h", cname = "JSON_MICRO_VERSION")]
 	public const int MICRO_VERSION;
-	[CCode (cheader_filename = "json-glib/json-glib.h")]
+	[CCode (cheader_filename = "json-glib/json-glib.h", cname = "JSON_MINOR_VERSION")]
 	public const int MINOR_VERSION;
 	[CCode (cheader_filename = "json-glib/json-glib.h")]
 	public const int VERSION_HEX;
-	[CCode (cheader_filename = "json-glib/json-glib.h")]
+	[CCode (cheader_filename = "json-glib/json-glib.h", cname = "JSON_VERSION_S")]
 	public const string VERSION_S;
 	[CCode (cheader_filename = "json-glib/json-glib.h")]
 	public static bool boxed_can_deserialize (GLib.Type gboxed_type, Json.NodeType node_type);
@@ -291,10 +292,10 @@ namespace Json {
 	public static Json.Node gobject_serialize (GLib.Object gobject);
 	[CCode (cheader_filename = "json-glib/json-glib.h")]
 	public static string gobject_to_data (GLib.Object gobject, out size_t length);
-	[CCode (cheader_filename = "json-glib/json-glib.h")]
-	public static unowned GLib.Variant gvariant_deserialize (Json.Node json_node, string? signature) throws GLib.Error;
-	[CCode (cheader_filename = "json-glib/json-glib.h")]
-	public static unowned GLib.Variant gvariant_deserialize_data (string json, ssize_t length, string? signature) throws GLib.Error;
+	[CCode (cheader_filename = "json-glib/json-glib.h", returns_floating_reference = true)]
+	public static GLib.Variant gvariant_deserialize (Json.Node json_node, string? signature) throws GLib.Error;
+	[CCode (cheader_filename = "json-glib/json-glib.h", returns_floating_reference = true)]
+	public static GLib.Variant gvariant_deserialize_data (string json, ssize_t length, string? signature) throws GLib.Error;
 	[CCode (cheader_filename = "json-glib/json-glib.h")]
 	public static Json.Node gvariant_serialize (GLib.Variant variant);
 	[CCode (cheader_filename = "json-glib/json-glib.h")]

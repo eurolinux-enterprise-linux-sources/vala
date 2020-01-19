@@ -440,16 +440,16 @@ void vala_value_take_map (GValue* value, gpointer v_object) {
 
 static void vala_map_class_init (ValaMapClass * klass) {
 	vala_map_parent_class = g_type_class_peek_parent (klass);
-	VALA_MAP_CLASS (klass)->finalize = vala_map_finalize;
+	((ValaMapClass *) klass)->finalize = vala_map_finalize;
 	g_type_class_add_private (klass, sizeof (ValaMapPrivate));
-	VALA_MAP_CLASS (klass)->get_keys = vala_map_real_get_keys;
-	VALA_MAP_CLASS (klass)->get_values = vala_map_real_get_values;
-	VALA_MAP_CLASS (klass)->contains = vala_map_real_contains;
-	VALA_MAP_CLASS (klass)->get = vala_map_real_get;
-	VALA_MAP_CLASS (klass)->set = vala_map_real_set;
-	VALA_MAP_CLASS (klass)->remove = vala_map_real_remove;
-	VALA_MAP_CLASS (klass)->clear = vala_map_real_clear;
-	VALA_MAP_CLASS (klass)->map_iterator = vala_map_real_map_iterator;
+	((ValaMapClass *) klass)->get_keys = vala_map_real_get_keys;
+	((ValaMapClass *) klass)->get_values = vala_map_real_get_values;
+	((ValaMapClass *) klass)->contains = vala_map_real_contains;
+	((ValaMapClass *) klass)->get = vala_map_real_get;
+	((ValaMapClass *) klass)->set = vala_map_real_set;
+	((ValaMapClass *) klass)->remove = vala_map_real_remove;
+	((ValaMapClass *) klass)->clear = vala_map_real_clear;
+	((ValaMapClass *) klass)->map_iterator = vala_map_real_map_iterator;
 }
 
 
@@ -462,6 +462,7 @@ static void vala_map_instance_init (ValaMap * self) {
 static void vala_map_finalize (ValaMap* obj) {
 	ValaMap * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_MAP, ValaMap);
+	g_signal_handlers_destroy (self);
 }
 
 

@@ -1,9 +1,9 @@
 [CCode (cprefix = "FTDI_", lower_case_prefix = "ftdi_", cheader_filename = "ftdi.h")]
 namespace FTDI {
-	
+
 	public const int DEFAULT_EEPROM_SIZE;
-	
-	[CCode (cname = "enum ftdi_chip_type", cprefix = "TYPE_")]
+
+	[CCode (cname = "enum ftdi_chip_type", cprefix = "TYPE_", has_type_id = false)]
 	public enum ChipType {
 		AM,
 		BM,
@@ -11,7 +11,7 @@ namespace FTDI {
 		R
 	}
 
-	[CCode (cname = "enum ftdi_parity_type", cprefix = "")]
+	[CCode (cname = "enum ftdi_parity_type", cprefix = "", has_type_id = false)]
 	public enum ParityType {
 		NONE,
 		ODD,
@@ -20,26 +20,26 @@ namespace FTDI {
 		SPACE
 	}
 
-	[CCode (cname = "enum ftdi_stopbits_type", cprefix = "STOP_")]
+	[CCode (cname = "enum ftdi_stopbits_type", cprefix = "STOP_", has_type_id = false)]
 	public enum StopBitsType {
 		BIT_1,
 		BIT_15,
 		BIT_2
 	}
 
-	[CCode (cname = "enum ftdi_bits_type", cprefix = "")]
+	[CCode (cname = "enum ftdi_bits_type", cprefix = "", has_type_id = false)]
 	public enum BitsType {
 		BITS_7,
 		BITS_8
 	}
-	
-	[CCode (cname = "enum ftdi_break_type", cprefix="BREAK_")]
+
+	[CCode (cname = "enum ftdi_break_type", cprefix="BREAK_", has_type_id = false)]
 	public enum BreakType {
 		OFF,
 		ON,
 	}
 
-	[CCode (cprefix = "BITMODE_", cname = "ftdi_mpsse_mode")]
+	[CCode (cprefix = "BITMODE_", cname = "ftdi_mpsse_mode", has_type_id = false)]
 	public enum MPSSEMode {
 		RESET,
 		BITBANG,
@@ -50,7 +50,7 @@ namespace FTDI {
 		CBUS
 	}
 
-	[CCode (cname = "enum ftdi_interface", cprefix = "INTERFACE_")]
+	[CCode (cname = "enum ftdi_interface", cprefix = "INTERFACE_", has_type_id = false)]
 	public enum Interface {
 		ANY,
 		A,
@@ -67,7 +67,7 @@ namespace FTDI {
 		public const int DO_READ;
 		public const int WRITE_TMS;
 	}
-	
+
 	[CCode (cprefix="")]
 	namespace MPSSECommands {
 		public const int SET_BITS_LOW;
@@ -81,10 +81,10 @@ namespace FTDI {
 		public const int WAIT_ON_HIGH;
 		public const int WAIT_ON_LOW;
 	}
-	
+
 	[CCode (cname="DIV_VALUE")]
 	public int div_value (int rate);
-		
+
 	[CCode (cprefix="")]
 	namespace HostEmultationModeCommands {
 		public const int SEND_IMMEDIATE;
@@ -95,7 +95,7 @@ namespace FTDI {
 		public const int WRITE_SHORT;
 		public const int WRITE_EXTENDED;
 	}
-	
+
 	[CCode (cprefix="SIO_")]
 	public const int RESET;
 	[CCode (cprefix="SIO_")]
@@ -152,16 +152,16 @@ namespace FTDI {
 	public const int SET_RTS_HIGH;
 	[CCode (cprefix="SIO_")]
 	public const int SET_RTS_LOW;
-	
+
 	public const int URB_USERCONTEXT_COOKIE;
-	
-	[CCode (cname = "struct ftdi_device_list", destroy_function = "ftdi_list_free")]
+
+	[CCode (cname = "struct ftdi_device_list", destroy_function = "ftdi_list_free", has_type_id = false)]
 	public struct DeviceList {
 		public DeviceList* next;
 		public USB.Device* dev;
 	}
 
-	[CCode (cname = "struct ftdi_eeprom", cprefix="ftdi_eeprom_")]
+	[CCode (cname = "struct ftdi_eeprom", cprefix="ftdi_eeprom_", has_type_id = false)]
 	public struct EEPROM {
 		public int vendor_id;
 		public int product_id;
@@ -234,7 +234,7 @@ namespace FTDI {
 		public int write_eeprom ([CCode (array_length = false)] uchar[] eeprom);
 		public int erase_eeprom ();
 		public unowned string get_error_string ();
-		
+
 		public USB.DeviceHandle usb_dev;
 		public int usb_read_timeout;
 		public int usb_write_timeout;

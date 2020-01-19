@@ -260,9 +260,9 @@ static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify 
 
 ValaHashSet* vala_hash_set_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GHashFunc hash_func, GEqualFunc equal_func) {
 	ValaHashSet* self = NULL;
-	GHashFunc _tmp0_;
-	GEqualFunc _tmp1_;
-	gint _tmp2_;
+	GHashFunc _tmp0_ = NULL;
+	GEqualFunc _tmp1_ = NULL;
+	gint _tmp2_ = 0;
 	ValaHashSetNode** _tmp3_ = NULL;
 	self = (ValaHashSet*) vala_set_construct (object_type, g_type, (GBoxedCopyFunc) g_dup_func, g_destroy_func);
 	self->priv->g_type = g_type;
@@ -290,16 +290,16 @@ ValaHashSet* vala_hash_set_new (GType g_type, GBoxedCopyFunc g_dup_func, GDestro
 
 static ValaHashSetNode** vala_hash_set_lookup_node (ValaHashSet* self, gconstpointer key) {
 	ValaHashSetNode** result = NULL;
-	GHashFunc _tmp0_;
-	gconstpointer _tmp1_;
+	guint hash_value = 0U;
+	GHashFunc _tmp0_ = NULL;
+	gconstpointer _tmp1_ = NULL;
 	guint _tmp2_ = 0U;
-	guint hash_value;
-	ValaHashSetNode** _tmp3_;
-	gint _tmp3__length1;
-	guint _tmp4_;
-	gint _tmp5_;
-	ValaHashSetNode** node;
-	ValaHashSetNode** _tmp20_;
+	ValaHashSetNode** node = NULL;
+	ValaHashSetNode** _tmp3_ = NULL;
+	gint _tmp3__length1 = 0;
+	guint _tmp4_ = 0U;
+	gint _tmp5_ = 0;
+	ValaHashSetNode** _tmp18_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_hash_func;
 	_tmp1_ = key;
@@ -312,26 +312,24 @@ static ValaHashSetNode** vala_hash_set_lookup_node (ValaHashSet* self, gconstpoi
 	node = &_tmp3_[_tmp4_ % _tmp5_];
 	while (TRUE) {
 		gboolean _tmp6_ = FALSE;
-		ValaHashSetNode** _tmp7_;
-		gboolean _tmp18_;
-		ValaHashSetNode** _tmp19_;
+		ValaHashSetNode** _tmp7_ = NULL;
+		ValaHashSetNode** _tmp17_ = NULL;
 		_tmp7_ = node;
 		if ((*_tmp7_) != NULL) {
 			gboolean _tmp8_ = FALSE;
-			guint _tmp9_;
-			ValaHashSetNode** _tmp10_;
-			guint _tmp11_;
-			gboolean _tmp17_;
+			guint _tmp9_ = 0U;
+			ValaHashSetNode** _tmp10_ = NULL;
+			guint _tmp11_ = 0U;
 			_tmp9_ = hash_value;
 			_tmp10_ = node;
 			_tmp11_ = (*_tmp10_)->key_hash;
 			if (_tmp9_ != _tmp11_) {
 				_tmp8_ = TRUE;
 			} else {
-				GEqualFunc _tmp12_;
-				ValaHashSetNode** _tmp13_;
-				gconstpointer _tmp14_;
-				gconstpointer _tmp15_;
+				GEqualFunc _tmp12_ = NULL;
+				ValaHashSetNode** _tmp13_ = NULL;
+				gconstpointer _tmp14_ = NULL;
+				gconstpointer _tmp15_ = NULL;
 				gboolean _tmp16_ = FALSE;
 				_tmp12_ = self->priv->_equal_func;
 				_tmp13_ = node;
@@ -340,20 +338,18 @@ static ValaHashSetNode** vala_hash_set_lookup_node (ValaHashSet* self, gconstpoi
 				_tmp16_ = _tmp12_ (_tmp14_, _tmp15_);
 				_tmp8_ = !_tmp16_;
 			}
-			_tmp17_ = _tmp8_;
-			_tmp6_ = _tmp17_;
+			_tmp6_ = _tmp8_;
 		} else {
 			_tmp6_ = FALSE;
 		}
-		_tmp18_ = _tmp6_;
-		if (!_tmp18_) {
+		if (!_tmp6_) {
 			break;
 		}
-		_tmp19_ = node;
-		node = &(*_tmp19_)->next;
+		_tmp17_ = node;
+		node = &(*_tmp17_)->next;
 	}
-	_tmp20_ = node;
-	result = _tmp20_;
+	_tmp18_ = node;
+	result = _tmp18_;
 	return result;
 }
 
@@ -361,9 +357,9 @@ static ValaHashSetNode** vala_hash_set_lookup_node (ValaHashSet* self, gconstpoi
 static gboolean vala_hash_set_real_contains (ValaCollection* base, gconstpointer key) {
 	ValaHashSet * self;
 	gboolean result = FALSE;
-	gconstpointer _tmp0_;
+	ValaHashSetNode** node = NULL;
+	gconstpointer _tmp0_ = NULL;
 	ValaHashSetNode** _tmp1_ = NULL;
-	ValaHashSetNode** node;
 	self = (ValaHashSet*) base;
 	_tmp0_ = key;
 	_tmp1_ = vala_hash_set_lookup_node (self, _tmp0_);
@@ -385,7 +381,7 @@ static GType vala_hash_set_real_get_element_type (ValaIterable* base) {
 static ValaIterator* vala_hash_set_real_iterator (ValaIterable* base) {
 	ValaHashSet * self;
 	ValaIterator* result = NULL;
-	ValaHashSetIterator* _tmp0_;
+	ValaHashSetIterator* _tmp0_ = NULL;
 	self = (ValaHashSet*) base;
 	_tmp0_ = vala_hash_set_iterator_new (self->priv->g_type, (GBoxedCopyFunc) self->priv->g_dup_func, self->priv->g_destroy_func, self);
 	result = (ValaIterator*) _tmp0_;
@@ -396,10 +392,10 @@ static ValaIterator* vala_hash_set_real_iterator (ValaIterable* base) {
 static gboolean vala_hash_set_real_add (ValaCollection* base, gconstpointer key) {
 	ValaHashSet * self;
 	gboolean result = FALSE;
-	gconstpointer _tmp0_;
+	ValaHashSetNode** node = NULL;
+	gconstpointer _tmp0_ = NULL;
 	ValaHashSetNode** _tmp1_ = NULL;
-	ValaHashSetNode** node;
-	ValaHashSetNode** _tmp2_;
+	ValaHashSetNode** _tmp2_ = NULL;
 	self = (ValaHashSet*) base;
 	_tmp0_ = key;
 	_tmp1_ = vala_hash_set_lookup_node (self, _tmp0_);
@@ -409,18 +405,18 @@ static gboolean vala_hash_set_real_add (ValaCollection* base, gconstpointer key)
 		result = FALSE;
 		return result;
 	} else {
-		GHashFunc _tmp3_;
-		gconstpointer _tmp4_;
+		guint hash_value = 0U;
+		GHashFunc _tmp3_ = NULL;
+		gconstpointer _tmp4_ = NULL;
 		guint _tmp5_ = 0U;
-		guint hash_value;
-		ValaHashSetNode** _tmp6_;
-		gconstpointer _tmp7_;
-		gpointer _tmp8_;
-		guint _tmp9_;
-		ValaHashSetNode* _tmp10_;
-		ValaHashSetNode* _tmp11_;
-		gint _tmp12_;
-		gint _tmp13_;
+		ValaHashSetNode** _tmp6_ = NULL;
+		gconstpointer _tmp7_ = NULL;
+		gpointer _tmp8_ = NULL;
+		guint _tmp9_ = 0U;
+		ValaHashSetNode* _tmp10_ = NULL;
+		ValaHashSetNode* _tmp11_ = NULL;
+		gint _tmp12_ = 0;
+		gint _tmp13_ = 0;
 		_tmp3_ = self->priv->_hash_func;
 		_tmp4_ = key;
 		_tmp5_ = _tmp3_ (_tmp4_);
@@ -446,26 +442,26 @@ static gboolean vala_hash_set_real_add (ValaCollection* base, gconstpointer key)
 static gboolean vala_hash_set_real_remove (ValaCollection* base, gconstpointer key) {
 	ValaHashSet * self;
 	gboolean result = FALSE;
-	gconstpointer _tmp0_;
+	ValaHashSetNode** node = NULL;
+	gconstpointer _tmp0_ = NULL;
 	ValaHashSetNode** _tmp1_ = NULL;
-	ValaHashSetNode** node;
-	ValaHashSetNode** _tmp2_;
+	ValaHashSetNode** _tmp2_ = NULL;
 	self = (ValaHashSet*) base;
 	_tmp0_ = key;
 	_tmp1_ = vala_hash_set_lookup_node (self, _tmp0_);
 	node = _tmp1_;
 	_tmp2_ = node;
 	if ((*_tmp2_) != NULL) {
-		ValaHashSetNode** _tmp3_;
-		ValaHashSetNode* _tmp4_;
-		ValaHashSetNode* next;
-		ValaHashSetNode** _tmp5_;
-		ValaHashSetNode** _tmp6_;
-		ValaHashSetNode** _tmp7_;
-		ValaHashSetNode* _tmp8_;
-		ValaHashSetNode* _tmp9_;
-		gint _tmp10_;
-		gint _tmp11_;
+		ValaHashSetNode* next = NULL;
+		ValaHashSetNode** _tmp3_ = NULL;
+		ValaHashSetNode* _tmp4_ = NULL;
+		ValaHashSetNode** _tmp5_ = NULL;
+		ValaHashSetNode** _tmp6_ = NULL;
+		ValaHashSetNode** _tmp7_ = NULL;
+		ValaHashSetNode* _tmp8_ = NULL;
+		ValaHashSetNode* _tmp9_ = NULL;
+		gint _tmp10_ = 0;
+		gint _tmp11_ = 0;
 		_tmp3_ = node;
 		_tmp4_ = (*_tmp3_)->next;
 		(*_tmp3_)->next = NULL;
@@ -498,60 +494,58 @@ static void vala_hash_set_real_clear (ValaCollection* base) {
 	ValaHashSet * self;
 	self = (ValaHashSet*) base;
 	{
-		gint i;
+		gint i = 0;
 		i = 0;
 		{
-			gboolean _tmp0_;
+			gboolean _tmp0_ = FALSE;
 			_tmp0_ = TRUE;
 			while (TRUE) {
-				gboolean _tmp1_;
-				gint _tmp3_;
-				gint _tmp4_;
-				ValaHashSetNode** _tmp5_;
-				gint _tmp5__length1;
-				gint _tmp6_;
-				ValaHashSetNode* _tmp7_;
-				ValaHashSetNode* node;
-				_tmp1_ = _tmp0_;
-				if (!_tmp1_) {
-					gint _tmp2_;
-					_tmp2_ = i;
-					i = _tmp2_ + 1;
+				gint _tmp2_ = 0;
+				gint _tmp3_ = 0;
+				ValaHashSetNode* node = NULL;
+				ValaHashSetNode** _tmp4_ = NULL;
+				gint _tmp4__length1 = 0;
+				gint _tmp5_ = 0;
+				ValaHashSetNode* _tmp6_ = NULL;
+				if (!_tmp0_) {
+					gint _tmp1_ = 0;
+					_tmp1_ = i;
+					i = _tmp1_ + 1;
 				}
 				_tmp0_ = FALSE;
-				_tmp3_ = i;
-				_tmp4_ = self->priv->_array_size;
-				if (!(_tmp3_ < _tmp4_)) {
+				_tmp2_ = i;
+				_tmp3_ = self->priv->_array_size;
+				if (!(_tmp2_ < _tmp3_)) {
 					break;
 				}
-				_tmp5_ = self->priv->_nodes;
-				_tmp5__length1 = self->priv->_nodes_length1;
-				_tmp6_ = i;
-				_tmp7_ = _tmp5_[_tmp6_];
-				_tmp5_[_tmp6_] = NULL;
-				node = _tmp7_;
+				_tmp4_ = self->priv->_nodes;
+				_tmp4__length1 = self->priv->_nodes_length1;
+				_tmp5_ = i;
+				_tmp6_ = _tmp4_[_tmp5_];
+				_tmp4_[_tmp5_] = NULL;
+				node = _tmp6_;
 				while (TRUE) {
-					ValaHashSetNode* _tmp8_;
-					ValaHashSetNode* _tmp9_;
-					ValaHashSetNode* _tmp10_;
-					ValaHashSetNode* next;
-					ValaHashSetNode* _tmp11_;
-					ValaHashSetNode* _tmp12_;
-					_tmp8_ = node;
-					if (!(_tmp8_ != NULL)) {
+					ValaHashSetNode* _tmp7_ = NULL;
+					ValaHashSetNode* next = NULL;
+					ValaHashSetNode* _tmp8_ = NULL;
+					ValaHashSetNode* _tmp9_ = NULL;
+					ValaHashSetNode* _tmp10_ = NULL;
+					ValaHashSetNode* _tmp11_ = NULL;
+					_tmp7_ = node;
+					if (!(_tmp7_ != NULL)) {
 						break;
 					}
-					_tmp9_ = node;
-					_tmp10_ = _tmp9_->next;
-					_tmp9_->next = NULL;
-					next = _tmp10_;
-					_tmp11_ = node;
-					((_tmp11_->key == NULL) || (self->priv->g_destroy_func == NULL)) ? NULL : (_tmp11_->key = (self->priv->g_destroy_func (_tmp11_->key), NULL));
-					_tmp11_->key = NULL;
-					_tmp12_ = next;
+					_tmp8_ = node;
+					_tmp9_ = _tmp8_->next;
+					_tmp8_->next = NULL;
+					next = _tmp9_;
+					_tmp10_ = node;
+					((_tmp10_->key == NULL) || (self->priv->g_destroy_func == NULL)) ? NULL : (_tmp10_->key = (self->priv->g_destroy_func (_tmp10_->key), NULL));
+					_tmp10_->key = NULL;
+					_tmp11_ = next;
 					next = NULL;
 					_vala_hash_set_node_free0 (node);
-					node = _tmp12_;
+					node = _tmp11_;
 					_vala_hash_set_node_free0 (next);
 				}
 				_vala_hash_set_node_free0 (node);
@@ -566,162 +560,152 @@ static void vala_hash_set_real_clear (ValaCollection* base) {
 static void vala_hash_set_resize (ValaHashSet* self) {
 	gboolean _tmp0_ = FALSE;
 	gboolean _tmp1_ = FALSE;
-	gint _tmp2_;
-	gint _tmp3_;
-	gboolean _tmp5_;
-	gboolean _tmp11_;
+	gint _tmp2_ = 0;
+	gint _tmp3_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp2_ = self->priv->_array_size;
 	_tmp3_ = self->priv->_nnodes;
 	if (_tmp2_ >= (3 * _tmp3_)) {
-		gint _tmp4_;
+		gint _tmp4_ = 0;
 		_tmp4_ = self->priv->_array_size;
 		_tmp1_ = _tmp4_ >= VALA_HASH_SET_MIN_SIZE;
 	} else {
 		_tmp1_ = FALSE;
 	}
-	_tmp5_ = _tmp1_;
-	if (_tmp5_) {
+	if (_tmp1_) {
 		_tmp0_ = TRUE;
 	} else {
-		gboolean _tmp6_ = FALSE;
-		gint _tmp7_;
-		gint _tmp8_;
-		gboolean _tmp10_;
-		_tmp7_ = self->priv->_array_size;
-		_tmp8_ = self->priv->_nnodes;
-		if ((3 * _tmp7_) <= _tmp8_) {
-			gint _tmp9_;
-			_tmp9_ = self->priv->_array_size;
-			_tmp6_ = _tmp9_ < VALA_HASH_SET_MAX_SIZE;
+		gboolean _tmp5_ = FALSE;
+		gint _tmp6_ = 0;
+		gint _tmp7_ = 0;
+		_tmp6_ = self->priv->_array_size;
+		_tmp7_ = self->priv->_nnodes;
+		if ((3 * _tmp6_) <= _tmp7_) {
+			gint _tmp8_ = 0;
+			_tmp8_ = self->priv->_array_size;
+			_tmp5_ = _tmp8_ < VALA_HASH_SET_MAX_SIZE;
 		} else {
-			_tmp6_ = FALSE;
+			_tmp5_ = FALSE;
 		}
-		_tmp10_ = _tmp6_;
-		_tmp0_ = _tmp10_;
+		_tmp0_ = _tmp5_;
 	}
-	_tmp11_ = _tmp0_;
-	if (_tmp11_) {
-		gint _tmp12_;
-		guint _tmp13_ = 0U;
-		gint new_array_size;
-		gint _tmp14_;
-		gint _tmp15_ = 0;
-		gint _tmp16_;
-		ValaHashSetNode** _tmp17_ = NULL;
-		ValaHashSetNode** new_nodes;
-		gint new_nodes_length1;
-		gint _new_nodes_size_;
-		ValaHashSetNode** _tmp43_;
-		gint _tmp43__length1;
-		gint _tmp44_;
-		_tmp12_ = self->priv->_nnodes;
-		_tmp13_ = g_spaced_primes_closest ((guint) _tmp12_);
-		new_array_size = (gint) _tmp13_;
-		_tmp14_ = new_array_size;
-		_tmp15_ = CLAMP (_tmp14_, VALA_HASH_SET_MIN_SIZE, VALA_HASH_SET_MAX_SIZE);
-		new_array_size = _tmp15_;
-		_tmp16_ = new_array_size;
-		_tmp17_ = g_new0 (ValaHashSetNode*, _tmp16_ + 1);
-		new_nodes = _tmp17_;
-		new_nodes_length1 = _tmp16_;
+	if (_tmp0_) {
+		gint new_array_size = 0;
+		gint _tmp9_ = 0;
+		guint _tmp10_ = 0U;
+		gint _tmp11_ = 0;
+		gint _tmp12_ = 0;
+		ValaHashSetNode** new_nodes = NULL;
+		gint _tmp13_ = 0;
+		ValaHashSetNode** _tmp14_ = NULL;
+		gint new_nodes_length1 = 0;
+		gint _new_nodes_size_ = 0;
+		ValaHashSetNode** _tmp38_ = NULL;
+		gint _tmp38__length1 = 0;
+		gint _tmp39_ = 0;
+		_tmp9_ = self->priv->_nnodes;
+		_tmp10_ = g_spaced_primes_closest ((guint) _tmp9_);
+		new_array_size = (gint) _tmp10_;
+		_tmp11_ = new_array_size;
+		_tmp12_ = CLAMP (_tmp11_, VALA_HASH_SET_MIN_SIZE, VALA_HASH_SET_MAX_SIZE);
+		new_array_size = _tmp12_;
+		_tmp13_ = new_array_size;
+		_tmp14_ = g_new0 (ValaHashSetNode*, _tmp13_ + 1);
+		new_nodes = _tmp14_;
+		new_nodes_length1 = _tmp13_;
 		_new_nodes_size_ = new_nodes_length1;
 		{
-			gint i;
+			gint i = 0;
 			i = 0;
 			{
-				gboolean _tmp18_;
-				_tmp18_ = TRUE;
+				gboolean _tmp15_ = FALSE;
+				_tmp15_ = TRUE;
 				while (TRUE) {
-					gboolean _tmp19_;
-					gint _tmp21_;
-					gint _tmp22_;
+					gint _tmp17_ = 0;
+					gint _tmp18_ = 0;
 					ValaHashSetNode* node = NULL;
-					ValaHashSetNode* next;
-					_tmp19_ = _tmp18_;
-					if (!_tmp19_) {
-						gint _tmp20_;
-						_tmp20_ = i;
-						i = _tmp20_ + 1;
+					ValaHashSetNode* next = NULL;
+					if (!_tmp15_) {
+						gint _tmp16_ = 0;
+						_tmp16_ = i;
+						i = _tmp16_ + 1;
 					}
-					_tmp18_ = FALSE;
-					_tmp21_ = i;
-					_tmp22_ = self->priv->_array_size;
-					if (!(_tmp21_ < _tmp22_)) {
+					_tmp15_ = FALSE;
+					_tmp17_ = i;
+					_tmp18_ = self->priv->_array_size;
+					if (!(_tmp17_ < _tmp18_)) {
 						break;
 					}
 					next = NULL;
 					{
-						ValaHashSetNode** _tmp23_;
-						gint _tmp23__length1;
-						gint _tmp24_;
-						ValaHashSetNode* _tmp25_;
-						gboolean _tmp26_;
-						_tmp23_ = self->priv->_nodes;
-						_tmp23__length1 = self->priv->_nodes_length1;
-						_tmp24_ = i;
-						_tmp25_ = _tmp23_[_tmp24_];
-						_tmp23_[_tmp24_] = NULL;
+						ValaHashSetNode** _tmp19_ = NULL;
+						gint _tmp19__length1 = 0;
+						gint _tmp20_ = 0;
+						ValaHashSetNode* _tmp21_ = NULL;
+						gboolean _tmp22_ = FALSE;
+						_tmp19_ = self->priv->_nodes;
+						_tmp19__length1 = self->priv->_nodes_length1;
+						_tmp20_ = i;
+						_tmp21_ = _tmp19_[_tmp20_];
+						_tmp19_[_tmp20_] = NULL;
 						_vala_hash_set_node_free0 (node);
-						node = _tmp25_;
-						_tmp26_ = TRUE;
+						node = _tmp21_;
+						_tmp22_ = TRUE;
 						while (TRUE) {
-							gboolean _tmp27_;
-							ValaHashSetNode* _tmp29_;
-							ValaHashSetNode* _tmp30_;
-							ValaHashSetNode* _tmp31_;
-							ValaHashSetNode* _tmp32_;
-							guint _tmp33_;
-							gint _tmp34_;
-							guint hash_val;
-							ValaHashSetNode* _tmp35_;
-							ValaHashSetNode** _tmp36_;
-							gint _tmp36__length1;
-							guint _tmp37_;
-							ValaHashSetNode* _tmp38_;
-							ValaHashSetNode** _tmp39_;
-							gint _tmp39__length1;
-							guint _tmp40_;
-							ValaHashSetNode* _tmp41_;
-							ValaHashSetNode* _tmp42_;
-							_tmp27_ = _tmp26_;
-							if (!_tmp27_) {
-								ValaHashSetNode* _tmp28_;
-								_tmp28_ = next;
+							ValaHashSetNode* _tmp24_ = NULL;
+							ValaHashSetNode* _tmp25_ = NULL;
+							ValaHashSetNode* _tmp26_ = NULL;
+							guint hash_val = 0U;
+							ValaHashSetNode* _tmp27_ = NULL;
+							guint _tmp28_ = 0U;
+							gint _tmp29_ = 0;
+							ValaHashSetNode* _tmp30_ = NULL;
+							ValaHashSetNode** _tmp31_ = NULL;
+							gint _tmp31__length1 = 0;
+							guint _tmp32_ = 0U;
+							ValaHashSetNode* _tmp33_ = NULL;
+							ValaHashSetNode** _tmp34_ = NULL;
+							gint _tmp34__length1 = 0;
+							guint _tmp35_ = 0U;
+							ValaHashSetNode* _tmp36_ = NULL;
+							ValaHashSetNode* _tmp37_ = NULL;
+							if (!_tmp22_) {
+								ValaHashSetNode* _tmp23_ = NULL;
+								_tmp23_ = next;
 								next = NULL;
 								_vala_hash_set_node_free0 (node);
-								node = _tmp28_;
+								node = _tmp23_;
 							}
-							_tmp26_ = FALSE;
-							_tmp29_ = node;
-							if (!(_tmp29_ != NULL)) {
+							_tmp22_ = FALSE;
+							_tmp24_ = node;
+							if (!(_tmp24_ != NULL)) {
 								break;
 							}
-							_tmp30_ = node;
-							_tmp31_ = _tmp30_->next;
-							_tmp30_->next = NULL;
+							_tmp25_ = node;
+							_tmp26_ = _tmp25_->next;
+							_tmp25_->next = NULL;
 							_vala_hash_set_node_free0 (next);
-							next = _tmp31_;
-							_tmp32_ = node;
-							_tmp33_ = _tmp32_->key_hash;
-							_tmp34_ = new_array_size;
-							hash_val = _tmp33_ % _tmp34_;
-							_tmp35_ = node;
-							_tmp36_ = new_nodes;
-							_tmp36__length1 = new_nodes_length1;
-							_tmp37_ = hash_val;
-							_tmp38_ = _tmp36_[_tmp37_];
-							_tmp36_[_tmp37_] = NULL;
-							_vala_hash_set_node_free0 (_tmp35_->next);
-							_tmp35_->next = _tmp38_;
-							_tmp39_ = new_nodes;
-							_tmp39__length1 = new_nodes_length1;
-							_tmp40_ = hash_val;
-							_tmp41_ = node;
+							next = _tmp26_;
+							_tmp27_ = node;
+							_tmp28_ = _tmp27_->key_hash;
+							_tmp29_ = new_array_size;
+							hash_val = _tmp28_ % _tmp29_;
+							_tmp30_ = node;
+							_tmp31_ = new_nodes;
+							_tmp31__length1 = new_nodes_length1;
+							_tmp32_ = hash_val;
+							_tmp33_ = _tmp31_[_tmp32_];
+							_tmp31_[_tmp32_] = NULL;
+							_vala_hash_set_node_free0 (_tmp30_->next);
+							_tmp30_->next = _tmp33_;
+							_tmp34_ = new_nodes;
+							_tmp34__length1 = new_nodes_length1;
+							_tmp35_ = hash_val;
+							_tmp36_ = node;
 							node = NULL;
-							_vala_hash_set_node_free0 (_tmp39_[_tmp40_]);
-							_tmp39_[_tmp40_] = _tmp41_;
-							_tmp42_ = _tmp39_[_tmp40_];
+							_vala_hash_set_node_free0 (_tmp34_[_tmp35_]);
+							_tmp34_[_tmp35_] = _tmp36_;
+							_tmp37_ = _tmp34_[_tmp35_];
 						}
 					}
 					_vala_hash_set_node_free0 (next);
@@ -729,15 +713,16 @@ static void vala_hash_set_resize (ValaHashSet* self) {
 				}
 			}
 		}
-		_tmp43_ = new_nodes;
-		_tmp43__length1 = new_nodes_length1;
+		_tmp38_ = new_nodes;
+		_tmp38__length1 = new_nodes_length1;
 		new_nodes = NULL;
+		new_nodes_length1 = 0;
 		self->priv->_nodes = (_vala_array_free (self->priv->_nodes, self->priv->_nodes_length1, (GDestroyNotify) vala_hash_set_node_free), NULL);
-		self->priv->_nodes = _tmp43_;
-		self->priv->_nodes_length1 = _tmp43__length1;
+		self->priv->_nodes = _tmp38_;
+		self->priv->_nodes_length1 = _tmp38__length1;
 		self->priv->__nodes_size_ = self->priv->_nodes_length1;
-		_tmp44_ = new_array_size;
-		self->priv->_array_size = _tmp44_;
+		_tmp39_ = new_array_size;
+		self->priv->_array_size = _tmp39_;
 		new_nodes = (_vala_array_free (new_nodes, new_nodes_length1, (GDestroyNotify) vala_hash_set_node_free), NULL);
 	}
 }
@@ -746,7 +731,7 @@ static void vala_hash_set_resize (ValaHashSet* self) {
 static gint vala_hash_set_real_get_size (ValaCollection* base) {
 	gint result;
 	ValaHashSet* self;
-	gint _tmp0_;
+	gint _tmp0_ = 0;
 	self = (ValaHashSet*) base;
 	_tmp0_ = self->priv->_nnodes;
 	result = _tmp0_;
@@ -755,7 +740,7 @@ static gint vala_hash_set_real_get_size (ValaCollection* base) {
 
 
 void vala_hash_set_set_hash_func (ValaHashSet* self, GHashFunc value) {
-	GHashFunc _tmp0_;
+	GHashFunc _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_hash_func = _tmp0_;
@@ -763,7 +748,7 @@ void vala_hash_set_set_hash_func (ValaHashSet* self, GHashFunc value) {
 
 
 void vala_hash_set_set_equal_func (ValaHashSet* self, GEqualFunc value) {
-	GEqualFunc _tmp0_;
+	GEqualFunc _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_equal_func = _tmp0_;
@@ -772,8 +757,8 @@ void vala_hash_set_set_equal_func (ValaHashSet* self, GEqualFunc value) {
 
 static ValaHashSetNode* vala_hash_set_node_new (gpointer k, guint hash) {
 	ValaHashSetNode* self;
-	gpointer _tmp0_;
-	guint _tmp1_;
+	gpointer _tmp0_ = NULL;
+	guint _tmp1_ = 0U;
 	self = g_slice_new0 (ValaHashSetNode);
 	vala_hash_set_node_instance_init (self);
 	_tmp0_ = k;
@@ -797,7 +782,7 @@ static void vala_hash_set_node_free (ValaHashSetNode* self) {
 
 static ValaHashSetIterator* vala_hash_set_iterator_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, ValaHashSet* set) {
 	ValaHashSetIterator* self = NULL;
-	ValaHashSet* _tmp0_;
+	ValaHashSet* _tmp0_ = NULL;
 	g_return_val_if_fail (set != NULL, NULL);
 	self = (ValaHashSetIterator*) vala_iterator_construct (object_type, g_type, (GBoxedCopyFunc) g_dup_func, g_destroy_func);
 	self->priv->g_type = g_type;
@@ -817,32 +802,31 @@ static ValaHashSetIterator* vala_hash_set_iterator_new (GType g_type, GBoxedCopy
 static gboolean vala_hash_set_iterator_real_next (ValaIterator* base) {
 	ValaHashSetIterator * self;
 	gboolean result = FALSE;
-	ValaHashSetNode* _tmp0_;
-	ValaHashSetNode* _tmp14_;
+	ValaHashSetNode* _tmp0_ = NULL;
+	ValaHashSetNode* _tmp13_ = NULL;
 	self = (ValaHashSetIterator*) base;
 	_tmp0_ = self->priv->_node;
 	if (_tmp0_ != NULL) {
-		ValaHashSetNode* _tmp1_;
-		ValaHashSetNode* _tmp2_;
+		ValaHashSetNode* _tmp1_ = NULL;
+		ValaHashSetNode* _tmp2_ = NULL;
 		_tmp1_ = self->priv->_node;
 		_tmp2_ = _tmp1_->next;
 		self->priv->_node = _tmp2_;
 	}
 	while (TRUE) {
 		gboolean _tmp3_ = FALSE;
-		ValaHashSetNode* _tmp4_;
-		gboolean _tmp8_;
-		gint _tmp9_;
-		ValaHashSet* _tmp10_;
-		ValaHashSetNode** _tmp11_;
-		gint _tmp11__length1;
-		gint _tmp12_;
-		ValaHashSetNode* _tmp13_;
+		ValaHashSetNode* _tmp4_ = NULL;
+		gint _tmp8_ = 0;
+		ValaHashSet* _tmp9_ = NULL;
+		ValaHashSetNode** _tmp10_ = NULL;
+		gint _tmp10__length1 = 0;
+		gint _tmp11_ = 0;
+		ValaHashSetNode* _tmp12_ = NULL;
 		_tmp4_ = self->priv->_node;
 		if (_tmp4_ == NULL) {
-			gint _tmp5_;
-			ValaHashSet* _tmp6_;
-			gint _tmp7_;
+			gint _tmp5_ = 0;
+			ValaHashSet* _tmp6_ = NULL;
+			gint _tmp7_ = 0;
 			_tmp5_ = self->priv->_index;
 			_tmp6_ = self->priv->_set;
 			_tmp7_ = _tmp6_->priv->_array_size;
@@ -850,21 +834,20 @@ static gboolean vala_hash_set_iterator_real_next (ValaIterator* base) {
 		} else {
 			_tmp3_ = FALSE;
 		}
-		_tmp8_ = _tmp3_;
-		if (!_tmp8_) {
+		if (!_tmp3_) {
 			break;
 		}
-		_tmp9_ = self->priv->_index;
-		self->priv->_index = _tmp9_ + 1;
-		_tmp10_ = self->priv->_set;
-		_tmp11_ = _tmp10_->priv->_nodes;
-		_tmp11__length1 = _tmp10_->priv->_nodes_length1;
-		_tmp12_ = self->priv->_index;
-		_tmp13_ = _tmp11_[_tmp12_];
-		self->priv->_node = _tmp13_;
+		_tmp8_ = self->priv->_index;
+		self->priv->_index = _tmp8_ + 1;
+		_tmp9_ = self->priv->_set;
+		_tmp10_ = _tmp9_->priv->_nodes;
+		_tmp10__length1 = _tmp9_->priv->_nodes_length1;
+		_tmp11_ = self->priv->_index;
+		_tmp12_ = _tmp10_[_tmp11_];
+		self->priv->_node = _tmp12_;
 	}
-	_tmp14_ = self->priv->_node;
-	result = _tmp14_ != NULL;
+	_tmp13_ = self->priv->_node;
+	result = _tmp13_ != NULL;
 	return result;
 }
 
@@ -872,13 +855,13 @@ static gboolean vala_hash_set_iterator_real_next (ValaIterator* base) {
 static gpointer vala_hash_set_iterator_real_get (ValaIterator* base) {
 	ValaHashSetIterator * self;
 	gpointer result = NULL;
-	gint _tmp0_;
-	ValaHashSet* _tmp1_;
-	gint _tmp2_;
-	ValaHashSetNode* _tmp3_;
-	ValaHashSetNode* _tmp4_;
-	gconstpointer _tmp5_;
-	gpointer _tmp6_;
+	gint _tmp0_ = 0;
+	ValaHashSet* _tmp1_ = NULL;
+	gint _tmp2_ = 0;
+	ValaHashSetNode* _tmp3_ = NULL;
+	ValaHashSetNode* _tmp4_ = NULL;
+	gconstpointer _tmp5_ = NULL;
+	gpointer _tmp6_ = NULL;
 	self = (ValaHashSetIterator*) base;
 	_tmp0_ = self->priv->_stamp;
 	_tmp1_ = self->priv->_set;
@@ -900,10 +883,10 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 
 
 static void vala_hash_set_iterator_set_set (ValaHashSetIterator* self, ValaHashSet* value) {
-	ValaHashSet* _tmp0_;
-	ValaHashSet* _tmp1_;
-	ValaHashSet* _tmp2_;
-	gint _tmp3_;
+	ValaHashSet* _tmp0_ = NULL;
+	ValaHashSet* _tmp1_ = NULL;
+	ValaHashSet* _tmp2_ = NULL;
+	gint _tmp3_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -917,10 +900,10 @@ static void vala_hash_set_iterator_set_set (ValaHashSetIterator* self, ValaHashS
 
 static void vala_hash_set_iterator_class_init (ValaHashSetIteratorClass * klass) {
 	vala_hash_set_iterator_parent_class = g_type_class_peek_parent (klass);
-	VALA_ITERATOR_CLASS (klass)->finalize = vala_hash_set_iterator_finalize;
+	((ValaIteratorClass *) klass)->finalize = vala_hash_set_iterator_finalize;
 	g_type_class_add_private (klass, sizeof (ValaHashSetIteratorPrivate));
-	VALA_ITERATOR_CLASS (klass)->next = vala_hash_set_iterator_real_next;
-	VALA_ITERATOR_CLASS (klass)->get = vala_hash_set_iterator_real_get;
+	((ValaIteratorClass *) klass)->next = vala_hash_set_iterator_real_next;
+	((ValaIteratorClass *) klass)->get = vala_hash_set_iterator_real_get;
 }
 
 
@@ -953,14 +936,14 @@ static GType vala_hash_set_iterator_get_type (void) {
 
 static void vala_hash_set_class_init (ValaHashSetClass * klass) {
 	vala_hash_set_parent_class = g_type_class_peek_parent (klass);
-	VALA_ITERABLE_CLASS (klass)->finalize = vala_hash_set_finalize;
+	((ValaIterableClass *) klass)->finalize = vala_hash_set_finalize;
 	g_type_class_add_private (klass, sizeof (ValaHashSetPrivate));
-	VALA_COLLECTION_CLASS (klass)->contains = vala_hash_set_real_contains;
-	VALA_ITERABLE_CLASS (klass)->get_element_type = vala_hash_set_real_get_element_type;
-	VALA_ITERABLE_CLASS (klass)->iterator = vala_hash_set_real_iterator;
-	VALA_COLLECTION_CLASS (klass)->add = vala_hash_set_real_add;
-	VALA_COLLECTION_CLASS (klass)->remove = vala_hash_set_real_remove;
-	VALA_COLLECTION_CLASS (klass)->clear = vala_hash_set_real_clear;
+	((ValaCollectionClass *) klass)->contains = vala_hash_set_real_contains;
+	((ValaIterableClass *) klass)->get_element_type = vala_hash_set_real_get_element_type;
+	((ValaIterableClass *) klass)->iterator = vala_hash_set_real_iterator;
+	((ValaCollectionClass *) klass)->add = vala_hash_set_real_add;
+	((ValaCollectionClass *) klass)->remove = vala_hash_set_real_remove;
+	((ValaCollectionClass *) klass)->clear = vala_hash_set_real_clear;
 	VALA_COLLECTION_CLASS (klass)->get_size = vala_hash_set_real_get_size;
 }
 

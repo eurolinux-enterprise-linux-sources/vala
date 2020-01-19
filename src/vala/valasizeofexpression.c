@@ -1155,6 +1155,7 @@ struct _ValaSemanticAnalyzer {
 	ValaDataType* unichar_type;
 	ValaDataType* double_type;
 	ValaDataType* type_type;
+	ValaDataType* va_list_type;
 	ValaClass* object_type;
 	ValaStructValueType* gvalue_type;
 	ValaObjectType* gvariant_type;
@@ -1343,8 +1344,8 @@ static void vala_sizeof_expression_finalize (ValaCodeNode* obj);
  */
 ValaSizeofExpression* vala_sizeof_expression_construct (GType object_type, ValaDataType* type, ValaSourceReference* source) {
 	ValaSizeofExpression* self = NULL;
-	ValaDataType* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	g_return_val_if_fail (type != NULL, NULL);
 	g_return_val_if_fail (source != NULL, NULL);
 	self = (ValaSizeofExpression*) vala_expression_construct (object_type);
@@ -1363,8 +1364,8 @@ ValaSizeofExpression* vala_sizeof_expression_new (ValaDataType* type, ValaSource
 
 static void vala_sizeof_expression_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaSizeofExpression * self;
-	ValaCodeVisitor* _tmp0_;
-	ValaCodeVisitor* _tmp1_;
+	ValaCodeVisitor* _tmp0_ = NULL;
+	ValaCodeVisitor* _tmp1_ = NULL;
 	self = (ValaSizeofExpression*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -1376,9 +1377,9 @@ static void vala_sizeof_expression_real_accept (ValaCodeNode* base, ValaCodeVisi
 
 static void vala_sizeof_expression_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaSizeofExpression * self;
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaCodeVisitor* _tmp2_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaCodeVisitor* _tmp2_ = NULL;
 	self = (ValaSizeofExpression*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_sizeof_expression_get_type_reference (self);
@@ -1408,9 +1409,9 @@ static gboolean vala_sizeof_expression_real_is_constant (ValaExpression* base) {
 
 static void vala_sizeof_expression_real_replace_type (ValaCodeNode* base, ValaDataType* old_type, ValaDataType* new_type) {
 	ValaSizeofExpression * self;
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaDataType* _tmp2_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaDataType* _tmp2_ = NULL;
 	self = (ValaSizeofExpression*) base;
 	g_return_if_fail (old_type != NULL);
 	g_return_if_fail (new_type != NULL);
@@ -1418,7 +1419,7 @@ static void vala_sizeof_expression_real_replace_type (ValaCodeNode* base, ValaDa
 	_tmp1_ = _tmp0_;
 	_tmp2_ = old_type;
 	if (_tmp1_ == _tmp2_) {
-		ValaDataType* _tmp3_;
+		ValaDataType* _tmp3_ = NULL;
 		_tmp3_ = new_type;
 		vala_sizeof_expression_set_type_reference (self, _tmp3_);
 	}
@@ -1428,24 +1429,24 @@ static void vala_sizeof_expression_real_replace_type (ValaCodeNode* base, ValaDa
 static gboolean vala_sizeof_expression_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaSizeofExpression * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaDataType* _tmp4_;
-	ValaDataType* _tmp5_;
-	ValaCodeContext* _tmp6_;
-	ValaCodeContext* _tmp7_;
-	ValaSemanticAnalyzer* _tmp8_;
-	ValaSemanticAnalyzer* _tmp9_;
-	ValaDataType* _tmp10_;
-	gboolean _tmp11_;
-	gboolean _tmp12_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaDataType* _tmp4_ = NULL;
+	ValaDataType* _tmp5_ = NULL;
+	ValaCodeContext* _tmp6_ = NULL;
+	ValaCodeContext* _tmp7_ = NULL;
+	ValaSemanticAnalyzer* _tmp8_ = NULL;
+	ValaSemanticAnalyzer* _tmp9_ = NULL;
+	ValaDataType* _tmp10_ = NULL;
+	gboolean _tmp11_ = FALSE;
+	gboolean _tmp12_ = FALSE;
 	self = (ValaSizeofExpression*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -1470,8 +1471,8 @@ static gboolean vala_sizeof_expression_real_check (ValaCodeNode* base, ValaCodeC
 
 static void vala_sizeof_expression_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaSizeofExpression * self;
-	ValaCodeGenerator* _tmp0_;
-	ValaCodeGenerator* _tmp1_;
+	ValaCodeGenerator* _tmp0_ = NULL;
+	ValaCodeGenerator* _tmp1_ = NULL;
 	self = (ValaSizeofExpression*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = codegen;
@@ -1483,7 +1484,7 @@ static void vala_sizeof_expression_real_emit (ValaCodeNode* base, ValaCodeGenera
 
 ValaDataType* vala_sizeof_expression_get_type_reference (ValaSizeofExpression* self) {
 	ValaDataType* result;
-	ValaDataType* _tmp0_;
+	ValaDataType* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_data_type;
 	result = _tmp0_;
@@ -1497,9 +1498,9 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_sizeof_expression_set_type_reference (ValaSizeofExpression* self, ValaDataType* value) {
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaDataType* _tmp2_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaDataType* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -1512,15 +1513,15 @@ void vala_sizeof_expression_set_type_reference (ValaSizeofExpression* self, Vala
 
 static void vala_sizeof_expression_class_init (ValaSizeofExpressionClass * klass) {
 	vala_sizeof_expression_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_sizeof_expression_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_sizeof_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaSizeofExpressionPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_sizeof_expression_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_sizeof_expression_real_accept_children;
-	VALA_EXPRESSION_CLASS (klass)->is_pure = vala_sizeof_expression_real_is_pure;
-	VALA_EXPRESSION_CLASS (klass)->is_constant = vala_sizeof_expression_real_is_constant;
-	VALA_CODE_NODE_CLASS (klass)->replace_type = vala_sizeof_expression_real_replace_type;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_sizeof_expression_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_sizeof_expression_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_sizeof_expression_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_sizeof_expression_real_accept_children;
+	((ValaExpressionClass *) klass)->is_pure = vala_sizeof_expression_real_is_pure;
+	((ValaExpressionClass *) klass)->is_constant = vala_sizeof_expression_real_is_constant;
+	((ValaCodeNodeClass *) klass)->replace_type = vala_sizeof_expression_real_replace_type;
+	((ValaCodeNodeClass *) klass)->check = vala_sizeof_expression_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_sizeof_expression_real_emit;
 }
 
 

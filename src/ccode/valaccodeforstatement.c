@@ -178,8 +178,8 @@ static void vala_ccode_for_statement_finalize (ValaCCodeNode* obj);
 
 ValaCCodeForStatement* vala_ccode_for_statement_construct (GType object_type, ValaCCodeExpression* condition, ValaCCodeStatement* body) {
 	ValaCCodeForStatement* self = NULL;
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeStatement* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeStatement* _tmp1_ = NULL;
 	self = (ValaCCodeForStatement*) vala_ccode_statement_construct (object_type);
 	_tmp0_ = condition;
 	vala_ccode_for_statement_set_condition (self, _tmp0_);
@@ -200,8 +200,8 @@ ValaCCodeForStatement* vala_ccode_for_statement_new (ValaCCodeExpression* condit
  * @param expr an initializer expression
  */
 void vala_ccode_for_statement_add_initializer (ValaCCodeForStatement* self, ValaCCodeExpression* expr) {
-	ValaList* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (expr != NULL);
 	_tmp0_ = self->priv->initializer;
@@ -216,8 +216,8 @@ void vala_ccode_for_statement_add_initializer (ValaCCodeForStatement* self, Vala
  * @param expr an iterator expression
  */
 void vala_ccode_for_statement_add_iterator (ValaCCodeForStatement* self, ValaCCodeExpression* expr) {
-	ValaList* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (expr != NULL);
 	_tmp0_ = self->priv->iterator;
@@ -234,16 +234,16 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 static void vala_ccode_for_statement_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeForStatement * self;
 	gboolean first = FALSE;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeLineDirective* _tmp1_;
-	ValaCCodeLineDirective* _tmp2_;
-	ValaCCodeWriter* _tmp3_;
-	ValaCCodeWriter* _tmp20_;
-	ValaCCodeExpression* _tmp21_;
-	ValaCCodeWriter* _tmp24_;
-	ValaCCodeWriter* _tmp41_;
-	ValaCCodeStatement* _tmp42_;
-	ValaCCodeWriter* _tmp43_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeLineDirective* _tmp1_ = NULL;
+	ValaCCodeLineDirective* _tmp2_ = NULL;
+	ValaCCodeWriter* _tmp3_ = NULL;
+	ValaCCodeWriter* _tmp20_ = NULL;
+	ValaCCodeExpression* _tmp21_ = NULL;
+	ValaCCodeWriter* _tmp24_ = NULL;
+	ValaCCodeWriter* _tmp41_ = NULL;
+	ValaCCodeStatement* _tmp42_ = NULL;
+	ValaCCodeWriter* _tmp43_ = NULL;
 	self = (ValaCCodeForStatement*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -254,14 +254,14 @@ static void vala_ccode_for_statement_real_write (ValaCCodeNode* base, ValaCCodeW
 	vala_ccode_writer_write_string (_tmp3_, "for (");
 	first = TRUE;
 	{
-		ValaList* _tmp4_;
-		ValaList* _tmp5_;
-		ValaList* _init_expr_list;
-		ValaList* _tmp6_;
-		gint _tmp7_;
-		gint _tmp8_;
-		gint _init_expr_size;
-		gint _init_expr_index;
+		ValaList* _init_expr_list = NULL;
+		ValaList* _tmp4_ = NULL;
+		ValaList* _tmp5_ = NULL;
+		gint _init_expr_size = 0;
+		ValaList* _tmp6_ = NULL;
+		gint _tmp7_ = 0;
+		gint _tmp8_ = 0;
+		gint _init_expr_index = 0;
 		_tmp4_ = self->priv->initializer;
 		_tmp5_ = _vala_iterable_ref0 (_tmp4_);
 		_init_expr_list = _tmp5_;
@@ -271,15 +271,15 @@ static void vala_ccode_for_statement_real_write (ValaCCodeNode* base, ValaCCodeW
 		_init_expr_size = _tmp8_;
 		_init_expr_index = -1;
 		while (TRUE) {
-			gint _tmp9_;
-			gint _tmp10_;
-			gint _tmp11_;
-			ValaList* _tmp12_;
-			gint _tmp13_;
+			gint _tmp9_ = 0;
+			gint _tmp10_ = 0;
+			gint _tmp11_ = 0;
+			ValaCCodeExpression* init_expr = NULL;
+			ValaList* _tmp12_ = NULL;
+			gint _tmp13_ = 0;
 			gpointer _tmp14_ = NULL;
-			ValaCCodeExpression* init_expr;
-			gboolean _tmp15_;
-			ValaCCodeExpression* _tmp17_;
+			gboolean _tmp15_ = FALSE;
+			ValaCCodeExpression* _tmp17_ = NULL;
 			_tmp9_ = _init_expr_index;
 			_init_expr_index = _tmp9_ + 1;
 			_tmp10_ = _init_expr_index;
@@ -293,7 +293,7 @@ static void vala_ccode_for_statement_real_write (ValaCCodeNode* base, ValaCCodeW
 			init_expr = (ValaCCodeExpression*) _tmp14_;
 			_tmp15_ = first;
 			if (!_tmp15_) {
-				ValaCCodeWriter* _tmp16_;
+				ValaCCodeWriter* _tmp16_ = NULL;
 				_tmp16_ = writer;
 				vala_ccode_writer_write_string (_tmp16_, ", ");
 			} else {
@@ -301,8 +301,8 @@ static void vala_ccode_for_statement_real_write (ValaCCodeNode* base, ValaCCodeW
 			}
 			_tmp17_ = init_expr;
 			if (_tmp17_ != NULL) {
-				ValaCCodeExpression* _tmp18_;
-				ValaCCodeWriter* _tmp19_;
+				ValaCCodeExpression* _tmp18_ = NULL;
+				ValaCCodeWriter* _tmp19_ = NULL;
 				_tmp18_ = init_expr;
 				_tmp19_ = writer;
 				vala_ccode_node_write ((ValaCCodeNode*) _tmp18_, _tmp19_);
@@ -315,8 +315,8 @@ static void vala_ccode_for_statement_real_write (ValaCCodeNode* base, ValaCCodeW
 	vala_ccode_writer_write_string (_tmp20_, "; ");
 	_tmp21_ = self->priv->_condition;
 	if (_tmp21_ != NULL) {
-		ValaCCodeExpression* _tmp22_;
-		ValaCCodeWriter* _tmp23_;
+		ValaCCodeExpression* _tmp22_ = NULL;
+		ValaCCodeWriter* _tmp23_ = NULL;
 		_tmp22_ = self->priv->_condition;
 		_tmp23_ = writer;
 		vala_ccode_node_write ((ValaCCodeNode*) _tmp22_, _tmp23_);
@@ -325,14 +325,14 @@ static void vala_ccode_for_statement_real_write (ValaCCodeNode* base, ValaCCodeW
 	vala_ccode_writer_write_string (_tmp24_, "; ");
 	first = TRUE;
 	{
-		ValaList* _tmp25_;
-		ValaList* _tmp26_;
-		ValaList* _it_expr_list;
-		ValaList* _tmp27_;
-		gint _tmp28_;
-		gint _tmp29_;
-		gint _it_expr_size;
-		gint _it_expr_index;
+		ValaList* _it_expr_list = NULL;
+		ValaList* _tmp25_ = NULL;
+		ValaList* _tmp26_ = NULL;
+		gint _it_expr_size = 0;
+		ValaList* _tmp27_ = NULL;
+		gint _tmp28_ = 0;
+		gint _tmp29_ = 0;
+		gint _it_expr_index = 0;
 		_tmp25_ = self->priv->iterator;
 		_tmp26_ = _vala_iterable_ref0 (_tmp25_);
 		_it_expr_list = _tmp26_;
@@ -342,15 +342,15 @@ static void vala_ccode_for_statement_real_write (ValaCCodeNode* base, ValaCCodeW
 		_it_expr_size = _tmp29_;
 		_it_expr_index = -1;
 		while (TRUE) {
-			gint _tmp30_;
-			gint _tmp31_;
-			gint _tmp32_;
-			ValaList* _tmp33_;
-			gint _tmp34_;
+			gint _tmp30_ = 0;
+			gint _tmp31_ = 0;
+			gint _tmp32_ = 0;
+			ValaCCodeExpression* it_expr = NULL;
+			ValaList* _tmp33_ = NULL;
+			gint _tmp34_ = 0;
 			gpointer _tmp35_ = NULL;
-			ValaCCodeExpression* it_expr;
-			gboolean _tmp36_;
-			ValaCCodeExpression* _tmp38_;
+			gboolean _tmp36_ = FALSE;
+			ValaCCodeExpression* _tmp38_ = NULL;
 			_tmp30_ = _it_expr_index;
 			_it_expr_index = _tmp30_ + 1;
 			_tmp31_ = _it_expr_index;
@@ -364,7 +364,7 @@ static void vala_ccode_for_statement_real_write (ValaCCodeNode* base, ValaCCodeW
 			it_expr = (ValaCCodeExpression*) _tmp35_;
 			_tmp36_ = first;
 			if (!_tmp36_) {
-				ValaCCodeWriter* _tmp37_;
+				ValaCCodeWriter* _tmp37_ = NULL;
 				_tmp37_ = writer;
 				vala_ccode_writer_write_string (_tmp37_, ", ");
 			} else {
@@ -372,8 +372,8 @@ static void vala_ccode_for_statement_real_write (ValaCCodeNode* base, ValaCCodeW
 			}
 			_tmp38_ = it_expr;
 			if (_tmp38_ != NULL) {
-				ValaCCodeExpression* _tmp39_;
-				ValaCCodeWriter* _tmp40_;
+				ValaCCodeExpression* _tmp39_ = NULL;
+				ValaCCodeWriter* _tmp40_ = NULL;
 				_tmp39_ = it_expr;
 				_tmp40_ = writer;
 				vala_ccode_node_write ((ValaCCodeNode*) _tmp39_, _tmp40_);
@@ -392,7 +392,7 @@ static void vala_ccode_for_statement_real_write (ValaCCodeNode* base, ValaCCodeW
 
 ValaCCodeExpression* vala_ccode_for_statement_get_condition (ValaCCodeForStatement* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_condition;
 	result = _tmp0_;
@@ -406,8 +406,8 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 
 void vala_ccode_for_statement_set_condition (ValaCCodeForStatement* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -418,7 +418,7 @@ void vala_ccode_for_statement_set_condition (ValaCCodeForStatement* self, ValaCC
 
 ValaCCodeStatement* vala_ccode_for_statement_get_body (ValaCCodeForStatement* self) {
 	ValaCCodeStatement* result;
-	ValaCCodeStatement* _tmp0_;
+	ValaCCodeStatement* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_body;
 	result = _tmp0_;
@@ -427,8 +427,8 @@ ValaCCodeStatement* vala_ccode_for_statement_get_body (ValaCCodeForStatement* se
 
 
 void vala_ccode_for_statement_set_body (ValaCCodeForStatement* self, ValaCCodeStatement* value) {
-	ValaCCodeStatement* _tmp0_;
-	ValaCCodeStatement* _tmp1_;
+	ValaCCodeStatement* _tmp0_ = NULL;
+	ValaCCodeStatement* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -439,17 +439,17 @@ void vala_ccode_for_statement_set_body (ValaCCodeForStatement* self, ValaCCodeSt
 
 static void vala_ccode_for_statement_class_init (ValaCCodeForStatementClass * klass) {
 	vala_ccode_for_statement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_for_statement_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_for_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeForStatementPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_for_statement_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_for_statement_real_write;
 }
 
 
 static void vala_ccode_for_statement_instance_init (ValaCCodeForStatement * self) {
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
-	GEqualFunc _tmp2_;
-	ValaArrayList* _tmp3_;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
+	GEqualFunc _tmp2_ = NULL;
+	ValaArrayList* _tmp3_ = NULL;
 	self->priv = VALA_CCODE_FOR_STATEMENT_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_CCODE_EXPRESSION, (GBoxedCopyFunc) vala_ccode_node_ref, vala_ccode_node_unref, _tmp0_);

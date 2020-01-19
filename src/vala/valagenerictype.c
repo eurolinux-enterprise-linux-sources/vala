@@ -311,7 +311,7 @@ static ValaSymbol* vala_generic_type_real_get_member (ValaDataType* base, const 
 
 ValaGenericType* vala_generic_type_construct (GType object_type, ValaTypeParameter* type_parameter) {
 	ValaGenericType* self = NULL;
-	ValaTypeParameter* _tmp0_;
+	ValaTypeParameter* _tmp0_ = NULL;
 	g_return_val_if_fail (type_parameter != NULL, NULL);
 	self = (ValaGenericType*) vala_data_type_construct (object_type);
 	_tmp0_ = type_parameter;
@@ -329,18 +329,18 @@ ValaGenericType* vala_generic_type_new (ValaTypeParameter* type_parameter) {
 static ValaDataType* vala_generic_type_real_copy (ValaDataType* base) {
 	ValaGenericType * self;
 	ValaDataType* result = NULL;
-	ValaTypeParameter* _tmp0_;
-	ValaTypeParameter* _tmp1_;
-	ValaGenericType* _tmp2_;
-	ValaGenericType* _result_;
-	ValaSourceReference* _tmp3_;
-	ValaSourceReference* _tmp4_;
-	gboolean _tmp5_;
-	gboolean _tmp6_;
-	gboolean _tmp7_;
-	gboolean _tmp8_;
-	gboolean _tmp9_;
-	gboolean _tmp10_;
+	ValaGenericType* _result_ = NULL;
+	ValaTypeParameter* _tmp0_ = NULL;
+	ValaTypeParameter* _tmp1_ = NULL;
+	ValaGenericType* _tmp2_ = NULL;
+	ValaSourceReference* _tmp3_ = NULL;
+	ValaSourceReference* _tmp4_ = NULL;
+	gboolean _tmp5_ = FALSE;
+	gboolean _tmp6_ = FALSE;
+	gboolean _tmp7_ = FALSE;
+	gboolean _tmp8_ = FALSE;
+	gboolean _tmp9_ = FALSE;
+	gboolean _tmp10_ = FALSE;
 	self = (ValaGenericType*) base;
 	_tmp0_ = vala_data_type_get_type_parameter ((ValaDataType*) self);
 	_tmp1_ = _tmp0_;
@@ -366,11 +366,11 @@ static ValaDataType* vala_generic_type_real_copy (ValaDataType* base) {
 static gchar* vala_generic_type_real_to_qualified_string (ValaDataType* base, ValaScope* scope) {
 	ValaGenericType * self;
 	gchar* result = NULL;
-	ValaTypeParameter* _tmp0_;
-	ValaTypeParameter* _tmp1_;
-	const gchar* _tmp2_;
-	const gchar* _tmp3_;
-	gchar* _tmp4_;
+	ValaTypeParameter* _tmp0_ = NULL;
+	ValaTypeParameter* _tmp1_ = NULL;
+	const gchar* _tmp2_ = NULL;
+	const gchar* _tmp3_ = NULL;
+	gchar* _tmp4_ = NULL;
 	self = (ValaGenericType*) base;
 	_tmp0_ = vala_data_type_get_type_parameter ((ValaDataType*) self);
 	_tmp1_ = _tmp0_;
@@ -394,9 +394,9 @@ static ValaSymbol* vala_generic_type_real_get_member (ValaDataType* base, const 
 
 static void vala_generic_type_class_init (ValaGenericTypeClass * klass) {
 	vala_generic_type_parent_class = g_type_class_peek_parent (klass);
-	VALA_DATA_TYPE_CLASS (klass)->copy = vala_generic_type_real_copy;
-	VALA_DATA_TYPE_CLASS (klass)->to_qualified_string = vala_generic_type_real_to_qualified_string;
-	VALA_DATA_TYPE_CLASS (klass)->get_member = vala_generic_type_real_get_member;
+	((ValaDataTypeClass *) klass)->copy = vala_generic_type_real_copy;
+	((ValaDataTypeClass *) klass)->to_qualified_string = vala_generic_type_real_to_qualified_string;
+	((ValaDataTypeClass *) klass)->get_member = vala_generic_type_real_get_member;
 }
 
 

@@ -106,8 +106,8 @@ static void vala_comment_finalize (ValaComment* obj);
 
 ValaComment* vala_comment_construct (GType object_type, const gchar* comment, ValaSourceReference* _source_reference) {
 	ValaComment* self = NULL;
-	ValaSourceReference* _tmp0_;
-	const gchar* _tmp1_;
+	ValaSourceReference* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	g_return_val_if_fail (comment != NULL, NULL);
 	g_return_val_if_fail (_source_reference != NULL, NULL);
 	self = (ValaComment*) g_type_create_instance (object_type);
@@ -126,7 +126,7 @@ ValaComment* vala_comment_new (const gchar* comment, ValaSourceReference* _sourc
 
 const gchar* vala_comment_get_content (ValaComment* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_content;
 	result = _tmp0_;
@@ -135,8 +135,8 @@ const gchar* vala_comment_get_content (ValaComment* self) {
 
 
 void vala_comment_set_content (ValaComment* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -147,7 +147,7 @@ void vala_comment_set_content (ValaComment* self, const gchar* value) {
 
 ValaSourceReference* vala_comment_get_source_reference (ValaComment* self) {
 	ValaSourceReference* result;
-	ValaSourceReference* _tmp0_;
+	ValaSourceReference* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_source_reference;
 	result = _tmp0_;
@@ -161,8 +161,8 @@ static gpointer _vala_source_reference_ref0 (gpointer self) {
 
 
 void vala_comment_set_source_reference (ValaComment* self, ValaSourceReference* value) {
-	ValaSourceReference* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	ValaSourceReference* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_source_reference_ref0 (_tmp0_);
@@ -283,7 +283,7 @@ void vala_value_take_comment (GValue* value, gpointer v_object) {
 
 static void vala_comment_class_init (ValaCommentClass * klass) {
 	vala_comment_parent_class = g_type_class_peek_parent (klass);
-	VALA_COMMENT_CLASS (klass)->finalize = vala_comment_finalize;
+	((ValaCommentClass *) klass)->finalize = vala_comment_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCommentPrivate));
 }
 
@@ -297,6 +297,7 @@ static void vala_comment_instance_init (ValaComment * self) {
 static void vala_comment_finalize (ValaComment* obj) {
 	ValaComment * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_COMMENT, ValaComment);
+	g_signal_handlers_destroy (self);
 	_g_free0 (self->priv->_content);
 	_vala_source_reference_unref0 (self->priv->_source_reference);
 }

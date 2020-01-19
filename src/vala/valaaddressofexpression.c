@@ -331,8 +331,8 @@ static void vala_addressof_expression_finalize (ValaCodeNode* obj);
  */
 ValaAddressofExpression* vala_addressof_expression_construct (GType object_type, ValaExpression* inner, ValaSourceReference* source_reference) {
 	ValaAddressofExpression* self = NULL;
-	ValaSourceReference* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaSourceReference* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	g_return_val_if_fail (inner != NULL, NULL);
 	self = (ValaAddressofExpression*) vala_expression_construct (object_type);
 	_tmp0_ = source_reference;
@@ -350,8 +350,8 @@ ValaAddressofExpression* vala_addressof_expression_new (ValaExpression* inner, V
 
 static void vala_addressof_expression_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaAddressofExpression * self;
-	ValaCodeVisitor* _tmp0_;
-	ValaCodeVisitor* _tmp1_;
+	ValaCodeVisitor* _tmp0_ = NULL;
+	ValaCodeVisitor* _tmp1_ = NULL;
 	self = (ValaAddressofExpression*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -363,9 +363,9 @@ static void vala_addressof_expression_real_accept (ValaCodeNode* base, ValaCodeV
 
 static void vala_addressof_expression_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaAddressofExpression * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeVisitor* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeVisitor* _tmp2_ = NULL;
 	self = (ValaAddressofExpression*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_addressof_expression_get_inner (self);
@@ -377,9 +377,9 @@ static void vala_addressof_expression_real_accept_children (ValaCodeNode* base, 
 
 static void vala_addressof_expression_real_replace_expression (ValaCodeNode* base, ValaExpression* old_node, ValaExpression* new_node) {
 	ValaAddressofExpression * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	self = (ValaAddressofExpression*) base;
 	g_return_if_fail (old_node != NULL);
 	g_return_if_fail (new_node != NULL);
@@ -387,7 +387,7 @@ static void vala_addressof_expression_real_replace_expression (ValaCodeNode* bas
 	_tmp1_ = _tmp0_;
 	_tmp2_ = old_node;
 	if (_tmp1_ == _tmp2_) {
-		ValaExpression* _tmp3_;
+		ValaExpression* _tmp3_ = NULL;
 		_tmp3_ = new_node;
 		vala_addressof_expression_set_inner (self, _tmp3_);
 	}
@@ -397,8 +397,8 @@ static void vala_addressof_expression_real_replace_expression (ValaCodeNode* bas
 static gboolean vala_addressof_expression_real_is_pure (ValaExpression* base) {
 	ValaAddressofExpression * self;
 	gboolean result = FALSE;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
 	self = (ValaAddressofExpression*) base;
 	_tmp0_ = vala_addressof_expression_get_inner (self);
@@ -417,36 +417,35 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 static gboolean vala_addressof_expression_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaAddressofExpression * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaExpression* _tmp4_;
-	ValaExpression* _tmp5_;
-	ValaExpression* _tmp6_;
-	ValaExpression* _tmp7_;
-	ValaCodeContext* _tmp8_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaExpression* _tmp4_ = NULL;
+	ValaExpression* _tmp5_ = NULL;
+	ValaExpression* _tmp6_ = NULL;
+	ValaExpression* _tmp7_ = NULL;
+	ValaCodeContext* _tmp8_ = NULL;
 	gboolean _tmp9_ = FALSE;
-	ValaExpression* _tmp10_;
-	ValaExpression* _tmp11_;
-	ValaElementAccess* _tmp12_;
-	ValaElementAccess* ea;
+	ValaElementAccess* ea = NULL;
+	ValaExpression* _tmp10_ = NULL;
+	ValaExpression* _tmp11_ = NULL;
+	ValaElementAccess* _tmp12_ = NULL;
 	gboolean _tmp13_ = FALSE;
-	ValaExpression* _tmp14_;
-	ValaExpression* _tmp15_;
-	gboolean _tmp20_;
-	ValaExpression* _tmp38_;
-	ValaExpression* _tmp39_;
-	ValaDataType* _tmp40_;
-	ValaDataType* _tmp41_;
-	gboolean _tmp42_ = FALSE;
-	gboolean _tmp57_;
-	gboolean _tmp58_;
+	ValaExpression* _tmp14_ = NULL;
+	ValaExpression* _tmp15_ = NULL;
+	ValaExpression* _tmp35_ = NULL;
+	ValaExpression* _tmp36_ = NULL;
+	ValaDataType* _tmp37_ = NULL;
+	ValaDataType* _tmp38_ = NULL;
+	gboolean _tmp39_ = FALSE;
+	gboolean _tmp54_ = FALSE;
+	gboolean _tmp55_ = FALSE;
 	self = (ValaAddressofExpression*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -472,10 +471,10 @@ static gboolean vala_addressof_expression_real_check (ValaCodeNode* base, ValaCo
 	_tmp14_ = vala_addressof_expression_get_inner (self);
 	_tmp15_ = _tmp14_;
 	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp15_, VALA_TYPE_MEMBER_ACCESS)) {
-		ValaExpression* _tmp16_;
-		ValaExpression* _tmp17_;
-		ValaSymbol* _tmp18_;
-		ValaSymbol* _tmp19_;
+		ValaExpression* _tmp16_ = NULL;
+		ValaExpression* _tmp17_ = NULL;
+		ValaSymbol* _tmp18_ = NULL;
+		ValaSymbol* _tmp19_ = NULL;
 		_tmp16_ = vala_addressof_expression_get_inner (self);
 		_tmp17_ = _tmp16_;
 		_tmp18_ = vala_expression_get_symbol_reference (_tmp17_);
@@ -484,104 +483,99 @@ static gboolean vala_addressof_expression_real_check (ValaCodeNode* base, ValaCo
 	} else {
 		_tmp13_ = FALSE;
 	}
-	_tmp20_ = _tmp13_;
-	if (_tmp20_) {
+	if (_tmp13_) {
 	} else {
-		gboolean _tmp21_ = FALSE;
-		ValaElementAccess* _tmp22_;
-		gboolean _tmp35_;
-		_tmp22_ = ea;
-		if (_tmp22_ != NULL) {
-			gboolean _tmp23_ = FALSE;
-			ValaElementAccess* _tmp24_;
-			ValaExpression* _tmp25_;
-			ValaExpression* _tmp26_;
-			ValaDataType* _tmp27_;
-			ValaDataType* _tmp28_;
-			gboolean _tmp34_;
-			_tmp24_ = ea;
-			_tmp25_ = vala_element_access_get_container (_tmp24_);
-			_tmp26_ = _tmp25_;
-			_tmp27_ = vala_expression_get_value_type (_tmp26_);
-			_tmp28_ = _tmp27_;
-			if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp28_, VALA_TYPE_ARRAY_TYPE)) {
-				_tmp23_ = TRUE;
+		gboolean _tmp20_ = FALSE;
+		ValaElementAccess* _tmp21_ = NULL;
+		_tmp21_ = ea;
+		if (_tmp21_ != NULL) {
+			gboolean _tmp22_ = FALSE;
+			ValaElementAccess* _tmp23_ = NULL;
+			ValaExpression* _tmp24_ = NULL;
+			ValaExpression* _tmp25_ = NULL;
+			ValaDataType* _tmp26_ = NULL;
+			ValaDataType* _tmp27_ = NULL;
+			_tmp23_ = ea;
+			_tmp24_ = vala_element_access_get_container (_tmp23_);
+			_tmp25_ = _tmp24_;
+			_tmp26_ = vala_expression_get_value_type (_tmp25_);
+			_tmp27_ = _tmp26_;
+			if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp27_, VALA_TYPE_ARRAY_TYPE)) {
+				_tmp22_ = TRUE;
 			} else {
-				ValaElementAccess* _tmp29_;
-				ValaExpression* _tmp30_;
-				ValaExpression* _tmp31_;
-				ValaDataType* _tmp32_;
-				ValaDataType* _tmp33_;
-				_tmp29_ = ea;
-				_tmp30_ = vala_element_access_get_container (_tmp29_);
-				_tmp31_ = _tmp30_;
-				_tmp32_ = vala_expression_get_value_type (_tmp31_);
-				_tmp33_ = _tmp32_;
-				_tmp23_ = G_TYPE_CHECK_INSTANCE_TYPE (_tmp33_, VALA_TYPE_POINTER_TYPE);
+				ValaElementAccess* _tmp28_ = NULL;
+				ValaExpression* _tmp29_ = NULL;
+				ValaExpression* _tmp30_ = NULL;
+				ValaDataType* _tmp31_ = NULL;
+				ValaDataType* _tmp32_ = NULL;
+				_tmp28_ = ea;
+				_tmp29_ = vala_element_access_get_container (_tmp28_);
+				_tmp30_ = _tmp29_;
+				_tmp31_ = vala_expression_get_value_type (_tmp30_);
+				_tmp32_ = _tmp31_;
+				_tmp22_ = G_TYPE_CHECK_INSTANCE_TYPE (_tmp32_, VALA_TYPE_POINTER_TYPE);
 			}
-			_tmp34_ = _tmp23_;
-			_tmp21_ = _tmp34_;
+			_tmp20_ = _tmp22_;
 		} else {
-			_tmp21_ = FALSE;
+			_tmp20_ = FALSE;
 		}
-		_tmp35_ = _tmp21_;
-		if (_tmp35_) {
+		if (_tmp20_) {
 		} else {
-			ValaSourceReference* _tmp36_;
-			ValaSourceReference* _tmp37_;
+			ValaSourceReference* _tmp33_ = NULL;
+			ValaSourceReference* _tmp34_ = NULL;
 			vala_code_node_set_error ((ValaCodeNode*) self, TRUE);
-			_tmp36_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
-			_tmp37_ = _tmp36_;
-			vala_report_error (_tmp37_, "Address-of operator not supported for this expression");
+			_tmp33_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+			_tmp34_ = _tmp33_;
+			vala_report_error (_tmp34_, "Address-of operator not supported for this expression");
 			result = FALSE;
 			_vala_code_node_unref0 (ea);
 			return result;
 		}
 	}
-	_tmp38_ = vala_addressof_expression_get_inner (self);
-	_tmp39_ = _tmp38_;
-	_tmp40_ = vala_expression_get_value_type (_tmp39_);
-	_tmp41_ = _tmp40_;
-	_tmp42_ = vala_data_type_is_reference_type_or_type_parameter (_tmp41_);
-	if (_tmp42_) {
-		ValaExpression* _tmp43_;
-		ValaExpression* _tmp44_;
-		ValaDataType* _tmp45_;
-		ValaDataType* _tmp46_;
-		ValaPointerType* _tmp47_;
-		ValaPointerType* _tmp48_;
-		ValaPointerType* _tmp49_;
-		ValaPointerType* _tmp50_;
-		_tmp43_ = vala_addressof_expression_get_inner (self);
-		_tmp44_ = _tmp43_;
-		_tmp45_ = vala_expression_get_value_type (_tmp44_);
-		_tmp46_ = _tmp45_;
-		_tmp47_ = vala_pointer_type_new (_tmp46_, NULL);
-		_tmp48_ = _tmp47_;
-		_tmp49_ = vala_pointer_type_new ((ValaDataType*) _tmp48_, NULL);
-		_tmp50_ = _tmp49_;
-		vala_expression_set_value_type ((ValaExpression*) self, (ValaDataType*) _tmp50_);
-		_vala_code_node_unref0 (_tmp50_);
-		_vala_code_node_unref0 (_tmp48_);
+	_tmp35_ = vala_addressof_expression_get_inner (self);
+	_tmp36_ = _tmp35_;
+	_tmp37_ = vala_expression_get_value_type (_tmp36_);
+	_tmp38_ = _tmp37_;
+	_tmp39_ = vala_data_type_is_reference_type_or_type_parameter (_tmp38_);
+	if (_tmp39_) {
+		ValaExpression* _tmp40_ = NULL;
+		ValaExpression* _tmp41_ = NULL;
+		ValaDataType* _tmp42_ = NULL;
+		ValaDataType* _tmp43_ = NULL;
+		ValaPointerType* _tmp44_ = NULL;
+		ValaPointerType* _tmp45_ = NULL;
+		ValaPointerType* _tmp46_ = NULL;
+		ValaPointerType* _tmp47_ = NULL;
+		_tmp40_ = vala_addressof_expression_get_inner (self);
+		_tmp41_ = _tmp40_;
+		_tmp42_ = vala_expression_get_value_type (_tmp41_);
+		_tmp43_ = _tmp42_;
+		_tmp44_ = vala_pointer_type_new (_tmp43_, NULL);
+		_tmp45_ = _tmp44_;
+		_tmp46_ = vala_pointer_type_new ((ValaDataType*) _tmp45_, NULL);
+		_tmp47_ = _tmp46_;
+		vala_expression_set_value_type ((ValaExpression*) self, (ValaDataType*) _tmp47_);
+		_vala_code_node_unref0 (_tmp47_);
+		_vala_code_node_unref0 (_tmp45_);
 	} else {
-		ValaExpression* _tmp51_;
-		ValaExpression* _tmp52_;
-		ValaDataType* _tmp53_;
-		ValaDataType* _tmp54_;
-		ValaPointerType* _tmp55_;
-		ValaPointerType* _tmp56_;
-		_tmp51_ = vala_addressof_expression_get_inner (self);
-		_tmp52_ = _tmp51_;
-		_tmp53_ = vala_expression_get_value_type (_tmp52_);
-		_tmp54_ = _tmp53_;
-		_tmp55_ = vala_pointer_type_new (_tmp54_, NULL);
-		_tmp56_ = _tmp55_;
-		vala_expression_set_value_type ((ValaExpression*) self, (ValaDataType*) _tmp56_);
-		_vala_code_node_unref0 (_tmp56_);
+		ValaExpression* _tmp48_ = NULL;
+		ValaExpression* _tmp49_ = NULL;
+		ValaDataType* _tmp50_ = NULL;
+		ValaDataType* _tmp51_ = NULL;
+		ValaPointerType* _tmp52_ = NULL;
+		ValaPointerType* _tmp53_ = NULL;
+		_tmp48_ = vala_addressof_expression_get_inner (self);
+		_tmp49_ = _tmp48_;
+		_tmp50_ = vala_expression_get_value_type (_tmp49_);
+		_tmp51_ = _tmp50_;
+		_tmp52_ = vala_pointer_type_new (_tmp51_, NULL);
+		_tmp53_ = _tmp52_;
+		vala_expression_set_value_type ((ValaExpression*) self, (ValaDataType*) _tmp53_);
+		_vala_code_node_unref0 (_tmp53_);
 	}
-	_tmp57_ = vala_code_node_get_error ((ValaCodeNode*) self);
-	_tmp58_ = _tmp57_;
-	result = !_tmp58_;
+	_tmp54_ = vala_code_node_get_error ((ValaCodeNode*) self);
+	_tmp55_ = _tmp54_;
+	result = !_tmp55_;
 	_vala_code_node_unref0 (ea);
 	return result;
 }
@@ -589,11 +583,11 @@ static gboolean vala_addressof_expression_real_check (ValaCodeNode* base, ValaCo
 
 static void vala_addressof_expression_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaAddressofExpression * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeGenerator* _tmp2_;
-	ValaCodeGenerator* _tmp3_;
-	ValaCodeGenerator* _tmp4_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeGenerator* _tmp2_ = NULL;
+	ValaCodeGenerator* _tmp3_ = NULL;
+	ValaCodeGenerator* _tmp4_ = NULL;
 	self = (ValaAddressofExpression*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = vala_addressof_expression_get_inner (self);
@@ -609,7 +603,7 @@ static void vala_addressof_expression_real_emit (ValaCodeNode* base, ValaCodeGen
 
 ValaExpression* vala_addressof_expression_get_inner (ValaAddressofExpression* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_inner;
 	result = _tmp0_;
@@ -618,9 +612,9 @@ ValaExpression* vala_addressof_expression_get_inner (ValaAddressofExpression* se
 
 
 void vala_addressof_expression_set_inner (ValaAddressofExpression* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -633,14 +627,14 @@ void vala_addressof_expression_set_inner (ValaAddressofExpression* self, ValaExp
 
 static void vala_addressof_expression_class_init (ValaAddressofExpressionClass * klass) {
 	vala_addressof_expression_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_addressof_expression_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_addressof_expression_finalize;
 	g_type_class_add_private (klass, sizeof (ValaAddressofExpressionPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_addressof_expression_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_addressof_expression_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->replace_expression = vala_addressof_expression_real_replace_expression;
-	VALA_EXPRESSION_CLASS (klass)->is_pure = vala_addressof_expression_real_is_pure;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_addressof_expression_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_addressof_expression_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_addressof_expression_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_addressof_expression_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = vala_addressof_expression_real_replace_expression;
+	((ValaExpressionClass *) klass)->is_pure = vala_addressof_expression_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = vala_addressof_expression_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_addressof_expression_real_emit;
 }
 
 

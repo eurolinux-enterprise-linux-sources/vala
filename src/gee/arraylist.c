@@ -257,7 +257,7 @@ static void _vala_array_move (gpointer array, gsize element_size, gint src, gint
 
 ValaArrayList* vala_array_list_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GEqualFunc equal_func) {
 	ValaArrayList* self = NULL;
-	GEqualFunc _tmp0_;
+	GEqualFunc _tmp0_ = NULL;
 	self = (ValaArrayList*) vala_list_construct (object_type, g_type, (GBoxedCopyFunc) g_dup_func, g_destroy_func);
 	self->priv->g_type = g_type;
 	self->priv->g_dup_func = g_dup_func;
@@ -285,7 +285,7 @@ static GType vala_array_list_real_get_element_type (ValaIterable* base) {
 static ValaIterator* vala_array_list_real_iterator (ValaIterable* base) {
 	ValaArrayList * self;
 	ValaIterator* result = NULL;
-	ValaArrayListIterator* _tmp0_;
+	ValaArrayListIterator* _tmp0_ = NULL;
 	self = (ValaArrayList*) base;
 	_tmp0_ = vala_array_list_iterator_new (self->priv->g_type, (GBoxedCopyFunc) self->priv->g_dup_func, self->priv->g_destroy_func, self);
 	result = (ValaIterator*) _tmp0_;
@@ -296,7 +296,7 @@ static ValaIterator* vala_array_list_real_iterator (ValaIterable* base) {
 static gboolean vala_array_list_real_contains (ValaCollection* base, gconstpointer item) {
 	ValaArrayList * self;
 	gboolean result = FALSE;
-	gconstpointer _tmp0_;
+	gconstpointer _tmp0_ = NULL;
 	gint _tmp1_ = 0;
 	self = (ValaArrayList*) base;
 	_tmp0_ = item;
@@ -311,42 +311,40 @@ static gint vala_array_list_real_index_of (ValaList* base, gconstpointer item) {
 	gint result = 0;
 	self = (ValaArrayList*) base;
 	{
-		gint index;
+		gint index = 0;
 		index = 0;
 		{
-			gboolean _tmp0_;
+			gboolean _tmp0_ = FALSE;
 			_tmp0_ = TRUE;
 			while (TRUE) {
-				gboolean _tmp1_;
-				gint _tmp3_;
-				gint _tmp4_;
-				GEqualFunc _tmp5_;
-				gpointer* _tmp6_;
-				gint _tmp6__length1;
-				gint _tmp7_;
-				gconstpointer _tmp8_;
-				gconstpointer _tmp9_;
-				gboolean _tmp10_ = FALSE;
-				_tmp1_ = _tmp0_;
-				if (!_tmp1_) {
-					gint _tmp2_;
-					_tmp2_ = index;
-					index = _tmp2_ + 1;
+				gint _tmp2_ = 0;
+				gint _tmp3_ = 0;
+				GEqualFunc _tmp4_ = NULL;
+				gpointer* _tmp5_ = NULL;
+				gint _tmp5__length1 = 0;
+				gint _tmp6_ = 0;
+				gconstpointer _tmp7_ = NULL;
+				gconstpointer _tmp8_ = NULL;
+				gboolean _tmp9_ = FALSE;
+				if (!_tmp0_) {
+					gint _tmp1_ = 0;
+					_tmp1_ = index;
+					index = _tmp1_ + 1;
 				}
 				_tmp0_ = FALSE;
-				_tmp3_ = index;
-				_tmp4_ = self->priv->_size;
-				if (!(_tmp3_ < _tmp4_)) {
+				_tmp2_ = index;
+				_tmp3_ = self->priv->_size;
+				if (!(_tmp2_ < _tmp3_)) {
 					break;
 				}
-				_tmp5_ = self->priv->_equal_func;
-				_tmp6_ = self->priv->_items;
-				_tmp6__length1 = self->priv->_items_length1;
-				_tmp7_ = index;
-				_tmp8_ = _tmp6_[_tmp7_];
-				_tmp9_ = item;
-				_tmp10_ = _tmp5_ (_tmp8_, _tmp9_);
-				if (_tmp10_) {
+				_tmp4_ = self->priv->_equal_func;
+				_tmp5_ = self->priv->_items;
+				_tmp5__length1 = self->priv->_items_length1;
+				_tmp6_ = index;
+				_tmp7_ = _tmp5_[_tmp6_];
+				_tmp8_ = item;
+				_tmp9_ = _tmp4_ (_tmp7_, _tmp8_);
+				if (_tmp9_) {
 					result = index;
 					return result;
 				}
@@ -362,32 +360,30 @@ static gpointer vala_array_list_real_get (ValaList* base, gint index) {
 	ValaArrayList * self;
 	gpointer result = NULL;
 	gboolean _tmp0_ = FALSE;
-	gint _tmp1_;
-	gboolean _tmp4_;
-	gpointer* _tmp5_;
-	gint _tmp5__length1;
-	gint _tmp6_;
-	gconstpointer _tmp7_;
-	gpointer _tmp8_;
+	gint _tmp1_ = 0;
+	gpointer* _tmp4_ = NULL;
+	gint _tmp4__length1 = 0;
+	gint _tmp5_ = 0;
+	gconstpointer _tmp6_ = NULL;
+	gpointer _tmp7_ = NULL;
 	self = (ValaArrayList*) base;
 	_tmp1_ = index;
 	if (_tmp1_ >= 0) {
-		gint _tmp2_;
-		gint _tmp3_;
+		gint _tmp2_ = 0;
+		gint _tmp3_ = 0;
 		_tmp2_ = index;
 		_tmp3_ = self->priv->_size;
 		_tmp0_ = _tmp2_ < _tmp3_;
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp4_ = _tmp0_;
-	_vala_assert (_tmp4_, "index >= 0 && index < _size");
-	_tmp5_ = self->priv->_items;
-	_tmp5__length1 = self->priv->_items_length1;
-	_tmp6_ = index;
-	_tmp7_ = _tmp5_[_tmp6_];
-	_tmp8_ = ((_tmp7_ != NULL) && (self->priv->g_dup_func != NULL)) ? self->priv->g_dup_func ((gpointer) _tmp7_) : ((gpointer) _tmp7_);
-	result = _tmp8_;
+	_vala_assert (_tmp0_, "index >= 0 && index < _size");
+	_tmp4_ = self->priv->_items;
+	_tmp4__length1 = self->priv->_items_length1;
+	_tmp5_ = index;
+	_tmp6_ = _tmp4_[_tmp5_];
+	_tmp7_ = ((_tmp6_ != NULL) && (self->priv->g_dup_func != NULL)) ? self->priv->g_dup_func ((gpointer) _tmp6_) : ((gpointer) _tmp6_);
+	result = _tmp7_;
 	return result;
 }
 
@@ -395,51 +391,49 @@ static gpointer vala_array_list_real_get (ValaList* base, gint index) {
 static void vala_array_list_real_set (ValaList* base, gint index, gconstpointer item) {
 	ValaArrayList * self;
 	gboolean _tmp0_ = FALSE;
-	gint _tmp1_;
-	gboolean _tmp4_;
-	gpointer* _tmp5_;
-	gint _tmp5__length1;
-	gint _tmp6_;
-	gconstpointer _tmp7_;
-	gpointer _tmp8_;
-	gpointer _tmp9_;
+	gint _tmp1_ = 0;
+	gpointer* _tmp4_ = NULL;
+	gint _tmp4__length1 = 0;
+	gint _tmp5_ = 0;
+	gconstpointer _tmp6_ = NULL;
+	gpointer _tmp7_ = NULL;
+	gpointer _tmp8_ = NULL;
 	self = (ValaArrayList*) base;
 	_tmp1_ = index;
 	if (_tmp1_ >= 0) {
-		gint _tmp2_;
-		gint _tmp3_;
+		gint _tmp2_ = 0;
+		gint _tmp3_ = 0;
 		_tmp2_ = index;
 		_tmp3_ = self->priv->_size;
 		_tmp0_ = _tmp2_ < _tmp3_;
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp4_ = _tmp0_;
-	_vala_assert (_tmp4_, "index >= 0 && index < _size");
-	_tmp5_ = self->priv->_items;
-	_tmp5__length1 = self->priv->_items_length1;
-	_tmp6_ = index;
-	_tmp7_ = item;
-	_tmp8_ = ((_tmp7_ != NULL) && (self->priv->g_dup_func != NULL)) ? self->priv->g_dup_func ((gpointer) _tmp7_) : ((gpointer) _tmp7_);
-	((_tmp5_[_tmp6_] == NULL) || (self->priv->g_destroy_func == NULL)) ? NULL : (_tmp5_[_tmp6_] = (self->priv->g_destroy_func (_tmp5_[_tmp6_]), NULL));
-	_tmp5_[_tmp6_] = _tmp8_;
-	_tmp9_ = _tmp5_[_tmp6_];
+	_vala_assert (_tmp0_, "index >= 0 && index < _size");
+	_tmp4_ = self->priv->_items;
+	_tmp4__length1 = self->priv->_items_length1;
+	_tmp5_ = index;
+	_tmp6_ = item;
+	_tmp7_ = ((_tmp6_ != NULL) && (self->priv->g_dup_func != NULL)) ? self->priv->g_dup_func ((gpointer) _tmp6_) : ((gpointer) _tmp6_);
+	((_tmp4_[_tmp5_] == NULL) || (self->priv->g_destroy_func == NULL)) ? NULL : (_tmp4_[_tmp5_] = (self->priv->g_destroy_func (_tmp4_[_tmp5_]), NULL));
+	_tmp4_[_tmp5_] = _tmp7_;
+	_tmp8_ = _tmp4_[_tmp5_];
 }
 
 
 static gboolean vala_array_list_real_add (ValaCollection* base, gconstpointer item) {
 	ValaArrayList * self;
 	gboolean result = FALSE;
-	gint _tmp0_;
-	gpointer* _tmp1_;
-	gint _tmp1__length1;
-	gpointer* _tmp2_;
-	gint _tmp2__length1;
-	gint _tmp3_;
-	gconstpointer _tmp4_;
-	gpointer _tmp5_;
-	gpointer _tmp6_;
-	gint _tmp7_;
+	gint _tmp0_ = 0;
+	gpointer* _tmp1_ = NULL;
+	gint _tmp1__length1 = 0;
+	gpointer* _tmp2_ = NULL;
+	gint _tmp2__length1 = 0;
+	gint _tmp3_ = 0;
+	gconstpointer _tmp4_ = NULL;
+	gpointer _tmp5_ = NULL;
+	gpointer _tmp6_ = NULL;
+	gint _tmp7_ = 0;
 	self = (ValaArrayList*) base;
 	_tmp0_ = self->priv->_size;
 	_tmp1_ = self->priv->_items;
@@ -466,50 +460,48 @@ static gboolean vala_array_list_real_add (ValaCollection* base, gconstpointer it
 static void vala_array_list_real_insert (ValaList* base, gint index, gconstpointer item) {
 	ValaArrayList * self;
 	gboolean _tmp0_ = FALSE;
-	gint _tmp1_;
-	gboolean _tmp4_;
-	gint _tmp5_;
-	gpointer* _tmp6_;
-	gint _tmp6__length1;
-	gint _tmp7_;
-	gpointer* _tmp8_;
-	gint _tmp8__length1;
-	gint _tmp9_;
-	gconstpointer _tmp10_;
-	gpointer _tmp11_;
-	gpointer _tmp12_;
-	gint _tmp13_;
+	gint _tmp1_ = 0;
+	gint _tmp4_ = 0;
+	gpointer* _tmp5_ = NULL;
+	gint _tmp5__length1 = 0;
+	gint _tmp6_ = 0;
+	gpointer* _tmp7_ = NULL;
+	gint _tmp7__length1 = 0;
+	gint _tmp8_ = 0;
+	gconstpointer _tmp9_ = NULL;
+	gpointer _tmp10_ = NULL;
+	gpointer _tmp11_ = NULL;
+	gint _tmp12_ = 0;
 	self = (ValaArrayList*) base;
 	_tmp1_ = index;
 	if (_tmp1_ >= 0) {
-		gint _tmp2_;
-		gint _tmp3_;
+		gint _tmp2_ = 0;
+		gint _tmp3_ = 0;
 		_tmp2_ = index;
 		_tmp3_ = self->priv->_size;
 		_tmp0_ = _tmp2_ <= _tmp3_;
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp4_ = _tmp0_;
-	_vala_assert (_tmp4_, "index >= 0 && index <= _size");
-	_tmp5_ = self->priv->_size;
-	_tmp6_ = self->priv->_items;
-	_tmp6__length1 = self->priv->_items_length1;
-	if (_tmp5_ == _tmp6__length1) {
+	_vala_assert (_tmp0_, "index >= 0 && index <= _size");
+	_tmp4_ = self->priv->_size;
+	_tmp5_ = self->priv->_items;
+	_tmp5__length1 = self->priv->_items_length1;
+	if (_tmp4_ == _tmp5__length1) {
 		vala_array_list_grow_if_needed (self, 1);
 	}
-	_tmp7_ = index;
-	vala_array_list_shift (self, _tmp7_, 1);
-	_tmp8_ = self->priv->_items;
-	_tmp8__length1 = self->priv->_items_length1;
-	_tmp9_ = index;
-	_tmp10_ = item;
-	_tmp11_ = ((_tmp10_ != NULL) && (self->priv->g_dup_func != NULL)) ? self->priv->g_dup_func ((gpointer) _tmp10_) : ((gpointer) _tmp10_);
-	((_tmp8_[_tmp9_] == NULL) || (self->priv->g_destroy_func == NULL)) ? NULL : (_tmp8_[_tmp9_] = (self->priv->g_destroy_func (_tmp8_[_tmp9_]), NULL));
-	_tmp8_[_tmp9_] = _tmp11_;
-	_tmp12_ = _tmp8_[_tmp9_];
-	_tmp13_ = self->priv->_stamp;
-	self->priv->_stamp = _tmp13_ + 1;
+	_tmp6_ = index;
+	vala_array_list_shift (self, _tmp6_, 1);
+	_tmp7_ = self->priv->_items;
+	_tmp7__length1 = self->priv->_items_length1;
+	_tmp8_ = index;
+	_tmp9_ = item;
+	_tmp10_ = ((_tmp9_ != NULL) && (self->priv->g_dup_func != NULL)) ? self->priv->g_dup_func ((gpointer) _tmp9_) : ((gpointer) _tmp9_);
+	((_tmp7_[_tmp8_] == NULL) || (self->priv->g_destroy_func == NULL)) ? NULL : (_tmp7_[_tmp8_] = (self->priv->g_destroy_func (_tmp7_[_tmp8_]), NULL));
+	_tmp7_[_tmp8_] = _tmp10_;
+	_tmp11_ = _tmp7_[_tmp8_];
+	_tmp12_ = self->priv->_stamp;
+	self->priv->_stamp = _tmp12_ + 1;
 }
 
 
@@ -518,45 +510,43 @@ static gboolean vala_array_list_real_remove (ValaCollection* base, gconstpointer
 	gboolean result = FALSE;
 	self = (ValaArrayList*) base;
 	{
-		gint index;
+		gint index = 0;
 		index = 0;
 		{
-			gboolean _tmp0_;
+			gboolean _tmp0_ = FALSE;
 			_tmp0_ = TRUE;
 			while (TRUE) {
-				gboolean _tmp1_;
-				gint _tmp3_;
-				gint _tmp4_;
-				GEqualFunc _tmp5_;
-				gpointer* _tmp6_;
-				gint _tmp6__length1;
-				gint _tmp7_;
-				gconstpointer _tmp8_;
-				gconstpointer _tmp9_;
-				gboolean _tmp10_ = FALSE;
-				_tmp1_ = _tmp0_;
-				if (!_tmp1_) {
-					gint _tmp2_;
-					_tmp2_ = index;
-					index = _tmp2_ + 1;
+				gint _tmp2_ = 0;
+				gint _tmp3_ = 0;
+				GEqualFunc _tmp4_ = NULL;
+				gpointer* _tmp5_ = NULL;
+				gint _tmp5__length1 = 0;
+				gint _tmp6_ = 0;
+				gconstpointer _tmp7_ = NULL;
+				gconstpointer _tmp8_ = NULL;
+				gboolean _tmp9_ = FALSE;
+				if (!_tmp0_) {
+					gint _tmp1_ = 0;
+					_tmp1_ = index;
+					index = _tmp1_ + 1;
 				}
 				_tmp0_ = FALSE;
-				_tmp3_ = index;
-				_tmp4_ = self->priv->_size;
-				if (!(_tmp3_ < _tmp4_)) {
+				_tmp2_ = index;
+				_tmp3_ = self->priv->_size;
+				if (!(_tmp2_ < _tmp3_)) {
 					break;
 				}
-				_tmp5_ = self->priv->_equal_func;
-				_tmp6_ = self->priv->_items;
-				_tmp6__length1 = self->priv->_items_length1;
-				_tmp7_ = index;
-				_tmp8_ = _tmp6_[_tmp7_];
-				_tmp9_ = item;
-				_tmp10_ = _tmp5_ (_tmp8_, _tmp9_);
-				if (_tmp10_) {
-					gint _tmp11_;
-					_tmp11_ = index;
-					vala_list_remove_at ((ValaList*) self, _tmp11_);
+				_tmp4_ = self->priv->_equal_func;
+				_tmp5_ = self->priv->_items;
+				_tmp5__length1 = self->priv->_items_length1;
+				_tmp6_ = index;
+				_tmp7_ = _tmp5_[_tmp6_];
+				_tmp8_ = item;
+				_tmp9_ = _tmp4_ (_tmp7_, _tmp8_);
+				if (_tmp9_) {
+					gint _tmp10_ = 0;
+					_tmp10_ = index;
+					vala_list_remove_at ((ValaList*) self, _tmp10_);
 					result = TRUE;
 					return result;
 				}
@@ -571,141 +561,133 @@ static gboolean vala_array_list_real_remove (ValaCollection* base, gconstpointer
 static void vala_array_list_real_remove_at (ValaList* base, gint index) {
 	ValaArrayList * self;
 	gboolean _tmp0_ = FALSE;
-	gint _tmp1_;
-	gboolean _tmp4_;
-	gpointer* _tmp5_;
-	gint _tmp5__length1;
-	gint _tmp6_;
-	gpointer _tmp7_;
-	gint _tmp8_;
-	gint _tmp9_;
+	gint _tmp1_ = 0;
+	gpointer* _tmp4_ = NULL;
+	gint _tmp4__length1 = 0;
+	gint _tmp5_ = 0;
+	gpointer _tmp6_ = NULL;
+	gint _tmp7_ = 0;
+	gint _tmp8_ = 0;
 	self = (ValaArrayList*) base;
 	_tmp1_ = index;
 	if (_tmp1_ >= 0) {
-		gint _tmp2_;
-		gint _tmp3_;
+		gint _tmp2_ = 0;
+		gint _tmp3_ = 0;
 		_tmp2_ = index;
 		_tmp3_ = self->priv->_size;
 		_tmp0_ = _tmp2_ < _tmp3_;
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp4_ = _tmp0_;
-	_vala_assert (_tmp4_, "index >= 0 && index < _size");
-	_tmp5_ = self->priv->_items;
-	_tmp5__length1 = self->priv->_items_length1;
-	_tmp6_ = index;
-	((_tmp5_[_tmp6_] == NULL) || (self->priv->g_destroy_func == NULL)) ? NULL : (_tmp5_[_tmp6_] = (self->priv->g_destroy_func (_tmp5_[_tmp6_]), NULL));
-	_tmp5_[_tmp6_] = NULL;
-	_tmp7_ = _tmp5_[_tmp6_];
-	_tmp8_ = index;
-	vala_array_list_shift (self, _tmp8_ + 1, -1);
-	_tmp9_ = self->priv->_stamp;
-	self->priv->_stamp = _tmp9_ + 1;
+	_vala_assert (_tmp0_, "index >= 0 && index < _size");
+	_tmp4_ = self->priv->_items;
+	_tmp4__length1 = self->priv->_items_length1;
+	_tmp5_ = index;
+	((_tmp4_[_tmp5_] == NULL) || (self->priv->g_destroy_func == NULL)) ? NULL : (_tmp4_[_tmp5_] = (self->priv->g_destroy_func (_tmp4_[_tmp5_]), NULL));
+	_tmp4_[_tmp5_] = NULL;
+	_tmp6_ = _tmp4_[_tmp5_];
+	_tmp7_ = index;
+	vala_array_list_shift (self, _tmp7_ + 1, -1);
+	_tmp8_ = self->priv->_stamp;
+	self->priv->_stamp = _tmp8_ + 1;
 }
 
 
 static void vala_array_list_real_clear (ValaCollection* base) {
 	ValaArrayList * self;
-	gint _tmp8_;
+	gint _tmp7_ = 0;
 	self = (ValaArrayList*) base;
 	{
-		gint index;
+		gint index = 0;
 		index = 0;
 		{
-			gboolean _tmp0_;
+			gboolean _tmp0_ = FALSE;
 			_tmp0_ = TRUE;
 			while (TRUE) {
-				gboolean _tmp1_;
-				gint _tmp3_;
-				gint _tmp4_;
-				gpointer* _tmp5_;
-				gint _tmp5__length1;
-				gint _tmp6_;
-				gpointer _tmp7_;
-				_tmp1_ = _tmp0_;
-				if (!_tmp1_) {
-					gint _tmp2_;
-					_tmp2_ = index;
-					index = _tmp2_ + 1;
+				gint _tmp2_ = 0;
+				gint _tmp3_ = 0;
+				gpointer* _tmp4_ = NULL;
+				gint _tmp4__length1 = 0;
+				gint _tmp5_ = 0;
+				gpointer _tmp6_ = NULL;
+				if (!_tmp0_) {
+					gint _tmp1_ = 0;
+					_tmp1_ = index;
+					index = _tmp1_ + 1;
 				}
 				_tmp0_ = FALSE;
-				_tmp3_ = index;
-				_tmp4_ = self->priv->_size;
-				if (!(_tmp3_ < _tmp4_)) {
+				_tmp2_ = index;
+				_tmp3_ = self->priv->_size;
+				if (!(_tmp2_ < _tmp3_)) {
 					break;
 				}
-				_tmp5_ = self->priv->_items;
-				_tmp5__length1 = self->priv->_items_length1;
-				_tmp6_ = index;
-				((_tmp5_[_tmp6_] == NULL) || (self->priv->g_destroy_func == NULL)) ? NULL : (_tmp5_[_tmp6_] = (self->priv->g_destroy_func (_tmp5_[_tmp6_]), NULL));
-				_tmp5_[_tmp6_] = NULL;
-				_tmp7_ = _tmp5_[_tmp6_];
+				_tmp4_ = self->priv->_items;
+				_tmp4__length1 = self->priv->_items_length1;
+				_tmp5_ = index;
+				((_tmp4_[_tmp5_] == NULL) || (self->priv->g_destroy_func == NULL)) ? NULL : (_tmp4_[_tmp5_] = (self->priv->g_destroy_func (_tmp4_[_tmp5_]), NULL));
+				_tmp4_[_tmp5_] = NULL;
+				_tmp6_ = _tmp4_[_tmp5_];
 			}
 		}
 	}
 	self->priv->_size = 0;
-	_tmp8_ = self->priv->_stamp;
-	self->priv->_stamp = _tmp8_ + 1;
+	_tmp7_ = self->priv->_stamp;
+	self->priv->_stamp = _tmp7_ + 1;
 }
 
 
 static void vala_array_list_shift (ValaArrayList* self, gint start, gint delta) {
 	gboolean _tmp0_ = FALSE;
 	gboolean _tmp1_ = FALSE;
-	gint _tmp2_;
-	gboolean _tmp5_;
-	gboolean _tmp8_;
-	gint _tmp9_;
-	gint _tmp10_;
-	gint _tmp11_;
-	gint _tmp12_;
-	gint _tmp13_;
-	gint _tmp14_;
-	gint _tmp15_;
+	gint _tmp2_ = 0;
+	gint _tmp7_ = 0;
+	gint _tmp8_ = 0;
+	gint _tmp9_ = 0;
+	gint _tmp10_ = 0;
+	gint _tmp11_ = 0;
+	gint _tmp12_ = 0;
+	gint _tmp13_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp2_ = start;
 	if (_tmp2_ >= 0) {
-		gint _tmp3_;
-		gint _tmp4_;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
 		_tmp3_ = start;
 		_tmp4_ = self->priv->_size;
 		_tmp1_ = _tmp3_ <= _tmp4_;
 	} else {
 		_tmp1_ = FALSE;
 	}
-	_tmp5_ = _tmp1_;
-	if (_tmp5_) {
-		gint _tmp6_;
-		gint _tmp7_;
-		_tmp6_ = start;
-		_tmp7_ = delta;
-		_tmp0_ = _tmp6_ >= (-_tmp7_);
+	if (_tmp1_) {
+		gint _tmp5_ = 0;
+		gint _tmp6_ = 0;
+		_tmp5_ = start;
+		_tmp6_ = delta;
+		_tmp0_ = _tmp5_ >= (-_tmp6_);
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp8_ = _tmp0_;
-	_vala_assert (_tmp8_, "start >= 0 && start <= _size && start >= -delta");
-	_tmp9_ = start;
-	_tmp10_ = start;
-	_tmp11_ = delta;
+	_vala_assert (_tmp0_, "start >= 0 && start <= _size && start >= -delta");
+	_tmp7_ = start;
+	_tmp8_ = start;
+	_tmp9_ = delta;
+	_tmp10_ = self->priv->_size;
+	_tmp11_ = start;
+	_vala_array_move (self->priv->_items, sizeof (gpointer), _tmp7_, _tmp8_ + _tmp9_, _tmp10_ - _tmp11_);
 	_tmp12_ = self->priv->_size;
-	_tmp13_ = start;
-	_vala_array_move (self->priv->_items, sizeof (gpointer), _tmp9_, _tmp10_ + _tmp11_, _tmp12_ - _tmp13_);
-	_tmp14_ = self->priv->_size;
-	_tmp15_ = delta;
-	self->priv->_size = _tmp14_ + _tmp15_;
+	_tmp13_ = delta;
+	self->priv->_size = _tmp12_ + _tmp13_;
 }
 
 
 static void vala_array_list_grow_if_needed (ValaArrayList* self, gint new_count) {
-	gint _tmp0_;
-	gint _tmp1_;
-	gint _tmp2_;
-	gint minimum_size;
-	gint _tmp3_;
-	gpointer* _tmp4_;
-	gint _tmp4__length1;
+	gint _tmp0_ = 0;
+	gint minimum_size = 0;
+	gint _tmp1_ = 0;
+	gint _tmp2_ = 0;
+	gint _tmp3_ = 0;
+	gpointer* _tmp4_ = NULL;
+	gint _tmp4__length1 = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = new_count;
 	_vala_assert (_tmp0_ >= 0, "new_count >= 0");
@@ -717,34 +699,32 @@ static void vala_array_list_grow_if_needed (ValaArrayList* self, gint new_count)
 	_tmp4__length1 = self->priv->_items_length1;
 	if (_tmp3_ > _tmp4__length1) {
 		gint _tmp5_ = 0;
-		gint _tmp6_;
-		gpointer* _tmp7_;
-		gint _tmp7__length1;
-		gint _tmp10_;
+		gint _tmp6_ = 0;
+		gpointer* _tmp7_ = NULL;
+		gint _tmp7__length1 = 0;
 		_tmp6_ = new_count;
 		_tmp7_ = self->priv->_items;
 		_tmp7__length1 = self->priv->_items_length1;
 		if (_tmp6_ > _tmp7__length1) {
-			gint _tmp8_;
+			gint _tmp8_ = 0;
 			_tmp8_ = minimum_size;
 			_tmp5_ = _tmp8_;
 		} else {
-			gpointer* _tmp9_;
-			gint _tmp9__length1;
+			gpointer* _tmp9_ = NULL;
+			gint _tmp9__length1 = 0;
 			_tmp9_ = self->priv->_items;
 			_tmp9__length1 = self->priv->_items_length1;
 			_tmp5_ = 2 * _tmp9__length1;
 		}
-		_tmp10_ = _tmp5_;
-		vala_array_list_set_capacity (self, _tmp10_);
+		vala_array_list_set_capacity (self, _tmp5_);
 	}
 }
 
 
 static void vala_array_list_set_capacity (ValaArrayList* self, gint value) {
-	gint _tmp0_;
-	gint _tmp1_;
-	gint _tmp2_;
+	gint _tmp0_ = 0;
+	gint _tmp1_ = 0;
+	gint _tmp2_ = 0;
 	gint _tmp3_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
@@ -762,7 +742,7 @@ static void vala_array_list_set_capacity (ValaArrayList* self, gint value) {
 static gint vala_array_list_real_get_size (ValaCollection* base) {
 	gint result;
 	ValaArrayList* self;
-	gint _tmp0_;
+	gint _tmp0_ = 0;
 	self = (ValaArrayList*) base;
 	_tmp0_ = self->priv->_size;
 	result = _tmp0_;
@@ -771,7 +751,7 @@ static gint vala_array_list_real_get_size (ValaCollection* base) {
 
 
 void vala_array_list_set_equal_func (ValaArrayList* self, GEqualFunc value) {
-	GEqualFunc _tmp0_;
+	GEqualFunc _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_equal_func = _tmp0_;
@@ -780,7 +760,7 @@ void vala_array_list_set_equal_func (ValaArrayList* self, GEqualFunc value) {
 
 static ValaArrayListIterator* vala_array_list_iterator_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, ValaArrayList* list) {
 	ValaArrayListIterator* self = NULL;
-	ValaArrayList* _tmp0_;
+	ValaArrayList* _tmp0_ = NULL;
 	g_return_val_if_fail (list != NULL, NULL);
 	self = (ValaArrayListIterator*) vala_iterator_construct (object_type, g_type, (GBoxedCopyFunc) g_dup_func, g_destroy_func);
 	self->priv->g_type = g_type;
@@ -800,15 +780,15 @@ static ValaArrayListIterator* vala_array_list_iterator_new (GType g_type, GBoxed
 static gboolean vala_array_list_iterator_real_next (ValaIterator* base) {
 	ValaArrayListIterator * self;
 	gboolean result = FALSE;
-	gint _tmp0_;
-	ValaArrayList* _tmp1_;
-	gint _tmp2_;
-	gint _tmp3_;
-	ValaArrayList* _tmp4_;
-	gint _tmp5_;
-	gint _tmp7_;
-	ValaArrayList* _tmp8_;
-	gint _tmp9_;
+	gint _tmp0_ = 0;
+	ValaArrayList* _tmp1_ = NULL;
+	gint _tmp2_ = 0;
+	gint _tmp3_ = 0;
+	ValaArrayList* _tmp4_ = NULL;
+	gint _tmp5_ = 0;
+	gint _tmp7_ = 0;
+	ValaArrayList* _tmp8_ = NULL;
+	gint _tmp9_ = 0;
 	self = (ValaArrayListIterator*) base;
 	_tmp0_ = self->_stamp;
 	_tmp1_ = self->priv->_list;
@@ -818,7 +798,7 @@ static gboolean vala_array_list_iterator_real_next (ValaIterator* base) {
 	_tmp4_ = self->priv->_list;
 	_tmp5_ = _tmp4_->priv->_size;
 	if (_tmp3_ < _tmp5_) {
-		gint _tmp6_;
+		gint _tmp6_ = 0;
 		_tmp6_ = self->priv->_index;
 		self->priv->_index = _tmp6_ + 1;
 	}
@@ -833,15 +813,14 @@ static gboolean vala_array_list_iterator_real_next (ValaIterator* base) {
 static gpointer vala_array_list_iterator_real_get (ValaIterator* base) {
 	ValaArrayListIterator * self;
 	gpointer result = NULL;
-	gint _tmp0_;
-	ValaArrayList* _tmp1_;
-	gint _tmp2_;
+	gint _tmp0_ = 0;
+	ValaArrayList* _tmp1_ = NULL;
+	gint _tmp2_ = 0;
 	gboolean _tmp3_ = FALSE;
-	gint _tmp4_;
-	gboolean _tmp8_;
-	ValaArrayList* _tmp9_;
-	gint _tmp10_;
-	gpointer _tmp11_ = NULL;
+	gint _tmp4_ = 0;
+	ValaArrayList* _tmp8_ = NULL;
+	gint _tmp9_ = 0;
+	gpointer _tmp10_ = NULL;
 	self = (ValaArrayListIterator*) base;
 	_tmp0_ = self->_stamp;
 	_tmp1_ = self->priv->_list;
@@ -851,23 +830,22 @@ static gpointer vala_array_list_iterator_real_get (ValaIterator* base) {
 	if (_tmp4_ < 0) {
 		_tmp3_ = TRUE;
 	} else {
-		gint _tmp5_;
-		ValaArrayList* _tmp6_;
-		gint _tmp7_;
+		gint _tmp5_ = 0;
+		ValaArrayList* _tmp6_ = NULL;
+		gint _tmp7_ = 0;
 		_tmp5_ = self->priv->_index;
 		_tmp6_ = self->priv->_list;
 		_tmp7_ = _tmp6_->priv->_size;
 		_tmp3_ = _tmp5_ >= _tmp7_;
 	}
-	_tmp8_ = _tmp3_;
-	if (_tmp8_) {
+	if (_tmp3_) {
 		result = NULL;
 		return result;
 	}
-	_tmp9_ = self->priv->_list;
-	_tmp10_ = self->priv->_index;
-	_tmp11_ = vala_list_get ((ValaList*) _tmp9_, _tmp10_);
-	result = _tmp11_;
+	_tmp8_ = self->priv->_list;
+	_tmp9_ = self->priv->_index;
+	_tmp10_ = vala_list_get ((ValaList*) _tmp8_, _tmp9_);
+	result = _tmp10_;
 	return result;
 }
 
@@ -878,10 +856,10 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 
 
 static void vala_array_list_iterator_set_list (ValaArrayListIterator* self, ValaArrayList* value) {
-	ValaArrayList* _tmp0_;
-	ValaArrayList* _tmp1_;
-	ValaArrayList* _tmp2_;
-	gint _tmp3_;
+	ValaArrayList* _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
+	ValaArrayList* _tmp2_ = NULL;
+	gint _tmp3_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -895,10 +873,10 @@ static void vala_array_list_iterator_set_list (ValaArrayListIterator* self, Vala
 
 static void vala_array_list_iterator_class_init (ValaArrayListIteratorClass * klass) {
 	vala_array_list_iterator_parent_class = g_type_class_peek_parent (klass);
-	VALA_ITERATOR_CLASS (klass)->finalize = vala_array_list_iterator_finalize;
+	((ValaIteratorClass *) klass)->finalize = vala_array_list_iterator_finalize;
 	g_type_class_add_private (klass, sizeof (ValaArrayListIteratorPrivate));
-	VALA_ITERATOR_CLASS (klass)->next = vala_array_list_iterator_real_next;
-	VALA_ITERATOR_CLASS (klass)->get = vala_array_list_iterator_real_get;
+	((ValaIteratorClass *) klass)->next = vala_array_list_iterator_real_next;
+	((ValaIteratorClass *) klass)->get = vala_array_list_iterator_real_get;
 }
 
 
@@ -931,19 +909,19 @@ static GType vala_array_list_iterator_get_type (void) {
 
 static void vala_array_list_class_init (ValaArrayListClass * klass) {
 	vala_array_list_parent_class = g_type_class_peek_parent (klass);
-	VALA_ITERABLE_CLASS (klass)->finalize = vala_array_list_finalize;
+	((ValaIterableClass *) klass)->finalize = vala_array_list_finalize;
 	g_type_class_add_private (klass, sizeof (ValaArrayListPrivate));
-	VALA_ITERABLE_CLASS (klass)->get_element_type = vala_array_list_real_get_element_type;
-	VALA_ITERABLE_CLASS (klass)->iterator = vala_array_list_real_iterator;
-	VALA_COLLECTION_CLASS (klass)->contains = vala_array_list_real_contains;
-	VALA_LIST_CLASS (klass)->index_of = vala_array_list_real_index_of;
-	VALA_LIST_CLASS (klass)->get = vala_array_list_real_get;
-	VALA_LIST_CLASS (klass)->set = vala_array_list_real_set;
-	VALA_COLLECTION_CLASS (klass)->add = vala_array_list_real_add;
-	VALA_LIST_CLASS (klass)->insert = vala_array_list_real_insert;
-	VALA_COLLECTION_CLASS (klass)->remove = vala_array_list_real_remove;
-	VALA_LIST_CLASS (klass)->remove_at = vala_array_list_real_remove_at;
-	VALA_COLLECTION_CLASS (klass)->clear = vala_array_list_real_clear;
+	((ValaIterableClass *) klass)->get_element_type = vala_array_list_real_get_element_type;
+	((ValaIterableClass *) klass)->iterator = vala_array_list_real_iterator;
+	((ValaCollectionClass *) klass)->contains = vala_array_list_real_contains;
+	((ValaListClass *) klass)->index_of = vala_array_list_real_index_of;
+	((ValaListClass *) klass)->get = vala_array_list_real_get;
+	((ValaListClass *) klass)->set = vala_array_list_real_set;
+	((ValaCollectionClass *) klass)->add = vala_array_list_real_add;
+	((ValaListClass *) klass)->insert = vala_array_list_real_insert;
+	((ValaCollectionClass *) klass)->remove = vala_array_list_real_remove;
+	((ValaListClass *) klass)->remove_at = vala_array_list_real_remove_at;
+	((ValaCollectionClass *) klass)->clear = vala_array_list_real_clear;
 	VALA_COLLECTION_CLASS (klass)->get_size = vala_array_list_real_get_size;
 }
 

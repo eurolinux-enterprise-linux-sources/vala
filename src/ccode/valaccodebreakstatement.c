@@ -149,11 +149,11 @@ ValaCCodeStatement* vala_ccode_statement_construct (GType object_type);
 
 static void vala_ccode_break_statement_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeBreakStatement * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeLineDirective* _tmp1_;
-	ValaCCodeLineDirective* _tmp2_;
-	ValaCCodeWriter* _tmp3_;
-	ValaCCodeWriter* _tmp4_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeLineDirective* _tmp1_ = NULL;
+	ValaCCodeLineDirective* _tmp2_ = NULL;
+	ValaCCodeWriter* _tmp3_ = NULL;
+	ValaCCodeWriter* _tmp4_ = NULL;
 	self = (ValaCCodeBreakStatement*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -181,7 +181,7 @@ ValaCCodeBreakStatement* vala_ccode_break_statement_new (void) {
 
 static void vala_ccode_break_statement_class_init (ValaCCodeBreakStatementClass * klass) {
 	vala_ccode_break_statement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_break_statement_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_break_statement_real_write;
 }
 
 

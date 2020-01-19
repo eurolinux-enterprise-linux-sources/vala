@@ -307,8 +307,8 @@ static void vala_pointer_indirection_finalize (ValaCodeNode* obj);
  */
 ValaPointerIndirection* vala_pointer_indirection_construct (GType object_type, ValaExpression* inner, ValaSourceReference* source_reference) {
 	ValaPointerIndirection* self = NULL;
-	ValaSourceReference* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaSourceReference* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	g_return_val_if_fail (inner != NULL, NULL);
 	self = (ValaPointerIndirection*) vala_expression_construct (object_type);
 	_tmp0_ = source_reference;
@@ -326,11 +326,11 @@ ValaPointerIndirection* vala_pointer_indirection_new (ValaExpression* inner, Val
 
 static void vala_pointer_indirection_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaPointerIndirection * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeVisitor* _tmp2_;
-	ValaCodeVisitor* _tmp3_;
-	ValaCodeVisitor* _tmp4_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeVisitor* _tmp2_ = NULL;
+	ValaCodeVisitor* _tmp3_ = NULL;
+	ValaCodeVisitor* _tmp4_ = NULL;
 	self = (ValaPointerIndirection*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_pointer_indirection_get_inner (self);
@@ -346,9 +346,9 @@ static void vala_pointer_indirection_real_accept (ValaCodeNode* base, ValaCodeVi
 
 static void vala_pointer_indirection_real_replace_expression (ValaCodeNode* base, ValaExpression* old_node, ValaExpression* new_node) {
 	ValaPointerIndirection * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	self = (ValaPointerIndirection*) base;
 	g_return_if_fail (old_node != NULL);
 	g_return_if_fail (new_node != NULL);
@@ -356,7 +356,7 @@ static void vala_pointer_indirection_real_replace_expression (ValaCodeNode* base
 	_tmp1_ = _tmp0_;
 	_tmp2_ = old_node;
 	if (_tmp1_ == _tmp2_) {
-		ValaExpression* _tmp3_;
+		ValaExpression* _tmp3_ = NULL;
 		_tmp3_ = new_node;
 		vala_pointer_indirection_set_inner (self, _tmp3_);
 	}
@@ -366,8 +366,8 @@ static void vala_pointer_indirection_real_replace_expression (ValaCodeNode* base
 static gboolean vala_pointer_indirection_real_is_pure (ValaExpression* base) {
 	ValaPointerIndirection * self;
 	gboolean result = FALSE;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
 	self = (ValaPointerIndirection*) base;
 	_tmp0_ = vala_pointer_indirection_get_inner (self);
@@ -386,29 +386,29 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 static gboolean vala_pointer_indirection_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaPointerIndirection * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaExpression* _tmp4_;
-	ValaExpression* _tmp5_;
-	ValaCodeContext* _tmp6_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaExpression* _tmp4_ = NULL;
+	ValaExpression* _tmp5_ = NULL;
+	ValaCodeContext* _tmp6_ = NULL;
 	gboolean _tmp7_ = FALSE;
-	ValaExpression* _tmp8_;
-	ValaExpression* _tmp9_;
-	ValaDataType* _tmp10_;
-	ValaDataType* _tmp11_;
-	ValaExpression* _tmp14_;
-	ValaExpression* _tmp15_;
-	ValaDataType* _tmp16_;
-	ValaDataType* _tmp17_;
-	gboolean _tmp38_;
-	gboolean _tmp39_;
+	ValaExpression* _tmp8_ = NULL;
+	ValaExpression* _tmp9_ = NULL;
+	ValaDataType* _tmp10_ = NULL;
+	ValaDataType* _tmp11_ = NULL;
+	ValaExpression* _tmp14_ = NULL;
+	ValaExpression* _tmp15_ = NULL;
+	ValaDataType* _tmp16_ = NULL;
+	ValaDataType* _tmp17_ = NULL;
+	gboolean _tmp37_ = FALSE;
+	gboolean _tmp38_ = FALSE;
 	self = (ValaPointerIndirection*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -428,8 +428,8 @@ static gboolean vala_pointer_indirection_real_check (ValaCodeNode* base, ValaCod
 	_tmp10_ = vala_expression_get_value_type (_tmp9_);
 	_tmp11_ = _tmp10_;
 	if (_tmp11_ == NULL) {
-		ValaSourceReference* _tmp12_;
-		ValaSourceReference* _tmp13_;
+		ValaSourceReference* _tmp12_ = NULL;
+		ValaSourceReference* _tmp13_ = NULL;
 		vala_code_node_set_error ((ValaCodeNode*) self, TRUE);
 		_tmp12_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
 		_tmp13_ = _tmp12_;
@@ -442,20 +442,19 @@ static gboolean vala_pointer_indirection_real_check (ValaCodeNode* base, ValaCod
 	_tmp16_ = vala_expression_get_value_type (_tmp15_);
 	_tmp17_ = _tmp16_;
 	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp17_, VALA_TYPE_POINTER_TYPE)) {
-		ValaExpression* _tmp18_;
-		ValaExpression* _tmp19_;
-		ValaDataType* _tmp20_;
-		ValaDataType* _tmp21_;
-		ValaPointerType* _tmp22_;
-		ValaPointerType* pointer_type;
+		ValaPointerType* pointer_type = NULL;
+		ValaExpression* _tmp18_ = NULL;
+		ValaExpression* _tmp19_ = NULL;
+		ValaDataType* _tmp20_ = NULL;
+		ValaDataType* _tmp21_ = NULL;
+		ValaPointerType* _tmp22_ = NULL;
 		gboolean _tmp23_ = FALSE;
-		ValaPointerType* _tmp24_;
-		ValaDataType* _tmp25_;
-		ValaDataType* _tmp26_;
-		gboolean _tmp30_;
-		ValaPointerType* _tmp33_;
-		ValaDataType* _tmp34_;
-		ValaDataType* _tmp35_;
+		ValaPointerType* _tmp24_ = NULL;
+		ValaDataType* _tmp25_ = NULL;
+		ValaDataType* _tmp26_ = NULL;
+		ValaPointerType* _tmp32_ = NULL;
+		ValaDataType* _tmp33_ = NULL;
+		ValaDataType* _tmp34_ = NULL;
 		_tmp18_ = vala_pointer_indirection_get_inner (self);
 		_tmp19_ = _tmp18_;
 		_tmp20_ = vala_expression_get_value_type (_tmp19_);
@@ -468,55 +467,54 @@ static gboolean vala_pointer_indirection_real_check (ValaCodeNode* base, ValaCod
 		if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp26_, VALA_TYPE_REFERENCE_TYPE)) {
 			_tmp23_ = TRUE;
 		} else {
-			ValaPointerType* _tmp27_;
-			ValaDataType* _tmp28_;
-			ValaDataType* _tmp29_;
+			ValaPointerType* _tmp27_ = NULL;
+			ValaDataType* _tmp28_ = NULL;
+			ValaDataType* _tmp29_ = NULL;
 			_tmp27_ = pointer_type;
 			_tmp28_ = vala_pointer_type_get_base_type (_tmp27_);
 			_tmp29_ = _tmp28_;
 			_tmp23_ = G_TYPE_CHECK_INSTANCE_TYPE (_tmp29_, VALA_TYPE_VOID_TYPE);
 		}
-		_tmp30_ = _tmp23_;
-		if (_tmp30_) {
-			ValaSourceReference* _tmp31_;
-			ValaSourceReference* _tmp32_;
+		if (_tmp23_) {
+			ValaSourceReference* _tmp30_ = NULL;
+			ValaSourceReference* _tmp31_ = NULL;
 			vala_code_node_set_error ((ValaCodeNode*) self, TRUE);
-			_tmp31_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
-			_tmp32_ = _tmp31_;
-			vala_report_error (_tmp32_, "Pointer indirection not supported for this expression");
+			_tmp30_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+			_tmp31_ = _tmp30_;
+			vala_report_error (_tmp31_, "Pointer indirection not supported for this expression");
 			result = FALSE;
 			_vala_code_node_unref0 (pointer_type);
 			return result;
 		}
-		_tmp33_ = pointer_type;
-		_tmp34_ = vala_pointer_type_get_base_type (_tmp33_);
-		_tmp35_ = _tmp34_;
-		vala_expression_set_value_type ((ValaExpression*) self, _tmp35_);
+		_tmp32_ = pointer_type;
+		_tmp33_ = vala_pointer_type_get_base_type (_tmp32_);
+		_tmp34_ = _tmp33_;
+		vala_expression_set_value_type ((ValaExpression*) self, _tmp34_);
 		_vala_code_node_unref0 (pointer_type);
 	} else {
-		ValaSourceReference* _tmp36_;
-		ValaSourceReference* _tmp37_;
+		ValaSourceReference* _tmp35_ = NULL;
+		ValaSourceReference* _tmp36_ = NULL;
 		vala_code_node_set_error ((ValaCodeNode*) self, TRUE);
-		_tmp36_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
-		_tmp37_ = _tmp36_;
-		vala_report_error (_tmp37_, "Pointer indirection not supported for this expression");
+		_tmp35_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+		_tmp36_ = _tmp35_;
+		vala_report_error (_tmp36_, "Pointer indirection not supported for this expression");
 		result = FALSE;
 		return result;
 	}
-	_tmp38_ = vala_code_node_get_error ((ValaCodeNode*) self);
-	_tmp39_ = _tmp38_;
-	result = !_tmp39_;
+	_tmp37_ = vala_code_node_get_error ((ValaCodeNode*) self);
+	_tmp38_ = _tmp37_;
+	result = !_tmp38_;
 	return result;
 }
 
 
 static void vala_pointer_indirection_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaPointerIndirection * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeGenerator* _tmp2_;
-	ValaCodeGenerator* _tmp3_;
-	ValaCodeGenerator* _tmp4_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeGenerator* _tmp2_ = NULL;
+	ValaCodeGenerator* _tmp3_ = NULL;
+	ValaCodeGenerator* _tmp4_ = NULL;
 	self = (ValaPointerIndirection*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = vala_pointer_indirection_get_inner (self);
@@ -532,9 +530,9 @@ static void vala_pointer_indirection_real_emit (ValaCodeNode* base, ValaCodeGene
 
 static void vala_pointer_indirection_real_get_defined_variables (ValaCodeNode* base, ValaCollection* collection) {
 	ValaPointerIndirection * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCollection* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCollection* _tmp2_ = NULL;
 	self = (ValaPointerIndirection*) base;
 	g_return_if_fail (collection != NULL);
 	_tmp0_ = vala_pointer_indirection_get_inner (self);
@@ -546,9 +544,9 @@ static void vala_pointer_indirection_real_get_defined_variables (ValaCodeNode* b
 
 static void vala_pointer_indirection_real_get_used_variables (ValaCodeNode* base, ValaCollection* collection) {
 	ValaPointerIndirection * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCollection* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCollection* _tmp2_ = NULL;
 	self = (ValaPointerIndirection*) base;
 	g_return_if_fail (collection != NULL);
 	_tmp0_ = vala_pointer_indirection_get_inner (self);
@@ -560,7 +558,7 @@ static void vala_pointer_indirection_real_get_used_variables (ValaCodeNode* base
 
 ValaExpression* vala_pointer_indirection_get_inner (ValaPointerIndirection* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_inner;
 	result = _tmp0_;
@@ -569,9 +567,9 @@ ValaExpression* vala_pointer_indirection_get_inner (ValaPointerIndirection* self
 
 
 void vala_pointer_indirection_set_inner (ValaPointerIndirection* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -584,15 +582,15 @@ void vala_pointer_indirection_set_inner (ValaPointerIndirection* self, ValaExpre
 
 static void vala_pointer_indirection_class_init (ValaPointerIndirectionClass * klass) {
 	vala_pointer_indirection_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_pointer_indirection_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_pointer_indirection_finalize;
 	g_type_class_add_private (klass, sizeof (ValaPointerIndirectionPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_pointer_indirection_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->replace_expression = vala_pointer_indirection_real_replace_expression;
-	VALA_EXPRESSION_CLASS (klass)->is_pure = vala_pointer_indirection_real_is_pure;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_pointer_indirection_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_pointer_indirection_real_emit;
-	VALA_CODE_NODE_CLASS (klass)->get_defined_variables = vala_pointer_indirection_real_get_defined_variables;
-	VALA_CODE_NODE_CLASS (klass)->get_used_variables = vala_pointer_indirection_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->accept = vala_pointer_indirection_real_accept;
+	((ValaCodeNodeClass *) klass)->replace_expression = vala_pointer_indirection_real_replace_expression;
+	((ValaExpressionClass *) klass)->is_pure = vala_pointer_indirection_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = vala_pointer_indirection_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_pointer_indirection_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_pointer_indirection_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = vala_pointer_indirection_real_get_used_variables;
 }
 
 

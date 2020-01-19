@@ -184,8 +184,8 @@ static void vala_ccode_do_statement_finalize (ValaCCodeNode* obj);
 
 ValaCCodeDoStatement* vala_ccode_do_statement_construct (GType object_type, ValaCCodeStatement* stmt, ValaCCodeExpression* cond) {
 	ValaCCodeDoStatement* self = NULL;
-	ValaCCodeStatement* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeStatement* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_val_if_fail (stmt != NULL, NULL);
 	g_return_val_if_fail (cond != NULL, NULL);
 	self = (ValaCCodeDoStatement*) vala_ccode_statement_construct (object_type);
@@ -209,17 +209,17 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 static void vala_ccode_do_statement_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeDoStatement * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeLineDirective* _tmp1_;
-	ValaCCodeLineDirective* _tmp2_;
-	ValaCCodeWriter* _tmp3_;
-	ValaCCodeStatement* _tmp4_;
-	ValaCCodeStatement* _tmp8_;
-	ValaCCodeWriter* _tmp9_;
-	ValaCCodeWriter* _tmp10_;
-	ValaCCodeExpression* _tmp11_;
-	ValaCCodeWriter* _tmp12_;
-	ValaCCodeWriter* _tmp13_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeLineDirective* _tmp1_ = NULL;
+	ValaCCodeLineDirective* _tmp2_ = NULL;
+	ValaCCodeWriter* _tmp3_ = NULL;
+	ValaCCodeStatement* _tmp4_ = NULL;
+	ValaCCodeStatement* _tmp8_ = NULL;
+	ValaCCodeWriter* _tmp9_ = NULL;
+	ValaCCodeWriter* _tmp10_ = NULL;
+	ValaCCodeExpression* _tmp11_ = NULL;
+	ValaCCodeWriter* _tmp12_ = NULL;
+	ValaCCodeWriter* _tmp13_ = NULL;
 	self = (ValaCCodeDoStatement*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -230,10 +230,10 @@ static void vala_ccode_do_statement_real_write (ValaCCodeNode* base, ValaCCodeWr
 	vala_ccode_writer_write_string (_tmp3_, "do");
 	_tmp4_ = self->priv->_body;
 	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp4_, VALA_TYPE_CCODE_BLOCK)) {
-		ValaCCodeStatement* _tmp5_;
-		ValaCCodeBlock* _tmp6_;
-		ValaCCodeBlock* cblock;
-		ValaCCodeBlock* _tmp7_;
+		ValaCCodeBlock* cblock = NULL;
+		ValaCCodeStatement* _tmp5_ = NULL;
+		ValaCCodeBlock* _tmp6_ = NULL;
+		ValaCCodeBlock* _tmp7_ = NULL;
 		_tmp5_ = self->priv->_body;
 		_tmp6_ = _vala_ccode_node_ref0 (G_TYPE_CHECK_INSTANCE_CAST (_tmp5_, VALA_TYPE_CCODE_BLOCK, ValaCCodeBlock));
 		cblock = _tmp6_;
@@ -256,7 +256,7 @@ static void vala_ccode_do_statement_real_write (ValaCCodeNode* base, ValaCCodeWr
 
 ValaCCodeStatement* vala_ccode_do_statement_get_body (ValaCCodeDoStatement* self) {
 	ValaCCodeStatement* result;
-	ValaCCodeStatement* _tmp0_;
+	ValaCCodeStatement* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_body;
 	result = _tmp0_;
@@ -265,8 +265,8 @@ ValaCCodeStatement* vala_ccode_do_statement_get_body (ValaCCodeDoStatement* self
 
 
 void vala_ccode_do_statement_set_body (ValaCCodeDoStatement* self, ValaCCodeStatement* value) {
-	ValaCCodeStatement* _tmp0_;
-	ValaCCodeStatement* _tmp1_;
+	ValaCCodeStatement* _tmp0_ = NULL;
+	ValaCCodeStatement* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -277,7 +277,7 @@ void vala_ccode_do_statement_set_body (ValaCCodeDoStatement* self, ValaCCodeStat
 
 ValaCCodeExpression* vala_ccode_do_statement_get_condition (ValaCCodeDoStatement* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_condition;
 	result = _tmp0_;
@@ -286,8 +286,8 @@ ValaCCodeExpression* vala_ccode_do_statement_get_condition (ValaCCodeDoStatement
 
 
 void vala_ccode_do_statement_set_condition (ValaCCodeDoStatement* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -298,9 +298,9 @@ void vala_ccode_do_statement_set_condition (ValaCCodeDoStatement* self, ValaCCod
 
 static void vala_ccode_do_statement_class_init (ValaCCodeDoStatementClass * klass) {
 	vala_ccode_do_statement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_do_statement_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_do_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeDoStatementPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_do_statement_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_do_statement_real_write;
 }
 
 

@@ -1,26 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 NULL =
 
-if ENABLE_VAPIGEN
-VAPIGEN_SUBDIRS = \
-	gobject-introspection \
-	vapigen \
-	$(NULL)
-endif
-
 SUBDIRS = \
-	gee \
-	ccode \
-	vala \
-	codegen \
-	compiler \
-	vapi \
-	tests \
-	doc \
-	$(VAPIGEN_SUBDIRS) \
-	$(NULL)
-
-DIST_SUBDIRS = \
 	gee \
 	ccode \
 	vala \
@@ -98,7 +79,7 @@ gen-ChangeLog:
 	fi
 
 CLEANFILES = \
-	libvala@PACKAGE_SUFFIX@.pc
+	libvala@PACKAGE_SUFFIX@.pc \
 	$(NULL)
 
 EXTRA_DIST = \

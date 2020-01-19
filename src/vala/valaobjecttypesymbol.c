@@ -572,9 +572,9 @@ GType vala_object_type_get_type (void) G_GNUC_CONST;
 ValaObjectType* vala_object_type_symbol_get_this_type (ValaObjectTypeSymbol* self);
 ValaObjectType* vala_object_type_new (ValaObjectTypeSymbol* type_symbol);
 ValaObjectType* vala_object_type_construct (GType object_type, ValaObjectTypeSymbol* type_symbol);
+GType vala_generic_type_get_type (void) G_GNUC_CONST;
 ValaGenericType* vala_generic_type_new (ValaTypeParameter* type_parameter);
 ValaGenericType* vala_generic_type_construct (GType object_type, ValaTypeParameter* type_parameter);
-GType vala_generic_type_get_type (void) G_GNUC_CONST;
 void vala_data_type_set_value_owned (ValaDataType* self, gboolean value);
 void vala_data_type_add_type_argument (ValaDataType* self, ValaDataType* arg);
 void vala_object_type_symbol_add_hidden_method (ValaObjectTypeSymbol* self, ValaMethod* m);
@@ -601,9 +601,9 @@ static void vala_object_type_symbol_finalize (ValaCodeNode* obj);
 
 ValaObjectTypeSymbol* vala_object_type_symbol_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaObjectTypeSymbol* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaComment* _tmp2_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaComment* _tmp2_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	_tmp0_ = name;
 	_tmp1_ = source_reference;
@@ -655,14 +655,14 @@ ValaList* vala_object_type_symbol_get_properties (ValaObjectTypeSymbol* self) {
  * @param p a type parameter
  */
 void vala_object_type_symbol_add_type_parameter (ValaObjectTypeSymbol* self, ValaTypeParameter* p) {
-	ValaList* _tmp0_;
-	ValaTypeParameter* _tmp1_;
-	ValaScope* _tmp2_;
-	ValaScope* _tmp3_;
-	ValaTypeParameter* _tmp4_;
-	const gchar* _tmp5_;
-	const gchar* _tmp6_;
-	ValaTypeParameter* _tmp7_;
+	ValaList* _tmp0_ = NULL;
+	ValaTypeParameter* _tmp1_ = NULL;
+	ValaScope* _tmp2_ = NULL;
+	ValaScope* _tmp3_ = NULL;
+	ValaTypeParameter* _tmp4_ = NULL;
+	const gchar* _tmp5_ = NULL;
+	const gchar* _tmp6_ = NULL;
+	ValaTypeParameter* _tmp7_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (p != NULL);
 	_tmp0_ = self->priv->type_parameters;
@@ -690,8 +690,8 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 
 ValaList* vala_object_type_symbol_get_type_parameters (ValaObjectTypeSymbol* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->type_parameters;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -703,19 +703,19 @@ ValaList* vala_object_type_symbol_get_type_parameters (ValaObjectTypeSymbol* sel
 static gint vala_object_type_symbol_real_get_type_parameter_index (ValaTypeSymbol* base, const gchar* name) {
 	ValaObjectTypeSymbol * self;
 	gint result = 0;
-	gint i;
+	gint i = 0;
 	self = (ValaObjectTypeSymbol*) base;
 	g_return_val_if_fail (name != NULL, 0);
 	i = 0;
 	{
-		ValaList* _tmp0_;
-		ValaList* _tmp1_;
-		ValaList* _parameter_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _parameter_size;
-		gint _parameter_index;
+		ValaList* _parameter_list = NULL;
+		ValaList* _tmp0_ = NULL;
+		ValaList* _tmp1_ = NULL;
+		gint _parameter_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _parameter_index = 0;
 		_tmp0_ = self->priv->type_parameters;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
 		_parameter_list = _tmp1_;
@@ -725,18 +725,18 @@ static gint vala_object_type_symbol_real_get_type_parameter_index (ValaTypeSymbo
 		_parameter_size = _tmp4_;
 		_parameter_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaTypeParameter* parameter = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaTypeParameter* parameter;
-			ValaTypeParameter* _tmp11_;
-			const gchar* _tmp12_;
-			const gchar* _tmp13_;
-			const gchar* _tmp14_;
-			gint _tmp15_;
+			ValaTypeParameter* _tmp11_ = NULL;
+			const gchar* _tmp12_ = NULL;
+			const gchar* _tmp13_ = NULL;
+			const gchar* _tmp14_ = NULL;
+			gint _tmp15_ = 0;
 			_tmp5_ = _parameter_index;
 			_parameter_index = _tmp5_ + 1;
 			_tmp6_ = _parameter_index;
@@ -771,19 +771,19 @@ static gint vala_object_type_symbol_real_get_type_parameter_index (ValaTypeSymbo
 
 ValaObjectType* vala_object_type_symbol_get_this_type (ValaObjectTypeSymbol* self) {
 	ValaObjectType* result = NULL;
-	ValaObjectType* _tmp0_;
-	ValaObjectType* _result_;
+	ValaObjectType* _result_ = NULL;
+	ValaObjectType* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = vala_object_type_new (self);
 	_result_ = _tmp0_;
 	{
+		ValaList* _type_parameter_list = NULL;
 		ValaList* _tmp1_ = NULL;
-		ValaList* _type_parameter_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _type_parameter_size;
-		gint _type_parameter_index;
+		gint _type_parameter_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _type_parameter_index = 0;
 		_tmp1_ = vala_object_type_symbol_get_type_parameters (self);
 		_type_parameter_list = _tmp1_;
 		_tmp2_ = _type_parameter_list;
@@ -792,19 +792,19 @@ ValaObjectType* vala_object_type_symbol_get_this_type (ValaObjectTypeSymbol* sel
 		_type_parameter_size = _tmp4_;
 		_type_parameter_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaTypeParameter* type_parameter = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaTypeParameter* type_parameter;
-			ValaTypeParameter* _tmp11_;
-			ValaGenericType* _tmp12_;
-			ValaGenericType* type_arg;
-			ValaGenericType* _tmp13_;
-			ValaObjectType* _tmp14_;
-			ValaGenericType* _tmp15_;
+			ValaGenericType* type_arg = NULL;
+			ValaTypeParameter* _tmp11_ = NULL;
+			ValaGenericType* _tmp12_ = NULL;
+			ValaGenericType* _tmp13_ = NULL;
+			ValaObjectType* _tmp14_ = NULL;
+			ValaGenericType* _tmp15_ = NULL;
 			_tmp5_ = _type_parameter_index;
 			_type_parameter_index = _tmp5_ + 1;
 			_tmp6_ = _type_parameter_index;
@@ -846,54 +846,53 @@ ValaObjectType* vala_object_type_symbol_get_this_type (ValaObjectTypeSymbol* sel
  * @param m a method
  */
 void vala_object_type_symbol_add_hidden_method (ValaObjectTypeSymbol* self, ValaMethod* m) {
-	ValaMethod* _tmp0_;
-	ValaMemberBinding _tmp1_;
-	ValaMemberBinding _tmp2_;
+	ValaMethod* _tmp0_ = NULL;
+	ValaMemberBinding _tmp1_ = 0;
+	ValaMemberBinding _tmp2_ = 0;
 	gboolean _tmp30_ = FALSE;
-	ValaMethod* _tmp31_;
-	ValaDataType* _tmp32_;
-	ValaDataType* _tmp33_;
-	gboolean _tmp39_;
-	ValaScope* _tmp62_;
-	ValaScope* _tmp63_;
-	ValaMethod* _tmp64_;
+	ValaMethod* _tmp31_ = NULL;
+	ValaDataType* _tmp32_ = NULL;
+	ValaDataType* _tmp33_ = NULL;
+	ValaScope* _tmp61_ = NULL;
+	ValaScope* _tmp62_ = NULL;
+	ValaMethod* _tmp63_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (m != NULL);
 	_tmp0_ = m;
 	_tmp1_ = vala_method_get_binding (_tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ == VALA_MEMBER_BINDING_INSTANCE) {
-		ValaMethod* _tmp3_;
-		ValaParameter* _tmp4_;
-		ValaParameter* _tmp5_;
-		ValaMethod* _tmp14_;
+		ValaMethod* _tmp3_ = NULL;
+		ValaParameter* _tmp4_ = NULL;
+		ValaParameter* _tmp5_ = NULL;
+		ValaMethod* _tmp14_ = NULL;
 		ValaObjectType* _tmp15_ = NULL;
-		ValaObjectType* _tmp16_;
-		ValaParameter* _tmp17_;
-		ValaParameter* _tmp18_;
-		ValaMethod* _tmp19_;
-		ValaScope* _tmp20_;
-		ValaScope* _tmp21_;
-		ValaMethod* _tmp22_;
-		ValaParameter* _tmp23_;
-		ValaParameter* _tmp24_;
-		const gchar* _tmp25_;
-		const gchar* _tmp26_;
-		ValaMethod* _tmp27_;
-		ValaParameter* _tmp28_;
-		ValaParameter* _tmp29_;
+		ValaObjectType* _tmp16_ = NULL;
+		ValaParameter* _tmp17_ = NULL;
+		ValaParameter* _tmp18_ = NULL;
+		ValaMethod* _tmp19_ = NULL;
+		ValaScope* _tmp20_ = NULL;
+		ValaScope* _tmp21_ = NULL;
+		ValaMethod* _tmp22_ = NULL;
+		ValaParameter* _tmp23_ = NULL;
+		ValaParameter* _tmp24_ = NULL;
+		const gchar* _tmp25_ = NULL;
+		const gchar* _tmp26_ = NULL;
+		ValaMethod* _tmp27_ = NULL;
+		ValaParameter* _tmp28_ = NULL;
+		ValaParameter* _tmp29_ = NULL;
 		_tmp3_ = m;
 		_tmp4_ = vala_method_get_this_parameter (_tmp3_);
 		_tmp5_ = _tmp4_;
 		if (_tmp5_ != NULL) {
-			ValaMethod* _tmp6_;
-			ValaScope* _tmp7_;
-			ValaScope* _tmp8_;
-			ValaMethod* _tmp9_;
-			ValaParameter* _tmp10_;
-			ValaParameter* _tmp11_;
-			const gchar* _tmp12_;
-			const gchar* _tmp13_;
+			ValaMethod* _tmp6_ = NULL;
+			ValaScope* _tmp7_ = NULL;
+			ValaScope* _tmp8_ = NULL;
+			ValaMethod* _tmp9_ = NULL;
+			ValaParameter* _tmp10_ = NULL;
+			ValaParameter* _tmp11_ = NULL;
+			const gchar* _tmp12_ = NULL;
+			const gchar* _tmp13_ = NULL;
 			_tmp6_ = m;
 			_tmp7_ = vala_symbol_get_scope ((ValaSymbol*) _tmp6_);
 			_tmp8_ = _tmp7_;
@@ -929,11 +928,11 @@ void vala_object_type_symbol_add_hidden_method (ValaObjectTypeSymbol* self, Vala
 	_tmp32_ = vala_method_get_return_type (_tmp31_);
 	_tmp33_ = _tmp32_;
 	if (!G_TYPE_CHECK_INSTANCE_TYPE (_tmp33_, VALA_TYPE_VOID_TYPE)) {
-		ValaMethod* _tmp34_;
+		ValaMethod* _tmp34_ = NULL;
 		ValaList* _tmp35_ = NULL;
-		ValaList* _tmp36_;
-		gint _tmp37_;
-		gint _tmp38_;
+		ValaList* _tmp36_ = NULL;
+		gint _tmp37_ = 0;
+		gint _tmp38_ = 0;
 		_tmp34_ = m;
 		_tmp35_ = vala_method_get_postconditions (_tmp34_);
 		_tmp36_ = _tmp35_;
@@ -944,81 +943,80 @@ void vala_object_type_symbol_add_hidden_method (ValaObjectTypeSymbol* self, Vala
 	} else {
 		_tmp30_ = FALSE;
 	}
-	_tmp39_ = _tmp30_;
-	if (_tmp39_) {
-		ValaMethod* _tmp40_;
-		ValaLocalVariable* _tmp41_;
-		ValaLocalVariable* _tmp42_;
-		ValaMethod* _tmp51_;
-		ValaMethod* _tmp52_;
-		ValaDataType* _tmp53_;
-		ValaDataType* _tmp54_;
+	if (_tmp30_) {
+		ValaMethod* _tmp39_ = NULL;
+		ValaLocalVariable* _tmp40_ = NULL;
+		ValaLocalVariable* _tmp41_ = NULL;
+		ValaMethod* _tmp50_ = NULL;
+		ValaMethod* _tmp51_ = NULL;
+		ValaDataType* _tmp52_ = NULL;
+		ValaDataType* _tmp53_ = NULL;
+		ValaDataType* _tmp54_ = NULL;
 		ValaDataType* _tmp55_ = NULL;
-		ValaDataType* _tmp56_;
-		ValaLocalVariable* _tmp57_;
-		ValaLocalVariable* _tmp58_;
-		ValaMethod* _tmp59_;
-		ValaLocalVariable* _tmp60_;
-		ValaLocalVariable* _tmp61_;
-		_tmp40_ = m;
-		_tmp41_ = vala_subroutine_get_result_var ((ValaSubroutine*) _tmp40_);
-		_tmp42_ = _tmp41_;
-		if (_tmp42_ != NULL) {
-			ValaMethod* _tmp43_;
-			ValaScope* _tmp44_;
-			ValaScope* _tmp45_;
-			ValaMethod* _tmp46_;
-			ValaLocalVariable* _tmp47_;
-			ValaLocalVariable* _tmp48_;
-			const gchar* _tmp49_;
-			const gchar* _tmp50_;
-			_tmp43_ = m;
-			_tmp44_ = vala_symbol_get_scope ((ValaSymbol*) _tmp43_);
-			_tmp45_ = _tmp44_;
-			_tmp46_ = m;
-			_tmp47_ = vala_subroutine_get_result_var ((ValaSubroutine*) _tmp46_);
-			_tmp48_ = _tmp47_;
-			_tmp49_ = vala_symbol_get_name ((ValaSymbol*) _tmp48_);
-			_tmp50_ = _tmp49_;
-			vala_scope_remove (_tmp45_, _tmp50_);
+		ValaLocalVariable* _tmp56_ = NULL;
+		ValaLocalVariable* _tmp57_ = NULL;
+		ValaMethod* _tmp58_ = NULL;
+		ValaLocalVariable* _tmp59_ = NULL;
+		ValaLocalVariable* _tmp60_ = NULL;
+		_tmp39_ = m;
+		_tmp40_ = vala_subroutine_get_result_var ((ValaSubroutine*) _tmp39_);
+		_tmp41_ = _tmp40_;
+		if (_tmp41_ != NULL) {
+			ValaMethod* _tmp42_ = NULL;
+			ValaScope* _tmp43_ = NULL;
+			ValaScope* _tmp44_ = NULL;
+			ValaMethod* _tmp45_ = NULL;
+			ValaLocalVariable* _tmp46_ = NULL;
+			ValaLocalVariable* _tmp47_ = NULL;
+			const gchar* _tmp48_ = NULL;
+			const gchar* _tmp49_ = NULL;
+			_tmp42_ = m;
+			_tmp43_ = vala_symbol_get_scope ((ValaSymbol*) _tmp42_);
+			_tmp44_ = _tmp43_;
+			_tmp45_ = m;
+			_tmp46_ = vala_subroutine_get_result_var ((ValaSubroutine*) _tmp45_);
+			_tmp47_ = _tmp46_;
+			_tmp48_ = vala_symbol_get_name ((ValaSymbol*) _tmp47_);
+			_tmp49_ = _tmp48_;
+			vala_scope_remove (_tmp44_, _tmp49_);
 		}
+		_tmp50_ = m;
 		_tmp51_ = m;
-		_tmp52_ = m;
-		_tmp53_ = vala_method_get_return_type (_tmp52_);
-		_tmp54_ = _tmp53_;
-		_tmp55_ = vala_data_type_copy (_tmp54_);
-		_tmp56_ = _tmp55_;
-		_tmp57_ = vala_local_variable_new (_tmp56_, "result", NULL, NULL);
-		_tmp58_ = _tmp57_;
-		vala_subroutine_set_result_var ((ValaSubroutine*) _tmp51_, _tmp58_);
-		_vala_code_node_unref0 (_tmp58_);
-		_vala_code_node_unref0 (_tmp56_);
-		_tmp59_ = m;
-		_tmp60_ = vala_subroutine_get_result_var ((ValaSubroutine*) _tmp59_);
-		_tmp61_ = _tmp60_;
-		vala_local_variable_set_is_result (_tmp61_, TRUE);
+		_tmp52_ = vala_method_get_return_type (_tmp51_);
+		_tmp53_ = _tmp52_;
+		_tmp54_ = vala_data_type_copy (_tmp53_);
+		_tmp55_ = _tmp54_;
+		_tmp56_ = vala_local_variable_new (_tmp55_, "result", NULL, NULL);
+		_tmp57_ = _tmp56_;
+		vala_subroutine_set_result_var ((ValaSubroutine*) _tmp50_, _tmp57_);
+		_vala_code_node_unref0 (_tmp57_);
+		_vala_code_node_unref0 (_tmp55_);
+		_tmp58_ = m;
+		_tmp59_ = vala_subroutine_get_result_var ((ValaSubroutine*) _tmp58_);
+		_tmp60_ = _tmp59_;
+		vala_local_variable_set_is_result (_tmp60_, TRUE);
 	}
-	_tmp62_ = vala_symbol_get_scope ((ValaSymbol*) self);
-	_tmp63_ = _tmp62_;
-	_tmp64_ = m;
-	vala_scope_add (_tmp63_, NULL, (ValaSymbol*) _tmp64_);
+	_tmp61_ = vala_symbol_get_scope ((ValaSymbol*) self);
+	_tmp62_ = _tmp61_;
+	_tmp63_ = m;
+	vala_scope_add (_tmp62_, NULL, (ValaSymbol*) _tmp63_);
 }
 
 
 static void vala_object_type_symbol_class_init (ValaObjectTypeSymbolClass * klass) {
 	vala_object_type_symbol_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_object_type_symbol_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_object_type_symbol_finalize;
 	g_type_class_add_private (klass, sizeof (ValaObjectTypeSymbolPrivate));
-	VALA_OBJECT_TYPE_SYMBOL_CLASS (klass)->get_methods = vala_object_type_symbol_real_get_methods;
-	VALA_OBJECT_TYPE_SYMBOL_CLASS (klass)->get_signals = vala_object_type_symbol_real_get_signals;
-	VALA_OBJECT_TYPE_SYMBOL_CLASS (klass)->get_properties = vala_object_type_symbol_real_get_properties;
-	VALA_TYPESYMBOL_CLASS (klass)->get_type_parameter_index = vala_object_type_symbol_real_get_type_parameter_index;
+	((ValaObjectTypeSymbolClass *) klass)->get_methods = vala_object_type_symbol_real_get_methods;
+	((ValaObjectTypeSymbolClass *) klass)->get_signals = vala_object_type_symbol_real_get_signals;
+	((ValaObjectTypeSymbolClass *) klass)->get_properties = vala_object_type_symbol_real_get_properties;
+	((ValaTypeSymbolClass *) klass)->get_type_parameter_index = vala_object_type_symbol_real_get_type_parameter_index;
 }
 
 
 static void vala_object_type_symbol_instance_init (ValaObjectTypeSymbol * self) {
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_OBJECT_TYPE_SYMBOL_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_TYPEPARAMETER, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);

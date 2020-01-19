@@ -145,7 +145,7 @@ static void vala_ccode_identifier_finalize (ValaCCodeNode* obj);
 
 ValaCCodeIdentifier* vala_ccode_identifier_construct (GType object_type, const gchar* _name) {
 	ValaCCodeIdentifier* self = NULL;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (_name != NULL, NULL);
 	self = (ValaCCodeIdentifier*) vala_ccode_expression_construct (object_type);
 	_tmp0_ = _name;
@@ -161,8 +161,8 @@ ValaCCodeIdentifier* vala_ccode_identifier_new (const gchar* _name) {
 
 static void vala_ccode_identifier_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeIdentifier * self;
-	ValaCCodeWriter* _tmp0_;
-	const gchar* _tmp1_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	self = (ValaCCodeIdentifier*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -173,7 +173,7 @@ static void vala_ccode_identifier_real_write (ValaCCodeNode* base, ValaCCodeWrit
 
 const gchar* vala_ccode_identifier_get_name (ValaCCodeIdentifier* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_name;
 	result = _tmp0_;
@@ -182,8 +182,8 @@ const gchar* vala_ccode_identifier_get_name (ValaCCodeIdentifier* self) {
 
 
 void vala_ccode_identifier_set_name (ValaCCodeIdentifier* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -194,9 +194,9 @@ void vala_ccode_identifier_set_name (ValaCCodeIdentifier* self, const gchar* val
 
 static void vala_ccode_identifier_class_init (ValaCCodeIdentifierClass * klass) {
 	vala_ccode_identifier_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_identifier_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_identifier_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeIdentifierPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_identifier_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_identifier_real_write;
 }
 
 

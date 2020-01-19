@@ -337,7 +337,7 @@ void vala_data_type_set_nullable (ValaDataType* self, gboolean value);
 
 ValaBooleanType* vala_boolean_type_construct (GType object_type, ValaStruct* type_symbol) {
 	ValaBooleanType* self = NULL;
-	ValaStruct* _tmp0_;
+	ValaStruct* _tmp0_ = NULL;
 	g_return_val_if_fail (type_symbol != NULL, NULL);
 	_tmp0_ = type_symbol;
 	self = (ValaBooleanType*) vala_value_type_construct (object_type, (ValaTypeSymbol*) _tmp0_);
@@ -353,16 +353,16 @@ ValaBooleanType* vala_boolean_type_new (ValaStruct* type_symbol) {
 static ValaDataType* vala_boolean_type_real_copy (ValaDataType* base) {
 	ValaBooleanType * self;
 	ValaDataType* result = NULL;
-	ValaTypeSymbol* _tmp0_;
-	ValaTypeSymbol* _tmp1_;
-	ValaBooleanType* _tmp2_;
-	ValaBooleanType* _result_;
-	ValaSourceReference* _tmp3_;
-	ValaSourceReference* _tmp4_;
-	gboolean _tmp5_;
-	gboolean _tmp6_;
-	gboolean _tmp7_;
-	gboolean _tmp8_;
+	ValaBooleanType* _result_ = NULL;
+	ValaTypeSymbol* _tmp0_ = NULL;
+	ValaTypeSymbol* _tmp1_ = NULL;
+	ValaBooleanType* _tmp2_ = NULL;
+	ValaSourceReference* _tmp3_ = NULL;
+	ValaSourceReference* _tmp4_ = NULL;
+	gboolean _tmp5_ = FALSE;
+	gboolean _tmp6_ = FALSE;
+	gboolean _tmp7_ = FALSE;
+	gboolean _tmp8_ = FALSE;
 	self = (ValaBooleanType*) base;
 	_tmp0_ = vala_value_type_get_type_symbol ((ValaValueType*) self);
 	_tmp1_ = _tmp0_;
@@ -384,7 +384,7 @@ static ValaDataType* vala_boolean_type_real_copy (ValaDataType* base) {
 
 static void vala_boolean_type_class_init (ValaBooleanTypeClass * klass) {
 	vala_boolean_type_parent_class = g_type_class_peek_parent (klass);
-	VALA_DATA_TYPE_CLASS (klass)->copy = vala_boolean_type_real_copy;
+	((ValaDataTypeClass *) klass)->copy = vala_boolean_type_real_copy;
 }
 
 

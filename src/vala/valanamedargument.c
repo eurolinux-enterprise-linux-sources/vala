@@ -272,9 +272,9 @@ static void vala_named_argument_finalize (ValaCodeNode* obj);
 
 ValaNamedArgument* vala_named_argument_construct (GType object_type, const gchar* name, ValaExpression* inner, ValaSourceReference* source_reference) {
 	ValaNamedArgument* self = NULL;
-	const gchar* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaSourceReference* _tmp2_;
+	const gchar* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaSourceReference* _tmp2_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (inner != NULL, NULL);
 	self = (ValaNamedArgument*) vala_expression_construct (object_type);
@@ -295,8 +295,8 @@ ValaNamedArgument* vala_named_argument_new (const gchar* name, ValaExpression* i
 
 static void vala_named_argument_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaNamedArgument * self;
-	ValaCodeVisitor* _tmp0_;
-	ValaCodeVisitor* _tmp1_;
+	ValaCodeVisitor* _tmp0_ = NULL;
+	ValaCodeVisitor* _tmp1_ = NULL;
 	self = (ValaNamedArgument*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -308,9 +308,9 @@ static void vala_named_argument_real_accept (ValaCodeNode* base, ValaCodeVisitor
 
 static void vala_named_argument_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaNamedArgument * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeVisitor* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeVisitor* _tmp2_ = NULL;
 	self = (ValaNamedArgument*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_named_argument_get_inner (self);
@@ -322,9 +322,9 @@ static void vala_named_argument_real_accept_children (ValaCodeNode* base, ValaCo
 
 static void vala_named_argument_real_replace_expression (ValaCodeNode* base, ValaExpression* old_node, ValaExpression* new_node) {
 	ValaNamedArgument * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	self = (ValaNamedArgument*) base;
 	g_return_if_fail (old_node != NULL);
 	g_return_if_fail (new_node != NULL);
@@ -332,7 +332,7 @@ static void vala_named_argument_real_replace_expression (ValaCodeNode* base, Val
 	_tmp1_ = _tmp0_;
 	_tmp2_ = old_node;
 	if (_tmp1_ == _tmp2_) {
-		ValaExpression* _tmp3_;
+		ValaExpression* _tmp3_ = NULL;
 		_tmp3_ = new_node;
 		vala_named_argument_set_inner (self, _tmp3_);
 	}
@@ -342,8 +342,8 @@ static void vala_named_argument_real_replace_expression (ValaCodeNode* base, Val
 static gboolean vala_named_argument_real_is_pure (ValaExpression* base) {
 	ValaNamedArgument * self;
 	gboolean result = FALSE;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
 	self = (ValaNamedArgument*) base;
 	_tmp0_ = vala_named_argument_get_inner (self);
@@ -357,35 +357,35 @@ static gboolean vala_named_argument_real_is_pure (ValaExpression* base) {
 static gboolean vala_named_argument_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaNamedArgument * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaExpression* _tmp4_;
-	ValaExpression* _tmp5_;
-	ValaDataType* _tmp6_;
-	ValaDataType* _tmp7_;
-	ValaExpression* _tmp8_;
-	ValaExpression* _tmp9_;
-	ValaCodeContext* _tmp10_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaExpression* _tmp4_ = NULL;
+	ValaExpression* _tmp5_ = NULL;
+	ValaDataType* _tmp6_ = NULL;
+	ValaDataType* _tmp7_ = NULL;
+	ValaExpression* _tmp8_ = NULL;
+	ValaExpression* _tmp9_ = NULL;
+	ValaCodeContext* _tmp10_ = NULL;
 	gboolean _tmp11_ = FALSE;
-	ValaExpression* _tmp12_;
-	ValaExpression* _tmp13_;
-	ValaExpression* _tmp14_;
-	ValaExpression* _tmp15_;
-	ValaDataType* _tmp16_;
-	ValaDataType* _tmp17_;
-	ValaExpression* _tmp18_;
-	ValaExpression* _tmp19_;
-	ValaDataType* _tmp20_;
-	ValaDataType* _tmp21_;
-	gboolean _tmp22_;
-	gboolean _tmp23_;
+	ValaExpression* _tmp12_ = NULL;
+	ValaExpression* _tmp13_ = NULL;
+	ValaExpression* _tmp14_ = NULL;
+	ValaExpression* _tmp15_ = NULL;
+	ValaDataType* _tmp16_ = NULL;
+	ValaDataType* _tmp17_ = NULL;
+	ValaExpression* _tmp18_ = NULL;
+	ValaExpression* _tmp19_ = NULL;
+	ValaDataType* _tmp20_ = NULL;
+	ValaDataType* _tmp21_ = NULL;
+	gboolean _tmp22_ = FALSE;
+	gboolean _tmp23_ = FALSE;
 	self = (ValaNamedArgument*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -427,11 +427,11 @@ static gboolean vala_named_argument_real_check (ValaCodeNode* base, ValaCodeCont
 
 static void vala_named_argument_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaNamedArgument * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeGenerator* _tmp2_;
-	ValaCodeGenerator* _tmp3_;
-	ValaCodeGenerator* _tmp4_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeGenerator* _tmp2_ = NULL;
+	ValaCodeGenerator* _tmp3_ = NULL;
+	ValaCodeGenerator* _tmp4_ = NULL;
 	self = (ValaNamedArgument*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = vala_named_argument_get_inner (self);
@@ -447,9 +447,9 @@ static void vala_named_argument_real_emit (ValaCodeNode* base, ValaCodeGenerator
 
 static void vala_named_argument_real_get_defined_variables (ValaCodeNode* base, ValaCollection* collection) {
 	ValaNamedArgument * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCollection* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCollection* _tmp2_ = NULL;
 	self = (ValaNamedArgument*) base;
 	g_return_if_fail (collection != NULL);
 	_tmp0_ = vala_named_argument_get_inner (self);
@@ -461,9 +461,9 @@ static void vala_named_argument_real_get_defined_variables (ValaCodeNode* base, 
 
 static void vala_named_argument_real_get_used_variables (ValaCodeNode* base, ValaCollection* collection) {
 	ValaNamedArgument * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCollection* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCollection* _tmp2_ = NULL;
 	self = (ValaNamedArgument*) base;
 	g_return_if_fail (collection != NULL);
 	_tmp0_ = vala_named_argument_get_inner (self);
@@ -475,7 +475,7 @@ static void vala_named_argument_real_get_used_variables (ValaCodeNode* base, Val
 
 const gchar* vala_named_argument_get_name (ValaNamedArgument* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_name;
 	result = _tmp0_;
@@ -484,8 +484,8 @@ const gchar* vala_named_argument_get_name (ValaNamedArgument* self) {
 
 
 void vala_named_argument_set_name (ValaNamedArgument* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -496,7 +496,7 @@ void vala_named_argument_set_name (ValaNamedArgument* self, const gchar* value) 
 
 ValaExpression* vala_named_argument_get_inner (ValaNamedArgument* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_inner;
 	result = _tmp0_;
@@ -510,9 +510,9 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_named_argument_set_inner (ValaNamedArgument* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -525,16 +525,16 @@ void vala_named_argument_set_inner (ValaNamedArgument* self, ValaExpression* val
 
 static void vala_named_argument_class_init (ValaNamedArgumentClass * klass) {
 	vala_named_argument_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_named_argument_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_named_argument_finalize;
 	g_type_class_add_private (klass, sizeof (ValaNamedArgumentPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_named_argument_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_named_argument_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->replace_expression = vala_named_argument_real_replace_expression;
-	VALA_EXPRESSION_CLASS (klass)->is_pure = vala_named_argument_real_is_pure;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_named_argument_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_named_argument_real_emit;
-	VALA_CODE_NODE_CLASS (klass)->get_defined_variables = vala_named_argument_real_get_defined_variables;
-	VALA_CODE_NODE_CLASS (klass)->get_used_variables = vala_named_argument_real_get_used_variables;
+	((ValaCodeNodeClass *) klass)->accept = vala_named_argument_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_named_argument_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_expression = vala_named_argument_real_replace_expression;
+	((ValaExpressionClass *) klass)->is_pure = vala_named_argument_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = vala_named_argument_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_named_argument_real_emit;
+	((ValaCodeNodeClass *) klass)->get_defined_variables = vala_named_argument_real_get_defined_variables;
+	((ValaCodeNodeClass *) klass)->get_used_variables = vala_named_argument_real_get_used_variables;
 }
 
 

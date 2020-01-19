@@ -1157,6 +1157,7 @@ struct _ValaSemanticAnalyzer {
 	ValaDataType* unichar_type;
 	ValaDataType* double_type;
 	ValaDataType* type_type;
+	ValaDataType* va_list_type;
 	ValaClass* object_type;
 	ValaStructValueType* gvalue_type;
 	ValaObjectType* gvariant_type;
@@ -1357,9 +1358,9 @@ static void vala_typecheck_finalize (ValaCodeNode* obj);
  */
 ValaTypeCheck* vala_typecheck_construct (GType object_type, ValaExpression* expr, ValaDataType* type, ValaSourceReference* source) {
 	ValaTypeCheck* self = NULL;
-	ValaExpression* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaSourceReference* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaSourceReference* _tmp2_ = NULL;
 	g_return_val_if_fail (expr != NULL, NULL);
 	g_return_val_if_fail (type != NULL, NULL);
 	g_return_val_if_fail (source != NULL, NULL);
@@ -1381,8 +1382,8 @@ ValaTypeCheck* vala_typecheck_new (ValaExpression* expr, ValaDataType* type, Val
 
 static void vala_typecheck_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaTypeCheck * self;
-	ValaCodeVisitor* _tmp0_;
-	ValaCodeVisitor* _tmp1_;
+	ValaCodeVisitor* _tmp0_ = NULL;
+	ValaCodeVisitor* _tmp1_ = NULL;
 	self = (ValaTypeCheck*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -1394,12 +1395,12 @@ static void vala_typecheck_real_accept (ValaCodeNode* base, ValaCodeVisitor* vis
 
 static void vala_typecheck_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaTypeCheck * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeVisitor* _tmp2_;
-	ValaDataType* _tmp3_;
-	ValaDataType* _tmp4_;
-	ValaCodeVisitor* _tmp5_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeVisitor* _tmp2_ = NULL;
+	ValaDataType* _tmp3_ = NULL;
+	ValaDataType* _tmp4_ = NULL;
+	ValaCodeVisitor* _tmp5_ = NULL;
 	self = (ValaTypeCheck*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_typecheck_get_expression (self);
@@ -1416,8 +1417,8 @@ static void vala_typecheck_real_accept_children (ValaCodeNode* base, ValaCodeVis
 static gboolean vala_typecheck_real_is_pure (ValaExpression* base) {
 	ValaTypeCheck * self;
 	gboolean result = FALSE;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
 	self = (ValaTypeCheck*) base;
 	_tmp0_ = vala_typecheck_get_expression (self);
@@ -1430,9 +1431,9 @@ static gboolean vala_typecheck_real_is_pure (ValaExpression* base) {
 
 static void vala_typecheck_real_replace_type (ValaCodeNode* base, ValaDataType* old_type, ValaDataType* new_type) {
 	ValaTypeCheck * self;
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaDataType* _tmp2_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaDataType* _tmp2_ = NULL;
 	self = (ValaTypeCheck*) base;
 	g_return_if_fail (old_type != NULL);
 	g_return_if_fail (new_type != NULL);
@@ -1440,7 +1441,7 @@ static void vala_typecheck_real_replace_type (ValaCodeNode* base, ValaDataType* 
 	_tmp1_ = _tmp0_;
 	_tmp2_ = old_type;
 	if (_tmp1_ == _tmp2_) {
-		ValaDataType* _tmp3_;
+		ValaDataType* _tmp3_ = NULL;
 		_tmp3_ = new_type;
 		vala_typecheck_set_type_reference (self, _tmp3_);
 	}
@@ -1449,9 +1450,9 @@ static void vala_typecheck_real_replace_type (ValaCodeNode* base, ValaDataType* 
 
 static void vala_typecheck_real_replace_expression (ValaCodeNode* base, ValaExpression* old_node, ValaExpression* new_node) {
 	ValaTypeCheck * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	self = (ValaTypeCheck*) base;
 	g_return_if_fail (old_node != NULL);
 	g_return_if_fail (new_node != NULL);
@@ -1459,7 +1460,7 @@ static void vala_typecheck_real_replace_expression (ValaCodeNode* base, ValaExpr
 	_tmp1_ = _tmp0_;
 	_tmp2_ = old_node;
 	if (_tmp1_ == _tmp2_) {
-		ValaExpression* _tmp3_;
+		ValaExpression* _tmp3_ = NULL;
 		_tmp3_ = new_node;
 		vala_typecheck_set_expression (self, _tmp3_);
 	}
@@ -1469,42 +1470,42 @@ static void vala_typecheck_real_replace_expression (ValaCodeNode* base, ValaExpr
 static gboolean vala_typecheck_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaTypeCheck * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaExpression* _tmp4_;
-	ValaExpression* _tmp5_;
-	ValaCodeContext* _tmp6_;
-	ValaDataType* _tmp7_;
-	ValaDataType* _tmp8_;
-	ValaCodeContext* _tmp9_;
-	ValaExpression* _tmp10_;
-	ValaExpression* _tmp11_;
-	ValaDataType* _tmp12_;
-	ValaDataType* _tmp13_;
-	ValaDataType* _tmp18_;
-	ValaDataType* _tmp19_;
-	ValaTypeSymbol* _tmp20_;
-	ValaTypeSymbol* _tmp21_;
-	ValaDataType* _tmp22_;
-	ValaDataType* _tmp23_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaExpression* _tmp4_ = NULL;
+	ValaExpression* _tmp5_ = NULL;
+	ValaCodeContext* _tmp6_ = NULL;
+	ValaDataType* _tmp7_ = NULL;
+	ValaDataType* _tmp8_ = NULL;
+	ValaCodeContext* _tmp9_ = NULL;
+	ValaExpression* _tmp10_ = NULL;
+	ValaExpression* _tmp11_ = NULL;
+	ValaDataType* _tmp12_ = NULL;
+	ValaDataType* _tmp13_ = NULL;
+	ValaDataType* _tmp18_ = NULL;
+	ValaDataType* _tmp19_ = NULL;
+	ValaTypeSymbol* _tmp20_ = NULL;
+	ValaTypeSymbol* _tmp21_ = NULL;
+	ValaDataType* _tmp22_ = NULL;
+	ValaDataType* _tmp23_ = NULL;
 	ValaList* _tmp24_ = NULL;
-	ValaList* _tmp25_;
-	gint _tmp26_;
-	gint _tmp27_;
-	gboolean _tmp28_;
-	ValaCodeContext* _tmp32_;
-	ValaSemanticAnalyzer* _tmp33_;
-	ValaSemanticAnalyzer* _tmp34_;
-	ValaDataType* _tmp35_;
-	gboolean _tmp36_;
-	gboolean _tmp37_;
+	ValaList* _tmp25_ = NULL;
+	gint _tmp26_ = 0;
+	gint _tmp27_ = 0;
+	gboolean _tmp28_ = FALSE;
+	ValaCodeContext* _tmp32_ = NULL;
+	ValaSemanticAnalyzer* _tmp33_ = NULL;
+	ValaSemanticAnalyzer* _tmp34_ = NULL;
+	ValaDataType* _tmp35_ = NULL;
+	gboolean _tmp36_ = FALSE;
+	gboolean _tmp37_ = FALSE;
 	self = (ValaTypeCheck*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -1524,10 +1525,10 @@ static gboolean vala_typecheck_real_check (ValaCodeNode* base, ValaCodeContext* 
 	_tmp12_ = vala_expression_get_value_type (_tmp11_);
 	_tmp13_ = _tmp12_;
 	if (_tmp13_ == NULL) {
-		ValaExpression* _tmp14_;
-		ValaExpression* _tmp15_;
-		ValaSourceReference* _tmp16_;
-		ValaSourceReference* _tmp17_;
+		ValaExpression* _tmp14_ = NULL;
+		ValaExpression* _tmp15_ = NULL;
+		ValaSourceReference* _tmp16_ = NULL;
+		ValaSourceReference* _tmp17_ = NULL;
 		_tmp14_ = vala_typecheck_get_expression (self);
 		_tmp15_ = _tmp14_;
 		_tmp16_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp15_);
@@ -1555,9 +1556,9 @@ static gboolean vala_typecheck_real_check (ValaCodeNode* base, ValaCodeContext* 
 	_tmp28_ = _tmp27_ > 0;
 	_vala_iterable_unref0 (_tmp25_);
 	if (_tmp28_) {
-		ValaDataType* _tmp29_;
-		ValaSourceReference* _tmp30_;
-		ValaSourceReference* _tmp31_;
+		ValaDataType* _tmp29_ = NULL;
+		ValaSourceReference* _tmp30_ = NULL;
+		ValaSourceReference* _tmp31_ = NULL;
 		_tmp29_ = self->priv->_data_type;
 		_tmp30_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp29_);
 		_tmp31_ = _tmp30_;
@@ -1577,11 +1578,11 @@ static gboolean vala_typecheck_real_check (ValaCodeNode* base, ValaCodeContext* 
 
 static void vala_typecheck_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaTypeCheck * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeGenerator* _tmp2_;
-	ValaCodeGenerator* _tmp3_;
-	ValaCodeGenerator* _tmp4_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeGenerator* _tmp2_ = NULL;
+	ValaCodeGenerator* _tmp3_ = NULL;
+	ValaCodeGenerator* _tmp4_ = NULL;
 	self = (ValaTypeCheck*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = vala_typecheck_get_expression (self);
@@ -1597,7 +1598,7 @@ static void vala_typecheck_real_emit (ValaCodeNode* base, ValaCodeGenerator* cod
 
 ValaExpression* vala_typecheck_get_expression (ValaTypeCheck* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_expression;
 	result = _tmp0_;
@@ -1611,9 +1612,9 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_typecheck_set_expression (ValaTypeCheck* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -1626,7 +1627,7 @@ void vala_typecheck_set_expression (ValaTypeCheck* self, ValaExpression* value) 
 
 ValaDataType* vala_typecheck_get_type_reference (ValaTypeCheck* self) {
 	ValaDataType* result;
-	ValaDataType* _tmp0_;
+	ValaDataType* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_data_type;
 	result = _tmp0_;
@@ -1635,9 +1636,9 @@ ValaDataType* vala_typecheck_get_type_reference (ValaTypeCheck* self) {
 
 
 void vala_typecheck_set_type_reference (ValaTypeCheck* self, ValaDataType* value) {
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaDataType* _tmp2_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaDataType* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -1650,15 +1651,15 @@ void vala_typecheck_set_type_reference (ValaTypeCheck* self, ValaDataType* value
 
 static void vala_typecheck_class_init (ValaTypeCheckClass * klass) {
 	vala_typecheck_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_typecheck_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_typecheck_finalize;
 	g_type_class_add_private (klass, sizeof (ValaTypeCheckPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_typecheck_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_typecheck_real_accept_children;
-	VALA_EXPRESSION_CLASS (klass)->is_pure = vala_typecheck_real_is_pure;
-	VALA_CODE_NODE_CLASS (klass)->replace_type = vala_typecheck_real_replace_type;
-	VALA_CODE_NODE_CLASS (klass)->replace_expression = vala_typecheck_real_replace_expression;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_typecheck_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_typecheck_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_typecheck_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_typecheck_real_accept_children;
+	((ValaExpressionClass *) klass)->is_pure = vala_typecheck_real_is_pure;
+	((ValaCodeNodeClass *) klass)->replace_type = vala_typecheck_real_replace_type;
+	((ValaCodeNodeClass *) klass)->replace_expression = vala_typecheck_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = vala_typecheck_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_typecheck_real_emit;
 }
 
 

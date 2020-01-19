@@ -520,9 +520,9 @@ static void vala_subroutine_finalize (ValaCodeNode* obj);
 
 ValaSubroutine* vala_subroutine_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaSubroutine* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaComment* _tmp2_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaComment* _tmp2_ = NULL;
 	_tmp0_ = name;
 	_tmp1_ = source_reference;
 	_tmp2_ = comment;
@@ -533,7 +533,7 @@ ValaSubroutine* vala_subroutine_construct (GType object_type, const gchar* name,
 
 ValaBasicBlock* vala_subroutine_get_entry_block (ValaSubroutine* self) {
 	ValaBasicBlock* result;
-	ValaBasicBlock* _tmp0_;
+	ValaBasicBlock* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_entry_block;
 	result = _tmp0_;
@@ -547,8 +547,8 @@ static gpointer _vala_basic_block_ref0 (gpointer self) {
 
 
 void vala_subroutine_set_entry_block (ValaSubroutine* self, ValaBasicBlock* value) {
-	ValaBasicBlock* _tmp0_;
-	ValaBasicBlock* _tmp1_;
+	ValaBasicBlock* _tmp0_ = NULL;
+	ValaBasicBlock* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_basic_block_ref0 (_tmp0_);
@@ -559,7 +559,7 @@ void vala_subroutine_set_entry_block (ValaSubroutine* self, ValaBasicBlock* valu
 
 ValaBasicBlock* vala_subroutine_get_return_block (ValaSubroutine* self) {
 	ValaBasicBlock* result;
-	ValaBasicBlock* _tmp0_;
+	ValaBasicBlock* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_return_block;
 	result = _tmp0_;
@@ -568,8 +568,8 @@ ValaBasicBlock* vala_subroutine_get_return_block (ValaSubroutine* self) {
 
 
 void vala_subroutine_set_return_block (ValaSubroutine* self, ValaBasicBlock* value) {
-	ValaBasicBlock* _tmp0_;
-	ValaBasicBlock* _tmp1_;
+	ValaBasicBlock* _tmp0_ = NULL;
+	ValaBasicBlock* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_basic_block_ref0 (_tmp0_);
@@ -580,7 +580,7 @@ void vala_subroutine_set_return_block (ValaSubroutine* self, ValaBasicBlock* val
 
 ValaBasicBlock* vala_subroutine_get_exit_block (ValaSubroutine* self) {
 	ValaBasicBlock* result;
-	ValaBasicBlock* _tmp0_;
+	ValaBasicBlock* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_exit_block;
 	result = _tmp0_;
@@ -589,8 +589,8 @@ ValaBasicBlock* vala_subroutine_get_exit_block (ValaSubroutine* self) {
 
 
 void vala_subroutine_set_exit_block (ValaSubroutine* self, ValaBasicBlock* value) {
-	ValaBasicBlock* _tmp0_;
-	ValaBasicBlock* _tmp1_;
+	ValaBasicBlock* _tmp0_ = NULL;
+	ValaBasicBlock* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_basic_block_ref0 (_tmp0_);
@@ -601,7 +601,7 @@ void vala_subroutine_set_exit_block (ValaSubroutine* self, ValaBasicBlock* value
 
 ValaLocalVariable* vala_subroutine_get_result_var (ValaSubroutine* self) {
 	ValaLocalVariable* result;
-	ValaLocalVariable* _tmp0_;
+	ValaLocalVariable* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_result_var;
 	result = _tmp0_;
@@ -615,8 +615,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_subroutine_set_result_var (ValaSubroutine* self, ValaLocalVariable* value) {
-	ValaLocalVariable* _tmp0_;
-	ValaLocalVariable* _tmp1_;
+	ValaLocalVariable* _tmp0_ = NULL;
+	ValaLocalVariable* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -633,7 +633,7 @@ gboolean vala_subroutine_get_has_result (ValaSubroutine* self) {
 
 ValaBlock* vala_subroutine_get_body (ValaSubroutine* self) {
 	ValaBlock* result;
-	ValaBlock* _tmp0_;
+	ValaBlock* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_body;
 	result = _tmp0_;
@@ -642,9 +642,9 @@ ValaBlock* vala_subroutine_get_body (ValaSubroutine* self) {
 
 
 void vala_subroutine_set_body (ValaSubroutine* self, ValaBlock* value) {
-	ValaBlock* _tmp0_;
-	ValaBlock* _tmp1_;
-	ValaBlock* _tmp2_;
+	ValaBlock* _tmp0_ = NULL;
+	ValaBlock* _tmp1_ = NULL;
+	ValaBlock* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -652,9 +652,9 @@ void vala_subroutine_set_body (ValaSubroutine* self, ValaBlock* value) {
 	self->priv->_body = _tmp1_;
 	_tmp2_ = self->priv->_body;
 	if (_tmp2_ != NULL) {
-		ValaBlock* _tmp3_;
-		ValaScope* _tmp4_;
-		ValaScope* _tmp5_;
+		ValaBlock* _tmp3_ = NULL;
+		ValaScope* _tmp4_ = NULL;
+		ValaScope* _tmp5_ = NULL;
 		_tmp3_ = self->priv->_body;
 		_tmp4_ = vala_symbol_get_scope ((ValaSymbol*) self);
 		_tmp5_ = _tmp4_;
@@ -665,7 +665,7 @@ void vala_subroutine_set_body (ValaSubroutine* self, ValaBlock* value) {
 
 static void vala_subroutine_class_init (ValaSubroutineClass * klass) {
 	vala_subroutine_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_subroutine_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_subroutine_finalize;
 	g_type_class_add_private (klass, sizeof (ValaSubroutinePrivate));
 }
 

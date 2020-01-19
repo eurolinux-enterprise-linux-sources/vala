@@ -109,7 +109,7 @@ public class Vala.Method : Subroutine {
 			return _base_method;
 		}
 	}
-	
+
 	/**
 	 * Specifies the abstract interface method this method implements.
 	 */
@@ -117,6 +117,17 @@ public class Vala.Method : Subroutine {
 		get {
 			find_base_methods ();
 			return _base_interface_method;
+		}
+	}
+
+	/**
+	 * Specifies the explicit interface containing the method this method implements.
+	 */
+	public DataType base_interface_type {
+		get { return _base_interface_type; }
+		set {
+			_base_interface_type = value;
+			_base_interface_type.parent_node = this;
 		}
 	}
 
@@ -180,7 +191,8 @@ public class Vala.Method : Subroutine {
 	private DataType _return_type;
 
 	private weak Method _base_method;
-	private Method _base_interface_method;
+	private weak Method _base_interface_method;
+	private DataType _base_interface_type;
 	private bool base_methods_valid;
 
 	Method? callback_method;
@@ -247,6 +259,10 @@ public class Vala.Method : Subroutine {
 	public override void accept_children (CodeVisitor visitor) {
 		foreach (TypeParameter p in get_type_parameters ()) {
 			p.accept (visitor);
+		}
+
+		if (base_interface_type != null) {
+			base_interface_type.accept (visitor);
 		}
 
 		if (return_type != null) {
@@ -471,6 +487,10 @@ public class Vala.Method : Subroutine {
 	}
 
 	public override void replace_type (DataType old_type, DataType new_type) {
+		if (base_interface_type == old_type) {
+			base_interface_type = new_type;
+			return;
+		}
 		if (return_type == old_type) {
 			return_type = new_type;
 			return;
@@ -532,9 +552,12 @@ public class Vala.Method : Subroutine {
 	}
 
 	private void find_base_interface_method (Class cl) {
-		// FIXME report error if multiple possible base methods are found
 		foreach (DataType type in cl.get_base_types ()) {
 			if (type.data_type is Interface) {
+				if (base_interface_type != null && base_interface_type.data_type != type.data_type) {
+					continue;
+				}
+
 				var sym = type.data_type.scope.lookup (name);
 				if (sym is Signal) {
 					var sig = (Signal) sym;
@@ -543,18 +566,36 @@ public class Vala.Method : Subroutine {
 				if (sym is Method) {
 					var base_method = (Method) sym;
 					if (base_method.is_abstract || base_method.is_virtual) {
-						string invalid_match;
+						if (base_interface_type == null) {
+							// check for existing explicit implementation
+							var has_explicit_implementation = false;
+							foreach (var m in cl.get_methods ()) {
+								if (m.base_interface_type != null && base_method == m.base_interface_method) {
+									has_explicit_implementation = true;
+									break;
+								}
+							}
+							if (has_explicit_implementation) {
+								continue;
+							}
+						}
+						
+						string invalid_match = null;
 						if (!compatible (base_method, out invalid_match)) {
 							error = true;
 							Report.error (source_reference, "overriding method `%s' is incompatible with base method `%s': %s.".printf (get_full_name (), base_method.get_full_name (), invalid_match));
 							return;
 						}
-
+						
 						_base_interface_method = base_method;
 						return;
 					}
 				}
 			}
+		}
+
+		if (base_interface_type != null) {
+			Report.error (source_reference, "%s: no suitable interface method found to implement".printf (get_full_name ()));
 		}
 	}
 
@@ -648,17 +689,26 @@ public class Vala.Method : Subroutine {
 			return_type.check (context);
 		}
 
-		if (parameters.size == 1 && parameters[0].ellipsis && body != null) {
-			// accept just `...' for external methods for convenience
+		if (parameters.size == 1 && parameters[0].ellipsis && body != null && binding != MemberBinding.INSTANCE) {
+			// accept just `...' for external methods and instance methods
 			error = true;
 			Report.error (parameters[0].source_reference, "Named parameter required before `...'");
 		}
 
-		foreach (Parameter param in parameters) {
-			param.check (context);
-			if (coroutine && param.direction == ParameterDirection.REF) {
-				error = true;
-				Report.error (param.source_reference, "Reference parameters are not supported for async methods");
+		if (!coroutine) {
+			// TODO: begin and end parameters must be checked separately for coroutines
+			var optional_param = false;
+			foreach (Parameter param in parameters) {
+				param.check (context);
+				if (coroutine && param.direction == ParameterDirection.REF) {
+					error = true;
+					Report.error (param.source_reference, "Reference parameters are not supported for async methods");
+				}
+				if (optional_param && param.initializer == null && !param.ellipsis) {
+					Report.warning (param.source_reference, "parameter without default follows parameter with default");
+				} else if (param.initializer != null) {
+					optional_param = true;
+				}
 			}
 		}
 
@@ -705,6 +755,20 @@ public class Vala.Method : Subroutine {
 			error = true;
 			Report.error (source_reference, "Private member `%s' cannot be marked as override, virtual, or abstract".printf (get_full_name ()));
 			return false;
+		}
+
+		if (base_interface_type != null && base_interface_method != null && parent_symbol is Class) {
+			var cl = (Class) parent_symbol;
+			foreach (var m in cl.get_methods ()) {
+				if (m != this && m.base_interface_method == base_interface_method) {
+					m.checked = true;
+					m.error = true;
+					error = true;
+					Report.error (source_reference, "`%s' already contains an implementation for `%s'".printf (cl.get_full_name (), base_interface_method.get_full_name ()));
+					Report.notice (m.source_reference, "previous implementation of `%s' was here".printf (base_interface_method.get_full_name ()));
+					return false;
+				}
+			}
 		}
 
 		context.analyzer.current_source_file = old_source_file;
@@ -777,6 +841,10 @@ public class Vala.Method : Subroutine {
 			if (tree_can_fail) {
 				Report.error (source_reference, "\"main\" method cannot throw errors");
 			}
+		}
+
+		if (get_attribute ("GtkCallback") != null) {
+			used = true;
 		}
 
 		return !error;
@@ -879,14 +947,18 @@ public class Vala.Method : Subroutine {
 		var glib_ns = CodeContext.get ().root.scope.lookup ("GLib");
 
 		var params = new ArrayList<Parameter> ();
+		Parameter ellipsis = null;
 		foreach (var param in parameters) {
-			if (param.direction == ParameterDirection.IN) {
+			if (param.ellipsis) {
+				ellipsis = param;
+			} else if (param.direction == ParameterDirection.IN) {
 				params.add (param);
 			}
 		}
 
 		var callback_type = new DelegateType ((Delegate) glib_ns.scope.lookup ("AsyncReadyCallback"));
 		callback_type.nullable = true;
+		callback_type.value_owned = true;
 		callback_type.is_called_once = true;
 
 		var callback_param = new Parameter ("_callback_", callback_type);
@@ -896,6 +968,10 @@ public class Vala.Method : Subroutine {
 		callback_param.set_attribute_double ("CCode", "delegate_target_pos", -0.9);
 
 		params.add (callback_param);
+
+		if (ellipsis != null) {
+			params.add (ellipsis);
+		}
 
 		return params;
 	}

@@ -227,16 +227,6 @@ typedef struct _ValaTypeParameterClass ValaTypeParameterClass;
 #define _vala_code_node_unref0(var) ((var == NULL) ? NULL : (var = (vala_code_node_unref (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
 
-#define VALA_TYPE_SOURCE_FILE (vala_source_file_get_type ())
-#define VALA_SOURCE_FILE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SOURCE_FILE, ValaSourceFile))
-#define VALA_SOURCE_FILE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SOURCE_FILE, ValaSourceFileClass))
-#define VALA_IS_SOURCE_FILE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SOURCE_FILE))
-#define VALA_IS_SOURCE_FILE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SOURCE_FILE))
-#define VALA_SOURCE_FILE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SOURCE_FILE, ValaSourceFileClass))
-
-typedef struct _ValaSourceFile ValaSourceFile;
-typedef struct _ValaSourceFileClass ValaSourceFileClass;
-
 #define VALA_TYPE_NAMESPACE (vala_namespace_get_type ())
 #define VALA_NAMESPACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_NAMESPACE, ValaNamespace))
 #define VALA_NAMESPACE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_NAMESPACE, ValaNamespaceClass))
@@ -246,6 +236,16 @@ typedef struct _ValaSourceFileClass ValaSourceFileClass;
 
 typedef struct _ValaNamespace ValaNamespace;
 typedef struct _ValaNamespaceClass ValaNamespaceClass;
+
+#define VALA_TYPE_SOURCE_FILE (vala_source_file_get_type ())
+#define VALA_SOURCE_FILE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SOURCE_FILE, ValaSourceFile))
+#define VALA_SOURCE_FILE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SOURCE_FILE, ValaSourceFileClass))
+#define VALA_IS_SOURCE_FILE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_SOURCE_FILE))
+#define VALA_IS_SOURCE_FILE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_SOURCE_FILE))
+#define VALA_SOURCE_FILE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_SOURCE_FILE, ValaSourceFileClass))
+
+typedef struct _ValaSourceFile ValaSourceFile;
+typedef struct _ValaSourceFileClass ValaSourceFileClass;
 
 struct _ValaCodeNode {
 	GTypeInstance parent_instance;
@@ -396,6 +396,7 @@ gboolean vala_error_type_get_dynamic_error (ValaErrorType* self);
 void vala_error_type_set_dynamic_error (ValaErrorType* self, gboolean value);
 static gboolean vala_error_type_real_equals (ValaDataType* base, ValaDataType* type2);
 static ValaSymbol* vala_error_type_real_get_member (ValaDataType* base, const gchar* member_name);
+GType vala_namespace_get_type (void) G_GNUC_CONST;
 gpointer vala_source_file_ref (gpointer instance);
 void vala_source_file_unref (gpointer instance);
 GParamSpec* vala_param_spec_source_file (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
@@ -405,7 +406,6 @@ gpointer vala_value_get_source_file (const GValue* value);
 GType vala_source_file_get_type (void) G_GNUC_CONST;
 ValaSourceFile* vala_source_reference_get_file (ValaSourceReference* self);
 ValaCodeContext* vala_source_file_get_context (ValaSourceFile* self);
-GType vala_namespace_get_type (void) G_GNUC_CONST;
 ValaNamespace* vala_code_context_get_root (ValaCodeContext* self);
 ValaScope* vala_symbol_get_scope (ValaSymbol* self);
 ValaSymbol* vala_scope_lookup (ValaScope* self, const gchar* name);
@@ -417,10 +417,10 @@ static void vala_error_type_finalize (ValaCodeNode* obj);
 
 ValaErrorType* vala_error_type_construct (GType object_type, ValaErrorDomain* error_domain, ValaErrorCode* error_code, ValaSourceReference* source_reference) {
 	ValaErrorType* self = NULL;
-	ValaErrorDomain* _tmp0_;
-	ValaErrorDomain* _tmp1_;
-	ValaErrorCode* _tmp2_;
-	ValaSourceReference* _tmp3_;
+	ValaErrorDomain* _tmp0_ = NULL;
+	ValaErrorDomain* _tmp1_ = NULL;
+	ValaErrorCode* _tmp2_ = NULL;
+	ValaSourceReference* _tmp3_ = NULL;
 	self = (ValaErrorType*) vala_reference_type_construct (object_type);
 	_tmp0_ = error_domain;
 	vala_error_type_set_error_domain (self, _tmp0_);
@@ -447,23 +447,23 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 static gboolean vala_error_type_real_compatible (ValaDataType* base, ValaDataType* target_type) {
 	ValaErrorType * self;
 	gboolean result = FALSE;
-	ValaDataType* _tmp0_;
-	ValaTypeParameter* _tmp1_;
-	ValaTypeParameter* _tmp2_;
-	ValaDataType* _tmp3_;
-	ValaErrorType* _tmp4_;
-	ValaErrorType* et;
-	ValaErrorType* _tmp5_;
-	ValaErrorType* _tmp6_;
-	ValaErrorDomain* _tmp7_;
-	ValaErrorType* _tmp8_;
-	ValaErrorDomain* _tmp9_;
-	ValaErrorDomain* _tmp10_;
-	ValaErrorType* _tmp11_;
-	ValaErrorCode* _tmp12_;
-	ValaErrorType* _tmp13_;
-	ValaErrorCode* _tmp14_;
-	ValaErrorCode* _tmp15_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaTypeParameter* _tmp1_ = NULL;
+	ValaTypeParameter* _tmp2_ = NULL;
+	ValaErrorType* et = NULL;
+	ValaDataType* _tmp3_ = NULL;
+	ValaErrorType* _tmp4_ = NULL;
+	ValaErrorType* _tmp5_ = NULL;
+	ValaErrorType* _tmp6_ = NULL;
+	ValaErrorDomain* _tmp7_ = NULL;
+	ValaErrorType* _tmp8_ = NULL;
+	ValaErrorDomain* _tmp9_ = NULL;
+	ValaErrorDomain* _tmp10_ = NULL;
+	ValaErrorType* _tmp11_ = NULL;
+	ValaErrorCode* _tmp12_ = NULL;
+	ValaErrorType* _tmp13_ = NULL;
+	ValaErrorCode* _tmp14_ = NULL;
+	ValaErrorCode* _tmp15_ = NULL;
 	self = (ValaErrorType*) base;
 	g_return_val_if_fail (target_type != NULL, FALSE);
 	_tmp0_ = target_type;
@@ -517,18 +517,18 @@ static gchar* vala_error_type_real_to_qualified_string (ValaDataType* base, Vala
 	ValaErrorType * self;
 	gchar* result = NULL;
 	gchar* _result_ = NULL;
-	ValaErrorDomain* _tmp0_;
-	gboolean _tmp4_;
-	gboolean _tmp5_;
+	ValaErrorDomain* _tmp0_ = NULL;
+	gboolean _tmp4_ = FALSE;
+	gboolean _tmp5_ = FALSE;
 	self = (ValaErrorType*) base;
 	_tmp0_ = self->priv->_error_domain;
 	if (_tmp0_ == NULL) {
-		gchar* _tmp1_;
+		gchar* _tmp1_ = NULL;
 		_tmp1_ = g_strdup ("GLib.Error");
 		_g_free0 (_result_);
 		_result_ = _tmp1_;
 	} else {
-		ValaErrorDomain* _tmp2_;
+		ValaErrorDomain* _tmp2_ = NULL;
 		gchar* _tmp3_ = NULL;
 		_tmp2_ = self->priv->_error_domain;
 		_tmp3_ = vala_symbol_get_full_name ((ValaSymbol*) _tmp2_);
@@ -538,8 +538,8 @@ static gchar* vala_error_type_real_to_qualified_string (ValaDataType* base, Vala
 	_tmp4_ = vala_data_type_get_nullable ((ValaDataType*) self);
 	_tmp5_ = _tmp4_;
 	if (_tmp5_) {
-		const gchar* _tmp6_;
-		gchar* _tmp7_;
+		const gchar* _tmp6_ = NULL;
+		gchar* _tmp7_ = NULL;
 		_tmp6_ = _result_;
 		_tmp7_ = g_strconcat (_tmp6_, "?", NULL);
 		_g_free0 (_result_);
@@ -553,17 +553,17 @@ static gchar* vala_error_type_real_to_qualified_string (ValaDataType* base, Vala
 static ValaDataType* vala_error_type_real_copy (ValaDataType* base) {
 	ValaErrorType * self;
 	ValaDataType* result = NULL;
-	ValaErrorDomain* _tmp0_;
-	ValaErrorCode* _tmp1_;
-	ValaSourceReference* _tmp2_;
-	ValaSourceReference* _tmp3_;
-	ValaErrorType* _tmp4_;
-	ValaErrorType* _result_;
-	gboolean _tmp5_;
-	gboolean _tmp6_;
-	gboolean _tmp7_;
-	gboolean _tmp8_;
-	gboolean _tmp9_;
+	ValaErrorType* _result_ = NULL;
+	ValaErrorDomain* _tmp0_ = NULL;
+	ValaErrorCode* _tmp1_ = NULL;
+	ValaSourceReference* _tmp2_ = NULL;
+	ValaSourceReference* _tmp3_ = NULL;
+	ValaErrorType* _tmp4_ = NULL;
+	gboolean _tmp5_ = FALSE;
+	gboolean _tmp6_ = FALSE;
+	gboolean _tmp7_ = FALSE;
+	gboolean _tmp8_ = FALSE;
+	gboolean _tmp9_ = FALSE;
 	self = (ValaErrorType*) base;
 	_tmp0_ = self->priv->_error_domain;
 	_tmp1_ = self->priv->_error_code;
@@ -587,13 +587,13 @@ static ValaDataType* vala_error_type_real_copy (ValaDataType* base) {
 static gboolean vala_error_type_real_equals (ValaDataType* base, ValaDataType* type2) {
 	ValaErrorType * self;
 	gboolean result = FALSE;
-	ValaDataType* _tmp0_;
-	ValaErrorType* _tmp1_;
-	ValaErrorType* et;
-	ValaErrorType* _tmp2_;
-	ValaErrorDomain* _tmp3_;
-	ValaErrorType* _tmp4_;
-	ValaErrorDomain* _tmp5_;
+	ValaErrorType* et = NULL;
+	ValaDataType* _tmp0_ = NULL;
+	ValaErrorType* _tmp1_ = NULL;
+	ValaErrorType* _tmp2_ = NULL;
+	ValaErrorDomain* _tmp3_ = NULL;
+	ValaErrorType* _tmp4_ = NULL;
+	ValaErrorDomain* _tmp5_ = NULL;
 	self = (ValaErrorType*) base;
 	g_return_val_if_fail (type2 != NULL, FALSE);
 	_tmp0_ = type2;
@@ -617,28 +617,28 @@ static gboolean vala_error_type_real_equals (ValaDataType* base, ValaDataType* t
 static ValaSymbol* vala_error_type_real_get_member (ValaDataType* base, const gchar* member_name) {
 	ValaErrorType * self;
 	ValaSymbol* result = NULL;
-	ValaSourceReference* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaSourceFile* _tmp2_;
-	ValaSourceFile* _tmp3_;
-	ValaCodeContext* _tmp4_;
-	ValaCodeContext* _tmp5_;
-	ValaNamespace* _tmp6_;
-	ValaNamespace* _tmp7_;
-	ValaNamespace* _tmp8_;
-	ValaNamespace* root_symbol;
-	ValaScope* _tmp9_;
-	ValaScope* _tmp10_;
+	ValaNamespace* root_symbol = NULL;
+	ValaSourceReference* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaSourceFile* _tmp2_ = NULL;
+	ValaSourceFile* _tmp3_ = NULL;
+	ValaCodeContext* _tmp4_ = NULL;
+	ValaCodeContext* _tmp5_ = NULL;
+	ValaNamespace* _tmp6_ = NULL;
+	ValaNamespace* _tmp7_ = NULL;
+	ValaNamespace* _tmp8_ = NULL;
+	ValaSymbol* gerror_symbol = NULL;
+	ValaScope* _tmp9_ = NULL;
+	ValaScope* _tmp10_ = NULL;
 	ValaSymbol* _tmp11_ = NULL;
-	ValaSymbol* _tmp12_;
-	ValaScope* _tmp13_;
-	ValaScope* _tmp14_;
+	ValaSymbol* _tmp12_ = NULL;
+	ValaScope* _tmp13_ = NULL;
+	ValaScope* _tmp14_ = NULL;
 	ValaSymbol* _tmp15_ = NULL;
-	ValaSymbol* _tmp16_;
-	ValaSymbol* gerror_symbol;
-	ValaScope* _tmp17_;
-	ValaScope* _tmp18_;
-	const gchar* _tmp19_;
+	ValaSymbol* _tmp16_ = NULL;
+	ValaScope* _tmp17_ = NULL;
+	ValaScope* _tmp18_ = NULL;
+	const gchar* _tmp19_ = NULL;
 	ValaSymbol* _tmp20_ = NULL;
 	self = (ValaErrorType*) base;
 	g_return_val_if_fail (member_name != NULL, NULL);
@@ -685,13 +685,13 @@ static gboolean vala_error_type_real_is_reference_type_or_type_parameter (ValaDa
 static gboolean vala_error_type_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaErrorType * self;
 	gboolean result = FALSE;
-	ValaErrorDomain* _tmp0_;
+	ValaErrorDomain* _tmp0_ = NULL;
 	self = (ValaErrorType*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = self->priv->_error_domain;
 	if (_tmp0_ != NULL) {
-		ValaErrorDomain* _tmp1_;
-		ValaCodeContext* _tmp2_;
+		ValaErrorDomain* _tmp1_ = NULL;
+		ValaCodeContext* _tmp2_ = NULL;
 		gboolean _tmp3_ = FALSE;
 		_tmp1_ = self->priv->_error_domain;
 		_tmp2_ = context;
@@ -706,7 +706,7 @@ static gboolean vala_error_type_real_check (ValaCodeNode* base, ValaCodeContext*
 
 ValaErrorDomain* vala_error_type_get_error_domain (ValaErrorType* self) {
 	ValaErrorDomain* result;
-	ValaErrorDomain* _tmp0_;
+	ValaErrorDomain* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_error_domain;
 	result = _tmp0_;
@@ -715,7 +715,7 @@ ValaErrorDomain* vala_error_type_get_error_domain (ValaErrorType* self) {
 
 
 void vala_error_type_set_error_domain (ValaErrorType* self, ValaErrorDomain* value) {
-	ValaErrorDomain* _tmp0_;
+	ValaErrorDomain* _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_error_domain = _tmp0_;
@@ -724,7 +724,7 @@ void vala_error_type_set_error_domain (ValaErrorType* self, ValaErrorDomain* val
 
 ValaErrorCode* vala_error_type_get_error_code (ValaErrorType* self) {
 	ValaErrorCode* result;
-	ValaErrorCode* _tmp0_;
+	ValaErrorCode* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_error_code;
 	result = _tmp0_;
@@ -733,7 +733,7 @@ ValaErrorCode* vala_error_type_get_error_code (ValaErrorType* self) {
 
 
 void vala_error_type_set_error_code (ValaErrorType* self, ValaErrorCode* value) {
-	ValaErrorCode* _tmp0_;
+	ValaErrorCode* _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_error_code = _tmp0_;
@@ -742,7 +742,7 @@ void vala_error_type_set_error_code (ValaErrorType* self, ValaErrorCode* value) 
 
 gboolean vala_error_type_get_dynamic_error (ValaErrorType* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_dynamic_error;
 	result = _tmp0_;
@@ -751,7 +751,7 @@ gboolean vala_error_type_get_dynamic_error (ValaErrorType* self) {
 
 
 void vala_error_type_set_dynamic_error (ValaErrorType* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_dynamic_error = _tmp0_;
@@ -760,15 +760,15 @@ void vala_error_type_set_dynamic_error (ValaErrorType* self, gboolean value) {
 
 static void vala_error_type_class_init (ValaErrorTypeClass * klass) {
 	vala_error_type_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_error_type_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_error_type_finalize;
 	g_type_class_add_private (klass, sizeof (ValaErrorTypePrivate));
-	VALA_DATA_TYPE_CLASS (klass)->compatible = vala_error_type_real_compatible;
-	VALA_DATA_TYPE_CLASS (klass)->to_qualified_string = vala_error_type_real_to_qualified_string;
-	VALA_DATA_TYPE_CLASS (klass)->copy = vala_error_type_real_copy;
-	VALA_DATA_TYPE_CLASS (klass)->equals = vala_error_type_real_equals;
-	VALA_DATA_TYPE_CLASS (klass)->get_member = vala_error_type_real_get_member;
-	VALA_DATA_TYPE_CLASS (klass)->is_reference_type_or_type_parameter = vala_error_type_real_is_reference_type_or_type_parameter;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_error_type_real_check;
+	((ValaDataTypeClass *) klass)->compatible = vala_error_type_real_compatible;
+	((ValaDataTypeClass *) klass)->to_qualified_string = vala_error_type_real_to_qualified_string;
+	((ValaDataTypeClass *) klass)->copy = vala_error_type_real_copy;
+	((ValaDataTypeClass *) klass)->equals = vala_error_type_real_equals;
+	((ValaDataTypeClass *) klass)->get_member = vala_error_type_real_get_member;
+	((ValaDataTypeClass *) klass)->is_reference_type_or_type_parameter = vala_error_type_real_is_reference_type_or_type_parameter;
+	((ValaCodeNodeClass *) klass)->check = vala_error_type_real_check;
 }
 
 

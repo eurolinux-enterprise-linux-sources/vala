@@ -483,9 +483,9 @@ static void vala_unresolved_symbol_finalize (ValaCodeNode* obj);
 
 ValaUnresolvedSymbol* vala_unresolved_symbol_construct (GType object_type, ValaUnresolvedSymbol* inner, const gchar* name, ValaSourceReference* source_reference) {
 	ValaUnresolvedSymbol* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaUnresolvedSymbol* _tmp2_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaUnresolvedSymbol* _tmp2_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	_tmp0_ = name;
 	_tmp1_ = source_reference;
@@ -508,39 +508,39 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 ValaUnresolvedSymbol* vala_unresolved_symbol_new_from_expression (ValaExpression* expr) {
 	ValaUnresolvedSymbol* result = NULL;
-	ValaExpression* _tmp0_;
-	ValaMemberAccess* _tmp1_;
-	ValaMemberAccess* ma;
-	ValaMemberAccess* _tmp2_;
-	ValaExpression* _tmp26_;
-	ValaSourceReference* _tmp27_;
-	ValaSourceReference* _tmp28_;
+	ValaMemberAccess* ma = NULL;
+	ValaExpression* _tmp0_ = NULL;
+	ValaMemberAccess* _tmp1_ = NULL;
+	ValaMemberAccess* _tmp2_ = NULL;
+	ValaExpression* _tmp26_ = NULL;
+	ValaSourceReference* _tmp27_ = NULL;
+	ValaSourceReference* _tmp28_ = NULL;
 	g_return_val_if_fail (expr != NULL, NULL);
 	_tmp0_ = expr;
 	_tmp1_ = _vala_code_node_ref0 (G_TYPE_CHECK_INSTANCE_TYPE (_tmp0_, VALA_TYPE_MEMBER_ACCESS) ? ((ValaMemberAccess*) _tmp0_) : NULL);
 	ma = _tmp1_;
 	_tmp2_ = ma;
 	if (_tmp2_ != NULL) {
-		ValaMemberAccess* _tmp3_;
-		ValaExpression* _tmp4_;
-		ValaExpression* _tmp5_;
+		ValaMemberAccess* _tmp3_ = NULL;
+		ValaExpression* _tmp4_ = NULL;
+		ValaExpression* _tmp5_ = NULL;
 		_tmp3_ = ma;
 		_tmp4_ = vala_member_access_get_inner (_tmp3_);
 		_tmp5_ = _tmp4_;
 		if (_tmp5_ != NULL) {
-			ValaMemberAccess* _tmp6_;
-			ValaExpression* _tmp7_;
-			ValaExpression* _tmp8_;
+			ValaMemberAccess* _tmp6_ = NULL;
+			ValaExpression* _tmp7_ = NULL;
+			ValaExpression* _tmp8_ = NULL;
 			ValaUnresolvedSymbol* _tmp9_ = NULL;
-			ValaUnresolvedSymbol* _tmp10_;
-			ValaMemberAccess* _tmp11_;
-			const gchar* _tmp12_;
-			const gchar* _tmp13_;
-			ValaMemberAccess* _tmp14_;
-			ValaSourceReference* _tmp15_;
-			ValaSourceReference* _tmp16_;
-			ValaUnresolvedSymbol* _tmp17_;
-			ValaUnresolvedSymbol* _tmp18_;
+			ValaUnresolvedSymbol* _tmp10_ = NULL;
+			ValaMemberAccess* _tmp11_ = NULL;
+			const gchar* _tmp12_ = NULL;
+			const gchar* _tmp13_ = NULL;
+			ValaMemberAccess* _tmp14_ = NULL;
+			ValaSourceReference* _tmp15_ = NULL;
+			ValaSourceReference* _tmp16_ = NULL;
+			ValaUnresolvedSymbol* _tmp17_ = NULL;
+			ValaUnresolvedSymbol* _tmp18_ = NULL;
 			_tmp6_ = ma;
 			_tmp7_ = vala_member_access_get_inner (_tmp6_);
 			_tmp8_ = _tmp7_;
@@ -559,13 +559,13 @@ ValaUnresolvedSymbol* vala_unresolved_symbol_new_from_expression (ValaExpression
 			_vala_code_node_unref0 (ma);
 			return result;
 		} else {
-			ValaMemberAccess* _tmp19_;
-			const gchar* _tmp20_;
-			const gchar* _tmp21_;
-			ValaMemberAccess* _tmp22_;
-			ValaSourceReference* _tmp23_;
-			ValaSourceReference* _tmp24_;
-			ValaUnresolvedSymbol* _tmp25_;
+			ValaMemberAccess* _tmp19_ = NULL;
+			const gchar* _tmp20_ = NULL;
+			const gchar* _tmp21_ = NULL;
+			ValaMemberAccess* _tmp22_ = NULL;
+			ValaSourceReference* _tmp23_ = NULL;
+			ValaSourceReference* _tmp24_ = NULL;
+			ValaUnresolvedSymbol* _tmp25_ = NULL;
 			_tmp19_ = ma;
 			_tmp20_ = vala_member_access_get_member_name (_tmp19_);
 			_tmp21_ = _tmp20_;
@@ -591,26 +591,26 @@ ValaUnresolvedSymbol* vala_unresolved_symbol_new_from_expression (ValaExpression
 static gchar* vala_unresolved_symbol_real_to_string (ValaCodeNode* base) {
 	ValaUnresolvedSymbol * self;
 	gchar* result = NULL;
-	ValaUnresolvedSymbol* _tmp0_;
+	ValaUnresolvedSymbol* _tmp0_ = NULL;
 	self = (ValaUnresolvedSymbol*) base;
 	_tmp0_ = self->priv->_inner;
 	if (_tmp0_ == NULL) {
-		const gchar* _tmp1_;
-		const gchar* _tmp2_;
-		gchar* _tmp3_;
+		const gchar* _tmp1_ = NULL;
+		const gchar* _tmp2_ = NULL;
+		gchar* _tmp3_ = NULL;
 		_tmp1_ = vala_symbol_get_name ((ValaSymbol*) self);
 		_tmp2_ = _tmp1_;
 		_tmp3_ = g_strdup (_tmp2_);
 		result = _tmp3_;
 		return result;
 	} else {
-		ValaUnresolvedSymbol* _tmp4_;
+		ValaUnresolvedSymbol* _tmp4_ = NULL;
 		gchar* _tmp5_ = NULL;
-		gchar* _tmp6_;
-		const gchar* _tmp7_;
-		const gchar* _tmp8_;
+		gchar* _tmp6_ = NULL;
+		const gchar* _tmp7_ = NULL;
+		const gchar* _tmp8_ = NULL;
 		gchar* _tmp9_ = NULL;
-		gchar* _tmp10_;
+		gchar* _tmp10_ = NULL;
 		_tmp4_ = self->priv->_inner;
 		_tmp5_ = vala_code_node_to_string ((ValaCodeNode*) _tmp4_);
 		_tmp6_ = _tmp5_;
@@ -627,12 +627,12 @@ static gchar* vala_unresolved_symbol_real_to_string (ValaCodeNode* base) {
 
 ValaUnresolvedSymbol* vala_unresolved_symbol_copy (ValaUnresolvedSymbol* self) {
 	ValaUnresolvedSymbol* result = NULL;
-	ValaUnresolvedSymbol* _tmp0_;
-	const gchar* _tmp1_;
-	const gchar* _tmp2_;
-	ValaSourceReference* _tmp3_;
-	ValaSourceReference* _tmp4_;
-	ValaUnresolvedSymbol* _tmp5_;
+	ValaUnresolvedSymbol* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
+	const gchar* _tmp2_ = NULL;
+	ValaSourceReference* _tmp3_ = NULL;
+	ValaSourceReference* _tmp4_ = NULL;
+	ValaUnresolvedSymbol* _tmp5_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_inner;
 	_tmp1_ = vala_symbol_get_name ((ValaSymbol*) self);
@@ -647,7 +647,7 @@ ValaUnresolvedSymbol* vala_unresolved_symbol_copy (ValaUnresolvedSymbol* self) {
 
 ValaUnresolvedSymbol* vala_unresolved_symbol_get_inner (ValaUnresolvedSymbol* self) {
 	ValaUnresolvedSymbol* result;
-	ValaUnresolvedSymbol* _tmp0_;
+	ValaUnresolvedSymbol* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_inner;
 	result = _tmp0_;
@@ -656,8 +656,8 @@ ValaUnresolvedSymbol* vala_unresolved_symbol_get_inner (ValaUnresolvedSymbol* se
 
 
 void vala_unresolved_symbol_set_inner (ValaUnresolvedSymbol* self, ValaUnresolvedSymbol* value) {
-	ValaUnresolvedSymbol* _tmp0_;
-	ValaUnresolvedSymbol* _tmp1_;
+	ValaUnresolvedSymbol* _tmp0_ = NULL;
+	ValaUnresolvedSymbol* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -668,7 +668,7 @@ void vala_unresolved_symbol_set_inner (ValaUnresolvedSymbol* self, ValaUnresolve
 
 gboolean vala_unresolved_symbol_get_qualified (ValaUnresolvedSymbol* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_qualified;
 	result = _tmp0_;
@@ -677,7 +677,7 @@ gboolean vala_unresolved_symbol_get_qualified (ValaUnresolvedSymbol* self) {
 
 
 void vala_unresolved_symbol_set_qualified (ValaUnresolvedSymbol* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_qualified = _tmp0_;
@@ -686,9 +686,9 @@ void vala_unresolved_symbol_set_qualified (ValaUnresolvedSymbol* self, gboolean 
 
 static void vala_unresolved_symbol_class_init (ValaUnresolvedSymbolClass * klass) {
 	vala_unresolved_symbol_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_unresolved_symbol_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_unresolved_symbol_finalize;
 	g_type_class_add_private (klass, sizeof (ValaUnresolvedSymbolPrivate));
-	VALA_CODE_NODE_CLASS (klass)->to_string = vala_unresolved_symbol_real_to_string;
+	((ValaCodeNodeClass *) klass)->to_string = vala_unresolved_symbol_real_to_string;
 }
 
 

@@ -369,7 +369,7 @@ ValaDataType* vala_data_type_copy (ValaDataType* self);
 
 ValaStructValueType* vala_struct_value_type_construct (GType object_type, ValaStruct* type_symbol) {
 	ValaStructValueType* self = NULL;
-	ValaStruct* _tmp0_;
+	ValaStruct* _tmp0_ = NULL;
 	g_return_val_if_fail (type_symbol != NULL, NULL);
 	_tmp0_ = type_symbol;
 	self = (ValaStructValueType*) vala_value_type_construct (object_type, (ValaTypeSymbol*) _tmp0_);
@@ -390,13 +390,12 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 static gboolean vala_struct_value_type_real_is_invokable (ValaDataType* base) {
 	ValaStructValueType * self;
 	gboolean result = FALSE;
-	ValaTypeSymbol* _tmp0_;
-	ValaTypeSymbol* _tmp1_;
-	ValaStruct* _tmp2_;
-	ValaStruct* st;
+	ValaStruct* st = NULL;
+	ValaTypeSymbol* _tmp0_ = NULL;
+	ValaTypeSymbol* _tmp1_ = NULL;
+	ValaStruct* _tmp2_ = NULL;
 	gboolean _tmp3_ = FALSE;
-	ValaStruct* _tmp4_;
-	gboolean _tmp8_;
+	ValaStruct* _tmp4_ = NULL;
 	self = (ValaStructValueType*) base;
 	_tmp0_ = vala_value_type_get_type_symbol ((ValaValueType*) self);
 	_tmp1_ = _tmp0_;
@@ -404,9 +403,9 @@ static gboolean vala_struct_value_type_real_is_invokable (ValaDataType* base) {
 	st = _tmp2_;
 	_tmp4_ = st;
 	if (_tmp4_ != NULL) {
-		ValaStruct* _tmp5_;
-		ValaMethod* _tmp6_;
-		ValaMethod* _tmp7_;
+		ValaStruct* _tmp5_ = NULL;
+		ValaMethod* _tmp6_ = NULL;
+		ValaMethod* _tmp7_ = NULL;
 		_tmp5_ = st;
 		_tmp6_ = vala_struct_get_default_construction_method (_tmp5_);
 		_tmp7_ = _tmp6_;
@@ -414,8 +413,7 @@ static gboolean vala_struct_value_type_real_is_invokable (ValaDataType* base) {
 	} else {
 		_tmp3_ = FALSE;
 	}
-	_tmp8_ = _tmp3_;
-	if (_tmp8_) {
+	if (_tmp3_) {
 		result = TRUE;
 		_vala_code_node_unref0 (st);
 		return result;
@@ -431,13 +429,12 @@ static gboolean vala_struct_value_type_real_is_invokable (ValaDataType* base) {
 static ValaDataType* vala_struct_value_type_real_get_return_type (ValaDataType* base) {
 	ValaStructValueType * self;
 	ValaDataType* result = NULL;
-	ValaTypeSymbol* _tmp0_;
-	ValaTypeSymbol* _tmp1_;
-	ValaStruct* _tmp2_;
-	ValaStruct* st;
+	ValaStruct* st = NULL;
+	ValaTypeSymbol* _tmp0_ = NULL;
+	ValaTypeSymbol* _tmp1_ = NULL;
+	ValaStruct* _tmp2_ = NULL;
 	gboolean _tmp3_ = FALSE;
-	ValaStruct* _tmp4_;
-	gboolean _tmp8_;
+	ValaStruct* _tmp4_ = NULL;
 	self = (ValaStructValueType*) base;
 	_tmp0_ = vala_value_type_get_type_symbol ((ValaValueType*) self);
 	_tmp1_ = _tmp0_;
@@ -445,9 +442,9 @@ static ValaDataType* vala_struct_value_type_real_get_return_type (ValaDataType* 
 	st = _tmp2_;
 	_tmp4_ = st;
 	if (_tmp4_ != NULL) {
-		ValaStruct* _tmp5_;
-		ValaMethod* _tmp6_;
-		ValaMethod* _tmp7_;
+		ValaStruct* _tmp5_ = NULL;
+		ValaMethod* _tmp6_ = NULL;
+		ValaMethod* _tmp7_ = NULL;
 		_tmp5_ = st;
 		_tmp6_ = vala_struct_get_default_construction_method (_tmp5_);
 		_tmp7_ = _tmp6_;
@@ -455,21 +452,20 @@ static ValaDataType* vala_struct_value_type_real_get_return_type (ValaDataType* 
 	} else {
 		_tmp3_ = FALSE;
 	}
-	_tmp8_ = _tmp3_;
-	if (_tmp8_) {
-		ValaStruct* _tmp9_;
-		ValaMethod* _tmp10_;
-		ValaMethod* _tmp11_;
-		ValaDataType* _tmp12_;
-		ValaDataType* _tmp13_;
-		ValaDataType* _tmp14_;
-		_tmp9_ = st;
-		_tmp10_ = vala_struct_get_default_construction_method (_tmp9_);
-		_tmp11_ = _tmp10_;
-		_tmp12_ = vala_method_get_return_type (_tmp11_);
-		_tmp13_ = _tmp12_;
-		_tmp14_ = _vala_code_node_ref0 (_tmp13_);
-		result = _tmp14_;
+	if (_tmp3_) {
+		ValaStruct* _tmp8_ = NULL;
+		ValaMethod* _tmp9_ = NULL;
+		ValaMethod* _tmp10_ = NULL;
+		ValaDataType* _tmp11_ = NULL;
+		ValaDataType* _tmp12_ = NULL;
+		ValaDataType* _tmp13_ = NULL;
+		_tmp8_ = st;
+		_tmp9_ = vala_struct_get_default_construction_method (_tmp8_);
+		_tmp10_ = _tmp9_;
+		_tmp11_ = vala_method_get_return_type (_tmp10_);
+		_tmp12_ = _tmp11_;
+		_tmp13_ = _vala_code_node_ref0 (_tmp12_);
+		result = _tmp13_;
 		_vala_code_node_unref0 (st);
 		return result;
 	} else {
@@ -484,13 +480,12 @@ static ValaDataType* vala_struct_value_type_real_get_return_type (ValaDataType* 
 static ValaList* vala_struct_value_type_real_get_parameters (ValaDataType* base) {
 	ValaStructValueType * self;
 	ValaList* result = NULL;
-	ValaTypeSymbol* _tmp0_;
-	ValaTypeSymbol* _tmp1_;
-	ValaStruct* _tmp2_;
-	ValaStruct* st;
+	ValaStruct* st = NULL;
+	ValaTypeSymbol* _tmp0_ = NULL;
+	ValaTypeSymbol* _tmp1_ = NULL;
+	ValaStruct* _tmp2_ = NULL;
 	gboolean _tmp3_ = FALSE;
-	ValaStruct* _tmp4_;
-	gboolean _tmp8_;
+	ValaStruct* _tmp4_ = NULL;
 	self = (ValaStructValueType*) base;
 	_tmp0_ = vala_value_type_get_type_symbol ((ValaValueType*) self);
 	_tmp1_ = _tmp0_;
@@ -498,9 +493,9 @@ static ValaList* vala_struct_value_type_real_get_parameters (ValaDataType* base)
 	st = _tmp2_;
 	_tmp4_ = st;
 	if (_tmp4_ != NULL) {
-		ValaStruct* _tmp5_;
-		ValaMethod* _tmp6_;
-		ValaMethod* _tmp7_;
+		ValaStruct* _tmp5_ = NULL;
+		ValaMethod* _tmp6_ = NULL;
+		ValaMethod* _tmp7_ = NULL;
 		_tmp5_ = st;
 		_tmp6_ = vala_struct_get_default_construction_method (_tmp5_);
 		_tmp7_ = _tmp6_;
@@ -508,17 +503,16 @@ static ValaList* vala_struct_value_type_real_get_parameters (ValaDataType* base)
 	} else {
 		_tmp3_ = FALSE;
 	}
-	_tmp8_ = _tmp3_;
-	if (_tmp8_) {
-		ValaStruct* _tmp9_;
-		ValaMethod* _tmp10_;
-		ValaMethod* _tmp11_;
-		ValaList* _tmp12_ = NULL;
-		_tmp9_ = st;
-		_tmp10_ = vala_struct_get_default_construction_method (_tmp9_);
-		_tmp11_ = _tmp10_;
-		_tmp12_ = vala_method_get_parameters (_tmp11_);
-		result = _tmp12_;
+	if (_tmp3_) {
+		ValaStruct* _tmp8_ = NULL;
+		ValaMethod* _tmp9_ = NULL;
+		ValaMethod* _tmp10_ = NULL;
+		ValaList* _tmp11_ = NULL;
+		_tmp8_ = st;
+		_tmp9_ = vala_struct_get_default_construction_method (_tmp8_);
+		_tmp10_ = _tmp9_;
+		_tmp11_ = vala_method_get_parameters (_tmp10_);
+		result = _tmp11_;
 		_vala_code_node_unref0 (st);
 		return result;
 	} else {
@@ -533,19 +527,19 @@ static ValaList* vala_struct_value_type_real_get_parameters (ValaDataType* base)
 static ValaDataType* vala_struct_value_type_real_copy (ValaDataType* base) {
 	ValaStructValueType * self;
 	ValaDataType* result = NULL;
-	ValaTypeSymbol* _tmp0_;
-	ValaTypeSymbol* _tmp1_;
-	ValaStructValueType* _tmp2_;
-	ValaStructValueType* _result_;
-	ValaStructValueType* _tmp3_;
-	ValaSourceReference* _tmp4_;
-	ValaSourceReference* _tmp5_;
-	ValaStructValueType* _tmp6_;
-	gboolean _tmp7_;
-	gboolean _tmp8_;
-	ValaStructValueType* _tmp9_;
-	gboolean _tmp10_;
-	gboolean _tmp11_;
+	ValaStructValueType* _result_ = NULL;
+	ValaTypeSymbol* _tmp0_ = NULL;
+	ValaTypeSymbol* _tmp1_ = NULL;
+	ValaStructValueType* _tmp2_ = NULL;
+	ValaStructValueType* _tmp3_ = NULL;
+	ValaSourceReference* _tmp4_ = NULL;
+	ValaSourceReference* _tmp5_ = NULL;
+	ValaStructValueType* _tmp6_ = NULL;
+	gboolean _tmp7_ = FALSE;
+	gboolean _tmp8_ = FALSE;
+	ValaStructValueType* _tmp9_ = NULL;
+	gboolean _tmp10_ = FALSE;
+	gboolean _tmp11_ = FALSE;
 	self = (ValaStructValueType*) base;
 	_tmp0_ = vala_value_type_get_type_symbol ((ValaValueType*) self);
 	_tmp1_ = _tmp0_;
@@ -564,13 +558,13 @@ static ValaDataType* vala_struct_value_type_real_copy (ValaDataType* base) {
 	_tmp11_ = _tmp10_;
 	vala_data_type_set_nullable ((ValaDataType*) _tmp9_, _tmp11_);
 	{
+		ValaList* _arg_list = NULL;
 		ValaList* _tmp12_ = NULL;
-		ValaList* _arg_list;
-		ValaList* _tmp13_;
-		gint _tmp14_;
-		gint _tmp15_;
-		gint _arg_size;
-		gint _arg_index;
+		gint _arg_size = 0;
+		ValaList* _tmp13_ = NULL;
+		gint _tmp14_ = 0;
+		gint _tmp15_ = 0;
+		gint _arg_index = 0;
 		_tmp12_ = vala_data_type_get_type_arguments ((ValaDataType*) self);
 		_arg_list = _tmp12_;
 		_tmp13_ = _arg_list;
@@ -579,17 +573,17 @@ static ValaDataType* vala_struct_value_type_real_copy (ValaDataType* base) {
 		_arg_size = _tmp15_;
 		_arg_index = -1;
 		while (TRUE) {
-			gint _tmp16_;
-			gint _tmp17_;
-			gint _tmp18_;
-			ValaList* _tmp19_;
-			gint _tmp20_;
+			gint _tmp16_ = 0;
+			gint _tmp17_ = 0;
+			gint _tmp18_ = 0;
+			ValaDataType* arg = NULL;
+			ValaList* _tmp19_ = NULL;
+			gint _tmp20_ = 0;
 			gpointer _tmp21_ = NULL;
-			ValaDataType* arg;
-			ValaStructValueType* _tmp22_;
-			ValaDataType* _tmp23_;
+			ValaStructValueType* _tmp22_ = NULL;
+			ValaDataType* _tmp23_ = NULL;
 			ValaDataType* _tmp24_ = NULL;
-			ValaDataType* _tmp25_;
+			ValaDataType* _tmp25_ = NULL;
 			_tmp16_ = _arg_index;
 			_arg_index = _tmp16_ + 1;
 			_tmp17_ = _arg_index;
@@ -618,10 +612,10 @@ static ValaDataType* vala_struct_value_type_real_copy (ValaDataType* base) {
 
 static void vala_struct_value_type_class_init (ValaStructValueTypeClass * klass) {
 	vala_struct_value_type_parent_class = g_type_class_peek_parent (klass);
-	VALA_DATA_TYPE_CLASS (klass)->is_invokable = vala_struct_value_type_real_is_invokable;
-	VALA_DATA_TYPE_CLASS (klass)->get_return_type = vala_struct_value_type_real_get_return_type;
-	VALA_DATA_TYPE_CLASS (klass)->get_parameters = vala_struct_value_type_real_get_parameters;
-	VALA_DATA_TYPE_CLASS (klass)->copy = vala_struct_value_type_real_copy;
+	((ValaDataTypeClass *) klass)->is_invokable = vala_struct_value_type_real_is_invokable;
+	((ValaDataTypeClass *) klass)->get_return_type = vala_struct_value_type_real_get_return_type;
+	((ValaDataTypeClass *) klass)->get_parameters = vala_struct_value_type_real_get_parameters;
+	((ValaDataTypeClass *) klass)->copy = vala_struct_value_type_real_copy;
 }
 
 

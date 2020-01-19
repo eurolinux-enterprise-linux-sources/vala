@@ -225,14 +225,15 @@ namespace Cogl {
 		public Texture.from_bitmap (Cogl.Bitmap bmp_handle, Cogl.TextureFlags flags, Cogl.PixelFormat internal_format);
 		public Texture.from_data (uint width, uint height, Cogl.TextureFlags flags, Cogl.PixelFormat format, Cogl.PixelFormat internal_format, uint rowstride, [CCode (array_length = false)] uchar[] data);
 		public Texture.from_file (string filename, Cogl.TextureFlags flags, Cogl.PixelFormat internal_format) throws GLib.Error;
-		public int get_data (Cogl.PixelFormat format, uint rowstride, uchar[] data);
+		public Texture.from_sub_texture (Cogl.Texture full_texture, int sub_x, int sub_y, int sub_width, int sub_height);
+		public int get_data (Cogl.PixelFormat format, uint rowstride, [CCode (array_length = false)] uint8[] data);
 		public Cogl.PixelFormat get_format ();
 		public uint get_height ();
 		public int get_max_waste ();
 		public uint get_rowstride ();
 		public uint get_width ();
 		public bool is_sliced ();
-		public bool set_region (int src_x, int src_y, int dst_x, int dst_y, uint dst_width, uint dst_height, int width, int height, Cogl.PixelFormat format, uint rowstride, uchar[] data);
+		public bool set_region (int src_x, int src_y, int dst_x, int dst_y, uint dst_width, uint dst_height, int width, int height, Cogl.PixelFormat format, uint rowstride, [CCode (array_length = false)] uint8[] data);
 		public Texture.with_size (uint width, uint height, Cogl.TextureFlags flags, Cogl.PixelFormat internal_format);
 	}
 	[CCode (cheader_filename = "cogl/cogl.h")]
@@ -273,6 +274,12 @@ namespace Cogl {
 		public Cogl.Fixed cos ();
 		public Cogl.Fixed sin ();
 		public Cogl.Fixed tan ();
+	}
+	[BooleanType]
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	[GIR (name = "Bool")]
+	[SimpleType]
+	public struct Bool : bool {
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
 	public struct Color {
@@ -745,7 +752,7 @@ namespace Cogl {
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void push_matrix ();
 	[CCode (cheader_filename = "cogl/cogl.h")]
-	public static void read_pixels (int x, int y, int width, int height, Cogl.ReadPixelsFlags source, Cogl.PixelFormat format, uchar pixels);
+	public static void read_pixels (int x, int y, int width, int height, Cogl.ReadPixelsFlags source, Cogl.PixelFormat format, [CCode (array_length = false)] uint8[] pixels);
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static GLib.Type read_pixels_flags_get_type ();
 	[CCode (cheader_filename = "cogl/cogl.h")]

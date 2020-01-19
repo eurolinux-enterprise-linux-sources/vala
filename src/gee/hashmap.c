@@ -533,10 +533,10 @@ static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify 
 
 ValaHashMap* vala_hash_map_construct (GType object_type, GType k_type, GBoxedCopyFunc k_dup_func, GDestroyNotify k_destroy_func, GType v_type, GBoxedCopyFunc v_dup_func, GDestroyNotify v_destroy_func, GHashFunc key_hash_func, GEqualFunc key_equal_func, GEqualFunc value_equal_func) {
 	ValaHashMap* self = NULL;
-	GHashFunc _tmp0_;
-	GEqualFunc _tmp1_;
-	GEqualFunc _tmp2_;
-	gint _tmp3_;
+	GHashFunc _tmp0_ = NULL;
+	GEqualFunc _tmp1_ = NULL;
+	GEqualFunc _tmp2_ = NULL;
+	gint _tmp3_ = 0;
 	ValaHashMapNode** _tmp4_ = NULL;
 	self = (ValaHashMap*) vala_map_construct (object_type, k_type, (GBoxedCopyFunc) k_dup_func, k_destroy_func, v_type, (GBoxedCopyFunc) v_dup_func, v_destroy_func);
 	self->priv->k_type = k_type;
@@ -570,7 +570,7 @@ ValaHashMap* vala_hash_map_new (GType k_type, GBoxedCopyFunc k_dup_func, GDestro
 static ValaSet* vala_hash_map_real_get_keys (ValaMap* base) {
 	ValaHashMap * self;
 	ValaSet* result = NULL;
-	ValaHashMapKeySet* _tmp0_;
+	ValaHashMapKeySet* _tmp0_ = NULL;
 	self = (ValaHashMap*) base;
 	_tmp0_ = vala_hash_map_key_set_new (self->priv->k_type, (GBoxedCopyFunc) self->priv->k_dup_func, self->priv->k_destroy_func, self->priv->v_type, (GBoxedCopyFunc) self->priv->v_dup_func, self->priv->v_destroy_func, self);
 	result = (ValaSet*) _tmp0_;
@@ -581,7 +581,7 @@ static ValaSet* vala_hash_map_real_get_keys (ValaMap* base) {
 static ValaCollection* vala_hash_map_real_get_values (ValaMap* base) {
 	ValaHashMap * self;
 	ValaCollection* result = NULL;
-	ValaHashMapValueCollection* _tmp0_;
+	ValaHashMapValueCollection* _tmp0_ = NULL;
 	self = (ValaHashMap*) base;
 	_tmp0_ = vala_hash_map_value_collection_new (self->priv->k_type, (GBoxedCopyFunc) self->priv->k_dup_func, self->priv->k_destroy_func, self->priv->v_type, (GBoxedCopyFunc) self->priv->v_dup_func, self->priv->v_destroy_func, self);
 	result = (ValaCollection*) _tmp0_;
@@ -592,7 +592,7 @@ static ValaCollection* vala_hash_map_real_get_values (ValaMap* base) {
 static ValaMapIterator* vala_hash_map_real_map_iterator (ValaMap* base) {
 	ValaHashMap * self;
 	ValaMapIterator* result = NULL;
-	ValaHashMapMapIterator* _tmp0_;
+	ValaHashMapMapIterator* _tmp0_ = NULL;
 	self = (ValaHashMap*) base;
 	_tmp0_ = vala_hash_map_map_iterator_new (self->priv->k_type, (GBoxedCopyFunc) self->priv->k_dup_func, self->priv->k_destroy_func, self->priv->v_type, (GBoxedCopyFunc) self->priv->v_dup_func, self->priv->v_destroy_func, self);
 	result = (ValaMapIterator*) _tmp0_;
@@ -602,16 +602,16 @@ static ValaMapIterator* vala_hash_map_real_map_iterator (ValaMap* base) {
 
 static ValaHashMapNode** vala_hash_map_lookup_node (ValaHashMap* self, gconstpointer key) {
 	ValaHashMapNode** result = NULL;
-	GHashFunc _tmp0_;
-	gconstpointer _tmp1_;
+	guint hash_value = 0U;
+	GHashFunc _tmp0_ = NULL;
+	gconstpointer _tmp1_ = NULL;
 	guint _tmp2_ = 0U;
-	guint hash_value;
-	ValaHashMapNode** _tmp3_;
-	gint _tmp3__length1;
-	guint _tmp4_;
-	gint _tmp5_;
-	ValaHashMapNode** node;
-	ValaHashMapNode** _tmp20_;
+	ValaHashMapNode** node = NULL;
+	ValaHashMapNode** _tmp3_ = NULL;
+	gint _tmp3__length1 = 0;
+	guint _tmp4_ = 0U;
+	gint _tmp5_ = 0;
+	ValaHashMapNode** _tmp18_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_key_hash_func;
 	_tmp1_ = key;
@@ -624,26 +624,24 @@ static ValaHashMapNode** vala_hash_map_lookup_node (ValaHashMap* self, gconstpoi
 	node = &_tmp3_[_tmp4_ % _tmp5_];
 	while (TRUE) {
 		gboolean _tmp6_ = FALSE;
-		ValaHashMapNode** _tmp7_;
-		gboolean _tmp18_;
-		ValaHashMapNode** _tmp19_;
+		ValaHashMapNode** _tmp7_ = NULL;
+		ValaHashMapNode** _tmp17_ = NULL;
 		_tmp7_ = node;
 		if ((*_tmp7_) != NULL) {
 			gboolean _tmp8_ = FALSE;
-			guint _tmp9_;
-			ValaHashMapNode** _tmp10_;
-			guint _tmp11_;
-			gboolean _tmp17_;
+			guint _tmp9_ = 0U;
+			ValaHashMapNode** _tmp10_ = NULL;
+			guint _tmp11_ = 0U;
 			_tmp9_ = hash_value;
 			_tmp10_ = node;
 			_tmp11_ = (*_tmp10_)->key_hash;
 			if (_tmp9_ != _tmp11_) {
 				_tmp8_ = TRUE;
 			} else {
-				GEqualFunc _tmp12_;
-				ValaHashMapNode** _tmp13_;
-				gconstpointer _tmp14_;
-				gconstpointer _tmp15_;
+				GEqualFunc _tmp12_ = NULL;
+				ValaHashMapNode** _tmp13_ = NULL;
+				gconstpointer _tmp14_ = NULL;
+				gconstpointer _tmp15_ = NULL;
 				gboolean _tmp16_ = FALSE;
 				_tmp12_ = self->priv->_key_equal_func;
 				_tmp13_ = node;
@@ -652,20 +650,18 @@ static ValaHashMapNode** vala_hash_map_lookup_node (ValaHashMap* self, gconstpoi
 				_tmp16_ = _tmp12_ (_tmp14_, _tmp15_);
 				_tmp8_ = !_tmp16_;
 			}
-			_tmp17_ = _tmp8_;
-			_tmp6_ = _tmp17_;
+			_tmp6_ = _tmp8_;
 		} else {
 			_tmp6_ = FALSE;
 		}
-		_tmp18_ = _tmp6_;
-		if (!_tmp18_) {
+		if (!_tmp6_) {
 			break;
 		}
-		_tmp19_ = node;
-		node = &(*_tmp19_)->next;
+		_tmp17_ = node;
+		node = &(*_tmp17_)->next;
 	}
-	_tmp20_ = node;
-	result = _tmp20_;
+	_tmp18_ = node;
+	result = _tmp18_;
 	return result;
 }
 
@@ -673,9 +669,9 @@ static ValaHashMapNode** vala_hash_map_lookup_node (ValaHashMap* self, gconstpoi
 static gboolean vala_hash_map_real_contains (ValaMap* base, gconstpointer key) {
 	ValaHashMap * self;
 	gboolean result = FALSE;
-	gconstpointer _tmp0_;
+	ValaHashMapNode** node = NULL;
+	gconstpointer _tmp0_ = NULL;
 	ValaHashMapNode** _tmp1_ = NULL;
-	ValaHashMapNode** node;
 	self = (ValaHashMap*) base;
 	_tmp0_ = key;
 	_tmp1_ = vala_hash_map_lookup_node (self, _tmp0_);
@@ -688,19 +684,19 @@ static gboolean vala_hash_map_real_contains (ValaMap* base, gconstpointer key) {
 static gpointer vala_hash_map_real_get (ValaMap* base, gconstpointer key) {
 	ValaHashMap * self;
 	gpointer result = NULL;
-	gconstpointer _tmp0_;
+	ValaHashMapNode* node = NULL;
+	gconstpointer _tmp0_ = NULL;
 	ValaHashMapNode** _tmp1_ = NULL;
-	ValaHashMapNode* node;
-	ValaHashMapNode* _tmp2_;
+	ValaHashMapNode* _tmp2_ = NULL;
 	self = (ValaHashMap*) base;
 	_tmp0_ = key;
 	_tmp1_ = vala_hash_map_lookup_node (self, _tmp0_);
 	node = *_tmp1_;
 	_tmp2_ = node;
 	if (_tmp2_ != NULL) {
-		ValaHashMapNode* _tmp3_;
-		gconstpointer _tmp4_;
-		gpointer _tmp5_;
+		ValaHashMapNode* _tmp3_ = NULL;
+		gconstpointer _tmp4_ = NULL;
+		gpointer _tmp5_ = NULL;
 		_tmp3_ = node;
 		_tmp4_ = _tmp3_->value;
 		_tmp5_ = ((_tmp4_ != NULL) && (self->priv->v_dup_func != NULL)) ? self->priv->v_dup_func ((gpointer) _tmp4_) : ((gpointer) _tmp4_);
@@ -715,39 +711,39 @@ static gpointer vala_hash_map_real_get (ValaMap* base, gconstpointer key) {
 
 static void vala_hash_map_real_set (ValaMap* base, gconstpointer key, gconstpointer value) {
 	ValaHashMap * self;
-	gconstpointer _tmp0_;
+	ValaHashMapNode** node = NULL;
+	gconstpointer _tmp0_ = NULL;
 	ValaHashMapNode** _tmp1_ = NULL;
-	ValaHashMapNode** node;
-	ValaHashMapNode** _tmp2_;
-	gint _tmp18_;
+	ValaHashMapNode** _tmp2_ = NULL;
+	gint _tmp18_ = 0;
 	self = (ValaHashMap*) base;
 	_tmp0_ = key;
 	_tmp1_ = vala_hash_map_lookup_node (self, _tmp0_);
 	node = _tmp1_;
 	_tmp2_ = node;
 	if ((*_tmp2_) != NULL) {
-		ValaHashMapNode** _tmp3_;
-		gconstpointer _tmp4_;
-		gpointer _tmp5_;
+		ValaHashMapNode** _tmp3_ = NULL;
+		gconstpointer _tmp4_ = NULL;
+		gpointer _tmp5_ = NULL;
 		_tmp3_ = node;
 		_tmp4_ = value;
 		_tmp5_ = ((_tmp4_ != NULL) && (self->priv->v_dup_func != NULL)) ? self->priv->v_dup_func ((gpointer) _tmp4_) : ((gpointer) _tmp4_);
 		(((*_tmp3_)->value == NULL) || (self->priv->v_destroy_func == NULL)) ? NULL : ((*_tmp3_)->value = (self->priv->v_destroy_func ((*_tmp3_)->value), NULL));
 		(*_tmp3_)->value = _tmp5_;
 	} else {
-		GHashFunc _tmp6_;
-		gconstpointer _tmp7_;
+		guint hash_value = 0U;
+		GHashFunc _tmp6_ = NULL;
+		gconstpointer _tmp7_ = NULL;
 		guint _tmp8_ = 0U;
-		guint hash_value;
-		ValaHashMapNode** _tmp9_;
-		gconstpointer _tmp10_;
-		gpointer _tmp11_;
-		gconstpointer _tmp12_;
-		gpointer _tmp13_;
-		guint _tmp14_;
-		ValaHashMapNode* _tmp15_;
-		ValaHashMapNode* _tmp16_;
-		gint _tmp17_;
+		ValaHashMapNode** _tmp9_ = NULL;
+		gconstpointer _tmp10_ = NULL;
+		gpointer _tmp11_ = NULL;
+		gconstpointer _tmp12_ = NULL;
+		gpointer _tmp13_ = NULL;
+		guint _tmp14_ = 0U;
+		ValaHashMapNode* _tmp15_ = NULL;
+		ValaHashMapNode* _tmp16_ = NULL;
+		gint _tmp17_ = 0;
 		_tmp6_ = self->priv->_key_hash_func;
 		_tmp7_ = key;
 		_tmp8_ = _tmp6_ (_tmp7_);
@@ -773,27 +769,27 @@ static void vala_hash_map_real_set (ValaMap* base, gconstpointer key, gconstpoin
 static gboolean vala_hash_map_real_remove (ValaMap* base, gconstpointer key) {
 	ValaHashMap * self;
 	gboolean result = FALSE;
-	gconstpointer _tmp0_;
+	ValaHashMapNode** node = NULL;
+	gconstpointer _tmp0_ = NULL;
 	ValaHashMapNode** _tmp1_ = NULL;
-	ValaHashMapNode** node;
-	ValaHashMapNode** _tmp2_;
+	ValaHashMapNode** _tmp2_ = NULL;
 	self = (ValaHashMap*) base;
 	_tmp0_ = key;
 	_tmp1_ = vala_hash_map_lookup_node (self, _tmp0_);
 	node = _tmp1_;
 	_tmp2_ = node;
 	if ((*_tmp2_) != NULL) {
-		ValaHashMapNode** _tmp3_;
-		ValaHashMapNode* _tmp4_;
-		ValaHashMapNode* next;
-		ValaHashMapNode** _tmp5_;
-		ValaHashMapNode** _tmp6_;
-		ValaHashMapNode** _tmp7_;
-		ValaHashMapNode** _tmp8_;
-		ValaHashMapNode* _tmp9_;
-		ValaHashMapNode* _tmp10_;
-		gint _tmp11_;
-		gint _tmp12_;
+		ValaHashMapNode* next = NULL;
+		ValaHashMapNode** _tmp3_ = NULL;
+		ValaHashMapNode* _tmp4_ = NULL;
+		ValaHashMapNode** _tmp5_ = NULL;
+		ValaHashMapNode** _tmp6_ = NULL;
+		ValaHashMapNode** _tmp7_ = NULL;
+		ValaHashMapNode** _tmp8_ = NULL;
+		ValaHashMapNode* _tmp9_ = NULL;
+		ValaHashMapNode* _tmp10_ = NULL;
+		gint _tmp11_ = 0;
+		gint _tmp12_ = 0;
 		_tmp3_ = node;
 		_tmp4_ = (*_tmp3_)->next;
 		(*_tmp3_)->next = NULL;
@@ -829,64 +825,62 @@ static void vala_hash_map_real_clear (ValaMap* base) {
 	ValaHashMap * self;
 	self = (ValaHashMap*) base;
 	{
-		gint i;
+		gint i = 0;
 		i = 0;
 		{
-			gboolean _tmp0_;
+			gboolean _tmp0_ = FALSE;
 			_tmp0_ = TRUE;
 			while (TRUE) {
-				gboolean _tmp1_;
-				gint _tmp3_;
-				gint _tmp4_;
-				ValaHashMapNode** _tmp5_;
-				gint _tmp5__length1;
-				gint _tmp6_;
-				ValaHashMapNode* _tmp7_;
-				ValaHashMapNode* node;
-				_tmp1_ = _tmp0_;
-				if (!_tmp1_) {
-					gint _tmp2_;
-					_tmp2_ = i;
-					i = _tmp2_ + 1;
+				gint _tmp2_ = 0;
+				gint _tmp3_ = 0;
+				ValaHashMapNode* node = NULL;
+				ValaHashMapNode** _tmp4_ = NULL;
+				gint _tmp4__length1 = 0;
+				gint _tmp5_ = 0;
+				ValaHashMapNode* _tmp6_ = NULL;
+				if (!_tmp0_) {
+					gint _tmp1_ = 0;
+					_tmp1_ = i;
+					i = _tmp1_ + 1;
 				}
 				_tmp0_ = FALSE;
-				_tmp3_ = i;
-				_tmp4_ = self->priv->_array_size;
-				if (!(_tmp3_ < _tmp4_)) {
+				_tmp2_ = i;
+				_tmp3_ = self->priv->_array_size;
+				if (!(_tmp2_ < _tmp3_)) {
 					break;
 				}
-				_tmp5_ = self->priv->_nodes;
-				_tmp5__length1 = self->priv->_nodes_length1;
-				_tmp6_ = i;
-				_tmp7_ = _tmp5_[_tmp6_];
-				_tmp5_[_tmp6_] = NULL;
-				node = _tmp7_;
+				_tmp4_ = self->priv->_nodes;
+				_tmp4__length1 = self->priv->_nodes_length1;
+				_tmp5_ = i;
+				_tmp6_ = _tmp4_[_tmp5_];
+				_tmp4_[_tmp5_] = NULL;
+				node = _tmp6_;
 				while (TRUE) {
-					ValaHashMapNode* _tmp8_;
-					ValaHashMapNode* _tmp9_;
-					ValaHashMapNode* _tmp10_;
-					ValaHashMapNode* next;
-					ValaHashMapNode* _tmp11_;
-					ValaHashMapNode* _tmp12_;
-					ValaHashMapNode* _tmp13_;
-					_tmp8_ = node;
-					if (!(_tmp8_ != NULL)) {
+					ValaHashMapNode* _tmp7_ = NULL;
+					ValaHashMapNode* next = NULL;
+					ValaHashMapNode* _tmp8_ = NULL;
+					ValaHashMapNode* _tmp9_ = NULL;
+					ValaHashMapNode* _tmp10_ = NULL;
+					ValaHashMapNode* _tmp11_ = NULL;
+					ValaHashMapNode* _tmp12_ = NULL;
+					_tmp7_ = node;
+					if (!(_tmp7_ != NULL)) {
 						break;
 					}
-					_tmp9_ = node;
-					_tmp10_ = _tmp9_->next;
-					_tmp9_->next = NULL;
-					next = _tmp10_;
+					_tmp8_ = node;
+					_tmp9_ = _tmp8_->next;
+					_tmp8_->next = NULL;
+					next = _tmp9_;
+					_tmp10_ = node;
+					((_tmp10_->key == NULL) || (self->priv->k_destroy_func == NULL)) ? NULL : (_tmp10_->key = (self->priv->k_destroy_func (_tmp10_->key), NULL));
+					_tmp10_->key = NULL;
 					_tmp11_ = node;
-					((_tmp11_->key == NULL) || (self->priv->k_destroy_func == NULL)) ? NULL : (_tmp11_->key = (self->priv->k_destroy_func (_tmp11_->key), NULL));
-					_tmp11_->key = NULL;
-					_tmp12_ = node;
-					((_tmp12_->value == NULL) || (self->priv->v_destroy_func == NULL)) ? NULL : (_tmp12_->value = (self->priv->v_destroy_func (_tmp12_->value), NULL));
-					_tmp12_->value = NULL;
-					_tmp13_ = next;
+					((_tmp11_->value == NULL) || (self->priv->v_destroy_func == NULL)) ? NULL : (_tmp11_->value = (self->priv->v_destroy_func (_tmp11_->value), NULL));
+					_tmp11_->value = NULL;
+					_tmp12_ = next;
 					next = NULL;
 					_vala_hash_map_node_free0 (node);
-					node = _tmp13_;
+					node = _tmp12_;
 					_vala_hash_map_node_free0 (next);
 				}
 				_vala_hash_map_node_free0 (node);
@@ -901,162 +895,152 @@ static void vala_hash_map_real_clear (ValaMap* base) {
 static void vala_hash_map_resize (ValaHashMap* self) {
 	gboolean _tmp0_ = FALSE;
 	gboolean _tmp1_ = FALSE;
-	gint _tmp2_;
-	gint _tmp3_;
-	gboolean _tmp5_;
-	gboolean _tmp11_;
+	gint _tmp2_ = 0;
+	gint _tmp3_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp2_ = self->priv->_array_size;
 	_tmp3_ = self->priv->_nnodes;
 	if (_tmp2_ >= (3 * _tmp3_)) {
-		gint _tmp4_;
+		gint _tmp4_ = 0;
 		_tmp4_ = self->priv->_array_size;
 		_tmp1_ = _tmp4_ >= VALA_HASH_MAP_MIN_SIZE;
 	} else {
 		_tmp1_ = FALSE;
 	}
-	_tmp5_ = _tmp1_;
-	if (_tmp5_) {
+	if (_tmp1_) {
 		_tmp0_ = TRUE;
 	} else {
-		gboolean _tmp6_ = FALSE;
-		gint _tmp7_;
-		gint _tmp8_;
-		gboolean _tmp10_;
-		_tmp7_ = self->priv->_array_size;
-		_tmp8_ = self->priv->_nnodes;
-		if ((3 * _tmp7_) <= _tmp8_) {
-			gint _tmp9_;
-			_tmp9_ = self->priv->_array_size;
-			_tmp6_ = _tmp9_ < VALA_HASH_MAP_MAX_SIZE;
+		gboolean _tmp5_ = FALSE;
+		gint _tmp6_ = 0;
+		gint _tmp7_ = 0;
+		_tmp6_ = self->priv->_array_size;
+		_tmp7_ = self->priv->_nnodes;
+		if ((3 * _tmp6_) <= _tmp7_) {
+			gint _tmp8_ = 0;
+			_tmp8_ = self->priv->_array_size;
+			_tmp5_ = _tmp8_ < VALA_HASH_MAP_MAX_SIZE;
 		} else {
-			_tmp6_ = FALSE;
+			_tmp5_ = FALSE;
 		}
-		_tmp10_ = _tmp6_;
-		_tmp0_ = _tmp10_;
+		_tmp0_ = _tmp5_;
 	}
-	_tmp11_ = _tmp0_;
-	if (_tmp11_) {
-		gint _tmp12_;
-		guint _tmp13_ = 0U;
-		gint new_array_size;
-		gint _tmp14_;
-		gint _tmp15_ = 0;
-		gint _tmp16_;
-		ValaHashMapNode** _tmp17_ = NULL;
-		ValaHashMapNode** new_nodes;
-		gint new_nodes_length1;
-		gint _new_nodes_size_;
-		ValaHashMapNode** _tmp43_;
-		gint _tmp43__length1;
-		gint _tmp44_;
-		_tmp12_ = self->priv->_nnodes;
-		_tmp13_ = g_spaced_primes_closest ((guint) _tmp12_);
-		new_array_size = (gint) _tmp13_;
-		_tmp14_ = new_array_size;
-		_tmp15_ = CLAMP (_tmp14_, VALA_HASH_MAP_MIN_SIZE, VALA_HASH_MAP_MAX_SIZE);
-		new_array_size = _tmp15_;
-		_tmp16_ = new_array_size;
-		_tmp17_ = g_new0 (ValaHashMapNode*, _tmp16_ + 1);
-		new_nodes = _tmp17_;
-		new_nodes_length1 = _tmp16_;
+	if (_tmp0_) {
+		gint new_array_size = 0;
+		gint _tmp9_ = 0;
+		guint _tmp10_ = 0U;
+		gint _tmp11_ = 0;
+		gint _tmp12_ = 0;
+		ValaHashMapNode** new_nodes = NULL;
+		gint _tmp13_ = 0;
+		ValaHashMapNode** _tmp14_ = NULL;
+		gint new_nodes_length1 = 0;
+		gint _new_nodes_size_ = 0;
+		ValaHashMapNode** _tmp38_ = NULL;
+		gint _tmp38__length1 = 0;
+		gint _tmp39_ = 0;
+		_tmp9_ = self->priv->_nnodes;
+		_tmp10_ = g_spaced_primes_closest ((guint) _tmp9_);
+		new_array_size = (gint) _tmp10_;
+		_tmp11_ = new_array_size;
+		_tmp12_ = CLAMP (_tmp11_, VALA_HASH_MAP_MIN_SIZE, VALA_HASH_MAP_MAX_SIZE);
+		new_array_size = _tmp12_;
+		_tmp13_ = new_array_size;
+		_tmp14_ = g_new0 (ValaHashMapNode*, _tmp13_ + 1);
+		new_nodes = _tmp14_;
+		new_nodes_length1 = _tmp13_;
 		_new_nodes_size_ = new_nodes_length1;
 		{
-			gint i;
+			gint i = 0;
 			i = 0;
 			{
-				gboolean _tmp18_;
-				_tmp18_ = TRUE;
+				gboolean _tmp15_ = FALSE;
+				_tmp15_ = TRUE;
 				while (TRUE) {
-					gboolean _tmp19_;
-					gint _tmp21_;
-					gint _tmp22_;
+					gint _tmp17_ = 0;
+					gint _tmp18_ = 0;
 					ValaHashMapNode* node = NULL;
-					ValaHashMapNode* next;
-					_tmp19_ = _tmp18_;
-					if (!_tmp19_) {
-						gint _tmp20_;
-						_tmp20_ = i;
-						i = _tmp20_ + 1;
+					ValaHashMapNode* next = NULL;
+					if (!_tmp15_) {
+						gint _tmp16_ = 0;
+						_tmp16_ = i;
+						i = _tmp16_ + 1;
 					}
-					_tmp18_ = FALSE;
-					_tmp21_ = i;
-					_tmp22_ = self->priv->_array_size;
-					if (!(_tmp21_ < _tmp22_)) {
+					_tmp15_ = FALSE;
+					_tmp17_ = i;
+					_tmp18_ = self->priv->_array_size;
+					if (!(_tmp17_ < _tmp18_)) {
 						break;
 					}
 					next = NULL;
 					{
-						ValaHashMapNode** _tmp23_;
-						gint _tmp23__length1;
-						gint _tmp24_;
-						ValaHashMapNode* _tmp25_;
-						gboolean _tmp26_;
-						_tmp23_ = self->priv->_nodes;
-						_tmp23__length1 = self->priv->_nodes_length1;
-						_tmp24_ = i;
-						_tmp25_ = _tmp23_[_tmp24_];
-						_tmp23_[_tmp24_] = NULL;
+						ValaHashMapNode** _tmp19_ = NULL;
+						gint _tmp19__length1 = 0;
+						gint _tmp20_ = 0;
+						ValaHashMapNode* _tmp21_ = NULL;
+						gboolean _tmp22_ = FALSE;
+						_tmp19_ = self->priv->_nodes;
+						_tmp19__length1 = self->priv->_nodes_length1;
+						_tmp20_ = i;
+						_tmp21_ = _tmp19_[_tmp20_];
+						_tmp19_[_tmp20_] = NULL;
 						_vala_hash_map_node_free0 (node);
-						node = _tmp25_;
-						_tmp26_ = TRUE;
+						node = _tmp21_;
+						_tmp22_ = TRUE;
 						while (TRUE) {
-							gboolean _tmp27_;
-							ValaHashMapNode* _tmp29_;
-							ValaHashMapNode* _tmp30_;
-							ValaHashMapNode* _tmp31_;
-							ValaHashMapNode* _tmp32_;
-							guint _tmp33_;
-							gint _tmp34_;
-							guint hash_val;
-							ValaHashMapNode* _tmp35_;
-							ValaHashMapNode** _tmp36_;
-							gint _tmp36__length1;
-							guint _tmp37_;
-							ValaHashMapNode* _tmp38_;
-							ValaHashMapNode** _tmp39_;
-							gint _tmp39__length1;
-							guint _tmp40_;
-							ValaHashMapNode* _tmp41_;
-							ValaHashMapNode* _tmp42_;
-							_tmp27_ = _tmp26_;
-							if (!_tmp27_) {
-								ValaHashMapNode* _tmp28_;
-								_tmp28_ = next;
+							ValaHashMapNode* _tmp24_ = NULL;
+							ValaHashMapNode* _tmp25_ = NULL;
+							ValaHashMapNode* _tmp26_ = NULL;
+							guint hash_val = 0U;
+							ValaHashMapNode* _tmp27_ = NULL;
+							guint _tmp28_ = 0U;
+							gint _tmp29_ = 0;
+							ValaHashMapNode* _tmp30_ = NULL;
+							ValaHashMapNode** _tmp31_ = NULL;
+							gint _tmp31__length1 = 0;
+							guint _tmp32_ = 0U;
+							ValaHashMapNode* _tmp33_ = NULL;
+							ValaHashMapNode** _tmp34_ = NULL;
+							gint _tmp34__length1 = 0;
+							guint _tmp35_ = 0U;
+							ValaHashMapNode* _tmp36_ = NULL;
+							ValaHashMapNode* _tmp37_ = NULL;
+							if (!_tmp22_) {
+								ValaHashMapNode* _tmp23_ = NULL;
+								_tmp23_ = next;
 								next = NULL;
 								_vala_hash_map_node_free0 (node);
-								node = _tmp28_;
+								node = _tmp23_;
 							}
-							_tmp26_ = FALSE;
-							_tmp29_ = node;
-							if (!(_tmp29_ != NULL)) {
+							_tmp22_ = FALSE;
+							_tmp24_ = node;
+							if (!(_tmp24_ != NULL)) {
 								break;
 							}
-							_tmp30_ = node;
-							_tmp31_ = _tmp30_->next;
-							_tmp30_->next = NULL;
+							_tmp25_ = node;
+							_tmp26_ = _tmp25_->next;
+							_tmp25_->next = NULL;
 							_vala_hash_map_node_free0 (next);
-							next = _tmp31_;
-							_tmp32_ = node;
-							_tmp33_ = _tmp32_->key_hash;
-							_tmp34_ = new_array_size;
-							hash_val = _tmp33_ % _tmp34_;
-							_tmp35_ = node;
-							_tmp36_ = new_nodes;
-							_tmp36__length1 = new_nodes_length1;
-							_tmp37_ = hash_val;
-							_tmp38_ = _tmp36_[_tmp37_];
-							_tmp36_[_tmp37_] = NULL;
-							_vala_hash_map_node_free0 (_tmp35_->next);
-							_tmp35_->next = _tmp38_;
-							_tmp39_ = new_nodes;
-							_tmp39__length1 = new_nodes_length1;
-							_tmp40_ = hash_val;
-							_tmp41_ = node;
+							next = _tmp26_;
+							_tmp27_ = node;
+							_tmp28_ = _tmp27_->key_hash;
+							_tmp29_ = new_array_size;
+							hash_val = _tmp28_ % _tmp29_;
+							_tmp30_ = node;
+							_tmp31_ = new_nodes;
+							_tmp31__length1 = new_nodes_length1;
+							_tmp32_ = hash_val;
+							_tmp33_ = _tmp31_[_tmp32_];
+							_tmp31_[_tmp32_] = NULL;
+							_vala_hash_map_node_free0 (_tmp30_->next);
+							_tmp30_->next = _tmp33_;
+							_tmp34_ = new_nodes;
+							_tmp34__length1 = new_nodes_length1;
+							_tmp35_ = hash_val;
+							_tmp36_ = node;
 							node = NULL;
-							_vala_hash_map_node_free0 (_tmp39_[_tmp40_]);
-							_tmp39_[_tmp40_] = _tmp41_;
-							_tmp42_ = _tmp39_[_tmp40_];
+							_vala_hash_map_node_free0 (_tmp34_[_tmp35_]);
+							_tmp34_[_tmp35_] = _tmp36_;
+							_tmp37_ = _tmp34_[_tmp35_];
 						}
 					}
 					_vala_hash_map_node_free0 (next);
@@ -1064,15 +1048,16 @@ static void vala_hash_map_resize (ValaHashMap* self) {
 				}
 			}
 		}
-		_tmp43_ = new_nodes;
-		_tmp43__length1 = new_nodes_length1;
+		_tmp38_ = new_nodes;
+		_tmp38__length1 = new_nodes_length1;
 		new_nodes = NULL;
+		new_nodes_length1 = 0;
 		self->priv->_nodes = (_vala_array_free (self->priv->_nodes, self->priv->_nodes_length1, (GDestroyNotify) vala_hash_map_node_free), NULL);
-		self->priv->_nodes = _tmp43_;
-		self->priv->_nodes_length1 = _tmp43__length1;
+		self->priv->_nodes = _tmp38_;
+		self->priv->_nodes_length1 = _tmp38__length1;
 		self->priv->__nodes_size_ = self->priv->_nodes_length1;
-		_tmp44_ = new_array_size;
-		self->priv->_array_size = _tmp44_;
+		_tmp39_ = new_array_size;
+		self->priv->_array_size = _tmp39_;
 		new_nodes = (_vala_array_free (new_nodes, new_nodes_length1, (GDestroyNotify) vala_hash_map_node_free), NULL);
 	}
 }
@@ -1081,7 +1066,7 @@ static void vala_hash_map_resize (ValaHashMap* self) {
 static gint vala_hash_map_real_get_size (ValaMap* base) {
 	gint result;
 	ValaHashMap* self;
-	gint _tmp0_;
+	gint _tmp0_ = 0;
 	self = (ValaHashMap*) base;
 	_tmp0_ = self->priv->_nnodes;
 	result = _tmp0_;
@@ -1090,7 +1075,7 @@ static gint vala_hash_map_real_get_size (ValaMap* base) {
 
 
 void vala_hash_map_set_key_hash_func (ValaHashMap* self, GHashFunc value) {
-	GHashFunc _tmp0_;
+	GHashFunc _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_key_hash_func = _tmp0_;
@@ -1098,7 +1083,7 @@ void vala_hash_map_set_key_hash_func (ValaHashMap* self, GHashFunc value) {
 
 
 void vala_hash_map_set_key_equal_func (ValaHashMap* self, GEqualFunc value) {
-	GEqualFunc _tmp0_;
+	GEqualFunc _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_key_equal_func = _tmp0_;
@@ -1106,7 +1091,7 @@ void vala_hash_map_set_key_equal_func (ValaHashMap* self, GEqualFunc value) {
 
 
 void vala_hash_map_set_value_equal_func (ValaHashMap* self, GEqualFunc value) {
-	GEqualFunc _tmp0_;
+	GEqualFunc _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_value_equal_func = _tmp0_;
@@ -1115,9 +1100,9 @@ void vala_hash_map_set_value_equal_func (ValaHashMap* self, GEqualFunc value) {
 
 static ValaHashMapNode* vala_hash_map_node_new (gpointer k, gpointer v, guint hash) {
 	ValaHashMapNode* self;
-	gpointer _tmp0_;
-	gpointer _tmp1_;
-	guint _tmp2_;
+	gpointer _tmp0_ = NULL;
+	gpointer _tmp1_ = NULL;
+	guint _tmp2_ = 0U;
 	self = g_slice_new0 (ValaHashMapNode);
 	vala_hash_map_node_instance_init (self);
 	_tmp0_ = k;
@@ -1144,7 +1129,7 @@ static void vala_hash_map_node_free (ValaHashMapNode* self) {
 
 static ValaHashMapKeySet* vala_hash_map_key_set_construct (GType object_type, GType k_type, GBoxedCopyFunc k_dup_func, GDestroyNotify k_destroy_func, GType v_type, GBoxedCopyFunc v_dup_func, GDestroyNotify v_destroy_func, ValaHashMap* map) {
 	ValaHashMapKeySet* self = NULL;
-	ValaHashMap* _tmp0_;
+	ValaHashMap* _tmp0_ = NULL;
 	g_return_val_if_fail (map != NULL, NULL);
 	self = (ValaHashMapKeySet*) vala_set_construct (object_type, k_type, (GBoxedCopyFunc) k_dup_func, k_destroy_func);
 	self->priv->k_type = k_type;
@@ -1176,8 +1161,8 @@ static GType vala_hash_map_key_set_real_get_element_type (ValaIterable* base) {
 static ValaIterator* vala_hash_map_key_set_real_iterator (ValaIterable* base) {
 	ValaHashMapKeySet * self;
 	ValaIterator* result = NULL;
-	ValaHashMap* _tmp0_;
-	ValaHashMapKeyIterator* _tmp1_;
+	ValaHashMap* _tmp0_ = NULL;
+	ValaHashMapKeyIterator* _tmp1_ = NULL;
 	self = (ValaHashMapKeySet*) base;
 	_tmp0_ = self->priv->_map;
 	_tmp1_ = vala_hash_map_key_iterator_new (self->priv->k_type, (GBoxedCopyFunc) self->priv->k_dup_func, self->priv->k_destroy_func, self->priv->v_type, (GBoxedCopyFunc) self->priv->v_dup_func, self->priv->v_destroy_func, _tmp0_);
@@ -1214,8 +1199,8 @@ static gboolean vala_hash_map_key_set_real_remove (ValaCollection* base, gconstp
 static gboolean vala_hash_map_key_set_real_contains (ValaCollection* base, gconstpointer key) {
 	ValaHashMapKeySet * self;
 	gboolean result = FALSE;
-	ValaHashMap* _tmp0_;
-	gconstpointer _tmp1_;
+	ValaHashMap* _tmp0_ = NULL;
+	gconstpointer _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
 	self = (ValaHashMapKeySet*) base;
 	_tmp0_ = self->priv->_map;
@@ -1232,8 +1217,8 @@ static gpointer _vala_map_ref0 (gpointer self) {
 
 
 static void vala_hash_map_key_set_set_map (ValaHashMapKeySet* self, ValaHashMap* value) {
-	ValaHashMap* _tmp0_;
-	ValaHashMap* _tmp1_;
+	ValaHashMap* _tmp0_ = NULL;
+	ValaHashMap* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_map_ref0 (_tmp0_);
@@ -1245,9 +1230,9 @@ static void vala_hash_map_key_set_set_map (ValaHashMapKeySet* self, ValaHashMap*
 static gint vala_hash_map_key_set_real_get_size (ValaCollection* base) {
 	gint result;
 	ValaHashMapKeySet* self;
-	ValaHashMap* _tmp0_;
-	gint _tmp1_;
-	gint _tmp2_;
+	ValaHashMap* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	gint _tmp2_ = 0;
 	self = (ValaHashMapKeySet*) base;
 	_tmp0_ = self->priv->_map;
 	_tmp1_ = vala_map_get_size ((ValaMap*) _tmp0_);
@@ -1259,14 +1244,14 @@ static gint vala_hash_map_key_set_real_get_size (ValaCollection* base) {
 
 static void vala_hash_map_key_set_class_init (ValaHashMapKeySetClass * klass) {
 	vala_hash_map_key_set_parent_class = g_type_class_peek_parent (klass);
-	VALA_ITERABLE_CLASS (klass)->finalize = vala_hash_map_key_set_finalize;
+	((ValaIterableClass *) klass)->finalize = vala_hash_map_key_set_finalize;
 	g_type_class_add_private (klass, sizeof (ValaHashMapKeySetPrivate));
-	VALA_ITERABLE_CLASS (klass)->get_element_type = vala_hash_map_key_set_real_get_element_type;
-	VALA_ITERABLE_CLASS (klass)->iterator = vala_hash_map_key_set_real_iterator;
-	VALA_COLLECTION_CLASS (klass)->add = vala_hash_map_key_set_real_add;
-	VALA_COLLECTION_CLASS (klass)->clear = vala_hash_map_key_set_real_clear;
-	VALA_COLLECTION_CLASS (klass)->remove = vala_hash_map_key_set_real_remove;
-	VALA_COLLECTION_CLASS (klass)->contains = vala_hash_map_key_set_real_contains;
+	((ValaIterableClass *) klass)->get_element_type = vala_hash_map_key_set_real_get_element_type;
+	((ValaIterableClass *) klass)->iterator = vala_hash_map_key_set_real_iterator;
+	((ValaCollectionClass *) klass)->add = vala_hash_map_key_set_real_add;
+	((ValaCollectionClass *) klass)->clear = vala_hash_map_key_set_real_clear;
+	((ValaCollectionClass *) klass)->remove = vala_hash_map_key_set_real_remove;
+	((ValaCollectionClass *) klass)->contains = vala_hash_map_key_set_real_contains;
 	VALA_COLLECTION_CLASS (klass)->get_size = vala_hash_map_key_set_real_get_size;
 }
 
@@ -1298,7 +1283,7 @@ static GType vala_hash_map_key_set_get_type (void) {
 
 static ValaHashMapMapIterator* vala_hash_map_map_iterator_construct (GType object_type, GType k_type, GBoxedCopyFunc k_dup_func, GDestroyNotify k_destroy_func, GType v_type, GBoxedCopyFunc v_dup_func, GDestroyNotify v_destroy_func, ValaHashMap* map) {
 	ValaHashMapMapIterator* self = NULL;
-	ValaHashMap* _tmp0_;
+	ValaHashMap* _tmp0_ = NULL;
 	g_return_val_if_fail (map != NULL, NULL);
 	self = (ValaHashMapMapIterator*) vala_map_iterator_construct (object_type, k_type, (GBoxedCopyFunc) k_dup_func, k_destroy_func, v_type, (GBoxedCopyFunc) v_dup_func, v_destroy_func);
 	self->priv->k_type = k_type;
@@ -1321,32 +1306,31 @@ static ValaHashMapMapIterator* vala_hash_map_map_iterator_new (GType k_type, GBo
 static gboolean vala_hash_map_map_iterator_real_next (ValaMapIterator* base) {
 	ValaHashMapMapIterator * self;
 	gboolean result = FALSE;
-	ValaHashMapNode* _tmp0_;
-	ValaHashMapNode* _tmp14_;
+	ValaHashMapNode* _tmp0_ = NULL;
+	ValaHashMapNode* _tmp13_ = NULL;
 	self = (ValaHashMapMapIterator*) base;
 	_tmp0_ = self->priv->_node;
 	if (_tmp0_ != NULL) {
-		ValaHashMapNode* _tmp1_;
-		ValaHashMapNode* _tmp2_;
+		ValaHashMapNode* _tmp1_ = NULL;
+		ValaHashMapNode* _tmp2_ = NULL;
 		_tmp1_ = self->priv->_node;
 		_tmp2_ = _tmp1_->next;
 		self->priv->_node = _tmp2_;
 	}
 	while (TRUE) {
 		gboolean _tmp3_ = FALSE;
-		ValaHashMapNode* _tmp4_;
-		gboolean _tmp8_;
-		gint _tmp9_;
-		ValaHashMap* _tmp10_;
-		ValaHashMapNode** _tmp11_;
-		gint _tmp11__length1;
-		gint _tmp12_;
-		ValaHashMapNode* _tmp13_;
+		ValaHashMapNode* _tmp4_ = NULL;
+		gint _tmp8_ = 0;
+		ValaHashMap* _tmp9_ = NULL;
+		ValaHashMapNode** _tmp10_ = NULL;
+		gint _tmp10__length1 = 0;
+		gint _tmp11_ = 0;
+		ValaHashMapNode* _tmp12_ = NULL;
 		_tmp4_ = self->priv->_node;
 		if (_tmp4_ == NULL) {
-			gint _tmp5_;
-			ValaHashMap* _tmp6_;
-			gint _tmp7_;
+			gint _tmp5_ = 0;
+			ValaHashMap* _tmp6_ = NULL;
+			gint _tmp7_ = 0;
 			_tmp5_ = self->priv->_index;
 			_tmp6_ = self->priv->_map;
 			_tmp7_ = _tmp6_->priv->_array_size;
@@ -1354,21 +1338,20 @@ static gboolean vala_hash_map_map_iterator_real_next (ValaMapIterator* base) {
 		} else {
 			_tmp3_ = FALSE;
 		}
-		_tmp8_ = _tmp3_;
-		if (!_tmp8_) {
+		if (!_tmp3_) {
 			break;
 		}
-		_tmp9_ = self->priv->_index;
-		self->priv->_index = _tmp9_ + 1;
-		_tmp10_ = self->priv->_map;
-		_tmp11_ = _tmp10_->priv->_nodes;
-		_tmp11__length1 = _tmp10_->priv->_nodes_length1;
-		_tmp12_ = self->priv->_index;
-		_tmp13_ = _tmp11_[_tmp12_];
-		self->priv->_node = _tmp13_;
+		_tmp8_ = self->priv->_index;
+		self->priv->_index = _tmp8_ + 1;
+		_tmp9_ = self->priv->_map;
+		_tmp10_ = _tmp9_->priv->_nodes;
+		_tmp10__length1 = _tmp9_->priv->_nodes_length1;
+		_tmp11_ = self->priv->_index;
+		_tmp12_ = _tmp10_[_tmp11_];
+		self->priv->_node = _tmp12_;
 	}
-	_tmp14_ = self->priv->_node;
-	result = _tmp14_ != NULL;
+	_tmp13_ = self->priv->_node;
+	result = _tmp13_ != NULL;
 	return result;
 }
 
@@ -1376,13 +1359,13 @@ static gboolean vala_hash_map_map_iterator_real_next (ValaMapIterator* base) {
 static gpointer vala_hash_map_map_iterator_real_get_key (ValaMapIterator* base) {
 	ValaHashMapMapIterator * self;
 	gpointer result = NULL;
-	gint _tmp0_;
-	ValaHashMap* _tmp1_;
-	gint _tmp2_;
-	ValaHashMapNode* _tmp3_;
-	ValaHashMapNode* _tmp4_;
-	gconstpointer _tmp5_;
-	gpointer _tmp6_;
+	gint _tmp0_ = 0;
+	ValaHashMap* _tmp1_ = NULL;
+	gint _tmp2_ = 0;
+	ValaHashMapNode* _tmp3_ = NULL;
+	ValaHashMapNode* _tmp4_ = NULL;
+	gconstpointer _tmp5_ = NULL;
+	gpointer _tmp6_ = NULL;
 	self = (ValaHashMapMapIterator*) base;
 	_tmp0_ = self->priv->_stamp;
 	_tmp1_ = self->priv->_map;
@@ -1401,13 +1384,13 @@ static gpointer vala_hash_map_map_iterator_real_get_key (ValaMapIterator* base) 
 static gpointer vala_hash_map_map_iterator_real_get_value (ValaMapIterator* base) {
 	ValaHashMapMapIterator * self;
 	gpointer result = NULL;
-	gint _tmp0_;
-	ValaHashMap* _tmp1_;
-	gint _tmp2_;
-	ValaHashMapNode* _tmp3_;
-	ValaHashMapNode* _tmp4_;
-	gconstpointer _tmp5_;
-	gpointer _tmp6_;
+	gint _tmp0_ = 0;
+	ValaHashMap* _tmp1_ = NULL;
+	gint _tmp2_ = 0;
+	ValaHashMapNode* _tmp3_ = NULL;
+	ValaHashMapNode* _tmp4_ = NULL;
+	gconstpointer _tmp5_ = NULL;
+	gpointer _tmp6_ = NULL;
 	self = (ValaHashMapMapIterator*) base;
 	_tmp0_ = self->priv->_stamp;
 	_tmp1_ = self->priv->_map;
@@ -1424,10 +1407,10 @@ static gpointer vala_hash_map_map_iterator_real_get_value (ValaMapIterator* base
 
 
 static void vala_hash_map_map_iterator_set_map (ValaHashMapMapIterator* self, ValaHashMap* value) {
-	ValaHashMap* _tmp0_;
-	ValaHashMap* _tmp1_;
-	ValaHashMap* _tmp2_;
-	gint _tmp3_;
+	ValaHashMap* _tmp0_ = NULL;
+	ValaHashMap* _tmp1_ = NULL;
+	ValaHashMap* _tmp2_ = NULL;
+	gint _tmp3_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_map_ref0 (_tmp0_);
@@ -1441,11 +1424,11 @@ static void vala_hash_map_map_iterator_set_map (ValaHashMapMapIterator* self, Va
 
 static void vala_hash_map_map_iterator_class_init (ValaHashMapMapIteratorClass * klass) {
 	vala_hash_map_map_iterator_parent_class = g_type_class_peek_parent (klass);
-	VALA_MAP_ITERATOR_CLASS (klass)->finalize = vala_hash_map_map_iterator_finalize;
+	((ValaMapIteratorClass *) klass)->finalize = vala_hash_map_map_iterator_finalize;
 	g_type_class_add_private (klass, sizeof (ValaHashMapMapIteratorPrivate));
-	VALA_MAP_ITERATOR_CLASS (klass)->next = vala_hash_map_map_iterator_real_next;
-	VALA_MAP_ITERATOR_CLASS (klass)->get_key = vala_hash_map_map_iterator_real_get_key;
-	VALA_MAP_ITERATOR_CLASS (klass)->get_value = vala_hash_map_map_iterator_real_get_value;
+	((ValaMapIteratorClass *) klass)->next = vala_hash_map_map_iterator_real_next;
+	((ValaMapIteratorClass *) klass)->get_key = vala_hash_map_map_iterator_real_get_key;
+	((ValaMapIteratorClass *) klass)->get_value = vala_hash_map_map_iterator_real_get_value;
 }
 
 
@@ -1477,7 +1460,7 @@ static GType vala_hash_map_map_iterator_get_type (void) {
 
 static ValaHashMapKeyIterator* vala_hash_map_key_iterator_construct (GType object_type, GType k_type, GBoxedCopyFunc k_dup_func, GDestroyNotify k_destroy_func, GType v_type, GBoxedCopyFunc v_dup_func, GDestroyNotify v_destroy_func, ValaHashMap* map) {
 	ValaHashMapKeyIterator* self = NULL;
-	ValaHashMap* _tmp0_;
+	ValaHashMap* _tmp0_ = NULL;
 	g_return_val_if_fail (map != NULL, NULL);
 	self = (ValaHashMapKeyIterator*) vala_iterator_construct (object_type, k_type, (GBoxedCopyFunc) k_dup_func, k_destroy_func);
 	self->priv->k_type = k_type;
@@ -1500,32 +1483,31 @@ static ValaHashMapKeyIterator* vala_hash_map_key_iterator_new (GType k_type, GBo
 static gboolean vala_hash_map_key_iterator_real_next (ValaIterator* base) {
 	ValaHashMapKeyIterator * self;
 	gboolean result = FALSE;
-	ValaHashMapNode* _tmp0_;
-	ValaHashMapNode* _tmp14_;
+	ValaHashMapNode* _tmp0_ = NULL;
+	ValaHashMapNode* _tmp13_ = NULL;
 	self = (ValaHashMapKeyIterator*) base;
 	_tmp0_ = self->priv->_node;
 	if (_tmp0_ != NULL) {
-		ValaHashMapNode* _tmp1_;
-		ValaHashMapNode* _tmp2_;
+		ValaHashMapNode* _tmp1_ = NULL;
+		ValaHashMapNode* _tmp2_ = NULL;
 		_tmp1_ = self->priv->_node;
 		_tmp2_ = _tmp1_->next;
 		self->priv->_node = _tmp2_;
 	}
 	while (TRUE) {
 		gboolean _tmp3_ = FALSE;
-		ValaHashMapNode* _tmp4_;
-		gboolean _tmp8_;
-		gint _tmp9_;
-		ValaHashMap* _tmp10_;
-		ValaHashMapNode** _tmp11_;
-		gint _tmp11__length1;
-		gint _tmp12_;
-		ValaHashMapNode* _tmp13_;
+		ValaHashMapNode* _tmp4_ = NULL;
+		gint _tmp8_ = 0;
+		ValaHashMap* _tmp9_ = NULL;
+		ValaHashMapNode** _tmp10_ = NULL;
+		gint _tmp10__length1 = 0;
+		gint _tmp11_ = 0;
+		ValaHashMapNode* _tmp12_ = NULL;
 		_tmp4_ = self->priv->_node;
 		if (_tmp4_ == NULL) {
-			gint _tmp5_;
-			ValaHashMap* _tmp6_;
-			gint _tmp7_;
+			gint _tmp5_ = 0;
+			ValaHashMap* _tmp6_ = NULL;
+			gint _tmp7_ = 0;
 			_tmp5_ = self->priv->_index;
 			_tmp6_ = self->priv->_map;
 			_tmp7_ = _tmp6_->priv->_array_size;
@@ -1533,21 +1515,20 @@ static gboolean vala_hash_map_key_iterator_real_next (ValaIterator* base) {
 		} else {
 			_tmp3_ = FALSE;
 		}
-		_tmp8_ = _tmp3_;
-		if (!_tmp8_) {
+		if (!_tmp3_) {
 			break;
 		}
-		_tmp9_ = self->priv->_index;
-		self->priv->_index = _tmp9_ + 1;
-		_tmp10_ = self->priv->_map;
-		_tmp11_ = _tmp10_->priv->_nodes;
-		_tmp11__length1 = _tmp10_->priv->_nodes_length1;
-		_tmp12_ = self->priv->_index;
-		_tmp13_ = _tmp11_[_tmp12_];
-		self->priv->_node = _tmp13_;
+		_tmp8_ = self->priv->_index;
+		self->priv->_index = _tmp8_ + 1;
+		_tmp9_ = self->priv->_map;
+		_tmp10_ = _tmp9_->priv->_nodes;
+		_tmp10__length1 = _tmp9_->priv->_nodes_length1;
+		_tmp11_ = self->priv->_index;
+		_tmp12_ = _tmp10_[_tmp11_];
+		self->priv->_node = _tmp12_;
 	}
-	_tmp14_ = self->priv->_node;
-	result = _tmp14_ != NULL;
+	_tmp13_ = self->priv->_node;
+	result = _tmp13_ != NULL;
 	return result;
 }
 
@@ -1555,13 +1536,13 @@ static gboolean vala_hash_map_key_iterator_real_next (ValaIterator* base) {
 static gpointer vala_hash_map_key_iterator_real_get (ValaIterator* base) {
 	ValaHashMapKeyIterator * self;
 	gpointer result = NULL;
-	gint _tmp0_;
-	ValaHashMap* _tmp1_;
-	gint _tmp2_;
-	ValaHashMapNode* _tmp3_;
-	ValaHashMapNode* _tmp4_;
-	gconstpointer _tmp5_;
-	gpointer _tmp6_;
+	gint _tmp0_ = 0;
+	ValaHashMap* _tmp1_ = NULL;
+	gint _tmp2_ = 0;
+	ValaHashMapNode* _tmp3_ = NULL;
+	ValaHashMapNode* _tmp4_ = NULL;
+	gconstpointer _tmp5_ = NULL;
+	gpointer _tmp6_ = NULL;
 	self = (ValaHashMapKeyIterator*) base;
 	_tmp0_ = self->priv->_stamp;
 	_tmp1_ = self->priv->_map;
@@ -1578,10 +1559,10 @@ static gpointer vala_hash_map_key_iterator_real_get (ValaIterator* base) {
 
 
 static void vala_hash_map_key_iterator_set_map (ValaHashMapKeyIterator* self, ValaHashMap* value) {
-	ValaHashMap* _tmp0_;
-	ValaHashMap* _tmp1_;
-	ValaHashMap* _tmp2_;
-	gint _tmp3_;
+	ValaHashMap* _tmp0_ = NULL;
+	ValaHashMap* _tmp1_ = NULL;
+	ValaHashMap* _tmp2_ = NULL;
+	gint _tmp3_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_map_ref0 (_tmp0_);
@@ -1595,10 +1576,10 @@ static void vala_hash_map_key_iterator_set_map (ValaHashMapKeyIterator* self, Va
 
 static void vala_hash_map_key_iterator_class_init (ValaHashMapKeyIteratorClass * klass) {
 	vala_hash_map_key_iterator_parent_class = g_type_class_peek_parent (klass);
-	VALA_ITERATOR_CLASS (klass)->finalize = vala_hash_map_key_iterator_finalize;
+	((ValaIteratorClass *) klass)->finalize = vala_hash_map_key_iterator_finalize;
 	g_type_class_add_private (klass, sizeof (ValaHashMapKeyIteratorPrivate));
-	VALA_ITERATOR_CLASS (klass)->next = vala_hash_map_key_iterator_real_next;
-	VALA_ITERATOR_CLASS (klass)->get = vala_hash_map_key_iterator_real_get;
+	((ValaIteratorClass *) klass)->next = vala_hash_map_key_iterator_real_next;
+	((ValaIteratorClass *) klass)->get = vala_hash_map_key_iterator_real_get;
 }
 
 
@@ -1630,7 +1611,7 @@ static GType vala_hash_map_key_iterator_get_type (void) {
 
 static ValaHashMapValueCollection* vala_hash_map_value_collection_construct (GType object_type, GType k_type, GBoxedCopyFunc k_dup_func, GDestroyNotify k_destroy_func, GType v_type, GBoxedCopyFunc v_dup_func, GDestroyNotify v_destroy_func, ValaHashMap* map) {
 	ValaHashMapValueCollection* self = NULL;
-	ValaHashMap* _tmp0_;
+	ValaHashMap* _tmp0_ = NULL;
 	g_return_val_if_fail (map != NULL, NULL);
 	self = (ValaHashMapValueCollection*) vala_collection_construct (object_type, v_type, (GBoxedCopyFunc) v_dup_func, v_destroy_func);
 	self->priv->k_type = k_type;
@@ -1662,8 +1643,8 @@ static GType vala_hash_map_value_collection_real_get_element_type (ValaIterable*
 static ValaIterator* vala_hash_map_value_collection_real_iterator (ValaIterable* base) {
 	ValaHashMapValueCollection * self;
 	ValaIterator* result = NULL;
-	ValaHashMap* _tmp0_;
-	ValaHashMapValueIterator* _tmp1_;
+	ValaHashMap* _tmp0_ = NULL;
+	ValaHashMapValueIterator* _tmp1_ = NULL;
 	self = (ValaHashMapValueCollection*) base;
 	_tmp0_ = self->priv->_map;
 	_tmp1_ = vala_hash_map_value_iterator_new (self->priv->k_type, (GBoxedCopyFunc) self->priv->k_dup_func, self->priv->k_destroy_func, self->priv->v_type, (GBoxedCopyFunc) self->priv->v_dup_func, self->priv->v_destroy_func, _tmp0_);
@@ -1700,22 +1681,22 @@ static gboolean vala_hash_map_value_collection_real_remove (ValaCollection* base
 static gboolean vala_hash_map_value_collection_real_contains (ValaCollection* base, gconstpointer value) {
 	ValaHashMapValueCollection * self;
 	gboolean result = FALSE;
+	ValaIterator* it = NULL;
 	ValaIterator* _tmp0_ = NULL;
-	ValaIterator* it;
 	self = (ValaHashMapValueCollection*) base;
 	_tmp0_ = vala_iterable_iterator ((ValaIterable*) self);
 	it = _tmp0_;
 	while (TRUE) {
-		ValaIterator* _tmp1_;
+		ValaIterator* _tmp1_ = NULL;
 		gboolean _tmp2_ = FALSE;
-		ValaHashMap* _tmp3_;
-		GEqualFunc _tmp4_;
-		ValaIterator* _tmp5_;
+		ValaHashMap* _tmp3_ = NULL;
+		GEqualFunc _tmp4_ = NULL;
+		ValaIterator* _tmp5_ = NULL;
 		gpointer _tmp6_ = NULL;
-		gpointer _tmp7_;
-		gconstpointer _tmp8_;
+		gpointer _tmp7_ = NULL;
+		gconstpointer _tmp8_ = NULL;
 		gboolean _tmp9_ = FALSE;
-		gboolean _tmp10_;
+		gboolean _tmp10_ = FALSE;
 		_tmp1_ = it;
 		_tmp2_ = vala_iterator_next (_tmp1_);
 		if (!_tmp2_) {
@@ -1743,8 +1724,8 @@ static gboolean vala_hash_map_value_collection_real_contains (ValaCollection* ba
 
 
 static void vala_hash_map_value_collection_set_map (ValaHashMapValueCollection* self, ValaHashMap* value) {
-	ValaHashMap* _tmp0_;
-	ValaHashMap* _tmp1_;
+	ValaHashMap* _tmp0_ = NULL;
+	ValaHashMap* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_map_ref0 (_tmp0_);
@@ -1756,9 +1737,9 @@ static void vala_hash_map_value_collection_set_map (ValaHashMapValueCollection* 
 static gint vala_hash_map_value_collection_real_get_size (ValaCollection* base) {
 	gint result;
 	ValaHashMapValueCollection* self;
-	ValaHashMap* _tmp0_;
-	gint _tmp1_;
-	gint _tmp2_;
+	ValaHashMap* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	gint _tmp2_ = 0;
 	self = (ValaHashMapValueCollection*) base;
 	_tmp0_ = self->priv->_map;
 	_tmp1_ = vala_map_get_size ((ValaMap*) _tmp0_);
@@ -1770,14 +1751,14 @@ static gint vala_hash_map_value_collection_real_get_size (ValaCollection* base) 
 
 static void vala_hash_map_value_collection_class_init (ValaHashMapValueCollectionClass * klass) {
 	vala_hash_map_value_collection_parent_class = g_type_class_peek_parent (klass);
-	VALA_ITERABLE_CLASS (klass)->finalize = vala_hash_map_value_collection_finalize;
+	((ValaIterableClass *) klass)->finalize = vala_hash_map_value_collection_finalize;
 	g_type_class_add_private (klass, sizeof (ValaHashMapValueCollectionPrivate));
-	VALA_ITERABLE_CLASS (klass)->get_element_type = vala_hash_map_value_collection_real_get_element_type;
-	VALA_ITERABLE_CLASS (klass)->iterator = vala_hash_map_value_collection_real_iterator;
-	VALA_COLLECTION_CLASS (klass)->add = vala_hash_map_value_collection_real_add;
-	VALA_COLLECTION_CLASS (klass)->clear = vala_hash_map_value_collection_real_clear;
-	VALA_COLLECTION_CLASS (klass)->remove = vala_hash_map_value_collection_real_remove;
-	VALA_COLLECTION_CLASS (klass)->contains = vala_hash_map_value_collection_real_contains;
+	((ValaIterableClass *) klass)->get_element_type = vala_hash_map_value_collection_real_get_element_type;
+	((ValaIterableClass *) klass)->iterator = vala_hash_map_value_collection_real_iterator;
+	((ValaCollectionClass *) klass)->add = vala_hash_map_value_collection_real_add;
+	((ValaCollectionClass *) klass)->clear = vala_hash_map_value_collection_real_clear;
+	((ValaCollectionClass *) klass)->remove = vala_hash_map_value_collection_real_remove;
+	((ValaCollectionClass *) klass)->contains = vala_hash_map_value_collection_real_contains;
 	VALA_COLLECTION_CLASS (klass)->get_size = vala_hash_map_value_collection_real_get_size;
 }
 
@@ -1809,7 +1790,7 @@ static GType vala_hash_map_value_collection_get_type (void) {
 
 static ValaHashMapValueIterator* vala_hash_map_value_iterator_construct (GType object_type, GType k_type, GBoxedCopyFunc k_dup_func, GDestroyNotify k_destroy_func, GType v_type, GBoxedCopyFunc v_dup_func, GDestroyNotify v_destroy_func, ValaHashMap* map) {
 	ValaHashMapValueIterator* self = NULL;
-	ValaHashMap* _tmp0_;
+	ValaHashMap* _tmp0_ = NULL;
 	g_return_val_if_fail (map != NULL, NULL);
 	self = (ValaHashMapValueIterator*) vala_iterator_construct (object_type, v_type, (GBoxedCopyFunc) v_dup_func, v_destroy_func);
 	self->priv->k_type = k_type;
@@ -1832,32 +1813,31 @@ static ValaHashMapValueIterator* vala_hash_map_value_iterator_new (GType k_type,
 static gboolean vala_hash_map_value_iterator_real_next (ValaIterator* base) {
 	ValaHashMapValueIterator * self;
 	gboolean result = FALSE;
-	ValaHashMapNode* _tmp0_;
-	ValaHashMapNode* _tmp14_;
+	ValaHashMapNode* _tmp0_ = NULL;
+	ValaHashMapNode* _tmp13_ = NULL;
 	self = (ValaHashMapValueIterator*) base;
 	_tmp0_ = self->priv->_node;
 	if (_tmp0_ != NULL) {
-		ValaHashMapNode* _tmp1_;
-		ValaHashMapNode* _tmp2_;
+		ValaHashMapNode* _tmp1_ = NULL;
+		ValaHashMapNode* _tmp2_ = NULL;
 		_tmp1_ = self->priv->_node;
 		_tmp2_ = _tmp1_->next;
 		self->priv->_node = _tmp2_;
 	}
 	while (TRUE) {
 		gboolean _tmp3_ = FALSE;
-		ValaHashMapNode* _tmp4_;
-		gboolean _tmp8_;
-		gint _tmp9_;
-		ValaHashMap* _tmp10_;
-		ValaHashMapNode** _tmp11_;
-		gint _tmp11__length1;
-		gint _tmp12_;
-		ValaHashMapNode* _tmp13_;
+		ValaHashMapNode* _tmp4_ = NULL;
+		gint _tmp8_ = 0;
+		ValaHashMap* _tmp9_ = NULL;
+		ValaHashMapNode** _tmp10_ = NULL;
+		gint _tmp10__length1 = 0;
+		gint _tmp11_ = 0;
+		ValaHashMapNode* _tmp12_ = NULL;
 		_tmp4_ = self->priv->_node;
 		if (_tmp4_ == NULL) {
-			gint _tmp5_;
-			ValaHashMap* _tmp6_;
-			gint _tmp7_;
+			gint _tmp5_ = 0;
+			ValaHashMap* _tmp6_ = NULL;
+			gint _tmp7_ = 0;
 			_tmp5_ = self->priv->_index;
 			_tmp6_ = self->priv->_map;
 			_tmp7_ = _tmp6_->priv->_array_size;
@@ -1865,21 +1845,20 @@ static gboolean vala_hash_map_value_iterator_real_next (ValaIterator* base) {
 		} else {
 			_tmp3_ = FALSE;
 		}
-		_tmp8_ = _tmp3_;
-		if (!_tmp8_) {
+		if (!_tmp3_) {
 			break;
 		}
-		_tmp9_ = self->priv->_index;
-		self->priv->_index = _tmp9_ + 1;
-		_tmp10_ = self->priv->_map;
-		_tmp11_ = _tmp10_->priv->_nodes;
-		_tmp11__length1 = _tmp10_->priv->_nodes_length1;
-		_tmp12_ = self->priv->_index;
-		_tmp13_ = _tmp11_[_tmp12_];
-		self->priv->_node = _tmp13_;
+		_tmp8_ = self->priv->_index;
+		self->priv->_index = _tmp8_ + 1;
+		_tmp9_ = self->priv->_map;
+		_tmp10_ = _tmp9_->priv->_nodes;
+		_tmp10__length1 = _tmp9_->priv->_nodes_length1;
+		_tmp11_ = self->priv->_index;
+		_tmp12_ = _tmp10_[_tmp11_];
+		self->priv->_node = _tmp12_;
 	}
-	_tmp14_ = self->priv->_node;
-	result = _tmp14_ != NULL;
+	_tmp13_ = self->priv->_node;
+	result = _tmp13_ != NULL;
 	return result;
 }
 
@@ -1887,13 +1866,13 @@ static gboolean vala_hash_map_value_iterator_real_next (ValaIterator* base) {
 static gpointer vala_hash_map_value_iterator_real_get (ValaIterator* base) {
 	ValaHashMapValueIterator * self;
 	gpointer result = NULL;
-	gint _tmp0_;
-	ValaHashMap* _tmp1_;
-	gint _tmp2_;
-	ValaHashMapNode* _tmp3_;
-	ValaHashMapNode* _tmp4_;
-	gconstpointer _tmp5_;
-	gpointer _tmp6_;
+	gint _tmp0_ = 0;
+	ValaHashMap* _tmp1_ = NULL;
+	gint _tmp2_ = 0;
+	ValaHashMapNode* _tmp3_ = NULL;
+	ValaHashMapNode* _tmp4_ = NULL;
+	gconstpointer _tmp5_ = NULL;
+	gpointer _tmp6_ = NULL;
 	self = (ValaHashMapValueIterator*) base;
 	_tmp0_ = self->priv->_stamp;
 	_tmp1_ = self->priv->_map;
@@ -1910,10 +1889,10 @@ static gpointer vala_hash_map_value_iterator_real_get (ValaIterator* base) {
 
 
 static void vala_hash_map_value_iterator_set_map (ValaHashMapValueIterator* self, ValaHashMap* value) {
-	ValaHashMap* _tmp0_;
-	ValaHashMap* _tmp1_;
-	ValaHashMap* _tmp2_;
-	gint _tmp3_;
+	ValaHashMap* _tmp0_ = NULL;
+	ValaHashMap* _tmp1_ = NULL;
+	ValaHashMap* _tmp2_ = NULL;
+	gint _tmp3_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_map_ref0 (_tmp0_);
@@ -1927,10 +1906,10 @@ static void vala_hash_map_value_iterator_set_map (ValaHashMapValueIterator* self
 
 static void vala_hash_map_value_iterator_class_init (ValaHashMapValueIteratorClass * klass) {
 	vala_hash_map_value_iterator_parent_class = g_type_class_peek_parent (klass);
-	VALA_ITERATOR_CLASS (klass)->finalize = vala_hash_map_value_iterator_finalize;
+	((ValaIteratorClass *) klass)->finalize = vala_hash_map_value_iterator_finalize;
 	g_type_class_add_private (klass, sizeof (ValaHashMapValueIteratorPrivate));
-	VALA_ITERATOR_CLASS (klass)->next = vala_hash_map_value_iterator_real_next;
-	VALA_ITERATOR_CLASS (klass)->get = vala_hash_map_value_iterator_real_get;
+	((ValaIteratorClass *) klass)->next = vala_hash_map_value_iterator_real_next;
+	((ValaIteratorClass *) klass)->get = vala_hash_map_value_iterator_real_get;
 }
 
 
@@ -1962,16 +1941,16 @@ static GType vala_hash_map_value_iterator_get_type (void) {
 
 static void vala_hash_map_class_init (ValaHashMapClass * klass) {
 	vala_hash_map_parent_class = g_type_class_peek_parent (klass);
-	VALA_MAP_CLASS (klass)->finalize = vala_hash_map_finalize;
+	((ValaMapClass *) klass)->finalize = vala_hash_map_finalize;
 	g_type_class_add_private (klass, sizeof (ValaHashMapPrivate));
-	VALA_MAP_CLASS (klass)->get_keys = vala_hash_map_real_get_keys;
-	VALA_MAP_CLASS (klass)->get_values = vala_hash_map_real_get_values;
-	VALA_MAP_CLASS (klass)->map_iterator = vala_hash_map_real_map_iterator;
-	VALA_MAP_CLASS (klass)->contains = vala_hash_map_real_contains;
-	VALA_MAP_CLASS (klass)->get = vala_hash_map_real_get;
-	VALA_MAP_CLASS (klass)->set = vala_hash_map_real_set;
-	VALA_MAP_CLASS (klass)->remove = vala_hash_map_real_remove;
-	VALA_MAP_CLASS (klass)->clear = vala_hash_map_real_clear;
+	((ValaMapClass *) klass)->get_keys = vala_hash_map_real_get_keys;
+	((ValaMapClass *) klass)->get_values = vala_hash_map_real_get_values;
+	((ValaMapClass *) klass)->map_iterator = vala_hash_map_real_map_iterator;
+	((ValaMapClass *) klass)->contains = vala_hash_map_real_contains;
+	((ValaMapClass *) klass)->get = vala_hash_map_real_get;
+	((ValaMapClass *) klass)->set = vala_hash_map_real_set;
+	((ValaMapClass *) klass)->remove = vala_hash_map_real_remove;
+	((ValaMapClass *) klass)->clear = vala_hash_map_real_clear;
 	VALA_MAP_CLASS (klass)->get_size = vala_hash_map_real_get_size;
 }
 

@@ -260,7 +260,7 @@ static void vala_tuple_finalize (ValaCodeNode* obj);
 
 ValaTuple* vala_tuple_construct (GType object_type, ValaSourceReference* source_reference) {
 	ValaTuple* self = NULL;
-	ValaSourceReference* _tmp0_;
+	ValaSourceReference* _tmp0_ = NULL;
 	self = (ValaTuple*) vala_expression_construct (object_type);
 	_tmp0_ = source_reference;
 	vala_code_node_set_source_reference ((ValaCodeNode*) self, _tmp0_);
@@ -283,14 +283,14 @@ static void vala_tuple_real_accept_children (ValaCodeNode* base, ValaCodeVisitor
 	self = (ValaTuple*) base;
 	g_return_if_fail (visitor != NULL);
 	{
-		ValaList* _tmp0_;
-		ValaList* _tmp1_;
-		ValaList* _expr_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _expr_size;
-		gint _expr_index;
+		ValaList* _expr_list = NULL;
+		ValaList* _tmp0_ = NULL;
+		ValaList* _tmp1_ = NULL;
+		gint _expr_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _expr_index = 0;
 		_tmp0_ = self->priv->expression_list;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
 		_expr_list = _tmp1_;
@@ -300,15 +300,15 @@ static void vala_tuple_real_accept_children (ValaCodeNode* base, ValaCodeVisitor
 		_expr_size = _tmp4_;
 		_expr_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaExpression* expr = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaExpression* expr;
-			ValaExpression* _tmp11_;
-			ValaCodeVisitor* _tmp12_;
+			ValaExpression* _tmp11_ = NULL;
+			ValaCodeVisitor* _tmp12_ = NULL;
 			_tmp5_ = _expr_index;
 			_expr_index = _tmp5_ + 1;
 			_tmp6_ = _expr_index;
@@ -332,8 +332,8 @@ static void vala_tuple_real_accept_children (ValaCodeNode* base, ValaCodeVisitor
 
 static void vala_tuple_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaTuple * self;
-	ValaCodeVisitor* _tmp0_;
-	ValaCodeVisitor* _tmp1_;
+	ValaCodeVisitor* _tmp0_ = NULL;
+	ValaCodeVisitor* _tmp1_ = NULL;
 	self = (ValaTuple*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -344,8 +344,8 @@ static void vala_tuple_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor
 
 
 void vala_tuple_add_expression (ValaTuple* self, ValaExpression* expr) {
-	ValaList* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (expr != NULL);
 	_tmp0_ = self->priv->expression_list;
@@ -356,8 +356,8 @@ void vala_tuple_add_expression (ValaTuple* self, ValaExpression* expr) {
 
 ValaList* vala_tuple_get_expressions (ValaTuple* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->expression_list;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -381,52 +381,50 @@ static void vala_tuple_real_replace_expression (ValaCodeNode* base, ValaExpressi
 	g_return_if_fail (old_node != NULL);
 	g_return_if_fail (new_node != NULL);
 	{
-		gint i;
+		gint i = 0;
 		i = 0;
 		{
-			gboolean _tmp0_;
+			gboolean _tmp0_ = FALSE;
 			_tmp0_ = TRUE;
 			while (TRUE) {
-				gboolean _tmp1_;
-				gint _tmp3_;
-				ValaList* _tmp4_;
-				gint _tmp5_;
-				gint _tmp6_;
-				ValaList* _tmp7_;
-				gint _tmp8_;
-				gpointer _tmp9_ = NULL;
-				ValaExpression* _tmp10_;
-				ValaExpression* _tmp11_;
-				gboolean _tmp12_;
-				_tmp1_ = _tmp0_;
-				if (!_tmp1_) {
-					gint _tmp2_;
-					_tmp2_ = i;
-					i = _tmp2_ + 1;
+				gint _tmp2_ = 0;
+				ValaList* _tmp3_ = NULL;
+				gint _tmp4_ = 0;
+				gint _tmp5_ = 0;
+				ValaList* _tmp6_ = NULL;
+				gint _tmp7_ = 0;
+				gpointer _tmp8_ = NULL;
+				ValaExpression* _tmp9_ = NULL;
+				ValaExpression* _tmp10_ = NULL;
+				gboolean _tmp11_ = FALSE;
+				if (!_tmp0_) {
+					gint _tmp1_ = 0;
+					_tmp1_ = i;
+					i = _tmp1_ + 1;
 				}
 				_tmp0_ = FALSE;
-				_tmp3_ = i;
-				_tmp4_ = self->priv->expression_list;
-				_tmp5_ = vala_collection_get_size ((ValaCollection*) _tmp4_);
-				_tmp6_ = _tmp5_;
-				if (!(_tmp3_ < _tmp6_)) {
+				_tmp2_ = i;
+				_tmp3_ = self->priv->expression_list;
+				_tmp4_ = vala_collection_get_size ((ValaCollection*) _tmp3_);
+				_tmp5_ = _tmp4_;
+				if (!(_tmp2_ < _tmp5_)) {
 					break;
 				}
-				_tmp7_ = self->priv->expression_list;
-				_tmp8_ = i;
-				_tmp9_ = vala_list_get (_tmp7_, _tmp8_);
-				_tmp10_ = (ValaExpression*) _tmp9_;
-				_tmp11_ = old_node;
-				_tmp12_ = _tmp10_ == _tmp11_;
-				_vala_code_node_unref0 (_tmp10_);
-				if (_tmp12_) {
-					ValaList* _tmp13_;
-					gint _tmp14_;
-					ValaExpression* _tmp15_;
-					_tmp13_ = self->priv->expression_list;
-					_tmp14_ = i;
-					_tmp15_ = new_node;
-					vala_list_set (_tmp13_, _tmp14_, _tmp15_);
+				_tmp6_ = self->priv->expression_list;
+				_tmp7_ = i;
+				_tmp8_ = vala_list_get (_tmp6_, _tmp7_);
+				_tmp9_ = (ValaExpression*) _tmp8_;
+				_tmp10_ = old_node;
+				_tmp11_ = _tmp9_ == _tmp10_;
+				_vala_code_node_unref0 (_tmp9_);
+				if (_tmp11_) {
+					ValaList* _tmp12_ = NULL;
+					gint _tmp13_ = 0;
+					ValaExpression* _tmp14_ = NULL;
+					_tmp12_ = self->priv->expression_list;
+					_tmp13_ = i;
+					_tmp14_ = new_node;
+					vala_list_set (_tmp12_, _tmp13_, _tmp14_);
 				}
 			}
 		}
@@ -437,17 +435,17 @@ static void vala_tuple_real_replace_expression (ValaCodeNode* base, ValaExpressi
 static gboolean vala_tuple_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaTuple * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaSourceReference* _tmp4_;
-	ValaSourceReference* _tmp5_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaSourceReference* _tmp4_ = NULL;
+	ValaSourceReference* _tmp5_ = NULL;
 	self = (ValaTuple*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -465,19 +463,19 @@ static gboolean vala_tuple_real_check (ValaCodeNode* base, ValaCodeContext* cont
 
 static void vala_tuple_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaTuple * self;
-	ValaCodeGenerator* _tmp13_;
-	ValaCodeGenerator* _tmp14_;
+	ValaCodeGenerator* _tmp13_ = NULL;
+	ValaCodeGenerator* _tmp14_ = NULL;
 	self = (ValaTuple*) base;
 	g_return_if_fail (codegen != NULL);
 	{
-		ValaList* _tmp0_;
-		ValaList* _tmp1_;
-		ValaList* _expr_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _expr_size;
-		gint _expr_index;
+		ValaList* _expr_list = NULL;
+		ValaList* _tmp0_ = NULL;
+		ValaList* _tmp1_ = NULL;
+		gint _expr_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _expr_index = 0;
 		_tmp0_ = self->priv->expression_list;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
 		_expr_list = _tmp1_;
@@ -487,15 +485,15 @@ static void vala_tuple_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen
 		_expr_size = _tmp4_;
 		_expr_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaExpression* expr = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaExpression* expr;
-			ValaExpression* _tmp11_;
-			ValaCodeGenerator* _tmp12_;
+			ValaExpression* _tmp11_ = NULL;
+			ValaCodeGenerator* _tmp12_ = NULL;
 			_tmp5_ = _expr_index;
 			_expr_index = _tmp5_ + 1;
 			_tmp6_ = _expr_index;
@@ -523,20 +521,20 @@ static void vala_tuple_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen
 
 static void vala_tuple_class_init (ValaTupleClass * klass) {
 	vala_tuple_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_tuple_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_tuple_finalize;
 	g_type_class_add_private (klass, sizeof (ValaTuplePrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_tuple_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_tuple_real_accept;
-	VALA_EXPRESSION_CLASS (klass)->is_pure = vala_tuple_real_is_pure;
-	VALA_CODE_NODE_CLASS (klass)->replace_expression = vala_tuple_real_replace_expression;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_tuple_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_tuple_real_emit;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_tuple_real_accept_children;
+	((ValaCodeNodeClass *) klass)->accept = vala_tuple_real_accept;
+	((ValaExpressionClass *) klass)->is_pure = vala_tuple_real_is_pure;
+	((ValaCodeNodeClass *) klass)->replace_expression = vala_tuple_real_replace_expression;
+	((ValaCodeNodeClass *) klass)->check = vala_tuple_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_tuple_real_emit;
 }
 
 
 static void vala_tuple_instance_init (ValaTuple * self) {
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_TUPLE_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_EXPRESSION, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);

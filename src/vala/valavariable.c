@@ -455,11 +455,11 @@ static void vala_variable_finalize (ValaCodeNode* obj);
 
 ValaVariable* vala_variable_construct (GType object_type, ValaDataType* variable_type, const gchar* name, ValaExpression* initializer, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaVariable* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaComment* _tmp2_;
-	ValaDataType* _tmp3_;
-	ValaExpression* _tmp4_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaComment* _tmp2_ = NULL;
+	ValaDataType* _tmp3_ = NULL;
+	ValaExpression* _tmp4_ = NULL;
 	_tmp0_ = name;
 	_tmp1_ = source_reference;
 	_tmp2_ = comment;
@@ -479,7 +479,7 @@ ValaVariable* vala_variable_new (ValaDataType* variable_type, const gchar* name,
 
 ValaExpression* vala_variable_get_initializer (ValaVariable* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_initializer;
 	result = _tmp0_;
@@ -493,9 +493,9 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_variable_set_initializer (ValaVariable* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -503,7 +503,7 @@ void vala_variable_set_initializer (ValaVariable* self, ValaExpression* value) {
 	self->priv->_initializer = _tmp1_;
 	_tmp2_ = self->priv->_initializer;
 	if (_tmp2_ != NULL) {
-		ValaExpression* _tmp3_;
+		ValaExpression* _tmp3_ = NULL;
 		_tmp3_ = self->priv->_initializer;
 		vala_code_node_set_parent_node ((ValaCodeNode*) _tmp3_, (ValaCodeNode*) self);
 	}
@@ -512,7 +512,7 @@ void vala_variable_set_initializer (ValaVariable* self, ValaExpression* value) {
 
 ValaDataType* vala_variable_get_variable_type (ValaVariable* self) {
 	ValaDataType* result;
-	ValaDataType* _tmp0_;
+	ValaDataType* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_variable_type;
 	result = _tmp0_;
@@ -521,9 +521,9 @@ ValaDataType* vala_variable_get_variable_type (ValaVariable* self) {
 
 
 void vala_variable_set_variable_type (ValaVariable* self, ValaDataType* value) {
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaDataType* _tmp2_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaDataType* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -531,7 +531,7 @@ void vala_variable_set_variable_type (ValaVariable* self, ValaDataType* value) {
 	self->priv->_variable_type = _tmp1_;
 	_tmp2_ = self->priv->_variable_type;
 	if (_tmp2_ != NULL) {
-		ValaDataType* _tmp3_;
+		ValaDataType* _tmp3_ = NULL;
 		_tmp3_ = self->priv->_variable_type;
 		vala_code_node_set_parent_node ((ValaCodeNode*) _tmp3_, (ValaCodeNode*) self);
 	}
@@ -540,7 +540,7 @@ void vala_variable_set_variable_type (ValaVariable* self, ValaDataType* value) {
 
 gboolean vala_variable_get_single_assignment (ValaVariable* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_single_assignment;
 	result = _tmp0_;
@@ -549,7 +549,7 @@ gboolean vala_variable_get_single_assignment (ValaVariable* self) {
 
 
 void vala_variable_set_single_assignment (ValaVariable* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_single_assignment = _tmp0_;
@@ -558,7 +558,7 @@ void vala_variable_set_single_assignment (ValaVariable* self, gboolean value) {
 
 static void vala_variable_class_init (ValaVariableClass * klass) {
 	vala_variable_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_variable_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_variable_finalize;
 	g_type_class_add_private (klass, sizeof (ValaVariablePrivate));
 }
 

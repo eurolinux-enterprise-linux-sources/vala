@@ -1201,6 +1201,7 @@ struct _ValaSemanticAnalyzer {
 	ValaDataType* unichar_type;
 	ValaDataType* double_type;
 	ValaDataType* type_type;
+	ValaDataType* va_list_type;
 	ValaClass* object_type;
 	ValaStructValueType* gvalue_type;
 	ValaObjectType* gvariant_type;
@@ -1405,7 +1406,7 @@ static void vala_switch_section_finalize (ValaCodeNode* obj);
  */
 ValaSwitchSection* vala_switch_section_construct (GType object_type, ValaSourceReference* source_reference) {
 	ValaSwitchSection* self = NULL;
-	ValaSourceReference* _tmp0_;
+	ValaSourceReference* _tmp0_ = NULL;
 	_tmp0_ = source_reference;
 	self = (ValaSwitchSection*) vala_block_construct (object_type, _tmp0_);
 	return self;
@@ -1423,21 +1424,21 @@ ValaSwitchSection* vala_switch_section_new (ValaSourceReference* source_referenc
  * @param label a switch label
  */
 void vala_switch_section_add_label (ValaSwitchSection* self, ValaSwitchLabel* label) {
-	ValaList* _tmp0_;
-	gint _tmp1_;
-	gint _tmp2_;
-	ValaList* _tmp6_;
-	ValaSwitchLabel* _tmp7_;
-	ValaSwitchLabel* _tmp8_;
+	ValaList* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	gint _tmp2_ = 0;
+	ValaList* _tmp6_ = NULL;
+	ValaSwitchLabel* _tmp7_ = NULL;
+	ValaSwitchLabel* _tmp8_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (label != NULL);
 	_tmp0_ = self->priv->labels;
 	_tmp1_ = vala_collection_get_size ((ValaCollection*) _tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ == 0) {
-		ValaSwitchLabel* _tmp3_;
-		ValaSourceReference* _tmp4_;
-		ValaSourceReference* _tmp5_;
+		ValaSwitchLabel* _tmp3_ = NULL;
+		ValaSourceReference* _tmp4_ = NULL;
+		ValaSourceReference* _tmp5_ = NULL;
 		_tmp3_ = label;
 		_tmp4_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp3_);
 		_tmp5_ = _tmp4_;
@@ -1463,8 +1464,8 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 
 ValaList* vala_switch_section_get_labels (ValaSwitchSection* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->labels;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -1477,14 +1478,14 @@ gboolean vala_switch_section_has_default_label (ValaSwitchSection* self) {
 	gboolean result = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	{
-		ValaList* _tmp0_;
-		ValaList* _tmp1_;
-		ValaList* _label_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _label_size;
-		gint _label_index;
+		ValaList* _label_list = NULL;
+		ValaList* _tmp0_ = NULL;
+		ValaList* _tmp1_ = NULL;
+		gint _label_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _label_index = 0;
 		_tmp0_ = self->priv->labels;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
 		_label_list = _tmp1_;
@@ -1494,16 +1495,16 @@ gboolean vala_switch_section_has_default_label (ValaSwitchSection* self) {
 		_label_size = _tmp4_;
 		_label_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaSwitchLabel* label = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaSwitchLabel* label;
-			ValaSwitchLabel* _tmp11_;
-			ValaExpression* _tmp12_;
-			ValaExpression* _tmp13_;
+			ValaSwitchLabel* _tmp11_ = NULL;
+			ValaExpression* _tmp12_ = NULL;
+			ValaExpression* _tmp13_ = NULL;
 			_tmp5_ = _label_index;
 			_label_index = _tmp5_ + 1;
 			_tmp6_ = _label_index;
@@ -1535,7 +1536,7 @@ gboolean vala_switch_section_has_default_label (ValaSwitchSection* self) {
 
 static void vala_switch_section_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaSwitchSection * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaSwitchSection*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -1548,14 +1549,14 @@ static void vala_switch_section_real_accept_children (ValaCodeNode* base, ValaCo
 	self = (ValaSwitchSection*) base;
 	g_return_if_fail (visitor != NULL);
 	{
-		ValaList* _tmp0_;
-		ValaList* _tmp1_;
-		ValaList* _label_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _label_size;
-		gint _label_index;
+		ValaList* _label_list = NULL;
+		ValaList* _tmp0_ = NULL;
+		ValaList* _tmp1_ = NULL;
+		gint _label_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _label_index = 0;
 		_tmp0_ = self->priv->labels;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
 		_label_list = _tmp1_;
@@ -1565,15 +1566,15 @@ static void vala_switch_section_real_accept_children (ValaCodeNode* base, ValaCo
 		_label_size = _tmp4_;
 		_label_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaSwitchLabel* label = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaSwitchLabel* label;
-			ValaSwitchLabel* _tmp11_;
-			ValaCodeVisitor* _tmp12_;
+			ValaSwitchLabel* _tmp11_ = NULL;
+			ValaCodeVisitor* _tmp12_ = NULL;
 			_tmp5_ = _label_index;
 			_label_index = _tmp5_ + 1;
 			_tmp6_ = _label_index;
@@ -1593,13 +1594,13 @@ static void vala_switch_section_real_accept_children (ValaCodeNode* base, ValaCo
 		_vala_iterable_unref0 (_label_list);
 	}
 	{
+		ValaList* _st_list = NULL;
 		ValaList* _tmp13_ = NULL;
-		ValaList* _st_list;
-		ValaList* _tmp14_;
-		gint _tmp15_;
-		gint _tmp16_;
-		gint _st_size;
-		gint _st_index;
+		gint _st_size = 0;
+		ValaList* _tmp14_ = NULL;
+		gint _tmp15_ = 0;
+		gint _tmp16_ = 0;
+		gint _st_index = 0;
 		_tmp13_ = vala_block_get_statements ((ValaBlock*) self);
 		_st_list = _tmp13_;
 		_tmp14_ = _st_list;
@@ -1608,15 +1609,15 @@ static void vala_switch_section_real_accept_children (ValaCodeNode* base, ValaCo
 		_st_size = _tmp16_;
 		_st_index = -1;
 		while (TRUE) {
-			gint _tmp17_;
-			gint _tmp18_;
-			gint _tmp19_;
-			ValaList* _tmp20_;
-			gint _tmp21_;
+			gint _tmp17_ = 0;
+			gint _tmp18_ = 0;
+			gint _tmp19_ = 0;
+			ValaStatement* st = NULL;
+			ValaList* _tmp20_ = NULL;
+			gint _tmp21_ = 0;
 			gpointer _tmp22_ = NULL;
-			ValaStatement* st;
-			ValaStatement* _tmp23_;
-			ValaCodeVisitor* _tmp24_;
+			ValaStatement* _tmp23_ = NULL;
+			ValaCodeVisitor* _tmp24_ = NULL;
 			_tmp17_ = _st_index;
 			_st_index = _tmp17_ + 1;
 			_tmp18_ = _st_index;
@@ -1646,53 +1647,53 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 static gboolean vala_switch_section_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaSwitchSection * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaCodeContext* _tmp16_;
-	ValaSemanticAnalyzer* _tmp17_;
-	ValaSemanticAnalyzer* _tmp18_;
-	ValaSymbol* _tmp19_;
-	ValaSymbol* _tmp20_;
-	ValaScope* _tmp21_;
-	ValaScope* _tmp22_;
-	ValaCodeContext* _tmp23_;
-	ValaSemanticAnalyzer* _tmp24_;
-	ValaSemanticAnalyzer* _tmp25_;
-	ValaSymbol* _tmp26_;
-	ValaSymbol* _tmp27_;
-	ValaSymbol* _tmp28_;
-	ValaSymbol* old_symbol;
-	ValaCodeContext* _tmp29_;
-	ValaSemanticAnalyzer* _tmp30_;
-	ValaSemanticAnalyzer* _tmp31_;
-	ValaBlock* _tmp32_;
-	ValaBlock* _tmp33_;
-	ValaBlock* old_insert_block;
-	ValaCodeContext* _tmp34_;
-	ValaSemanticAnalyzer* _tmp35_;
-	ValaSemanticAnalyzer* _tmp36_;
-	ValaCodeContext* _tmp37_;
-	ValaSemanticAnalyzer* _tmp38_;
-	ValaSemanticAnalyzer* _tmp39_;
-	ValaBlock* _tmp40_;
-	ValaCodeContext* _tmp77_;
-	ValaSemanticAnalyzer* _tmp78_;
-	ValaSemanticAnalyzer* _tmp79_;
-	ValaSymbol* _tmp80_;
-	ValaCodeContext* _tmp81_;
-	ValaSemanticAnalyzer* _tmp82_;
-	ValaSemanticAnalyzer* _tmp83_;
-	ValaBlock* _tmp84_;
-	ValaBlock* _tmp85_;
-	gboolean _tmp86_;
-	gboolean _tmp87_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaCodeContext* _tmp16_ = NULL;
+	ValaSemanticAnalyzer* _tmp17_ = NULL;
+	ValaSemanticAnalyzer* _tmp18_ = NULL;
+	ValaSymbol* _tmp19_ = NULL;
+	ValaSymbol* _tmp20_ = NULL;
+	ValaScope* _tmp21_ = NULL;
+	ValaScope* _tmp22_ = NULL;
+	ValaSymbol* old_symbol = NULL;
+	ValaCodeContext* _tmp23_ = NULL;
+	ValaSemanticAnalyzer* _tmp24_ = NULL;
+	ValaSemanticAnalyzer* _tmp25_ = NULL;
+	ValaSymbol* _tmp26_ = NULL;
+	ValaSymbol* _tmp27_ = NULL;
+	ValaSymbol* _tmp28_ = NULL;
+	ValaBlock* old_insert_block = NULL;
+	ValaCodeContext* _tmp29_ = NULL;
+	ValaSemanticAnalyzer* _tmp30_ = NULL;
+	ValaSemanticAnalyzer* _tmp31_ = NULL;
+	ValaBlock* _tmp32_ = NULL;
+	ValaBlock* _tmp33_ = NULL;
+	ValaCodeContext* _tmp34_ = NULL;
+	ValaSemanticAnalyzer* _tmp35_ = NULL;
+	ValaSemanticAnalyzer* _tmp36_ = NULL;
+	ValaCodeContext* _tmp37_ = NULL;
+	ValaSemanticAnalyzer* _tmp38_ = NULL;
+	ValaSemanticAnalyzer* _tmp39_ = NULL;
+	ValaBlock* _tmp40_ = NULL;
+	ValaCodeContext* _tmp77_ = NULL;
+	ValaSemanticAnalyzer* _tmp78_ = NULL;
+	ValaSemanticAnalyzer* _tmp79_ = NULL;
+	ValaSymbol* _tmp80_ = NULL;
+	ValaCodeContext* _tmp81_ = NULL;
+	ValaSemanticAnalyzer* _tmp82_ = NULL;
+	ValaSemanticAnalyzer* _tmp83_ = NULL;
+	ValaBlock* _tmp84_ = NULL;
+	ValaBlock* _tmp85_ = NULL;
+	gboolean _tmp86_ = FALSE;
+	gboolean _tmp87_ = FALSE;
 	self = (ValaSwitchSection*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -1700,13 +1701,13 @@ static gboolean vala_switch_section_real_check (ValaCodeNode* base, ValaCodeCont
 	}
 	vala_code_node_set_checked ((ValaCodeNode*) self, TRUE);
 	{
+		ValaList* _label_list = NULL;
 		ValaList* _tmp4_ = NULL;
-		ValaList* _label_list;
-		ValaList* _tmp5_;
-		gint _tmp6_;
-		gint _tmp7_;
-		gint _label_size;
-		gint _label_index;
+		gint _label_size = 0;
+		ValaList* _tmp5_ = NULL;
+		gint _tmp6_ = 0;
+		gint _tmp7_ = 0;
+		gint _label_index = 0;
 		_tmp4_ = vala_switch_section_get_labels (self);
 		_label_list = _tmp4_;
 		_tmp5_ = _label_list;
@@ -1715,15 +1716,15 @@ static gboolean vala_switch_section_real_check (ValaCodeNode* base, ValaCodeCont
 		_label_size = _tmp7_;
 		_label_index = -1;
 		while (TRUE) {
-			gint _tmp8_;
-			gint _tmp9_;
-			gint _tmp10_;
-			ValaList* _tmp11_;
-			gint _tmp12_;
+			gint _tmp8_ = 0;
+			gint _tmp9_ = 0;
+			gint _tmp10_ = 0;
+			ValaSwitchLabel* label = NULL;
+			ValaList* _tmp11_ = NULL;
+			gint _tmp12_ = 0;
 			gpointer _tmp13_ = NULL;
-			ValaSwitchLabel* label;
-			ValaSwitchLabel* _tmp14_;
-			ValaCodeContext* _tmp15_;
+			ValaSwitchLabel* _tmp14_ = NULL;
+			ValaCodeContext* _tmp15_ = NULL;
 			_tmp8_ = _label_index;
 			_label_index = _tmp8_ + 1;
 			_tmp9_ = _label_index;
@@ -1774,13 +1775,13 @@ static gboolean vala_switch_section_real_check (ValaCodeNode* base, ValaCodeCont
 	_vala_code_node_unref0 (_tmp39_->insert_block);
 	_tmp39_->insert_block = _tmp40_;
 	{
+		ValaList* _st_list = NULL;
 		ValaList* _tmp41_ = NULL;
-		ValaList* _st_list;
-		ValaList* _tmp42_;
-		gint _tmp43_;
-		gint _tmp44_;
-		gint _st_size;
-		gint _st_index;
+		gint _st_size = 0;
+		ValaList* _tmp42_ = NULL;
+		gint _tmp43_ = 0;
+		gint _tmp44_ = 0;
+		gint _st_index = 0;
 		_tmp41_ = vala_block_get_statements ((ValaBlock*) self);
 		_st_list = _tmp41_;
 		_tmp42_ = _st_list;
@@ -1789,15 +1790,15 @@ static gboolean vala_switch_section_real_check (ValaCodeNode* base, ValaCodeCont
 		_st_size = _tmp44_;
 		_st_index = -1;
 		while (TRUE) {
-			gint _tmp45_;
-			gint _tmp46_;
-			gint _tmp47_;
-			ValaList* _tmp48_;
-			gint _tmp49_;
+			gint _tmp45_ = 0;
+			gint _tmp46_ = 0;
+			gint _tmp47_ = 0;
+			ValaStatement* st = NULL;
+			ValaList* _tmp48_ = NULL;
+			gint _tmp49_ = 0;
 			gpointer _tmp50_ = NULL;
-			ValaStatement* st;
-			ValaStatement* _tmp51_;
-			ValaCodeContext* _tmp52_;
+			ValaStatement* _tmp51_ = NULL;
+			ValaCodeContext* _tmp52_ = NULL;
 			_tmp45_ = _st_index;
 			_st_index = _tmp45_ + 1;
 			_tmp46_ = _st_index;
@@ -1817,13 +1818,13 @@ static gboolean vala_switch_section_real_check (ValaCodeNode* base, ValaCodeCont
 		_vala_iterable_unref0 (_st_list);
 	}
 	{
+		ValaList* _local_list = NULL;
 		ValaList* _tmp53_ = NULL;
-		ValaList* _local_list;
-		ValaList* _tmp54_;
-		gint _tmp55_;
-		gint _tmp56_;
-		gint _local_size;
-		gint _local_index;
+		gint _local_size = 0;
+		ValaList* _tmp54_ = NULL;
+		gint _tmp55_ = 0;
+		gint _tmp56_ = 0;
+		gint _local_index = 0;
 		_tmp53_ = vala_block_get_local_variables ((ValaBlock*) self);
 		_local_list = _tmp53_;
 		_tmp54_ = _local_list;
@@ -1832,14 +1833,14 @@ static gboolean vala_switch_section_real_check (ValaCodeNode* base, ValaCodeCont
 		_local_size = _tmp56_;
 		_local_index = -1;
 		while (TRUE) {
-			gint _tmp57_;
-			gint _tmp58_;
-			gint _tmp59_;
-			ValaList* _tmp60_;
-			gint _tmp61_;
+			gint _tmp57_ = 0;
+			gint _tmp58_ = 0;
+			gint _tmp59_ = 0;
+			ValaLocalVariable* local = NULL;
+			ValaList* _tmp60_ = NULL;
+			gint _tmp61_ = 0;
 			gpointer _tmp62_ = NULL;
-			ValaLocalVariable* local;
-			ValaLocalVariable* _tmp63_;
+			ValaLocalVariable* _tmp63_ = NULL;
 			_tmp57_ = _local_index;
 			_local_index = _tmp57_ + 1;
 			_tmp58_ = _local_index;
@@ -1858,13 +1859,13 @@ static gboolean vala_switch_section_real_check (ValaCodeNode* base, ValaCodeCont
 		_vala_iterable_unref0 (_local_list);
 	}
 	{
+		ValaList* _stmt_list = NULL;
 		ValaList* _tmp64_ = NULL;
-		ValaList* _stmt_list;
-		ValaList* _tmp65_;
-		gint _tmp66_;
-		gint _tmp67_;
-		gint _stmt_size;
-		gint _stmt_index;
+		gint _stmt_size = 0;
+		ValaList* _tmp65_ = NULL;
+		gint _tmp66_ = 0;
+		gint _tmp67_ = 0;
+		gint _stmt_index = 0;
 		_tmp64_ = vala_block_get_statements ((ValaBlock*) self);
 		_stmt_list = _tmp64_;
 		_tmp65_ = _stmt_list;
@@ -1873,16 +1874,16 @@ static gboolean vala_switch_section_real_check (ValaCodeNode* base, ValaCodeCont
 		_stmt_size = _tmp67_;
 		_stmt_index = -1;
 		while (TRUE) {
-			gint _tmp68_;
-			gint _tmp69_;
-			gint _tmp70_;
-			ValaList* _tmp71_;
-			gint _tmp72_;
+			gint _tmp68_ = 0;
+			gint _tmp69_ = 0;
+			gint _tmp70_ = 0;
+			ValaStatement* stmt = NULL;
+			ValaList* _tmp71_ = NULL;
+			gint _tmp72_ = 0;
 			gpointer _tmp73_ = NULL;
-			ValaStatement* stmt;
-			ValaStatement* _tmp74_;
+			ValaStatement* _tmp74_ = NULL;
 			ValaList* _tmp75_ = NULL;
-			ValaList* _tmp76_;
+			ValaList* _tmp76_ = NULL;
 			_tmp68_ = _stmt_index;
 			_stmt_index = _tmp68_ + 1;
 			_tmp69_ = _stmt_index;
@@ -1926,18 +1927,18 @@ static gboolean vala_switch_section_real_check (ValaCodeNode* base, ValaCodeCont
 
 static void vala_switch_section_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaSwitchSection * self;
-	ValaCodeGenerator* _tmp13_;
+	ValaCodeGenerator* _tmp13_ = NULL;
 	self = (ValaSwitchSection*) base;
 	g_return_if_fail (codegen != NULL);
 	{
-		ValaList* _tmp0_;
-		ValaList* _tmp1_;
-		ValaList* _label_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _label_size;
-		gint _label_index;
+		ValaList* _label_list = NULL;
+		ValaList* _tmp0_ = NULL;
+		ValaList* _tmp1_ = NULL;
+		gint _label_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _label_index = 0;
 		_tmp0_ = self->priv->labels;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
 		_label_list = _tmp1_;
@@ -1947,15 +1948,15 @@ static void vala_switch_section_real_emit (ValaCodeNode* base, ValaCodeGenerator
 		_label_size = _tmp4_;
 		_label_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaSwitchLabel* label = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaSwitchLabel* label;
-			ValaSwitchLabel* _tmp11_;
-			ValaCodeGenerator* _tmp12_;
+			ValaSwitchLabel* _tmp11_ = NULL;
+			ValaCodeGenerator* _tmp12_ = NULL;
 			_tmp5_ = _label_index;
 			_label_index = _tmp5_ + 1;
 			_tmp6_ = _label_index;
@@ -1981,18 +1982,18 @@ static void vala_switch_section_real_emit (ValaCodeNode* base, ValaCodeGenerator
 
 static void vala_switch_section_class_init (ValaSwitchSectionClass * klass) {
 	vala_switch_section_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_switch_section_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_switch_section_finalize;
 	g_type_class_add_private (klass, sizeof (ValaSwitchSectionPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_switch_section_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_switch_section_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_switch_section_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_switch_section_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_switch_section_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_switch_section_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = vala_switch_section_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_switch_section_real_emit;
 }
 
 
 static void vala_switch_section_instance_init (ValaSwitchSection * self) {
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_SWITCH_SECTION_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_SWITCH_LABEL, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);

@@ -496,11 +496,11 @@ static void vala_dynamic_method_finalize (ValaCodeNode* obj);
 
 ValaDynamicMethod* vala_dynamic_method_construct (GType object_type, ValaDataType* dynamic_type, const gchar* name, ValaDataType* return_type, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaDynamicMethod* self = NULL;
-	const gchar* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaSourceReference* _tmp2_;
-	ValaComment* _tmp3_;
-	ValaDataType* _tmp4_;
+	const gchar* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaSourceReference* _tmp2_ = NULL;
+	ValaComment* _tmp3_ = NULL;
+	ValaDataType* _tmp4_ = NULL;
 	g_return_val_if_fail (dynamic_type != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (return_type != NULL, NULL);
@@ -532,7 +532,7 @@ static gboolean vala_dynamic_method_real_check (ValaCodeNode* base, ValaCodeCont
 
 ValaDataType* vala_dynamic_method_get_dynamic_type (ValaDynamicMethod* self) {
 	ValaDataType* result;
-	ValaDataType* _tmp0_;
+	ValaDataType* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_dynamic_type;
 	result = _tmp0_;
@@ -546,8 +546,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_dynamic_method_set_dynamic_type (ValaDynamicMethod* self, ValaDataType* value) {
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -558,7 +558,7 @@ void vala_dynamic_method_set_dynamic_type (ValaDynamicMethod* self, ValaDataType
 
 ValaMethodCall* vala_dynamic_method_get_invocation (ValaDynamicMethod* self) {
 	ValaMethodCall* result;
-	ValaMethodCall* _tmp0_;
+	ValaMethodCall* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_invocation;
 	result = _tmp0_;
@@ -567,8 +567,8 @@ ValaMethodCall* vala_dynamic_method_get_invocation (ValaDynamicMethod* self) {
 
 
 void vala_dynamic_method_set_invocation (ValaDynamicMethod* self, ValaMethodCall* value) {
-	ValaMethodCall* _tmp0_;
-	ValaMethodCall* _tmp1_;
+	ValaMethodCall* _tmp0_ = NULL;
+	ValaMethodCall* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -579,9 +579,9 @@ void vala_dynamic_method_set_invocation (ValaDynamicMethod* self, ValaMethodCall
 
 static void vala_dynamic_method_class_init (ValaDynamicMethodClass * klass) {
 	vala_dynamic_method_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_dynamic_method_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_dynamic_method_finalize;
 	g_type_class_add_private (klass, sizeof (ValaDynamicMethodPrivate));
-	VALA_CODE_NODE_CLASS (klass)->check = vala_dynamic_method_real_check;
+	((ValaCodeNodeClass *) klass)->check = vala_dynamic_method_real_check;
 }
 
 

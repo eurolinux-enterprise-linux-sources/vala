@@ -349,8 +349,8 @@ ValaUnresolvedType* vala_unresolved_type_new (void) {
  */
 ValaUnresolvedType* vala_unresolved_type_construct_from_symbol (GType object_type, ValaUnresolvedSymbol* symbol, ValaSourceReference* source) {
 	ValaUnresolvedType* self = NULL;
-	ValaUnresolvedSymbol* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	ValaUnresolvedSymbol* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	g_return_val_if_fail (symbol != NULL, NULL);
 	self = (ValaUnresolvedType*) vala_data_type_construct (object_type);
 	_tmp0_ = symbol;
@@ -379,26 +379,26 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 ValaUnresolvedType* vala_unresolved_type_new_from_expression (ValaExpression* expr) {
 	ValaUnresolvedType* result = NULL;
-	ValaExpression* _tmp0_;
+	ValaUnresolvedSymbol* sym = NULL;
+	ValaExpression* _tmp0_ = NULL;
 	ValaUnresolvedSymbol* _tmp1_ = NULL;
-	ValaUnresolvedSymbol* sym;
-	ValaUnresolvedSymbol* _tmp2_;
+	ValaUnresolvedSymbol* _tmp2_ = NULL;
 	g_return_val_if_fail (expr != NULL, NULL);
 	_tmp0_ = expr;
 	_tmp1_ = vala_unresolved_symbol_new_from_expression (_tmp0_);
 	sym = _tmp1_;
 	_tmp2_ = sym;
 	if (_tmp2_ != NULL) {
-		ValaUnresolvedSymbol* _tmp3_;
-		ValaExpression* _tmp4_;
-		ValaSourceReference* _tmp5_;
-		ValaSourceReference* _tmp6_;
-		ValaUnresolvedType* _tmp7_;
-		ValaUnresolvedType* type_ref;
-		ValaUnresolvedType* _tmp8_;
-		ValaExpression* _tmp9_;
-		ValaMemberAccess* _tmp10_;
-		ValaMemberAccess* ma;
+		ValaUnresolvedType* type_ref = NULL;
+		ValaUnresolvedSymbol* _tmp3_ = NULL;
+		ValaExpression* _tmp4_ = NULL;
+		ValaSourceReference* _tmp5_ = NULL;
+		ValaSourceReference* _tmp6_ = NULL;
+		ValaUnresolvedType* _tmp7_ = NULL;
+		ValaUnresolvedType* _tmp8_ = NULL;
+		ValaMemberAccess* ma = NULL;
+		ValaExpression* _tmp9_ = NULL;
+		ValaMemberAccess* _tmp10_ = NULL;
 		_tmp3_ = sym;
 		_tmp4_ = expr;
 		_tmp5_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp4_);
@@ -411,14 +411,14 @@ ValaUnresolvedType* vala_unresolved_type_new_from_expression (ValaExpression* ex
 		_tmp10_ = _vala_code_node_ref0 (G_TYPE_CHECK_INSTANCE_CAST (_tmp9_, VALA_TYPE_MEMBER_ACCESS, ValaMemberAccess));
 		ma = _tmp10_;
 		{
-			ValaMemberAccess* _tmp11_;
+			ValaList* _arg_list = NULL;
+			ValaMemberAccess* _tmp11_ = NULL;
 			ValaList* _tmp12_ = NULL;
-			ValaList* _arg_list;
-			ValaList* _tmp13_;
-			gint _tmp14_;
-			gint _tmp15_;
-			gint _arg_size;
-			gint _arg_index;
+			gint _arg_size = 0;
+			ValaList* _tmp13_ = NULL;
+			gint _tmp14_ = 0;
+			gint _tmp15_ = 0;
+			gint _arg_index = 0;
 			_tmp11_ = ma;
 			_tmp12_ = vala_member_access_get_type_arguments (_tmp11_);
 			_arg_list = _tmp12_;
@@ -428,15 +428,15 @@ ValaUnresolvedType* vala_unresolved_type_new_from_expression (ValaExpression* ex
 			_arg_size = _tmp15_;
 			_arg_index = -1;
 			while (TRUE) {
-				gint _tmp16_;
-				gint _tmp17_;
-				gint _tmp18_;
-				ValaList* _tmp19_;
-				gint _tmp20_;
+				gint _tmp16_ = 0;
+				gint _tmp17_ = 0;
+				gint _tmp18_ = 0;
+				ValaDataType* arg = NULL;
+				ValaList* _tmp19_ = NULL;
+				gint _tmp20_ = 0;
 				gpointer _tmp21_ = NULL;
-				ValaDataType* arg;
-				ValaUnresolvedType* _tmp22_;
-				ValaDataType* _tmp23_;
+				ValaUnresolvedType* _tmp22_ = NULL;
+				ValaDataType* _tmp23_ = NULL;
 				_tmp16_ = _arg_index;
 				_arg_index = _tmp16_ + 1;
 				_tmp17_ = _arg_index;
@@ -469,24 +469,24 @@ ValaUnresolvedType* vala_unresolved_type_new_from_expression (ValaExpression* ex
 static ValaDataType* vala_unresolved_type_real_copy (ValaDataType* base) {
 	ValaUnresolvedType * self;
 	ValaDataType* result = NULL;
-	ValaUnresolvedType* _tmp0_;
-	ValaUnresolvedType* _result_;
-	ValaUnresolvedType* _tmp1_;
-	ValaSourceReference* _tmp2_;
-	ValaSourceReference* _tmp3_;
-	ValaUnresolvedType* _tmp4_;
-	gboolean _tmp5_;
-	gboolean _tmp6_;
-	ValaUnresolvedType* _tmp7_;
-	gboolean _tmp8_;
-	gboolean _tmp9_;
-	ValaUnresolvedType* _tmp10_;
-	gboolean _tmp11_;
-	gboolean _tmp12_;
-	ValaUnresolvedType* _tmp13_;
-	ValaUnresolvedSymbol* _tmp14_;
+	ValaUnresolvedType* _result_ = NULL;
+	ValaUnresolvedType* _tmp0_ = NULL;
+	ValaUnresolvedType* _tmp1_ = NULL;
+	ValaSourceReference* _tmp2_ = NULL;
+	ValaSourceReference* _tmp3_ = NULL;
+	ValaUnresolvedType* _tmp4_ = NULL;
+	gboolean _tmp5_ = FALSE;
+	gboolean _tmp6_ = FALSE;
+	ValaUnresolvedType* _tmp7_ = NULL;
+	gboolean _tmp8_ = FALSE;
+	gboolean _tmp9_ = FALSE;
+	ValaUnresolvedType* _tmp10_ = NULL;
+	gboolean _tmp11_ = FALSE;
+	gboolean _tmp12_ = FALSE;
+	ValaUnresolvedType* _tmp13_ = NULL;
+	ValaUnresolvedSymbol* _tmp14_ = NULL;
 	ValaUnresolvedSymbol* _tmp15_ = NULL;
-	ValaUnresolvedSymbol* _tmp16_;
+	ValaUnresolvedSymbol* _tmp16_ = NULL;
 	self = (ValaUnresolvedType*) base;
 	_tmp0_ = vala_unresolved_type_new ();
 	_result_ = _tmp0_;
@@ -513,13 +513,13 @@ static ValaDataType* vala_unresolved_type_real_copy (ValaDataType* base) {
 	vala_unresolved_type_set_unresolved_symbol (_tmp13_, _tmp16_);
 	_vala_code_node_unref0 (_tmp16_);
 	{
+		ValaList* _arg_list = NULL;
 		ValaList* _tmp17_ = NULL;
-		ValaList* _arg_list;
-		ValaList* _tmp18_;
-		gint _tmp19_;
-		gint _tmp20_;
-		gint _arg_size;
-		gint _arg_index;
+		gint _arg_size = 0;
+		ValaList* _tmp18_ = NULL;
+		gint _tmp19_ = 0;
+		gint _tmp20_ = 0;
+		gint _arg_index = 0;
 		_tmp17_ = vala_data_type_get_type_arguments ((ValaDataType*) self);
 		_arg_list = _tmp17_;
 		_tmp18_ = _arg_list;
@@ -528,17 +528,17 @@ static ValaDataType* vala_unresolved_type_real_copy (ValaDataType* base) {
 		_arg_size = _tmp20_;
 		_arg_index = -1;
 		while (TRUE) {
-			gint _tmp21_;
-			gint _tmp22_;
-			gint _tmp23_;
-			ValaList* _tmp24_;
-			gint _tmp25_;
+			gint _tmp21_ = 0;
+			gint _tmp22_ = 0;
+			gint _tmp23_ = 0;
+			ValaDataType* arg = NULL;
+			ValaList* _tmp24_ = NULL;
+			gint _tmp25_ = 0;
 			gpointer _tmp26_ = NULL;
-			ValaDataType* arg;
-			ValaUnresolvedType* _tmp27_;
-			ValaDataType* _tmp28_;
+			ValaUnresolvedType* _tmp27_ = NULL;
+			ValaDataType* _tmp28_ = NULL;
 			ValaDataType* _tmp29_ = NULL;
-			ValaDataType* _tmp30_;
+			ValaDataType* _tmp30_ = NULL;
 			_tmp21_ = _arg_index;
 			_arg_index = _tmp21_ + 1;
 			_tmp22_ = _arg_index;
@@ -573,16 +573,16 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 static gchar* vala_unresolved_type_real_to_qualified_string (ValaDataType* base, ValaScope* scope) {
 	ValaUnresolvedType * self;
 	gchar* result = NULL;
-	ValaUnresolvedSymbol* _tmp0_;
+	gchar* s = NULL;
+	ValaUnresolvedSymbol* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
-	gchar* s;
+	ValaList* type_args = NULL;
 	ValaList* _tmp2_ = NULL;
-	ValaList* type_args;
-	ValaList* _tmp3_;
-	gint _tmp4_;
-	gint _tmp5_;
-	gboolean _tmp35_;
-	gboolean _tmp36_;
+	ValaList* _tmp3_ = NULL;
+	gint _tmp4_ = 0;
+	gint _tmp5_ = 0;
+	gboolean _tmp35_ = FALSE;
+	gboolean _tmp36_ = FALSE;
 	self = (ValaUnresolvedType*) base;
 	_tmp0_ = self->priv->_unresolved_symbol;
 	_tmp1_ = vala_code_node_to_string ((ValaCodeNode*) _tmp0_);
@@ -593,25 +593,25 @@ static gchar* vala_unresolved_type_real_to_qualified_string (ValaDataType* base,
 	_tmp4_ = vala_collection_get_size ((ValaCollection*) _tmp3_);
 	_tmp5_ = _tmp4_;
 	if (_tmp5_ > 0) {
-		const gchar* _tmp6_;
-		gchar* _tmp7_;
-		gboolean first;
-		const gchar* _tmp33_;
-		gchar* _tmp34_;
+		const gchar* _tmp6_ = NULL;
+		gchar* _tmp7_ = NULL;
+		gboolean first = FALSE;
+		const gchar* _tmp33_ = NULL;
+		gchar* _tmp34_ = NULL;
 		_tmp6_ = s;
 		_tmp7_ = g_strconcat (_tmp6_, "<", NULL);
 		_g_free0 (s);
 		s = _tmp7_;
 		first = TRUE;
 		{
-			ValaList* _tmp8_;
-			ValaList* _tmp9_;
-			ValaList* _type_arg_list;
-			ValaList* _tmp10_;
-			gint _tmp11_;
-			gint _tmp12_;
-			gint _type_arg_size;
-			gint _type_arg_index;
+			ValaList* _type_arg_list = NULL;
+			ValaList* _tmp8_ = NULL;
+			ValaList* _tmp9_ = NULL;
+			gint _type_arg_size = 0;
+			ValaList* _tmp10_ = NULL;
+			gint _tmp11_ = 0;
+			gint _tmp12_ = 0;
+			gint _type_arg_index = 0;
 			_tmp8_ = type_args;
 			_tmp9_ = _vala_iterable_ref0 (_tmp8_);
 			_type_arg_list = _tmp9_;
@@ -621,23 +621,23 @@ static gchar* vala_unresolved_type_real_to_qualified_string (ValaDataType* base,
 			_type_arg_size = _tmp12_;
 			_type_arg_index = -1;
 			while (TRUE) {
-				gint _tmp13_;
-				gint _tmp14_;
-				gint _tmp15_;
-				ValaList* _tmp16_;
-				gint _tmp17_;
+				gint _tmp13_ = 0;
+				gint _tmp14_ = 0;
+				gint _tmp15_ = 0;
+				ValaDataType* type_arg = NULL;
+				ValaList* _tmp16_ = NULL;
+				gint _tmp17_ = 0;
 				gpointer _tmp18_ = NULL;
-				ValaDataType* type_arg;
-				gboolean _tmp19_;
-				ValaDataType* _tmp22_;
-				gboolean _tmp23_;
-				gboolean _tmp24_;
-				const gchar* _tmp27_;
-				ValaDataType* _tmp28_;
-				ValaScope* _tmp29_;
+				gboolean _tmp19_ = FALSE;
+				ValaDataType* _tmp22_ = NULL;
+				gboolean _tmp23_ = FALSE;
+				gboolean _tmp24_ = FALSE;
+				const gchar* _tmp27_ = NULL;
+				ValaDataType* _tmp28_ = NULL;
+				ValaScope* _tmp29_ = NULL;
 				gchar* _tmp30_ = NULL;
-				gchar* _tmp31_;
-				gchar* _tmp32_;
+				gchar* _tmp31_ = NULL;
+				gchar* _tmp32_ = NULL;
 				_tmp13_ = _type_arg_index;
 				_type_arg_index = _tmp13_ + 1;
 				_tmp14_ = _type_arg_index;
@@ -651,8 +651,8 @@ static gchar* vala_unresolved_type_real_to_qualified_string (ValaDataType* base,
 				type_arg = (ValaDataType*) _tmp18_;
 				_tmp19_ = first;
 				if (!_tmp19_) {
-					const gchar* _tmp20_;
-					gchar* _tmp21_;
+					const gchar* _tmp20_ = NULL;
+					gchar* _tmp21_ = NULL;
 					_tmp20_ = s;
 					_tmp21_ = g_strconcat (_tmp20_, ",", NULL);
 					_g_free0 (s);
@@ -664,8 +664,8 @@ static gchar* vala_unresolved_type_real_to_qualified_string (ValaDataType* base,
 				_tmp23_ = vala_data_type_get_value_owned (_tmp22_);
 				_tmp24_ = _tmp23_;
 				if (!_tmp24_) {
-					const gchar* _tmp25_;
-					gchar* _tmp26_;
+					const gchar* _tmp25_ = NULL;
+					gchar* _tmp26_ = NULL;
 					_tmp25_ = s;
 					_tmp26_ = g_strconcat (_tmp25_, "weak ", NULL);
 					_g_free0 (s);
@@ -692,8 +692,8 @@ static gchar* vala_unresolved_type_real_to_qualified_string (ValaDataType* base,
 	_tmp35_ = vala_data_type_get_nullable ((ValaDataType*) self);
 	_tmp36_ = _tmp35_;
 	if (_tmp36_) {
-		const gchar* _tmp37_;
-		gchar* _tmp38_;
+		const gchar* _tmp37_ = NULL;
+		gchar* _tmp38_ = NULL;
 		_tmp37_ = s;
 		_tmp38_ = g_strconcat (_tmp37_, "?", NULL);
 		_g_free0 (s);
@@ -708,8 +708,8 @@ static gchar* vala_unresolved_type_real_to_qualified_string (ValaDataType* base,
 static gboolean vala_unresolved_type_real_is_disposable (ValaDataType* base) {
 	ValaUnresolvedType * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
 	self = (ValaUnresolvedType*) base;
 	_tmp0_ = vala_data_type_get_value_owned ((ValaDataType*) self);
 	_tmp1_ = _tmp0_;
@@ -720,7 +720,7 @@ static gboolean vala_unresolved_type_real_is_disposable (ValaDataType* base) {
 
 ValaUnresolvedSymbol* vala_unresolved_type_get_unresolved_symbol (ValaUnresolvedType* self) {
 	ValaUnresolvedSymbol* result;
-	ValaUnresolvedSymbol* _tmp0_;
+	ValaUnresolvedSymbol* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_unresolved_symbol;
 	result = _tmp0_;
@@ -729,8 +729,8 @@ ValaUnresolvedSymbol* vala_unresolved_type_get_unresolved_symbol (ValaUnresolved
 
 
 void vala_unresolved_type_set_unresolved_symbol (ValaUnresolvedType* self, ValaUnresolvedSymbol* value) {
-	ValaUnresolvedSymbol* _tmp0_;
-	ValaUnresolvedSymbol* _tmp1_;
+	ValaUnresolvedSymbol* _tmp0_ = NULL;
+	ValaUnresolvedSymbol* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -741,11 +741,11 @@ void vala_unresolved_type_set_unresolved_symbol (ValaUnresolvedType* self, ValaU
 
 static void vala_unresolved_type_class_init (ValaUnresolvedTypeClass * klass) {
 	vala_unresolved_type_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_unresolved_type_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_unresolved_type_finalize;
 	g_type_class_add_private (klass, sizeof (ValaUnresolvedTypePrivate));
-	VALA_DATA_TYPE_CLASS (klass)->copy = vala_unresolved_type_real_copy;
-	VALA_DATA_TYPE_CLASS (klass)->to_qualified_string = vala_unresolved_type_real_to_qualified_string;
-	VALA_DATA_TYPE_CLASS (klass)->is_disposable = vala_unresolved_type_real_is_disposable;
+	((ValaDataTypeClass *) klass)->copy = vala_unresolved_type_real_copy;
+	((ValaDataTypeClass *) klass)->to_qualified_string = vala_unresolved_type_real_to_qualified_string;
+	((ValaDataTypeClass *) klass)->is_disposable = vala_unresolved_type_real_is_disposable;
 }
 
 

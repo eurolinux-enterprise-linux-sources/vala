@@ -150,6 +150,7 @@ public class Vala.SemanticAnalyzer : CodeVisitor {
 	public DataType unichar_type;
 	public DataType double_type;
 	public DataType type_type;
+	public DataType va_list_type;
 	public Class object_type;
 	public StructValueType gvalue_type;
 	public ObjectType gvariant_type;
@@ -196,6 +197,7 @@ public class Vala.SemanticAnalyzer : CodeVisitor {
 		size_t_type = new IntegerType ((Struct) root_symbol.scope.lookup ("size_t"));
 		ssize_t_type = new IntegerType ((Struct) root_symbol.scope.lookup ("ssize_t"));
 		double_type = new FloatingType ((Struct) root_symbol.scope.lookup ("double"));
+		va_list_type = new StructValueType ((Struct) root_symbol.scope.lookup ("va_list"));
 
 		var unichar_struct = (Struct) root_symbol.scope.lookup ("unichar");
 		if (unichar_struct != null) {
@@ -269,7 +271,7 @@ public class Vala.SemanticAnalyzer : CodeVisitor {
 		} else if (sym is LocalVariable) {
 			var local = (LocalVariable) sym;
 			var type = local.variable_type.copy ();
-			if (!lvalue && !local.floating) {
+			if (!lvalue) {
 				type.value_owned = false;
 			}
 			return type;
@@ -444,33 +446,9 @@ public class Vala.SemanticAnalyzer : CodeVisitor {
 			}
 		}
 
-		if (ellipsis) {
-			while (arg_it != null && arg_it.next ()) {
-				var arg = arg_it.get ();
-				if (arg.error) {
-					// ignore inner error
-					expr.error = true;
-					return false;
-				} else if (arg.value_type is SignalType) {
-					arg.error = true;
-					Report.error (arg.source_reference, "Cannot pass signals as arguments");
-					return false;
-				} else if (arg.value_type == null) {
-					// disallow untyped arguments except for type inference of callbacks
-					if (!(arg.symbol_reference is Method)) {
-						expr.error = true;
-						Report.error (expr.source_reference, "Invalid type for argument %d".printf (i + 1));
-						return false;
-					}
-				} else if (arg.target_type != null && !arg.value_type.compatible (arg.target_type)) {
-					// target_type known for printf arguments
-					expr.error = true;
-					Report.error (arg.source_reference, "Argument %d: Cannot convert from `%s' to `%s'".printf (i + 1, arg.value_type.to_string (), arg.target_type.to_string ()));
-					return false;
-				}
-
-				i++;
-			}
+		if (ellipsis && !check_variadic_arguments (arg_it, i, expr.source_reference)) {
+			expr.error = true;
+			return false;
 		} else if (!ellipsis && arg_it != null && arg_it.next ()) {
 			expr.error = true;
 			var m = mtype as MethodType;
@@ -590,6 +568,154 @@ public class Vala.SemanticAnalyzer : CodeVisitor {
 				return false;
 			}
 		}
+		return true;
+	}
+
+	public bool check_variadic_arguments (Iterator<Expression>? arg_it, int i, SourceReference source_reference) {
+		while (arg_it != null && arg_it.next ()) {
+			var arg = arg_it.get ();
+			if (arg.error) {
+				// ignore inner error
+				return false;
+			} else if (arg.value_type is SignalType) {
+				arg.error = true;
+				Report.error (arg.source_reference, "Cannot pass signals as arguments");
+				return false;
+			} else if (arg.value_type == null) {
+				// disallow untyped arguments except for type inference of callbacks
+				if (!(arg.symbol_reference is Method)) {
+					Report.error (source_reference, "Invalid type for argument %d".printf (i + 1));
+					return false;
+				}
+			} else if (arg.target_type != null && !arg.value_type.compatible (arg.target_type)) {
+				// target_type known for printf arguments
+				Report.error (arg.source_reference, "Argument %d: Cannot convert from `%s' to `%s'".printf (i + 1, arg.value_type.to_string (), arg.target_type.to_string ()));
+				return false;
+			}
+
+			i++;
+		}
+
+		return true;
+	}
+
+	public bool check_print_format (string format, Iterator<Expression> arg_it, SourceReference source_reference) {
+		bool unsupported_format = false;
+
+		weak string format_it = format;
+		unichar c = format_it.get_char ();
+		while (c != '\0') {
+			if (c != '%') {
+				format_it = format_it.next_char ();
+				c = format_it.get_char ();
+				continue;
+			}
+
+			format_it = format_it.next_char ();
+			c = format_it.get_char ();
+			// flags
+			while (c == '#' || c == '0' || c == '-' || c == ' ' || c == '+') {
+				format_it = format_it.next_char ();
+				c = format_it.get_char ();
+			}
+			// field width
+			while (c >= '0' && c <= '9') {
+				format_it = format_it.next_char ();
+				c = format_it.get_char ();
+			}
+			// precision
+			if (c == '.') {
+				format_it = format_it.next_char ();
+				c = format_it.get_char ();
+				while (c >= '0' && c <= '9') {
+					format_it = format_it.next_char ();
+					c = format_it.get_char ();
+				}
+			}
+			// length modifier
+			int length = 0;
+			if (c == 'h') {
+				length = -1;
+				format_it = format_it.next_char ();
+				c = format_it.get_char ();
+				if (c == 'h') {
+					length = -2;
+					format_it = format_it.next_char ();
+					c = format_it.get_char ();
+				}
+			} else if (c == 'l') {
+				length = 1;
+				format_it = format_it.next_char ();
+				c = format_it.get_char ();
+			} else if (c == 'z') {
+				length = 2;
+				format_it = format_it.next_char ();
+				c = format_it.get_char ();
+			}
+			// conversion specifier
+			DataType param_type = null;
+			if (c == 'd' || c == 'i' || c == 'c') {
+				// integer
+				if (length == -2) {
+					param_type = context.analyzer.int8_type;
+				} else if (length == -1) {
+					param_type = context.analyzer.short_type;
+				} else if (length == 0) {
+					param_type = context.analyzer.int_type;
+				} else if (length == 1) {
+					param_type = context.analyzer.long_type;
+				} else if (length == 2) {
+					param_type = context.analyzer.ssize_t_type;
+				}
+			} else if (c == 'o' || c == 'u' || c == 'x' || c == 'X') {
+				// unsigned integer
+				if (length == -2) {
+					param_type = context.analyzer.uchar_type;
+				} else if (length == -1) {
+					param_type = context.analyzer.ushort_type;
+				} else if (length == 0) {
+					param_type = context.analyzer.uint_type;
+				} else if (length == 1) {
+					param_type = context.analyzer.ulong_type;
+				} else if (length == 2) {
+					param_type = context.analyzer.size_t_type;
+				}
+			} else if (c == 'e' || c == 'E' || c == 'f' || c == 'F'
+					   || c == 'g' || c == 'G' || c == 'a' || c == 'A') {
+				// double
+				param_type = context.analyzer.double_type;
+			} else if (c == 's') {
+				// string
+				param_type = context.analyzer.string_type;
+			} else if (c == 'p') {
+				// pointer
+				param_type = new PointerType (new VoidType ());
+			} else if (c == '%') {
+				// literal %
+			} else {
+				unsupported_format = true;
+				break;
+			}
+			if (c != '\0') {
+				format_it = format_it.next_char ();
+				c = format_it.get_char ();
+			}
+			if (param_type != null) {
+				if (arg_it.next ()) {
+					Expression arg = arg_it.get ();
+
+					arg.target_type = param_type;
+				} else {
+					Report.error (source_reference, "Too few arguments for specified format");
+					return false;
+				}
+			}
+		}
+		if (!unsupported_format && arg_it.next ()) {
+			Report.error (source_reference, "Too many arguments for specified format");
+			return false;
+		}
+
 		return true;
 	}
 
@@ -762,6 +888,22 @@ public class Vala.SemanticAnalyzer : CodeVisitor {
 		return false;
 	}
 
+	// Create an access to a temporary variable, with proper reference transfer if needed
+	public static Expression create_temp_access (LocalVariable local, DataType? target_type) {
+		Expression temp_access = new MemberAccess.simple (local.name, local.source_reference);
+
+		var target_owned = target_type == null || target_type.value_owned;
+		if (target_owned && local.variable_type.is_disposable ()) {
+			temp_access = new ReferenceTransferExpression (temp_access, local.source_reference);
+			temp_access.target_type = target_type != null ? target_type.copy () : local.variable_type.copy ();
+			temp_access.target_type.value_owned = true;
+		} else {
+			temp_access.target_type = target_type != null ? target_type.copy () : null;
+		}
+		
+		return temp_access;
+	}
+	
 	public void visit_member_initializer (MemberInitializer init, DataType type) {
 		init.symbol_reference = symbol_lookup_inherited (type.data_type, init.name);
 		if (!(init.symbol_reference is Field || init.symbol_reference is Property)) {

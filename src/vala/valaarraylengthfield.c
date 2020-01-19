@@ -506,9 +506,9 @@ void vala_symbol_set_external (ValaSymbol* self, gboolean value);
  */
 ValaArrayLengthField* vala_array_length_field_construct (GType object_type, ValaSourceReference* source_reference) {
 	ValaArrayLengthField* self = NULL;
-	ValaInvalidType* _tmp0_;
-	ValaInvalidType* _tmp1_;
-	ValaSourceReference* _tmp2_;
+	ValaInvalidType* _tmp0_ = NULL;
+	ValaInvalidType* _tmp1_ = NULL;
+	ValaSourceReference* _tmp2_ = NULL;
 	g_return_val_if_fail (source_reference != NULL, NULL);
 	_tmp0_ = vala_invalid_type_new ();
 	_tmp1_ = _tmp0_;

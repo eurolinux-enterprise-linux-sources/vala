@@ -130,8 +130,8 @@ static void vala_struct_register_function_finalize (ValaTypeRegisterFunction* ob
  */
 ValaStructRegisterFunction* vala_struct_register_function_construct (GType object_type, ValaStruct* st, ValaCodeContext* context) {
 	ValaStructRegisterFunction* self = NULL;
-	ValaStruct* _tmp0_;
-	ValaCodeContext* _tmp1_;
+	ValaStruct* _tmp0_ = NULL;
+	ValaCodeContext* _tmp1_ = NULL;
 	g_return_val_if_fail (st != NULL, NULL);
 	g_return_val_if_fail (context != NULL, NULL);
 	self = (ValaStructRegisterFunction*) vala_typeregister_function_construct (object_type);
@@ -156,8 +156,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 static ValaTypeSymbol* vala_struct_register_function_real_get_type_declaration (ValaTypeRegisterFunction* base) {
 	ValaStructRegisterFunction * self;
 	ValaTypeSymbol* result = NULL;
-	ValaStruct* _tmp0_;
-	ValaTypeSymbol* _tmp1_;
+	ValaStruct* _tmp0_ = NULL;
+	ValaTypeSymbol* _tmp1_ = NULL;
 	self = (ValaStructRegisterFunction*) base;
 	_tmp0_ = self->priv->_struct_reference;
 	_tmp1_ = _vala_code_node_ref0 ((ValaTypeSymbol*) _tmp0_);
@@ -169,9 +169,9 @@ static ValaTypeSymbol* vala_struct_register_function_real_get_type_declaration (
 static ValaSymbolAccessibility vala_struct_register_function_real_get_accessibility (ValaTypeRegisterFunction* base) {
 	ValaStructRegisterFunction * self;
 	ValaSymbolAccessibility result = 0;
-	ValaStruct* _tmp0_;
-	ValaSymbolAccessibility _tmp1_;
-	ValaSymbolAccessibility _tmp2_;
+	ValaStruct* _tmp0_ = NULL;
+	ValaSymbolAccessibility _tmp1_ = 0;
+	ValaSymbolAccessibility _tmp2_ = 0;
 	self = (ValaStructRegisterFunction*) base;
 	_tmp0_ = self->priv->_struct_reference;
 	_tmp1_ = vala_symbol_get_access ((ValaSymbol*) _tmp0_);
@@ -183,7 +183,7 @@ static ValaSymbolAccessibility vala_struct_register_function_real_get_accessibil
 
 ValaStruct* vala_struct_register_function_get_struct_reference (ValaStructRegisterFunction* self) {
 	ValaStruct* result;
-	ValaStruct* _tmp0_;
+	ValaStruct* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_struct_reference;
 	result = _tmp0_;
@@ -192,7 +192,7 @@ ValaStruct* vala_struct_register_function_get_struct_reference (ValaStructRegist
 
 
 void vala_struct_register_function_set_struct_reference (ValaStructRegisterFunction* self, ValaStruct* value) {
-	ValaStruct* _tmp0_;
+	ValaStruct* _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_struct_reference = _tmp0_;
@@ -201,10 +201,10 @@ void vala_struct_register_function_set_struct_reference (ValaStructRegisterFunct
 
 static void vala_struct_register_function_class_init (ValaStructRegisterFunctionClass * klass) {
 	vala_struct_register_function_parent_class = g_type_class_peek_parent (klass);
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->finalize = vala_struct_register_function_finalize;
+	((ValaTypeRegisterFunctionClass *) klass)->finalize = vala_struct_register_function_finalize;
 	g_type_class_add_private (klass, sizeof (ValaStructRegisterFunctionPrivate));
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_type_declaration = vala_struct_register_function_real_get_type_declaration;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_accessibility = vala_struct_register_function_real_get_accessibility;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_declaration = vala_struct_register_function_real_get_type_declaration;
+	((ValaTypeRegisterFunctionClass *) klass)->get_accessibility = vala_struct_register_function_real_get_accessibility;
 }
 
 

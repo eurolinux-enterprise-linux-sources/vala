@@ -75,7 +75,12 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 			if (f.binding == MemberBinding.INSTANCE)  {
 				generate_type_declaration (f.variable_type, decl_space);
 
-				instance_struct.add_field (field_ctype, get_ccode_name (f) + get_ccode_declarator_suffix (f.variable_type), f.deprecated ? " G_GNUC_DEPRECATED" : null);
+				var suffix = get_ccode_declarator_suffix (f.variable_type);
+				if (suffix != null) {
+					suffix.deprecated = f.deprecated;
+				}
+
+				instance_struct.add_field (field_ctype, get_ccode_name (f), suffix);
 				if (f.variable_type is ArrayType && get_ccode_array_length (f)) {
 					// create fields to store array dimensions
 					var array_type = (ArrayType) f.variable_type;
@@ -102,7 +107,7 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 					if (delegate_type.delegate_symbol.has_target) {
 						// create field to store delegate target
 						instance_struct.add_field ("gpointer", get_ccode_delegate_target_name (f));
-						if (delegate_type.value_owned) {
+						if (delegate_type.is_disposable ()) {
 							instance_struct.add_field ("GDestroyNotify", get_delegate_target_destroy_notify_cname (f.name));
 						}
 					}
@@ -121,6 +126,8 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 		var function = new CCodeFunction (get_ccode_dup_function (st), get_ccode_name (st) + "*");
 		if (st.is_private_symbol ()) {
 			function.modifiers = CCodeModifiers.STATIC;
+		} else if (context.hide_internal && st.is_internal_symbol ()) {
+			function.modifiers = CCodeModifiers.INTERNAL;
 		}
 		function.add_parameter (new CCodeParameter ("self", "const " + get_ccode_name (st) + "*"));
 		decl_space.add_function_declaration (function);
@@ -128,6 +135,8 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 		function = new CCodeFunction (get_ccode_free_function (st), "void");
 		if (st.is_private_symbol ()) {
 			function.modifiers = CCodeModifiers.STATIC;
+		} else if (context.hide_internal && st.is_internal_symbol ()) {
+			function.modifiers = CCodeModifiers.INTERNAL;
 		}
 		function.add_parameter (new CCodeParameter ("self", get_ccode_name (st) + "*"));
 		decl_space.add_function_declaration (function);
@@ -136,6 +145,8 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 			function = new CCodeFunction (get_ccode_copy_function (st), "void");
 			if (st.is_private_symbol ()) {
 				function.modifiers = CCodeModifiers.STATIC;
+			} else if (context.hide_internal && st.is_internal_symbol ()) {
+				function.modifiers = CCodeModifiers.INTERNAL;
 			}
 			function.add_parameter (new CCodeParameter ("self", "const " + get_ccode_name (st) + "*"));
 			function.add_parameter (new CCodeParameter ("dest", get_ccode_name (st) + "*"));
@@ -144,6 +155,8 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 			function = new CCodeFunction (get_ccode_destroy_function (st), "void");
 			if (st.is_private_symbol ()) {
 				function.modifiers = CCodeModifiers.STATIC;
+			} else if (context.hide_internal && st.is_internal_symbol ()) {
+				function.modifiers = CCodeModifiers.INTERNAL;
 			}
 			function.add_parameter (new CCodeParameter ("self", get_ccode_name (st) + "*"));
 			decl_space.add_function_declaration (function);
@@ -234,8 +247,10 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 
 	void add_struct_free_function (Struct st) {
 		var function = new CCodeFunction (get_ccode_free_function (st), "void");
-		if (st.access == SymbolAccessibility.PRIVATE) {
+		if (st.is_private_symbol ()) {
 			function.modifiers = CCodeModifiers.STATIC;
+		} else if (context.hide_internal && st.is_internal_symbol ()) {
+			function.modifiers = CCodeModifiers.INTERNAL;
 		}
 
 		function.add_parameter (new CCodeParameter ("self", get_ccode_name (st) + "*"));
@@ -259,8 +274,10 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 
 	void add_struct_copy_function (Struct st) {
 		var function = new CCodeFunction (get_ccode_copy_function (st), "void");
-		if (st.access == SymbolAccessibility.PRIVATE) {
+		if (st.is_private_symbol ()) {
 			function.modifiers = CCodeModifiers.STATIC;
+		} else if (context.hide_internal && st.is_internal_symbol ()) {
+			function.modifiers = CCodeModifiers.INTERNAL;
 		}
 
 		function.add_parameter (new CCodeParameter ("self", "const " + get_ccode_name (st) + "*"));
@@ -292,8 +309,10 @@ public abstract class Vala.CCodeStructModule : CCodeBaseModule {
 		push_context (instance_finalize_context);
 
 		var function = new CCodeFunction (get_ccode_destroy_function (st), "void");
-		if (st.access == SymbolAccessibility.PRIVATE) {
+		if (st.is_private_symbol ()) {
 			function.modifiers = CCodeModifiers.STATIC;
+		} else if (context.hide_internal && st.is_internal_symbol ()) {
+			function.modifiers = CCodeModifiers.INTERNAL;
 		}
 
 		function.add_parameter (new CCodeParameter ("self", get_ccode_name (st) + "*"));

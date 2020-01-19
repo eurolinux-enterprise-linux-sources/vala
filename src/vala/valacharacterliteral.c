@@ -1188,6 +1188,7 @@ struct _ValaSemanticAnalyzer {
 	ValaDataType* unichar_type;
 	ValaDataType* double_type;
 	ValaDataType* type_type;
+	ValaDataType* va_list_type;
 	ValaClass* object_type;
 	ValaStructValueType* gvalue_type;
 	ValaObjectType* gvariant_type;
@@ -1385,8 +1386,8 @@ static void vala_character_literal_finalize (ValaCodeNode* obj);
  */
 ValaCharacterLiteral* vala_character_literal_construct (GType object_type, const gchar* c, ValaSourceReference* source) {
 	ValaCharacterLiteral* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	g_return_val_if_fail (c != NULL, NULL);
 	self = (ValaCharacterLiteral*) vala_literal_construct (object_type);
 	_tmp0_ = c;
@@ -1404,8 +1405,8 @@ ValaCharacterLiteral* vala_character_literal_new (const gchar* c, ValaSourceRefe
 
 static void vala_character_literal_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaCharacterLiteral * self;
-	ValaCodeVisitor* _tmp0_;
-	ValaCodeVisitor* _tmp1_;
+	ValaCodeVisitor* _tmp0_ = NULL;
+	ValaCodeVisitor* _tmp1_ = NULL;
 	self = (ValaCharacterLiteral*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -1423,7 +1424,7 @@ static void vala_character_literal_real_accept (ValaCodeNode* base, ValaCodeVisi
  */
 static gunichar string_get_char (const gchar* self, glong index) {
 	gunichar result = 0U;
-	glong _tmp0_;
+	glong _tmp0_ = 0L;
 	gunichar _tmp1_ = 0U;
 	g_return_val_if_fail (self != NULL, 0U);
 	_tmp0_ = index;
@@ -1435,8 +1436,8 @@ static gunichar string_get_char (const gchar* self, glong index) {
 
 gunichar vala_character_literal_get_char (ValaCharacterLiteral* self) {
 	gunichar result = 0U;
-	const gchar* _tmp0_;
-	const gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	const gchar* _tmp2_ = NULL;
 	gunichar _tmp3_ = 0U;
 	g_return_val_if_fail (self != NULL, 0U);
@@ -1461,9 +1462,9 @@ static gboolean vala_character_literal_real_is_pure (ValaExpression* base) {
 static gchar* vala_character_literal_real_to_string (ValaCodeNode* base) {
 	ValaCharacterLiteral * self;
 	gchar* result = NULL;
-	const gchar* _tmp0_;
-	const gchar* _tmp1_;
-	gchar* _tmp2_;
+	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
+	gchar* _tmp2_ = NULL;
 	self = (ValaCharacterLiteral*) base;
 	_tmp0_ = vala_character_literal_get_value (self);
 	_tmp1_ = _tmp0_;
@@ -1476,18 +1477,18 @@ static gchar* vala_character_literal_real_to_string (ValaCodeNode* base) {
 static gboolean vala_character_literal_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaCharacterLiteral * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
 	gunichar _tmp4_ = 0U;
-	gboolean _tmp25_;
-	gboolean _tmp26_;
+	gboolean _tmp25_ = FALSE;
+	gboolean _tmp26_ = FALSE;
 	self = (ValaCharacterLiteral*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -1496,16 +1497,16 @@ static gboolean vala_character_literal_real_check (ValaCodeNode* base, ValaCodeC
 	vala_code_node_set_checked ((ValaCodeNode*) self, TRUE);
 	_tmp4_ = vala_character_literal_get_char (self);
 	if (_tmp4_ < ((gunichar) 128)) {
-		ValaCodeContext* _tmp5_;
-		ValaSemanticAnalyzer* _tmp6_;
-		ValaSemanticAnalyzer* _tmp7_;
-		ValaSymbol* _tmp8_;
-		ValaScope* _tmp9_;
-		ValaScope* _tmp10_;
+		ValaCodeContext* _tmp5_ = NULL;
+		ValaSemanticAnalyzer* _tmp6_ = NULL;
+		ValaSemanticAnalyzer* _tmp7_ = NULL;
+		ValaSymbol* _tmp8_ = NULL;
+		ValaScope* _tmp9_ = NULL;
+		ValaScope* _tmp10_ = NULL;
 		ValaSymbol* _tmp11_ = NULL;
-		ValaStruct* _tmp12_;
-		ValaIntegerType* _tmp13_;
-		ValaIntegerType* _tmp14_;
+		ValaStruct* _tmp12_ = NULL;
+		ValaIntegerType* _tmp13_ = NULL;
+		ValaIntegerType* _tmp14_ = NULL;
 		_tmp5_ = context;
 		_tmp6_ = vala_code_context_get_analyzer (_tmp5_);
 		_tmp7_ = _tmp6_;
@@ -1520,16 +1521,16 @@ static gboolean vala_character_literal_real_check (ValaCodeNode* base, ValaCodeC
 		_vala_code_node_unref0 (_tmp14_);
 		_vala_code_node_unref0 (_tmp12_);
 	} else {
-		ValaCodeContext* _tmp15_;
-		ValaSemanticAnalyzer* _tmp16_;
-		ValaSemanticAnalyzer* _tmp17_;
-		ValaSymbol* _tmp18_;
-		ValaScope* _tmp19_;
-		ValaScope* _tmp20_;
+		ValaCodeContext* _tmp15_ = NULL;
+		ValaSemanticAnalyzer* _tmp16_ = NULL;
+		ValaSemanticAnalyzer* _tmp17_ = NULL;
+		ValaSymbol* _tmp18_ = NULL;
+		ValaScope* _tmp19_ = NULL;
+		ValaScope* _tmp20_ = NULL;
 		ValaSymbol* _tmp21_ = NULL;
-		ValaStruct* _tmp22_;
-		ValaIntegerType* _tmp23_;
-		ValaIntegerType* _tmp24_;
+		ValaStruct* _tmp22_ = NULL;
+		ValaIntegerType* _tmp23_ = NULL;
+		ValaIntegerType* _tmp24_ = NULL;
 		_tmp15_ = context;
 		_tmp16_ = vala_code_context_get_analyzer (_tmp15_);
 		_tmp17_ = _tmp16_;
@@ -1553,8 +1554,8 @@ static gboolean vala_character_literal_real_check (ValaCodeNode* base, ValaCodeC
 
 static void vala_character_literal_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaCharacterLiteral * self;
-	ValaCodeGenerator* _tmp0_;
-	ValaCodeGenerator* _tmp1_;
+	ValaCodeGenerator* _tmp0_ = NULL;
+	ValaCodeGenerator* _tmp1_ = NULL;
 	self = (ValaCharacterLiteral*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = codegen;
@@ -1566,7 +1567,7 @@ static void vala_character_literal_real_emit (ValaCodeNode* base, ValaCodeGenera
 
 const gchar* vala_character_literal_get_value (ValaCharacterLiteral* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_value;
 	result = _tmp0_;
@@ -1575,9 +1576,9 @@ const gchar* vala_character_literal_get_value (ValaCharacterLiteral* self) {
 
 
 void vala_character_literal_set_value (ValaCharacterLiteral* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
-	const gchar* _tmp2_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
+	const gchar* _tmp2_ = NULL;
 	gboolean _tmp3_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
@@ -1594,13 +1595,13 @@ void vala_character_literal_set_value (ValaCharacterLiteral* self, const gchar* 
 
 static void vala_character_literal_class_init (ValaCharacterLiteralClass * klass) {
 	vala_character_literal_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_character_literal_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_character_literal_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCharacterLiteralPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_character_literal_real_accept;
-	VALA_EXPRESSION_CLASS (klass)->is_pure = vala_character_literal_real_is_pure;
-	VALA_CODE_NODE_CLASS (klass)->to_string = vala_character_literal_real_to_string;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_character_literal_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_character_literal_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_character_literal_real_accept;
+	((ValaExpressionClass *) klass)->is_pure = vala_character_literal_real_is_pure;
+	((ValaCodeNodeClass *) klass)->to_string = vala_character_literal_real_to_string;
+	((ValaCodeNodeClass *) klass)->check = vala_character_literal_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_character_literal_real_emit;
 }
 
 

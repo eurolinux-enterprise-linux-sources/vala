@@ -276,8 +276,8 @@ static void vala_loop_finalize (ValaCodeNode* obj);
  */
 ValaLoop* vala_loop_construct (GType object_type, ValaBlock* body, ValaSourceReference* source_reference) {
 	ValaLoop* self = NULL;
-	ValaBlock* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	ValaBlock* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	g_return_val_if_fail (body != NULL, NULL);
 	self = (ValaLoop*) vala_code_node_construct (object_type);
 	_tmp0_ = body;
@@ -295,7 +295,7 @@ ValaLoop* vala_loop_new (ValaBlock* body, ValaSourceReference* source_reference)
 
 static void vala_loop_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaLoop * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaLoop*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -305,9 +305,9 @@ static void vala_loop_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor)
 
 static void vala_loop_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaLoop * self;
-	ValaBlock* _tmp0_;
-	ValaBlock* _tmp1_;
-	ValaCodeVisitor* _tmp2_;
+	ValaBlock* _tmp0_ = NULL;
+	ValaBlock* _tmp1_ = NULL;
+	ValaCodeVisitor* _tmp2_ = NULL;
 	self = (ValaLoop*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_loop_get_body (self);
@@ -320,24 +320,24 @@ static void vala_loop_real_accept_children (ValaCodeNode* base, ValaCodeVisitor*
 static gboolean vala_loop_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaLoop * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaBlock* _tmp4_;
-	ValaBlock* _tmp5_;
-	ValaCodeContext* _tmp6_;
-	ValaBlock* _tmp7_;
-	ValaBlock* _tmp8_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaBlock* _tmp4_ = NULL;
+	ValaBlock* _tmp5_ = NULL;
+	ValaCodeContext* _tmp6_ = NULL;
+	ValaBlock* _tmp7_ = NULL;
+	ValaBlock* _tmp8_ = NULL;
 	ValaList* _tmp9_ = NULL;
-	ValaList* _tmp10_;
-	gboolean _tmp11_;
-	gboolean _tmp12_;
+	ValaList* _tmp10_ = NULL;
+	gboolean _tmp11_ = FALSE;
+	gboolean _tmp12_ = FALSE;
 	self = (ValaLoop*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -363,7 +363,7 @@ static gboolean vala_loop_real_check (ValaCodeNode* base, ValaCodeContext* conte
 
 static void vala_loop_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaLoop * self;
-	ValaCodeGenerator* _tmp0_;
+	ValaCodeGenerator* _tmp0_ = NULL;
 	self = (ValaLoop*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = codegen;
@@ -373,7 +373,7 @@ static void vala_loop_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen)
 
 ValaBlock* vala_loop_get_body (ValaLoop* self) {
 	ValaBlock* result;
-	ValaBlock* _tmp0_;
+	ValaBlock* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_body;
 	result = _tmp0_;
@@ -387,9 +387,9 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_loop_set_body (ValaLoop* self, ValaBlock* value) {
-	ValaBlock* _tmp0_;
-	ValaBlock* _tmp1_;
-	ValaBlock* _tmp2_;
+	ValaBlock* _tmp0_ = NULL;
+	ValaBlock* _tmp1_ = NULL;
+	ValaBlock* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -402,12 +402,12 @@ void vala_loop_set_body (ValaLoop* self, ValaBlock* value) {
 
 static void vala_loop_class_init (ValaLoopClass * klass) {
 	vala_loop_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_loop_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_loop_finalize;
 	g_type_class_add_private (klass, sizeof (ValaLoopPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_loop_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_loop_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_loop_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_loop_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_loop_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_loop_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = vala_loop_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_loop_real_emit;
 }
 
 

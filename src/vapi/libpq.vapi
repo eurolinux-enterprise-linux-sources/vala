@@ -17,13 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  *
  * Author:
- * 	Jukka-Pekka Iivonen <jp0409@jippii.fi>
+ *	Jukka-Pekka Iivonen <jp0409@jippii.fi>
  */
 
+#if LIBPQ_9_3
+[CCode (cprefix = "PQ", cheader_filename = "libpq-fe.h")]
+#else
 [CCode (cprefix = "PQ", cheader_filename = "postgresql/libpq-fe.h")]
+#endif
 namespace Postgres {
 
-	[CCode (cname = "ConnStatusType", cprefix = "CONNECTION_")]
+	[CCode (cname = "ConnStatusType", cprefix = "CONNECTION_", has_type_id = false)]
 	public enum ConnectionStatus {
 		OK,
 		BAD,
@@ -36,7 +40,7 @@ namespace Postgres {
 		NEEDED
 	}
 
-	[CCode (cname = "PostgresPollingStatusType", cprefix = "PGRES_POLLING_")]
+	[CCode (cname = "PostgresPollingStatusType", cprefix = "PGRES_POLLING_", has_type_id = false)]
 	public enum PollingStatus {
 		FAILED,
 		READING,
@@ -45,7 +49,7 @@ namespace Postgres {
 		ACTIVE
 	}
 
-	[CCode (cname = "ExecStatusType", cprefix = "PGRES_")]
+	[CCode (cname = "ExecStatusType", cprefix = "PGRES_", has_type_id = false)]
 	public enum ExecStatus {
 		EMPTY_QUERY,
 		COMMAND_OK,
@@ -57,7 +61,7 @@ namespace Postgres {
 		FATAL_ERROR
 	}
 
-	[CCode (cname = "PGTransactionStatusType", cprefix = "PQTRANS_")]
+	[CCode (cname = "PGTransactionStatusType", cprefix = "PQTRANS_", has_type_id = false)]
 	public enum TransactionStatus {
 		IDLE,
 		ACTIVE,
@@ -66,7 +70,7 @@ namespace Postgres {
 		UNKNOWN
 	}
 
-	[CCode (cname = "PGVerbosity", cprefix = "PQERRORS_")]
+	[CCode (cname = "PGVerbosity", cprefix = "PQERRORS_", has_type_id = false)]
 	public enum Verbosity {
 		TERSE,
 		DEFAULT,
@@ -89,6 +93,14 @@ namespace Postgres {
 		SOURCE_FUNCTION
 	}
 
+	[CCode (cname = "PGPing", cprefix = "PQPING_", has_type_id = false)]
+	public enum Ping {
+		OK,
+		REJECT,
+		NO_RESPONCE,
+		NO_ATTEMPT
+	}
+
 	[Compact]
 	[CCode (cname = "PGnotify", free_function = "PQfreemem")]
 	public class Notify {
@@ -105,7 +117,7 @@ namespace Postgres {
 	[CCode (cname = "PQnoticeProcessor")]
 	public delegate void NoticeProcessorFunc (void* arg, string message);
 
-	[CCode (cname = "PQprintOpt")]
+	[CCode (cname = "PQprintOpt", has_type_id = false)]
 	public struct PrintOpt {
 		public bool     header;
 		public bool     align;
@@ -120,7 +132,7 @@ namespace Postgres {
 	}
 
 	[Compact]
-	[CCode (free_function = "PQconninfoFree", cname = "PQconninfoOption")]
+	[CCode (cname = "PQconninfoOption", free_function = "PQconninfoFree")]
 	public class ConnectionOptions {
 		public string keyword;
 		public string envvar;
@@ -131,14 +143,14 @@ namespace Postgres {
 		public int    dispsize;
 	}
 
-	[CCode (cname = "PQArgBlock")]
+	[CCode (cname = "PQArgBlock", has_type_id = false)]
 	public struct ArgBlock {
 		public int len;
 		public int isint;
 	}
 
 	[SimpleType]
-	[CCode (cname = "uint", default_value = "0U", type_signature = "u")]
+	[CCode (cname = "uint", default_value = "0U", type_signature = "u", has_type_id = false)]
 	public struct Oid {
 	}
 
@@ -323,6 +335,12 @@ namespace Postgres {
 
 		[CCode (cname = "PQisnonblocking")]
 		public int is_non_blocking ();
+
+		[CCode (cname = "PQping")]
+		public Ping ping();
+		 
+		[CCode (cname = "PQpingParams")]
+		public Ping ping_params(string keywords, string values, int expand_dbname);
 
 		[CCode (cname = "PQflush")]
 		public int flush ();

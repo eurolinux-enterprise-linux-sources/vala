@@ -93,9 +93,12 @@ public class Vala.GTypeModule : GErrorModule {
 		if (is_fundamental) {
 			var ref_fun = new CCodeFunction (get_ccode_lower_case_prefix (cl) + "ref", "gpointer");
 			var unref_fun = new CCodeFunction (get_ccode_lower_case_prefix (cl) + "unref", "void");
-			if (cl.access == SymbolAccessibility.PRIVATE) {
+			if (cl.is_private_symbol ()) {
 				ref_fun.modifiers = CCodeModifiers.STATIC;
 				unref_fun.modifiers = CCodeModifiers.STATIC;
+			} else if (context.hide_internal && cl.is_internal_symbol ()) {
+				ref_fun.modifiers = CCodeModifiers.INTERNAL;
+				unref_fun.modifiers = CCodeModifiers.INTERNAL;
 			}
 
 			ref_fun.add_parameter (new CCodeParameter ("instance", "gpointer"));
@@ -114,10 +117,12 @@ public class Vala.GTypeModule : GErrorModule {
 			function.add_parameter (new CCodeParameter ("object_type", "GType"));
 			function.add_parameter (new CCodeParameter ("flags", "GParamFlags"));
 
-			if (cl.access == SymbolAccessibility.PRIVATE) {
+			if (cl.is_private_symbol ()) {
 				function.modifiers = CCodeModifiers.STATIC;
 				// avoid C warning as this function is not always used
 				function.attributes = "G_GNUC_UNUSED";
+			} else if (context.hide_internal && cl.is_internal_symbol ()) {
+				function.modifiers = CCodeModifiers.INTERNAL;
 			}
 
 			decl_space.add_function_declaration (function);
@@ -126,8 +131,12 @@ public class Vala.GTypeModule : GErrorModule {
 			function.add_parameter (new CCodeParameter ("value", "GValue*"));
 			function.add_parameter (new CCodeParameter ("v_object", "gpointer"));
 
-			if (cl.access == SymbolAccessibility.PRIVATE) {
+			if (cl.is_private_symbol ()) {
 				function.modifiers = CCodeModifiers.STATIC;
+				// avoid C warning as this function is not always used
+				function.attributes = "G_GNUC_UNUSED";
+			} else if (context.hide_internal && cl.is_internal_symbol ()) {
+				function.modifiers = CCodeModifiers.INTERNAL;
 				// avoid C warning as this function is not always used
 				function.attributes = "G_GNUC_UNUSED";
 			}
@@ -138,10 +147,12 @@ public class Vala.GTypeModule : GErrorModule {
 			function.add_parameter (new CCodeParameter ("value", "GValue*"));
 			function.add_parameter (new CCodeParameter ("v_object", "gpointer"));
 
-			if (cl.access == SymbolAccessibility.PRIVATE) {
+			if (cl.is_private_symbol ()) {
 				function.modifiers = CCodeModifiers.STATIC;
 				// avoid C warning as this function is not always used
 				function.attributes = "G_GNUC_UNUSED";
+			} else if (context.hide_internal && cl.is_internal_symbol ()) {
+				function.modifiers = CCodeModifiers.INTERNAL;
 			}
 
 			decl_space.add_function_declaration (function);
@@ -149,8 +160,12 @@ public class Vala.GTypeModule : GErrorModule {
 			function = new CCodeFunction (get_ccode_get_value_function (cl), "gpointer");
 			function.add_parameter (new CCodeParameter ("value", "const GValue*"));
 
-			if (cl.access == SymbolAccessibility.PRIVATE) {
+			if (cl.is_private_symbol ()) {
 				function.modifiers = CCodeModifiers.STATIC;
+				// avoid C warning as this function is not always used
+				function.attributes = "G_GNUC_UNUSED";
+			} else if (context.hide_internal && cl.is_internal_symbol ()) {
+				function.modifiers = CCodeModifiers.INTERNAL;
 				// avoid C warning as this function is not always used
 				function.attributes = "G_GNUC_UNUSED";
 			}
@@ -159,8 +174,10 @@ public class Vala.GTypeModule : GErrorModule {
 		} else if (!is_gtypeinstance && !is_gsource) {
 			if (cl.base_class == null) {
 				var function = new CCodeFunction (get_ccode_lower_case_prefix (cl) + "free", "void");
-				if (cl.access == SymbolAccessibility.PRIVATE) {
+				if (cl.is_private_symbol ()) {
 					function.modifiers = CCodeModifiers.STATIC;
+				} else if (context.hide_internal && cl.is_internal_symbol ()) {
+					function.modifiers = CCodeModifiers.INTERNAL;
 				}
 
 				function.add_parameter (new CCodeParameter ("self", get_ccode_name (cl) + "*"));
@@ -341,7 +358,7 @@ public class Vala.GTypeModule : GErrorModule {
 						if (delegate_type.delegate_symbol.has_target) {
 							// create field to store delegate target
 							instance_struct.add_field ("gpointer", get_ccode_delegate_target_name (f));
-							if (delegate_type.value_owned) {
+							if (delegate_type.is_disposable ()) {
 								instance_struct.add_field ("GDestroyNotify", get_delegate_target_destroy_notify_cname (f.name));
 							}
 						}
@@ -447,7 +464,7 @@ public class Vala.GTypeModule : GErrorModule {
 						if (delegate_type.delegate_symbol.has_target) {
 							// create field to store delegate target
 							instance_priv_struct.add_field ("gpointer", get_ccode_delegate_target_name (f));
-							if (delegate_type.value_owned) {
+							if (delegate_type.is_disposable ()) {
 								instance_priv_struct.add_field ("GDestroyNotify", get_delegate_target_destroy_notify_cname (f.name));
 							}
 						}
@@ -491,12 +508,6 @@ public class Vala.GTypeModule : GErrorModule {
 		if (is_gtypeinstance) {
 			if (cl.has_class_private_fields || has_class_locks) {
 				decl_space.add_type_declaration (new CCodeTypeDefinition ("struct %s".printf (type_priv_struct.name), new CCodeVariableDeclarator ("%sClassPrivate".printf (get_ccode_name (cl)))));
-				if (!context.require_glib_version (2, 24)) {
-					var cdecl = new CCodeDeclaration ("GQuark");
-					cdecl.add_declarator (new CCodeVariableDeclarator ("_vala_%s_class_private_quark".printf (get_ccode_lower_case_name (cl)), new CCodeConstant ("0")));
-					cdecl.modifiers = CCodeModifiers.STATIC;
-					decl_space.add_type_declaration (cdecl);
-				}
 			}
 
 			/* only add the *Private struct if it is not empty, i.e. we actually have private data */
@@ -509,12 +520,7 @@ public class Vala.GTypeModule : GErrorModule {
 			if (cl.has_class_private_fields || has_class_locks) {
 				decl_space.add_type_member_declaration (type_priv_struct);
 
-				string macro;
-				if (context.require_glib_version (2, 24)) {
-					macro = "(G_TYPE_CLASS_GET_PRIVATE (klass, %s, %sClassPrivate))".printf (get_ccode_type_id (cl), get_ccode_name (cl));
-				} else {
-					macro = "((%sClassPrivate *) g_type_get_qdata (G_TYPE_FROM_CLASS (klass), _vala_%s_class_private_quark))".printf (get_ccode_name (cl), get_ccode_lower_case_name (cl));
-				}
+				string macro = "(G_TYPE_CLASS_GET_PRIVATE (klass, %s, %sClassPrivate))".printf (get_ccode_type_id (cl), get_ccode_name (cl));
 				decl_space.add_type_member_declaration (new CCodeMacroReplacement ("%s_GET_CLASS_PRIVATE(klass)".printf (get_ccode_upper_case_name (cl, null)), macro));
 			}
 			decl_space.add_type_member_declaration (prop_enum);
@@ -613,12 +619,12 @@ public class Vala.GTypeModule : GErrorModule {
 			}
 
 
-			if (cl.class_constructor != null || (!context.require_glib_version (2, 24) && cl.has_class_private_fields)) {
+			if (cl.class_constructor != null) {
 				add_base_init_function (cl);
 			}
 			add_class_init_function (cl);
 
-			if (cl.class_destructor != null || (!context.require_glib_version (2, 24) && cl.has_class_private_fields)) {
+			if (cl.class_destructor != null) {
 				add_base_finalize_function (cl);
 			}
 
@@ -653,8 +659,10 @@ public class Vala.GTypeModule : GErrorModule {
 				// ref function
 				var ref_fun = new CCodeFunction (get_ccode_lower_case_prefix (cl) + "ref", "gpointer");
 				ref_fun.add_parameter (new CCodeParameter ("instance", "gpointer"));
-				if (cl.access == SymbolAccessibility.PRIVATE) {
+				if (cl.is_private_symbol ()) {
 					ref_fun.modifiers = CCodeModifiers.STATIC;
+				} else if (context.hide_internal && cl.is_internal_symbol ()) {
+					ref_fun.modifiers = CCodeModifiers.INTERNAL;
 				}
 				push_function (ref_fun);
 
@@ -670,8 +678,10 @@ public class Vala.GTypeModule : GErrorModule {
 				// unref function
 				var unref_fun = new CCodeFunction (get_ccode_lower_case_prefix (cl) + "unref", "void");
 				unref_fun.add_parameter (new CCodeParameter ("instance", "gpointer"));
-				if (cl.access == SymbolAccessibility.PRIVATE) {
+				if (cl.is_private_symbol ()) {
 					unref_fun.modifiers = CCodeModifiers.STATIC;
+				} else if (context.hide_internal && cl.is_internal_symbol ()) {
+					unref_fun.modifiers = CCodeModifiers.INTERNAL;
 				}
 				push_function (unref_fun);
 
@@ -909,8 +919,10 @@ public class Vala.GTypeModule : GErrorModule {
 		function.add_parameter (new CCodeParameter ("object_type", "GType"));
 		function.add_parameter (new CCodeParameter ("flags", "GParamFlags"));
 
-		if (cl.access == SymbolAccessibility.PRIVATE) {
+		if (cl.is_private_symbol ()) {
 			function.modifiers = CCodeModifiers.STATIC;
+		} else if (context.hide_internal && cl.is_internal_symbol ()) {
+			function.modifiers = CCodeModifiers.INTERNAL;
 		}
 
 		push_function (function);
@@ -950,8 +962,10 @@ public class Vala.GTypeModule : GErrorModule {
 		function.add_parameter (new CCodeParameter ("value", "GValue*"));
 		function.add_parameter (new CCodeParameter ("v_object", "gpointer"));
 
-		if (cl.access == SymbolAccessibility.PRIVATE) {
+		if (cl.is_private_symbol ()) {
 			function.modifiers = CCodeModifiers.STATIC;
+		} else if (context.hide_internal && cl.is_internal_symbol ()) {
+			function.modifiers = CCodeModifiers.INTERNAL;
 		}
 
 		var vpointer = new CCodeMemberAccess (new CCodeMemberAccess.pointer (new CCodeIdentifier ("value"), "data[0]"), "v_pointer");
@@ -1018,8 +1032,10 @@ public class Vala.GTypeModule : GErrorModule {
 		function.add_parameter (new CCodeParameter ("value", "GValue*"));
 		function.add_parameter (new CCodeParameter ("v_object", "gpointer"));
 
-		if (cl.access == SymbolAccessibility.PRIVATE) {
+		if (cl.is_private_symbol ()) {
 			function.modifiers = CCodeModifiers.STATIC;
+		} else if (context.hide_internal && cl.is_internal_symbol ()) {
+			function.modifiers = CCodeModifiers.INTERNAL;
 		}
 
 		var vpointer = new CCodeMemberAccess(new CCodeMemberAccess.pointer (new CCodeIdentifier ("value"), "data[0]"),"v_pointer");
@@ -1082,8 +1098,10 @@ public class Vala.GTypeModule : GErrorModule {
 		var function = new CCodeFunction (get_ccode_get_value_function (cl), "gpointer");
 		function.add_parameter (new CCodeParameter ("value", "const GValue*"));
 
-		if (cl.access == SymbolAccessibility.PRIVATE) {
+		if (cl.is_private_symbol ()) {
 			function.modifiers = CCodeModifiers.STATIC;
+		} else if (context.hide_internal && cl.is_internal_symbol ()) {
+			function.modifiers = CCodeModifiers.INTERNAL;
 		}
 
 		var vpointer = new CCodeMemberAccess(new CCodeMemberAccess.pointer (new CCodeIdentifier ("value"), "data[0]"),"v_pointer");
@@ -1114,48 +1132,6 @@ public class Vala.GTypeModule : GErrorModule {
 
 		push_function (base_init);
 
-		if (!context.require_glib_version (2, 24) && cl.has_class_private_fields) {
-			ccode.add_declaration ("%sClassPrivate *".printf (get_ccode_name (cl)), new CCodeVariableDeclarator ("priv"));
-			ccode.add_declaration ("%sClassPrivate *".printf (get_ccode_name (cl)), new CCodeVariableDeclarator ("parent_priv", new CCodeConstant ("NULL")));
-			ccode.add_declaration ("GType", new CCodeVariableDeclarator ("parent_type"));
-
-			var ccall = new CCodeFunctionCall (new CCodeIdentifier ("g_type_parent"));
-			var ccall2 = new CCodeFunctionCall (new CCodeIdentifier ("G_TYPE_FROM_CLASS"));
-			ccall2.add_argument (new CCodeIdentifier ("klass"));
-			ccall.add_argument (ccall2);
-			ccode.add_assignment (new CCodeIdentifier ("parent_type"), ccall);
-
-			ccode.open_if (new CCodeIdentifier ("parent_type"));
-			ccall = new CCodeFunctionCall (new CCodeIdentifier ("%s_GET_CLASS_PRIVATE".printf (get_ccode_upper_case_name (cl, null))));
-			ccall2 = new CCodeFunctionCall (new CCodeIdentifier ("g_type_class_peek"));
-			ccall2.add_argument (new CCodeIdentifier ("parent_type"));
-			ccall.add_argument (ccall2);
-			ccode.add_assignment (new CCodeIdentifier ("parent_priv"), ccall);
-			ccode.close ();
-
-			ccall = new CCodeFunctionCall (new CCodeIdentifier ("g_slice_new0"));
-			ccall.add_argument (new CCodeIdentifier ("%sClassPrivate".printf(get_ccode_name (cl))));
-			ccode.add_assignment (new CCodeIdentifier ("priv"), ccall);
-
-			cfile.add_include ("string.h");
-
-			ccode.open_if (new CCodeIdentifier ("parent_priv"));
-			ccall = new CCodeFunctionCall (new CCodeIdentifier ("memcpy"));
-			ccall.add_argument (new CCodeIdentifier ("priv"));
-			ccall.add_argument (new CCodeIdentifier ("parent_priv"));
-			ccall.add_argument (new CCodeIdentifier ("sizeof (%sClassPrivate)".printf(get_ccode_name (cl))));
-			ccode.add_expression (ccall);
-			ccode.close ();
-
-			ccall = new CCodeFunctionCall (new CCodeIdentifier ("g_type_set_qdata"));
-			ccall2 = new CCodeFunctionCall (new CCodeIdentifier ("G_TYPE_FROM_CLASS"));
-			ccall2.add_argument (new CCodeIdentifier ("klass"));
-			ccall.add_argument (ccall2);
-			ccall.add_argument (new CCodeIdentifier ("_vala_%s_class_private_quark".printf (get_ccode_lower_case_name (cl))));
-			ccall.add_argument (new CCodeIdentifier ("priv"));
-			ccode.add_expression (ccall);
-		}
-
 		pop_context ();
 	}
 
@@ -1164,6 +1140,9 @@ public class Vala.GTypeModule : GErrorModule {
 	}
 
 	public virtual void generate_class_init (Class cl) {
+	}
+
+	public virtual void end_instance_init (Class cl) {
 	}
 
 	private void begin_class_init_function (Class cl) {
@@ -1198,9 +1177,8 @@ public class Vala.GTypeModule : GErrorModule {
 				fundamental_class = fundamental_class.base_class;
 			}
 
-			ccall = new CCodeFunctionCall (new CCodeIdentifier ("%s_CLASS".printf (get_ccode_upper_case_name (fundamental_class, null))));
-			ccall.add_argument (new CCodeIdentifier ("klass"));
-			var finalize_assignment = new CCodeAssignment (new CCodeMemberAccess.pointer (ccall, "finalize"), new CCodeIdentifier (get_ccode_lower_case_prefix (cl) + "finalize"));
+			var ccast = new CCodeCastExpression (new CCodeIdentifier ("klass"), get_ccode_name (fundamental_class) + "Class *");
+			var finalize_assignment = new CCodeAssignment (new CCodeMemberAccess.pointer (ccast, "finalize"), new CCodeIdentifier (get_ccode_lower_case_prefix (cl) + "finalize"));
 			ccode.add_expression (finalize_assignment);
 		}
 
@@ -1221,9 +1199,7 @@ public class Vala.GTypeModule : GErrorModule {
 
 			// there is currently no default handler for abstract async methods
 			if (!m.is_abstract || !m.coroutine) {
-				var ccast = new CCodeFunctionCall (new CCodeIdentifier ("%s_CLASS".printf (get_ccode_upper_case_name (base_type))));
-				ccast.add_argument (new CCodeIdentifier ("klass"));
-
+				var ccast = new CCodeCastExpression (new CCodeIdentifier ("klass"), get_ccode_name (base_type) + "Class *");
 				ccode.add_assignment (new CCodeMemberAccess.pointer (ccast, get_ccode_vfunc_name (m.base_method)), new CCodeIdentifier (get_ccode_real_name (m)));
 
 				if (m.coroutine) {
@@ -1237,8 +1213,7 @@ public class Vala.GTypeModule : GErrorModule {
 			if (sig.default_handler == null) {
 				continue;
 			}
-			var ccast = new CCodeFunctionCall (new CCodeIdentifier ("%s_CLASS".printf (get_ccode_upper_case_name (cl, null))));
-			ccast.add_argument (new CCodeIdentifier ("klass"));
+			var ccast = new CCodeCastExpression (new CCodeIdentifier ("klass"), get_ccode_name (cl) + "Class *");
 			ccode.add_assignment (new CCodeMemberAccess.pointer (ccast, get_ccode_vfunc_name (sig.default_handler)), new CCodeIdentifier (get_ccode_real_name (sig.default_handler)));
 		}
 
@@ -1574,6 +1549,10 @@ public class Vala.GTypeModule : GErrorModule {
 	}
 
 	private void add_instance_init_function (Class cl) {
+		push_context (instance_init_context);
+		end_instance_init (cl);
+		pop_context ();
+		
 		cfile.add_function (instance_init_context.ccode);
 	}
 
@@ -1619,25 +1598,6 @@ public class Vala.GTypeModule : GErrorModule {
 	private void add_base_finalize_function (Class cl) {
 		push_context (base_finalize_context);
 
-		if (!context.require_glib_version (2, 24) && cl.has_class_private_fields) {
-			ccode.open_block ();
-
-			var cdecl = new CCodeDeclaration ("%sClassPrivate *".printf (get_ccode_name (cl)));
-			cdecl.add_declarator (new CCodeVariableDeclarator ("priv"));
-			ccode.add_statement (cdecl);
-
-			var ccall = new CCodeFunctionCall (new CCodeIdentifier ("%s_GET_CLASS_PRIVATE".printf (get_ccode_upper_case_name (cl, null))));
-			ccall.add_argument (new CCodeConstant ("klass"));
-			ccode.add_statement (new CCodeExpressionStatement (new CCodeAssignment (new CCodeIdentifier ("priv"), ccall)));
-
-			ccall = new CCodeFunctionCall (new CCodeIdentifier ("g_slice_free"));
-			ccall.add_argument (new CCodeIdentifier ("%sClassPrivate".printf (get_ccode_name (cl))));
-			ccall.add_argument (new CCodeIdentifier ("priv"));
-			ccode.add_statement (new CCodeExpressionStatement (ccall));
-
-			ccode.close ();
-		}
-
 		cfile.add_function_declaration (ccode);
 		cfile.add_function (ccode);
 
@@ -1674,10 +1634,19 @@ public class Vala.GTypeModule : GErrorModule {
 
 			ccode.add_declaration ("%s *".printf (get_ccode_name (cl)), new CCodeVariableDeclarator ("self"));
 			ccode.add_assignment (new CCodeIdentifier ("self"), ccast);
+
+			if (!cl.is_compact && cl.base_class == null) {
+				// non-gobject class
+				var call = new CCodeFunctionCall (new CCodeIdentifier ("g_signal_handlers_destroy"));
+				call.add_argument (new CCodeIdentifier ("self"));
+				ccode.add_expression (call);
+			}
 		} else {
 			var function = new CCodeFunction (get_ccode_lower_case_prefix (cl) + "free", "void");
-			if (cl.access == SymbolAccessibility.PRIVATE) {
+			if (cl.is_private_symbol ()) {
 				function.modifiers = CCodeModifiers.STATIC;
+			} else if (context.hide_internal && cl.is_internal_symbol ()) {
+				function.modifiers = CCodeModifiers.INTERNAL;
 			}
 
 			function.add_parameter (new CCodeParameter ("self", get_ccode_name (cl) + "*"));
@@ -1780,7 +1749,8 @@ public class Vala.GTypeModule : GErrorModule {
 			}
 		} else if (prop.property_type.data_type is Struct) {
 			var st = (Struct) prop.property_type.data_type;
-			if (get_ccode_type_id (st) == "G_TYPE_INT") {
+			var type_id = get_ccode_type_id (st);
+			if (type_id == "G_TYPE_INT") {
 				cspec.call = new CCodeIdentifier ("g_param_spec_int");
 				cspec.add_argument (new CCodeConstant ("G_MININT"));
 				cspec.add_argument (new CCodeConstant ("G_MAXINT"));
@@ -1789,7 +1759,7 @@ public class Vala.GTypeModule : GErrorModule {
 				} else {
 					cspec.add_argument (new CCodeConstant ("0"));
 				}
-			} else if (get_ccode_type_id (st) == "G_TYPE_UINT") {
+			} else if (type_id == "G_TYPE_UINT") {
 				cspec.call = new CCodeIdentifier ("g_param_spec_uint");
 				cspec.add_argument (new CCodeConstant ("0"));
 				cspec.add_argument (new CCodeConstant ("G_MAXUINT"));
@@ -1798,7 +1768,7 @@ public class Vala.GTypeModule : GErrorModule {
 				} else {
 					cspec.add_argument (new CCodeConstant ("0U"));
 				}
-			} else if (get_ccode_type_id (st) == "G_TYPE_INT64") {
+			} else if (type_id == "G_TYPE_INT64") {
 				cspec.call = new CCodeIdentifier ("g_param_spec_int64");
 				cspec.add_argument (new CCodeConstant ("G_MININT64"));
 				cspec.add_argument (new CCodeConstant ("G_MAXINT64"));
@@ -1807,7 +1777,7 @@ public class Vala.GTypeModule : GErrorModule {
 				} else {
 					cspec.add_argument (new CCodeConstant ("0"));
 				}
-			} else if (get_ccode_type_id (st) == "G_TYPE_UINT64") {
+			} else if (type_id == "G_TYPE_UINT64") {
 				cspec.call = new CCodeIdentifier ("g_param_spec_uint64");
 				cspec.add_argument (new CCodeConstant ("0"));
 				cspec.add_argument (new CCodeConstant ("G_MAXUINT64"));
@@ -1816,7 +1786,7 @@ public class Vala.GTypeModule : GErrorModule {
 				} else {
 					cspec.add_argument (new CCodeConstant ("0U"));
 				}
-			} else if (get_ccode_type_id (st) == "G_TYPE_LONG") {
+			} else if (type_id == "G_TYPE_LONG") {
 				cspec.call = new CCodeIdentifier ("g_param_spec_long");
 				cspec.add_argument (new CCodeConstant ("G_MINLONG"));
 				cspec.add_argument (new CCodeConstant ("G_MAXLONG"));
@@ -1825,7 +1795,7 @@ public class Vala.GTypeModule : GErrorModule {
 				} else {
 					cspec.add_argument (new CCodeConstant ("0L"));
 				}
-			} else if (get_ccode_type_id (st) == "G_TYPE_ULONG") {
+			} else if (type_id == "G_TYPE_ULONG") {
 				cspec.call = new CCodeIdentifier ("g_param_spec_ulong");
 				cspec.add_argument (new CCodeConstant ("0"));
 				cspec.add_argument (new CCodeConstant ("G_MAXULONG"));
@@ -1834,14 +1804,14 @@ public class Vala.GTypeModule : GErrorModule {
 				} else {
 					cspec.add_argument (new CCodeConstant ("0UL"));
 				}
-			} else if (get_ccode_type_id (st) == "G_TYPE_BOOLEAN") {
+			} else if (type_id == "G_TYPE_BOOLEAN") {
 				cspec.call = new CCodeIdentifier ("g_param_spec_boolean");
 				if (prop.initializer != null) {
 					cspec.add_argument ((CCodeExpression) get_ccodenode (prop.initializer));
 				} else {
 					cspec.add_argument (new CCodeConstant ("FALSE"));
 				}
-			} else if (get_ccode_type_id (st) == "G_TYPE_CHAR") {
+			} else if (type_id == "G_TYPE_CHAR") {
 				cspec.call = new CCodeIdentifier ("g_param_spec_char");
 				cspec.add_argument (new CCodeConstant ("G_MININT8"));
 				cspec.add_argument (new CCodeConstant ("G_MAXINT8"));
@@ -1850,7 +1820,7 @@ public class Vala.GTypeModule : GErrorModule {
 				} else {
 					cspec.add_argument (new CCodeConstant ("0"));
 				}
-			} else if (get_ccode_type_id (st) == "G_TYPE_UCHAR") {
+			} else if (type_id == "G_TYPE_UCHAR") {
 				cspec.call = new CCodeIdentifier ("g_param_spec_uchar");
 				cspec.add_argument (new CCodeConstant ("0"));
 				cspec.add_argument (new CCodeConstant ("G_MAXUINT8"));
@@ -1859,7 +1829,7 @@ public class Vala.GTypeModule : GErrorModule {
 				} else {
 					cspec.add_argument (new CCodeConstant ("0"));
 				}
-			}else if (get_ccode_type_id (st) == "G_TYPE_FLOAT") {
+			} else if (type_id == "G_TYPE_FLOAT") {
 				cspec.call = new CCodeIdentifier ("g_param_spec_float");
 				cspec.add_argument (new CCodeConstant ("-G_MAXFLOAT"));
 				cspec.add_argument (new CCodeConstant ("G_MAXFLOAT"));
@@ -1868,7 +1838,7 @@ public class Vala.GTypeModule : GErrorModule {
 				} else {
 					cspec.add_argument (new CCodeConstant ("0.0F"));
 				}
-			} else if (get_ccode_type_id (st) == "G_TYPE_DOUBLE") {
+			} else if (type_id == "G_TYPE_DOUBLE") {
 				cspec.call = new CCodeIdentifier ("g_param_spec_double");
 				cspec.add_argument (new CCodeConstant ("-G_MAXDOUBLE"));
 				cspec.add_argument (new CCodeConstant ("G_MAXDOUBLE"));
@@ -1877,7 +1847,7 @@ public class Vala.GTypeModule : GErrorModule {
 				} else {
 					cspec.add_argument (new CCodeConstant ("0.0"));
 				}
-			} else if (get_ccode_type_id (st) == "G_TYPE_GTYPE") {
+			} else if (type_id == "G_TYPE_GTYPE") {
 				cspec.call = new CCodeIdentifier ("g_param_spec_gtype");
 				if (prop.initializer != null) {
 					cspec.add_argument ((CCodeExpression) get_ccodenode (prop.initializer));
@@ -1886,7 +1856,7 @@ public class Vala.GTypeModule : GErrorModule {
 				}
 			} else {
 				cspec.call = new CCodeIdentifier ("g_param_spec_boxed");
-				cspec.add_argument (new CCodeIdentifier (get_ccode_type_id (st)));
+				cspec.add_argument (new CCodeIdentifier (type_id));
 			}
 		} else if (prop.property_type is ArrayType && ((ArrayType)prop.property_type).element_type.data_type == string_type.data_type) {
 			cspec.call = new CCodeIdentifier ("g_param_spec_boxed");
@@ -1981,73 +1951,73 @@ public class Vala.GTypeModule : GErrorModule {
 			}
 		}
 
-		foreach (Method m in iface.get_methods ()) {
-			generate_virtual_method_declaration (m, decl_space, type_struct);
-		}
-
-		foreach (Signal sig in iface.get_signals ()) {
-			if (sig.default_handler != null) {
-				generate_virtual_method_declaration (sig.default_handler, decl_space, type_struct);
-			}
-		}
-
-		foreach (Property prop in iface.get_properties ()) {
-			if (!prop.is_abstract && !prop.is_virtual) {
-				continue;
-			}
-			generate_type_declaration (prop.property_type, decl_space);
-
-			var t = (ObjectTypeSymbol) prop.parent_symbol;
-
-			bool returns_real_struct = prop.property_type.is_real_non_null_struct_type ();
-
-			var this_type = new ObjectType (t);
-			var cselfparam = new CCodeParameter ("self", get_ccode_name (this_type));
-
-			if (prop.get_accessor != null) {
-				var vdeclarator = new CCodeFunctionDeclarator ("get_%s".printf (prop.name));
-				vdeclarator.add_parameter (cselfparam);
-				string creturn_type;
-				if (returns_real_struct) {
-					var cvalueparam = new CCodeParameter ("value", get_ccode_name (prop.get_accessor.value_type) + "*");
-					vdeclarator.add_parameter (cvalueparam);
-					creturn_type = "void";
-				} else {
-					creturn_type = get_ccode_name (prop.get_accessor.value_type);
+		foreach (Symbol sym in iface.get_virtuals ()) {
+			Method m;
+			Signal sig;
+			Property prop;
+			if ((m = sym as Method) != null) {
+				generate_virtual_method_declaration (m, decl_space, type_struct);
+			} else if ((sig = sym as Signal) != null) {
+				if (sig.default_handler != null) {
+					generate_virtual_method_declaration (sig.default_handler, decl_space, type_struct);
 				}
+			} else if ((prop = sym as Property) != null) {
+				generate_type_declaration (prop.property_type, decl_space);
 
-				var array_type = prop.property_type as ArrayType;
-				if (array_type != null) {
-					for (int dim = 1; dim <= array_type.rank; dim++) {
-						vdeclarator.add_parameter (new CCodeParameter (get_array_length_cname ("result", dim), "int*"));
+				var t = (ObjectTypeSymbol) prop.parent_symbol;
+
+				bool returns_real_struct = prop.property_type.is_real_non_null_struct_type ();
+
+				var this_type = new ObjectType (t);
+				var cselfparam = new CCodeParameter ("self", get_ccode_name (this_type));
+
+				if (prop.get_accessor != null) {
+					var vdeclarator = new CCodeFunctionDeclarator ("get_%s".printf (prop.name));
+					vdeclarator.add_parameter (cselfparam);
+					string creturn_type;
+					if (returns_real_struct) {
+						var cvalueparam = new CCodeParameter ("value", get_ccode_name (prop.get_accessor.value_type) + "*");
+						vdeclarator.add_parameter (cvalueparam);
+						creturn_type = "void";
+					} else {
+						creturn_type = get_ccode_name (prop.get_accessor.value_type);
 					}
-				}
 
-				var vdecl = new CCodeDeclaration (creturn_type);
-				vdecl.add_declarator (vdeclarator);
-				type_struct.add_declaration (vdecl);
-			}
-			if (prop.set_accessor != null) {
-				var vdeclarator = new CCodeFunctionDeclarator ("set_%s".printf (prop.name));
-				vdeclarator.add_parameter (cselfparam);
-				if (returns_real_struct) {
-					var cvalueparam = new CCodeParameter ("value", get_ccode_name (prop.set_accessor.value_type) + "*");
-					vdeclarator.add_parameter (cvalueparam);
-				} else {
-					var cvalueparam = new CCodeParameter ("value", get_ccode_name (prop.set_accessor.value_type));
-					vdeclarator.add_parameter (cvalueparam);
-				}
-
-				var array_type = prop.property_type as ArrayType;
-				if (array_type != null) {
-					for (int dim = 1; dim <= array_type.rank; dim++) {
-						vdeclarator.add_parameter (new CCodeParameter (get_array_length_cname ("value", dim), "int"));
+					var array_type = prop.property_type as ArrayType;
+					if (array_type != null) {
+						for (int dim = 1; dim <= array_type.rank; dim++) {
+							vdeclarator.add_parameter (new CCodeParameter (get_array_length_cname ("result", dim), "int*"));
+						}
 					}
-				}
 
-				var vdecl = new CCodeDeclaration ("void");
-				vdecl.add_declarator (vdeclarator);
-				type_struct.add_declaration (vdecl);
+					var vdecl = new CCodeDeclaration (creturn_type);
+					vdecl.add_declarator (vdeclarator);
+					type_struct.add_declaration (vdecl);
+				}
+				if (prop.set_accessor != null) {
+					var vdeclarator = new CCodeFunctionDeclarator ("set_%s".printf (prop.name));
+					vdeclarator.add_parameter (cselfparam);
+					if (returns_real_struct) {
+						var cvalueparam = new CCodeParameter ("value", get_ccode_name (prop.set_accessor.value_type) + "*");
+						vdeclarator.add_parameter (cvalueparam);
+					} else {
+						var cvalueparam = new CCodeParameter ("value", get_ccode_name (prop.set_accessor.value_type));
+						vdeclarator.add_parameter (cvalueparam);
+					}
+
+					var array_type = prop.property_type as ArrayType;
+					if (array_type != null) {
+						for (int dim = 1; dim <= array_type.rank; dim++) {
+							vdeclarator.add_parameter (new CCodeParameter (get_array_length_cname ("value", dim), "int"));
+						}
+					}
+
+					var vdecl = new CCodeDeclaration ("void");
+					vdecl.add_declarator (vdeclarator);
+					type_struct.add_declaration (vdecl);
+				}
+			} else {
+				assert_not_reached ();
 			}
 		}
 

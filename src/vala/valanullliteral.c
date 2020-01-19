@@ -298,7 +298,7 @@ static void vala_null_literal_real_emit (ValaCodeNode* base, ValaCodeGenerator* 
  */
 ValaNullLiteral* vala_null_literal_construct (GType object_type, ValaSourceReference* source) {
 	ValaNullLiteral* self = NULL;
-	ValaSourceReference* _tmp0_;
+	ValaSourceReference* _tmp0_ = NULL;
 	self = (ValaNullLiteral*) vala_literal_construct (object_type);
 	_tmp0_ = source;
 	vala_code_node_set_source_reference ((ValaCodeNode*) self, _tmp0_);
@@ -313,8 +313,8 @@ ValaNullLiteral* vala_null_literal_new (ValaSourceReference* source) {
 
 static void vala_null_literal_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaNullLiteral * self;
-	ValaCodeVisitor* _tmp0_;
-	ValaCodeVisitor* _tmp1_;
+	ValaCodeVisitor* _tmp0_ = NULL;
+	ValaCodeVisitor* _tmp1_ = NULL;
 	self = (ValaNullLiteral*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -327,7 +327,7 @@ static void vala_null_literal_real_accept (ValaCodeNode* base, ValaCodeVisitor* 
 static gchar* vala_null_literal_real_to_string (ValaCodeNode* base) {
 	ValaNullLiteral * self;
 	gchar* result = NULL;
-	gchar* _tmp0_;
+	gchar* _tmp0_ = NULL;
 	self = (ValaNullLiteral*) base;
 	_tmp0_ = g_strdup ("null");
 	result = _tmp0_;
@@ -347,21 +347,21 @@ static gboolean vala_null_literal_real_is_pure (ValaExpression* base) {
 static gboolean vala_null_literal_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaNullLiteral * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaSourceReference* _tmp4_;
-	ValaSourceReference* _tmp5_;
-	ValaNullType* _tmp6_;
-	ValaNullType* _tmp7_;
-	gboolean _tmp8_;
-	gboolean _tmp9_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaSourceReference* _tmp4_ = NULL;
+	ValaSourceReference* _tmp5_ = NULL;
+	ValaNullType* _tmp6_ = NULL;
+	ValaNullType* _tmp7_ = NULL;
+	gboolean _tmp8_ = FALSE;
+	gboolean _tmp9_ = FALSE;
 	self = (ValaNullLiteral*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -383,8 +383,8 @@ static gboolean vala_null_literal_real_check (ValaCodeNode* base, ValaCodeContex
 
 static void vala_null_literal_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaNullLiteral * self;
-	ValaCodeGenerator* _tmp0_;
-	ValaCodeGenerator* _tmp1_;
+	ValaCodeGenerator* _tmp0_ = NULL;
+	ValaCodeGenerator* _tmp1_ = NULL;
 	self = (ValaNullLiteral*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = codegen;
@@ -396,11 +396,11 @@ static void vala_null_literal_real_emit (ValaCodeNode* base, ValaCodeGenerator* 
 
 static void vala_null_literal_class_init (ValaNullLiteralClass * klass) {
 	vala_null_literal_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_null_literal_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->to_string = vala_null_literal_real_to_string;
-	VALA_EXPRESSION_CLASS (klass)->is_pure = vala_null_literal_real_is_pure;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_null_literal_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_null_literal_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_null_literal_real_accept;
+	((ValaCodeNodeClass *) klass)->to_string = vala_null_literal_real_to_string;
+	((ValaExpressionClass *) klass)->is_pure = vala_null_literal_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = vala_null_literal_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_null_literal_real_emit;
 }
 
 

@@ -54,7 +54,7 @@ public class Vala.GSignalModule : GObjectModule {
 			return "gpointer";
 		} else if (t is VoidType) {
 			return "void";
-		} else if (t.data_type == string_type.data_type) {
+		} else if (get_ccode_type_id (t) == get_ccode_type_id (string_type)) {
 			return "const char*";
 		} else if (t.data_type is Class || t.data_type is Interface) {
 			return "gpointer";
@@ -331,6 +331,10 @@ public class Vala.GSignalModule : GObjectModule {
 
 		if (sig.get_attribute_bool ("Signal", "no_hooks")) {
 			flags += "G_SIGNAL_NO_HOOKS";
+		}
+
+		if (sig.get_attribute ("Deprecated") != null && CodeContext.get ().require_glib_version (2, 31)) {
+			flags += "G_SIGNAL_DEPRECATED";
 		}
 
 		csignew.add_argument (new CCodeConstant (string.joinv (" | ", flags)));

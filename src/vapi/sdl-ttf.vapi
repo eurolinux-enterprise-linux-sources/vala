@@ -15,7 +15,7 @@ namespace SDLTTF {
 	[CCode (cname="TTF_Quit")]
 	public static void quit();
 
-	[CCode (cname="int", cprefix="TTF_STYLE_")]
+	[CCode (cname="int", cprefix="TTF_STYLE_", has_type_id = false)]
 	public enum FontStyle {
 		NORMAL, BOLD, ITALIC, UNDERLINE
 	}// FontStyle
@@ -66,7 +66,7 @@ namespace SDLTTF {
 		public string style();
 
 		[CCode (cname="TTF_GlyphMetrics")]
-		public int metrics(uint16 ch, ref int minx, ref int maxx, 
+		public int metrics(uint16 ch, ref int minx, ref int maxx,
 			ref int miny, ref int maxy, ref int advance);
 
 		[CCode (cname="TTF_SizeText")]

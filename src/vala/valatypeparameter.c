@@ -460,8 +460,8 @@ gboolean vala_typeparameter_equals (ValaTypeParameter* self, ValaTypeParameter* 
  */
 ValaTypeParameter* vala_typeparameter_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference) {
 	ValaTypeParameter* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (source_reference != NULL, NULL);
 	_tmp0_ = name;
@@ -478,7 +478,7 @@ ValaTypeParameter* vala_typeparameter_new (const gchar* name, ValaSourceReferenc
 
 static void vala_typeparameter_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaTypeParameter * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaTypeParameter*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -504,7 +504,7 @@ gboolean vala_typeparameter_equals (ValaTypeParameter* self, ValaTypeParameter* 
 
 static void vala_typeparameter_class_init (ValaTypeParameterClass * klass) {
 	vala_typeparameter_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_typeparameter_real_accept;
+	((ValaCodeNodeClass *) klass)->accept = vala_typeparameter_real_accept;
 }
 
 

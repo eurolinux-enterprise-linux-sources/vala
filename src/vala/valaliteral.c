@@ -242,8 +242,8 @@ ValaLiteral* vala_literal_construct (GType object_type) {
 
 static void vala_literal_class_init (ValaLiteralClass * klass) {
 	vala_literal_parent_class = g_type_class_peek_parent (klass);
-	VALA_EXPRESSION_CLASS (klass)->is_constant = vala_literal_real_is_constant;
-	VALA_EXPRESSION_CLASS (klass)->is_pure = vala_literal_real_is_pure;
+	((ValaExpressionClass *) klass)->is_constant = vala_literal_real_is_constant;
+	((ValaExpressionClass *) klass)->is_pure = vala_literal_real_is_pure;
 }
 
 

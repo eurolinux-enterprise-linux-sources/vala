@@ -363,7 +363,7 @@ static void vala_class_type_finalize (ValaCodeNode* obj);
 
 ValaClassType* vala_class_type_construct (GType object_type, ValaClass* class_symbol) {
 	ValaClassType* self = NULL;
-	ValaClass* _tmp0_;
+	ValaClass* _tmp0_ = NULL;
 	g_return_val_if_fail (class_symbol != NULL, NULL);
 	self = (ValaClassType*) vala_reference_type_construct (object_type);
 	_tmp0_ = class_symbol;
@@ -380,24 +380,24 @@ ValaClassType* vala_class_type_new (ValaClass* class_symbol) {
 static ValaDataType* vala_class_type_real_copy (ValaDataType* base) {
 	ValaClassType * self;
 	ValaDataType* result = NULL;
-	ValaClass* _tmp0_;
-	ValaClassType* _tmp1_;
-	ValaClassType* _result_;
-	ValaClassType* _tmp2_;
-	ValaSourceReference* _tmp3_;
-	ValaSourceReference* _tmp4_;
-	ValaClassType* _tmp5_;
-	gboolean _tmp6_;
-	gboolean _tmp7_;
-	ValaClassType* _tmp8_;
-	gboolean _tmp9_;
-	gboolean _tmp10_;
-	ValaClassType* _tmp11_;
-	gboolean _tmp12_;
-	gboolean _tmp13_;
-	ValaClassType* _tmp14_;
-	gboolean _tmp15_;
-	gboolean _tmp16_;
+	ValaClassType* _result_ = NULL;
+	ValaClass* _tmp0_ = NULL;
+	ValaClassType* _tmp1_ = NULL;
+	ValaClassType* _tmp2_ = NULL;
+	ValaSourceReference* _tmp3_ = NULL;
+	ValaSourceReference* _tmp4_ = NULL;
+	ValaClassType* _tmp5_ = NULL;
+	gboolean _tmp6_ = FALSE;
+	gboolean _tmp7_ = FALSE;
+	ValaClassType* _tmp8_ = NULL;
+	gboolean _tmp9_ = FALSE;
+	gboolean _tmp10_ = FALSE;
+	ValaClassType* _tmp11_ = NULL;
+	gboolean _tmp12_ = FALSE;
+	gboolean _tmp13_ = FALSE;
+	ValaClassType* _tmp14_ = NULL;
+	gboolean _tmp15_ = FALSE;
+	gboolean _tmp16_ = FALSE;
 	self = (ValaClassType*) base;
 	_tmp0_ = self->priv->_class_symbol;
 	_tmp1_ = vala_class_type_new (_tmp0_);
@@ -423,13 +423,13 @@ static ValaDataType* vala_class_type_real_copy (ValaDataType* base) {
 	_tmp16_ = _tmp15_;
 	vala_data_type_set_floating_reference ((ValaDataType*) _tmp14_, _tmp16_);
 	{
+		ValaList* _arg_list = NULL;
 		ValaList* _tmp17_ = NULL;
-		ValaList* _arg_list;
-		ValaList* _tmp18_;
-		gint _tmp19_;
-		gint _tmp20_;
-		gint _arg_size;
-		gint _arg_index;
+		gint _arg_size = 0;
+		ValaList* _tmp18_ = NULL;
+		gint _tmp19_ = 0;
+		gint _tmp20_ = 0;
+		gint _arg_index = 0;
 		_tmp17_ = vala_data_type_get_type_arguments ((ValaDataType*) self);
 		_arg_list = _tmp17_;
 		_tmp18_ = _arg_list;
@@ -438,17 +438,17 @@ static ValaDataType* vala_class_type_real_copy (ValaDataType* base) {
 		_arg_size = _tmp20_;
 		_arg_index = -1;
 		while (TRUE) {
-			gint _tmp21_;
-			gint _tmp22_;
-			gint _tmp23_;
-			ValaList* _tmp24_;
-			gint _tmp25_;
+			gint _tmp21_ = 0;
+			gint _tmp22_ = 0;
+			gint _tmp23_ = 0;
+			ValaDataType* arg = NULL;
+			ValaList* _tmp24_ = NULL;
+			gint _tmp25_ = 0;
 			gpointer _tmp26_ = NULL;
-			ValaDataType* arg;
-			ValaClassType* _tmp27_;
-			ValaDataType* _tmp28_;
+			ValaClassType* _tmp27_ = NULL;
+			ValaDataType* _tmp28_ = NULL;
 			ValaDataType* _tmp29_ = NULL;
-			ValaDataType* _tmp30_;
+			ValaDataType* _tmp30_ = NULL;
 			_tmp21_ = _arg_index;
 			_arg_index = _tmp21_ + 1;
 			_tmp22_ = _arg_index;
@@ -477,7 +477,7 @@ static ValaDataType* vala_class_type_real_copy (ValaDataType* base) {
 
 ValaClass* vala_class_type_get_class_symbol (ValaClassType* self) {
 	ValaClass* result;
-	ValaClass* _tmp0_;
+	ValaClass* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_class_symbol;
 	result = _tmp0_;
@@ -486,7 +486,7 @@ ValaClass* vala_class_type_get_class_symbol (ValaClassType* self) {
 
 
 void vala_class_type_set_class_symbol (ValaClassType* self, ValaClass* value) {
-	ValaClass* _tmp0_;
+	ValaClass* _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_class_symbol = _tmp0_;
@@ -495,9 +495,9 @@ void vala_class_type_set_class_symbol (ValaClassType* self, ValaClass* value) {
 
 static void vala_class_type_class_init (ValaClassTypeClass * klass) {
 	vala_class_type_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_class_type_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_class_type_finalize;
 	g_type_class_add_private (klass, sizeof (ValaClassTypePrivate));
-	VALA_DATA_TYPE_CLASS (klass)->copy = vala_class_type_real_copy;
+	((ValaDataTypeClass *) klass)->copy = vala_class_type_real_copy;
 }
 
 

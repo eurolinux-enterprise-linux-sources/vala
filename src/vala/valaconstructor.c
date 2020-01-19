@@ -590,7 +590,7 @@ static void vala_constructor_finalize (ValaCodeNode* obj);
  */
 ValaConstructor* vala_constructor_construct (GType object_type, ValaSourceReference* source) {
 	ValaConstructor* self = NULL;
-	ValaSourceReference* _tmp0_;
+	ValaSourceReference* _tmp0_ = NULL;
 	_tmp0_ = source;
 	self = (ValaConstructor*) vala_subroutine_construct (object_type, NULL, _tmp0_, NULL);
 	return self;
@@ -604,7 +604,7 @@ ValaConstructor* vala_constructor_new (ValaSourceReference* source) {
 
 static void vala_constructor_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaConstructor * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaConstructor*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -614,16 +614,16 @@ static void vala_constructor_real_accept (ValaCodeNode* base, ValaCodeVisitor* v
 
 static void vala_constructor_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaConstructor * self;
-	ValaBlock* _tmp0_;
-	ValaBlock* _tmp1_;
+	ValaBlock* _tmp0_ = NULL;
+	ValaBlock* _tmp1_ = NULL;
 	self = (ValaConstructor*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_subroutine_get_body ((ValaSubroutine*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_ != NULL) {
-		ValaBlock* _tmp2_;
-		ValaBlock* _tmp3_;
-		ValaCodeVisitor* _tmp4_;
+		ValaBlock* _tmp2_ = NULL;
+		ValaBlock* _tmp3_ = NULL;
+		ValaCodeVisitor* _tmp4_ = NULL;
 		_tmp2_ = vala_subroutine_get_body ((ValaSubroutine*) self);
 		_tmp3_ = _tmp2_;
 		_tmp4_ = visitor;
@@ -635,54 +635,54 @@ static void vala_constructor_real_accept_children (ValaCodeNode* base, ValaCodeV
 static gboolean vala_constructor_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaConstructor * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaCodeContext* _tmp4_;
-	ValaSemanticAnalyzer* _tmp5_;
-	ValaSemanticAnalyzer* _tmp6_;
-	ValaClass* _tmp7_;
-	ValaClass* _tmp8_;
-	ValaObjectType* _tmp9_;
-	ValaObjectType* _tmp10_;
-	ValaParameter* _tmp11_;
-	ValaParameter* _tmp12_;
-	ValaScope* _tmp13_;
-	ValaScope* _tmp14_;
-	ValaParameter* _tmp15_;
-	const gchar* _tmp16_;
-	const gchar* _tmp17_;
-	ValaParameter* _tmp18_;
-	ValaCodeContext* _tmp19_;
-	ValaSemanticAnalyzer* _tmp20_;
-	ValaSemanticAnalyzer* _tmp21_;
-	ValaSymbol* _tmp22_;
-	ValaSymbol* _tmp23_;
-	ValaScope* _tmp24_;
-	ValaScope* _tmp25_;
-	ValaCodeContext* _tmp26_;
-	ValaSemanticAnalyzer* _tmp27_;
-	ValaSemanticAnalyzer* _tmp28_;
-	ValaBlock* _tmp29_;
-	ValaBlock* _tmp30_;
-	ValaCodeContext* _tmp57_;
-	ValaSemanticAnalyzer* _tmp58_;
-	ValaSemanticAnalyzer* _tmp59_;
-	ValaCodeContext* _tmp60_;
-	ValaSemanticAnalyzer* _tmp61_;
-	ValaSemanticAnalyzer* _tmp62_;
-	ValaSymbol* _tmp63_;
-	ValaSymbol* _tmp64_;
-	ValaSymbol* _tmp65_;
-	ValaSymbol* _tmp66_;
-	gboolean _tmp67_;
-	gboolean _tmp68_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaCodeContext* _tmp4_ = NULL;
+	ValaSemanticAnalyzer* _tmp5_ = NULL;
+	ValaSemanticAnalyzer* _tmp6_ = NULL;
+	ValaClass* _tmp7_ = NULL;
+	ValaClass* _tmp8_ = NULL;
+	ValaObjectType* _tmp9_ = NULL;
+	ValaObjectType* _tmp10_ = NULL;
+	ValaParameter* _tmp11_ = NULL;
+	ValaParameter* _tmp12_ = NULL;
+	ValaScope* _tmp13_ = NULL;
+	ValaScope* _tmp14_ = NULL;
+	ValaParameter* _tmp15_ = NULL;
+	const gchar* _tmp16_ = NULL;
+	const gchar* _tmp17_ = NULL;
+	ValaParameter* _tmp18_ = NULL;
+	ValaCodeContext* _tmp19_ = NULL;
+	ValaSemanticAnalyzer* _tmp20_ = NULL;
+	ValaSemanticAnalyzer* _tmp21_ = NULL;
+	ValaSymbol* _tmp22_ = NULL;
+	ValaSymbol* _tmp23_ = NULL;
+	ValaScope* _tmp24_ = NULL;
+	ValaScope* _tmp25_ = NULL;
+	ValaCodeContext* _tmp26_ = NULL;
+	ValaSemanticAnalyzer* _tmp27_ = NULL;
+	ValaSemanticAnalyzer* _tmp28_ = NULL;
+	ValaBlock* _tmp29_ = NULL;
+	ValaBlock* _tmp30_ = NULL;
+	ValaCodeContext* _tmp57_ = NULL;
+	ValaSemanticAnalyzer* _tmp58_ = NULL;
+	ValaSemanticAnalyzer* _tmp59_ = NULL;
+	ValaCodeContext* _tmp60_ = NULL;
+	ValaSemanticAnalyzer* _tmp61_ = NULL;
+	ValaSemanticAnalyzer* _tmp62_ = NULL;
+	ValaSymbol* _tmp63_ = NULL;
+	ValaSymbol* _tmp64_ = NULL;
+	ValaSymbol* _tmp65_ = NULL;
+	ValaSymbol* _tmp66_ = NULL;
+	gboolean _tmp67_ = FALSE;
+	gboolean _tmp68_ = FALSE;
 	self = (ValaConstructor*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -723,24 +723,24 @@ static gboolean vala_constructor_real_check (ValaCodeNode* base, ValaCodeContext
 	_tmp29_ = vala_subroutine_get_body ((ValaSubroutine*) self);
 	_tmp30_ = _tmp29_;
 	if (_tmp30_ != NULL) {
-		ValaBlock* _tmp31_;
-		ValaBlock* _tmp32_;
-		ValaCodeContext* _tmp33_;
+		ValaBlock* _tmp31_ = NULL;
+		ValaBlock* _tmp32_ = NULL;
+		ValaCodeContext* _tmp33_ = NULL;
 		_tmp31_ = vala_subroutine_get_body ((ValaSubroutine*) self);
 		_tmp32_ = _tmp31_;
 		_tmp33_ = context;
 		vala_code_node_check ((ValaCodeNode*) _tmp32_, _tmp33_);
 	}
 	{
-		ValaBlock* _tmp34_;
-		ValaBlock* _tmp35_;
+		ValaList* _body_error_type_list = NULL;
+		ValaBlock* _tmp34_ = NULL;
+		ValaBlock* _tmp35_ = NULL;
 		ValaList* _tmp36_ = NULL;
-		ValaList* _body_error_type_list;
-		ValaList* _tmp37_;
-		gint _tmp38_;
-		gint _tmp39_;
-		gint _body_error_type_size;
-		gint _body_error_type_index;
+		gint _body_error_type_size = 0;
+		ValaList* _tmp37_ = NULL;
+		gint _tmp38_ = 0;
+		gint _tmp39_ = 0;
+		gint _body_error_type_index = 0;
 		_tmp34_ = vala_subroutine_get_body ((ValaSubroutine*) self);
 		_tmp35_ = _tmp34_;
 		_tmp36_ = vala_code_node_get_error_types ((ValaCodeNode*) _tmp35_);
@@ -751,16 +751,16 @@ static gboolean vala_constructor_real_check (ValaCodeNode* base, ValaCodeContext
 		_body_error_type_size = _tmp39_;
 		_body_error_type_index = -1;
 		while (TRUE) {
-			gint _tmp40_;
-			gint _tmp41_;
-			gint _tmp42_;
-			ValaList* _tmp43_;
-			gint _tmp44_;
+			gint _tmp40_ = 0;
+			gint _tmp41_ = 0;
+			gint _tmp42_ = 0;
+			ValaDataType* body_error_type = NULL;
+			ValaList* _tmp43_ = NULL;
+			gint _tmp44_ = 0;
 			gpointer _tmp45_ = NULL;
-			ValaDataType* body_error_type;
-			ValaDataType* _tmp46_;
-			gboolean _tmp47_;
-			gboolean _tmp48_;
+			ValaDataType* _tmp46_ = NULL;
+			gboolean _tmp47_ = FALSE;
+			gboolean _tmp48_ = FALSE;
 			_tmp40_ = _body_error_type_index;
 			_body_error_type_index = _tmp40_ + 1;
 			_tmp41_ = _body_error_type_index;
@@ -776,14 +776,14 @@ static gboolean vala_constructor_real_check (ValaCodeNode* base, ValaCodeContext
 			_tmp47_ = vala_error_type_get_dynamic_error (G_TYPE_CHECK_INSTANCE_CAST (_tmp46_, VALA_TYPE_ERROR_TYPE, ValaErrorType));
 			_tmp48_ = _tmp47_;
 			if (!_tmp48_) {
-				ValaDataType* _tmp49_;
-				ValaSourceReference* _tmp50_;
-				ValaSourceReference* _tmp51_;
-				ValaDataType* _tmp52_;
+				ValaDataType* _tmp49_ = NULL;
+				ValaSourceReference* _tmp50_ = NULL;
+				ValaSourceReference* _tmp51_ = NULL;
+				ValaDataType* _tmp52_ = NULL;
 				gchar* _tmp53_ = NULL;
-				gchar* _tmp54_;
+				gchar* _tmp54_ = NULL;
 				gchar* _tmp55_ = NULL;
-				gchar* _tmp56_;
+				gchar* _tmp56_ = NULL;
 				_tmp49_ = body_error_type;
 				_tmp50_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp49_);
 				_tmp51_ = _tmp50_;
@@ -820,7 +820,7 @@ static gboolean vala_constructor_real_check (ValaCodeNode* base, ValaCodeContext
 
 ValaParameter* vala_constructor_get_this_parameter (ValaConstructor* self) {
 	ValaParameter* result;
-	ValaParameter* _tmp0_;
+	ValaParameter* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_this_parameter;
 	result = _tmp0_;
@@ -834,8 +834,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_constructor_set_this_parameter (ValaConstructor* self, ValaParameter* value) {
-	ValaParameter* _tmp0_;
-	ValaParameter* _tmp1_;
+	ValaParameter* _tmp0_ = NULL;
+	ValaParameter* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -846,7 +846,7 @@ void vala_constructor_set_this_parameter (ValaConstructor* self, ValaParameter* 
 
 ValaMemberBinding vala_constructor_get_binding (ValaConstructor* self) {
 	ValaMemberBinding result;
-	ValaMemberBinding _tmp0_;
+	ValaMemberBinding _tmp0_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->_binding;
 	result = _tmp0_;
@@ -855,7 +855,7 @@ ValaMemberBinding vala_constructor_get_binding (ValaConstructor* self) {
 
 
 void vala_constructor_set_binding (ValaConstructor* self, ValaMemberBinding value) {
-	ValaMemberBinding _tmp0_;
+	ValaMemberBinding _tmp0_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_binding = _tmp0_;
@@ -873,11 +873,11 @@ static gboolean vala_constructor_real_get_has_result (ValaSubroutine* base) {
 
 static void vala_constructor_class_init (ValaConstructorClass * klass) {
 	vala_constructor_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_constructor_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_constructor_finalize;
 	g_type_class_add_private (klass, sizeof (ValaConstructorPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_constructor_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_constructor_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_constructor_real_check;
+	((ValaCodeNodeClass *) klass)->accept = vala_constructor_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_constructor_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = vala_constructor_real_check;
 	VALA_SUBROUTINE_CLASS (klass)->get_has_result = vala_constructor_real_get_has_result;
 }
 

@@ -104,7 +104,7 @@ public class Vala.CCodeAssignmentModule : CCodeMemberAccessModule {
 			// simple assignments do not work in C
 			var sizeof_call = new CCodeFunctionCall (new CCodeIdentifier ("sizeof"));
 			sizeof_call.add_argument (new CCodeIdentifier (get_ccode_name (array_type.element_type)));
-			var size = new CCodeBinaryExpression (CCodeBinaryOperator.MUL, new CCodeConstant ("%d".printf (array_type.length)), sizeof_call);
+			var size = new CCodeBinaryExpression (CCodeBinaryOperator.MUL, get_ccodenode (array_type.length), sizeof_call);
 
 			var ccopy = new CCodeFunctionCall (new CCodeIdentifier ("memcpy"));
 			ccopy.add_argument (get_cvalue_ (lvalue));
@@ -149,8 +149,14 @@ public class Vala.CCodeAssignmentModule : CCodeMemberAccessModule {
 		if (delegate_type != null && delegate_type.delegate_symbol.has_target) {
 			if (get_delegate_target_cvalue (lvalue) != null) {
 				ccode.add_assignment (get_delegate_target_cvalue (lvalue), get_delegate_target_cvalue (value));
-				if (get_delegate_target_destroy_notify_cvalue (lvalue) != null) {
-					ccode.add_assignment (get_delegate_target_destroy_notify_cvalue (lvalue), get_delegate_target_destroy_notify_cvalue (value));
+				var lvalue_destroy_notify = get_delegate_target_destroy_notify_cvalue (lvalue);
+				var rvalue_destroy_notify = get_delegate_target_destroy_notify_cvalue (value);
+				if (lvalue_destroy_notify != null) {
+					if (rvalue_destroy_notify != null) {
+						ccode.add_assignment (lvalue_destroy_notify, rvalue_destroy_notify);
+					} else {
+						ccode.add_assignment (lvalue_destroy_notify, new CCodeConstant ("NULL"));
+					}
 				}
 			}
 		}

@@ -247,6 +247,16 @@ typedef struct _ValaSourceReferenceClass ValaSourceReferenceClass;
 
 #define VALA_TYPE_SYMBOL_ACCESSIBILITY (vala_symbol_accessibility_get_type ())
 
+#define VALA_TYPE_NAMESPACE (vala_namespace_get_type ())
+#define VALA_NAMESPACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_NAMESPACE, ValaNamespace))
+#define VALA_NAMESPACE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_NAMESPACE, ValaNamespaceClass))
+#define VALA_IS_NAMESPACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_NAMESPACE))
+#define VALA_IS_NAMESPACE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_NAMESPACE))
+#define VALA_NAMESPACE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_NAMESPACE, ValaNamespaceClass))
+
+typedef struct _ValaNamespace ValaNamespace;
+typedef struct _ValaNamespaceClass ValaNamespaceClass;
+
 #define VALA_TYPE_SOURCE_FILE (vala_source_file_get_type ())
 #define VALA_SOURCE_FILE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_SOURCE_FILE, ValaSourceFile))
 #define VALA_SOURCE_FILE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_SOURCE_FILE, ValaSourceFileClass))
@@ -257,15 +267,15 @@ typedef struct _ValaSourceReferenceClass ValaSourceReferenceClass;
 typedef struct _ValaSourceFile ValaSourceFile;
 typedef struct _ValaSourceFileClass ValaSourceFileClass;
 
-#define VALA_TYPE_NAMESPACE (vala_namespace_get_type ())
-#define VALA_NAMESPACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_NAMESPACE, ValaNamespace))
-#define VALA_NAMESPACE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_NAMESPACE, ValaNamespaceClass))
-#define VALA_IS_NAMESPACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_NAMESPACE))
-#define VALA_IS_NAMESPACE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_NAMESPACE))
-#define VALA_NAMESPACE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_NAMESPACE, ValaNamespaceClass))
+#define VALA_TYPE_VALUE_TYPE (vala_value_type_get_type ())
+#define VALA_VALUE_TYPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_VALUE_TYPE, ValaValueType))
+#define VALA_VALUE_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_VALUE_TYPE, ValaValueTypeClass))
+#define VALA_IS_VALUE_TYPE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_VALUE_TYPE))
+#define VALA_IS_VALUE_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_VALUE_TYPE))
+#define VALA_VALUE_TYPE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_VALUE_TYPE, ValaValueTypeClass))
 
-typedef struct _ValaNamespace ValaNamespace;
-typedef struct _ValaNamespaceClass ValaNamespaceClass;
+typedef struct _ValaValueType ValaValueType;
+typedef struct _ValaValueTypeClass ValaValueTypeClass;
 
 #define VALA_TYPE_TYPESYMBOL (vala_typesymbol_get_type ())
 #define VALA_TYPESYMBOL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_TYPESYMBOL, ValaTypeSymbol))
@@ -287,16 +297,6 @@ typedef struct _ValaTypeSymbolClass ValaTypeSymbolClass;
 typedef struct _ValaStruct ValaStruct;
 typedef struct _ValaStructClass ValaStructClass;
 
-#define VALA_TYPE_VALUE_TYPE (vala_value_type_get_type ())
-#define VALA_VALUE_TYPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_VALUE_TYPE, ValaValueType))
-#define VALA_VALUE_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_VALUE_TYPE, ValaValueTypeClass))
-#define VALA_IS_VALUE_TYPE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_VALUE_TYPE))
-#define VALA_IS_VALUE_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_VALUE_TYPE))
-#define VALA_VALUE_TYPE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_VALUE_TYPE, ValaValueTypeClass))
-
-typedef struct _ValaValueType ValaValueType;
-typedef struct _ValaValueTypeClass ValaValueTypeClass;
-
 #define VALA_TYPE_INTEGER_TYPE (vala_integer_type_get_type ())
 #define VALA_INTEGER_TYPE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_INTEGER_TYPE, ValaIntegerType))
 #define VALA_INTEGER_TYPE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_INTEGER_TYPE, ValaIntegerTypeClass))
@@ -316,6 +316,16 @@ typedef struct _ValaIntegerTypeClass ValaIntegerTypeClass;
 
 typedef struct _ValaVoidType ValaVoidType;
 typedef struct _ValaVoidTypeClass ValaVoidTypeClass;
+
+#define VALA_TYPE_CONSTANT (vala_constant_get_type ())
+#define VALA_CONSTANT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CONSTANT, ValaConstant))
+#define VALA_CONSTANT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CONSTANT, ValaConstantClass))
+#define VALA_IS_CONSTANT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CONSTANT))
+#define VALA_IS_CONSTANT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CONSTANT))
+#define VALA_CONSTANT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CONSTANT, ValaConstantClass))
+
+typedef struct _ValaConstant ValaConstant;
+typedef struct _ValaConstantClass ValaConstantClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
 
 #define VALA_TYPE_SEMANTIC_ANALYZER (vala_semantic_analyzer_get_type ())
@@ -368,16 +378,6 @@ typedef struct _ValaInterfaceClass ValaInterfaceClass;
 
 typedef struct _ValaEnum ValaEnum;
 typedef struct _ValaEnumClass ValaEnumClass;
-
-#define VALA_TYPE_CONSTANT (vala_constant_get_type ())
-#define VALA_CONSTANT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CONSTANT, ValaConstant))
-#define VALA_CONSTANT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CONSTANT, ValaConstantClass))
-#define VALA_IS_CONSTANT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CONSTANT))
-#define VALA_IS_CONSTANT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CONSTANT))
-#define VALA_CONSTANT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CONSTANT, ValaConstantClass))
-
-typedef struct _ValaConstant ValaConstant;
-typedef struct _ValaConstantClass ValaConstantClass;
 
 #define VALA_TYPE_ENUM_VALUE (vala_enum_value_get_type ())
 #define VALA_ENUM_VALUE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_ENUM_VALUE, ValaEnumValue))
@@ -1159,9 +1159,9 @@ struct _ValaArrayTypePrivate {
 	gboolean _invalid_syntax;
 	gboolean _inline_allocated;
 	gboolean _fixed_length;
-	gint _length;
 	gint _rank;
 	ValaDataType* _element_type;
+	ValaExpression* _length;
 	ValaArrayLengthField* length_field;
 	ValaArrayResizeMethod* resize_method;
 	ValaArrayMoveMethod* move_method;
@@ -1287,6 +1287,7 @@ struct _ValaSemanticAnalyzer {
 	ValaDataType* unichar_type;
 	ValaDataType* double_type;
 	ValaDataType* type_type;
+	ValaDataType* va_list_type;
 	ValaClass* object_type;
 	ValaStructValueType* gvalue_type;
 	ValaObjectType* gvariant_type;
@@ -1381,6 +1382,7 @@ ValaArrayLengthField* vala_array_length_field_new (ValaSourceReference* source_r
 ValaArrayLengthField* vala_array_length_field_construct (GType object_type, ValaSourceReference* source_reference);
 GType vala_symbol_accessibility_get_type (void) G_GNUC_CONST;
 void vala_symbol_set_access (ValaSymbol* self, ValaSymbolAccessibility value);
+GType vala_namespace_get_type (void) G_GNUC_CONST;
 gpointer vala_source_file_ref (gpointer instance);
 void vala_source_file_unref (gpointer instance);
 GParamSpec* vala_param_spec_source_file (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
@@ -1390,15 +1392,14 @@ gpointer vala_value_get_source_file (const GValue* value);
 GType vala_source_file_get_type (void) G_GNUC_CONST;
 ValaSourceFile* vala_source_reference_get_file (ValaSourceReference* self);
 ValaCodeContext* vala_source_file_get_context (ValaSourceFile* self);
-GType vala_namespace_get_type (void) G_GNUC_CONST;
 ValaNamespace* vala_code_context_get_root (ValaCodeContext* self);
+GType vala_value_type_get_type (void) G_GNUC_CONST;
 ValaScope* vala_symbol_get_scope (ValaSymbol* self);
 ValaSymbol* vala_scope_lookup (ValaScope* self, const gchar* name);
 GType vala_typesymbol_get_type (void) G_GNUC_CONST;
 GType vala_struct_get_type (void) G_GNUC_CONST;
 ValaIntegerType* vala_integer_type_new (ValaStruct* type_symbol, const gchar* literal_value, const gchar* literal_type_name);
 ValaIntegerType* vala_integer_type_construct (GType object_type, ValaStruct* type_symbol, const gchar* literal_value, const gchar* literal_type_name);
-GType vala_value_type_get_type (void) G_GNUC_CONST;
 GType vala_integer_type_get_type (void) G_GNUC_CONST;
 void vala_variable_set_variable_type (ValaVariable* self, ValaDataType* value);
 ValaArrayResizeMethod* vala_array_resize_method_new (ValaSourceReference* source_reference);
@@ -1427,11 +1428,14 @@ gboolean vala_array_type_get_inline_allocated (ValaArrayType* self);
 void vala_array_type_set_inline_allocated (ValaArrayType* self, gboolean value);
 gboolean vala_array_type_get_fixed_length (ValaArrayType* self);
 void vala_array_type_set_fixed_length (ValaArrayType* self, gboolean value);
-gint vala_array_type_get_length (ValaArrayType* self);
-void vala_array_type_set_length (ValaArrayType* self, gint value);
+ValaExpression* vala_array_type_get_length (ValaArrayType* self);
+void vala_array_type_set_length (ValaArrayType* self, ValaExpression* value);
 static gboolean vala_array_type_real_is_array (ValaDataType* base);
 static gchar* vala_array_type_real_to_qualified_string (ValaDataType* base, ValaScope* scope);
 gchar* vala_data_type_to_qualified_string (ValaDataType* self, ValaScope* scope);
+gboolean vala_data_type_is_weak (ValaDataType* self);
+ValaCodeNode* vala_code_node_get_parent_node (ValaCodeNode* self);
+GType vala_constant_get_type (void) G_GNUC_CONST;
 static gboolean vala_array_type_real_compatible (ValaDataType* base, ValaDataType* target_type);
 ValaTypeSymbol* vala_data_type_get_data_type (ValaDataType* self);
 gboolean vala_typesymbol_is_subtype_of (ValaTypeSymbol* self, ValaTypeSymbol* t);
@@ -1442,7 +1446,6 @@ GType vala_object_type_symbol_get_type (void) G_GNUC_CONST;
 GType vala_class_get_type (void) G_GNUC_CONST;
 GType vala_interface_get_type (void) G_GNUC_CONST;
 GType vala_enum_get_type (void) G_GNUC_CONST;
-GType vala_constant_get_type (void) G_GNUC_CONST;
 GType vala_enum_value_get_type (void) G_GNUC_CONST;
 GType vala_error_domain_get_type (void) G_GNUC_CONST;
 GType vala_error_code_get_type (void) G_GNUC_CONST;
@@ -1527,6 +1530,8 @@ gboolean vala_array_type_get_invalid_syntax (ValaArrayType* self);
 void vala_report_error (ValaSourceReference* source, const gchar* message);
 void vala_code_node_set_error (ValaCodeNode* self, gboolean value);
 gboolean vala_code_node_check (ValaCodeNode* self, ValaCodeContext* context);
+ValaDataType* vala_expression_get_value_type (ValaExpression* self);
+gboolean vala_expression_is_constant (ValaExpression* self);
 static ValaDataType* vala_array_type_real_get_actual_type (ValaDataType* base, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference);
 GType vala_generic_type_get_type (void) G_GNUC_CONST;
 gboolean vala_data_type_has_type_arguments (ValaDataType* self);
@@ -1540,9 +1545,9 @@ static void vala_array_type_finalize (ValaCodeNode* obj);
 
 ValaArrayType* vala_array_type_construct (GType object_type, ValaDataType* element_type, gint rank, ValaSourceReference* source_reference) {
 	ValaArrayType* self = NULL;
-	ValaDataType* _tmp0_;
-	gint _tmp1_;
-	ValaSourceReference* _tmp2_;
+	ValaDataType* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	ValaSourceReference* _tmp2_ = NULL;
 	g_return_val_if_fail (element_type != NULL, NULL);
 	self = (ValaArrayType*) vala_reference_type_construct (object_type);
 	_tmp0_ = element_type;
@@ -1563,7 +1568,7 @@ ValaArrayType* vala_array_type_new (ValaDataType* element_type, gint rank, ValaS
 static ValaSymbol* vala_array_type_real_get_member (ValaDataType* base, const gchar* member_name) {
 	ValaArrayType * self;
 	ValaSymbol* result = NULL;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	self = (ValaArrayType*) base;
 	g_return_val_if_fail (member_name != NULL, NULL);
 	_tmp0_ = member_name;
@@ -1573,7 +1578,7 @@ static ValaSymbol* vala_array_type_real_get_member (ValaDataType* base, const gc
 		result = (ValaSymbol*) _tmp1_;
 		return result;
 	} else {
-		const gchar* _tmp2_;
+		const gchar* _tmp2_ = NULL;
 		_tmp2_ = member_name;
 		if (g_strcmp0 (_tmp2_, "move") == 0) {
 			ValaArrayMoveMethod* _tmp3_ = NULL;
@@ -1581,10 +1586,10 @@ static ValaSymbol* vala_array_type_real_get_member (ValaDataType* base, const gc
 			result = (ValaSymbol*) _tmp3_;
 			return result;
 		} else {
-			const gchar* _tmp4_;
+			const gchar* _tmp4_ = NULL;
 			_tmp4_ = member_name;
 			if (g_strcmp0 (_tmp4_, "resize") == 0) {
-				gint _tmp5_;
+				gint _tmp5_ = 0;
 				ValaArrayResizeMethod* _tmp6_ = NULL;
 				_tmp5_ = self->priv->_rank;
 				if (_tmp5_ > 1) {
@@ -1609,27 +1614,27 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 static ValaArrayLengthField* vala_array_type_get_length_field (ValaArrayType* self) {
 	ValaArrayLengthField* result = NULL;
-	ValaArrayLengthField* _tmp0_;
-	ValaArrayLengthField* _tmp36_;
-	ValaArrayLengthField* _tmp37_;
+	ValaArrayLengthField* _tmp0_ = NULL;
+	ValaArrayLengthField* _tmp36_ = NULL;
+	ValaArrayLengthField* _tmp37_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->length_field;
 	if (_tmp0_ == NULL) {
-		ValaSourceReference* _tmp1_;
-		ValaSourceReference* _tmp2_;
-		ValaArrayLengthField* _tmp3_;
-		ValaArrayLengthField* _tmp4_;
-		ValaSourceReference* _tmp5_;
-		ValaSourceReference* _tmp6_;
-		ValaSourceFile* _tmp7_;
-		ValaSourceFile* _tmp8_;
-		ValaCodeContext* _tmp9_;
-		ValaCodeContext* _tmp10_;
-		ValaNamespace* _tmp11_;
-		ValaNamespace* _tmp12_;
-		ValaNamespace* _tmp13_;
-		ValaNamespace* root_symbol;
-		gint _tmp14_;
+		ValaSourceReference* _tmp1_ = NULL;
+		ValaSourceReference* _tmp2_ = NULL;
+		ValaArrayLengthField* _tmp3_ = NULL;
+		ValaArrayLengthField* _tmp4_ = NULL;
+		ValaNamespace* root_symbol = NULL;
+		ValaSourceReference* _tmp5_ = NULL;
+		ValaSourceReference* _tmp6_ = NULL;
+		ValaSourceFile* _tmp7_ = NULL;
+		ValaSourceFile* _tmp8_ = NULL;
+		ValaCodeContext* _tmp9_ = NULL;
+		ValaCodeContext* _tmp10_ = NULL;
+		ValaNamespace* _tmp11_ = NULL;
+		ValaNamespace* _tmp12_ = NULL;
+		ValaNamespace* _tmp13_ = NULL;
+		gint _tmp14_ = 0;
 		_tmp1_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
 		_tmp2_ = _tmp1_;
 		_tmp3_ = vala_array_length_field_new (_tmp2_);
@@ -1649,20 +1654,20 @@ static ValaArrayLengthField* vala_array_type_get_length_field (ValaArrayType* se
 		root_symbol = _tmp13_;
 		_tmp14_ = self->priv->_rank;
 		if (_tmp14_ > 1) {
-			ValaNamespace* _tmp15_;
-			ValaScope* _tmp16_;
-			ValaScope* _tmp17_;
+			ValaValueType* integer = NULL;
+			ValaNamespace* _tmp15_ = NULL;
+			ValaScope* _tmp16_ = NULL;
+			ValaScope* _tmp17_ = NULL;
 			ValaSymbol* _tmp18_ = NULL;
-			ValaStruct* _tmp19_;
-			ValaIntegerType* _tmp20_;
-			ValaValueType* _tmp21_;
-			ValaValueType* integer;
-			ValaArrayLengthField* _tmp22_;
-			ValaValueType* _tmp23_;
-			ValaSourceReference* _tmp24_;
-			ValaSourceReference* _tmp25_;
-			ValaArrayType* _tmp26_;
-			ValaArrayType* _tmp27_;
+			ValaStruct* _tmp19_ = NULL;
+			ValaIntegerType* _tmp20_ = NULL;
+			ValaValueType* _tmp21_ = NULL;
+			ValaArrayLengthField* _tmp22_ = NULL;
+			ValaValueType* _tmp23_ = NULL;
+			ValaSourceReference* _tmp24_ = NULL;
+			ValaSourceReference* _tmp25_ = NULL;
+			ValaArrayType* _tmp26_ = NULL;
+			ValaArrayType* _tmp27_ = NULL;
 			_tmp15_ = root_symbol;
 			_tmp16_ = vala_symbol_get_scope ((ValaSymbol*) _tmp15_);
 			_tmp17_ = _tmp16_;
@@ -1682,14 +1687,14 @@ static ValaArrayLengthField* vala_array_type_get_length_field (ValaArrayType* se
 			_vala_code_node_unref0 (_tmp27_);
 			_vala_code_node_unref0 (integer);
 		} else {
-			ValaArrayLengthField* _tmp28_;
-			ValaNamespace* _tmp29_;
-			ValaScope* _tmp30_;
-			ValaScope* _tmp31_;
+			ValaArrayLengthField* _tmp28_ = NULL;
+			ValaNamespace* _tmp29_ = NULL;
+			ValaScope* _tmp30_ = NULL;
+			ValaScope* _tmp31_ = NULL;
 			ValaSymbol* _tmp32_ = NULL;
-			ValaStruct* _tmp33_;
-			ValaIntegerType* _tmp34_;
-			ValaIntegerType* _tmp35_;
+			ValaStruct* _tmp33_ = NULL;
+			ValaIntegerType* _tmp34_ = NULL;
+			ValaIntegerType* _tmp35_ = NULL;
 			_tmp28_ = self->priv->length_field;
 			_tmp29_ = root_symbol;
 			_tmp30_ = vala_symbol_get_scope ((ValaSymbol*) _tmp29_);
@@ -1713,43 +1718,43 @@ static ValaArrayLengthField* vala_array_type_get_length_field (ValaArrayType* se
 
 static ValaArrayResizeMethod* vala_array_type_get_resize_method (ValaArrayType* self) {
 	ValaArrayResizeMethod* result = NULL;
-	ValaArrayResizeMethod* _tmp0_;
-	ValaArrayResizeMethod* _tmp30_;
-	ValaArrayResizeMethod* _tmp31_;
+	ValaArrayResizeMethod* _tmp0_ = NULL;
+	ValaArrayResizeMethod* _tmp30_ = NULL;
+	ValaArrayResizeMethod* _tmp31_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->resize_method;
 	if (_tmp0_ == NULL) {
-		ValaSourceReference* _tmp1_;
-		ValaSourceReference* _tmp2_;
-		ValaArrayResizeMethod* _tmp3_;
-		ValaArrayResizeMethod* _tmp4_;
-		ValaVoidType* _tmp5_;
-		ValaVoidType* _tmp6_;
-		ValaArrayResizeMethod* _tmp7_;
-		ValaArrayResizeMethod* _tmp8_;
-		ValaSourceReference* _tmp9_;
-		ValaSourceReference* _tmp10_;
-		ValaSourceFile* _tmp11_;
-		ValaSourceFile* _tmp12_;
-		ValaCodeContext* _tmp13_;
-		ValaCodeContext* _tmp14_;
-		ValaNamespace* _tmp15_;
-		ValaNamespace* _tmp16_;
-		ValaNamespace* _tmp17_;
-		ValaNamespace* root_symbol;
-		ValaNamespace* _tmp18_;
-		ValaScope* _tmp19_;
-		ValaScope* _tmp20_;
+		ValaSourceReference* _tmp1_ = NULL;
+		ValaSourceReference* _tmp2_ = NULL;
+		ValaArrayResizeMethod* _tmp3_ = NULL;
+		ValaArrayResizeMethod* _tmp4_ = NULL;
+		ValaVoidType* _tmp5_ = NULL;
+		ValaVoidType* _tmp6_ = NULL;
+		ValaArrayResizeMethod* _tmp7_ = NULL;
+		ValaArrayResizeMethod* _tmp8_ = NULL;
+		ValaNamespace* root_symbol = NULL;
+		ValaSourceReference* _tmp9_ = NULL;
+		ValaSourceReference* _tmp10_ = NULL;
+		ValaSourceFile* _tmp11_ = NULL;
+		ValaSourceFile* _tmp12_ = NULL;
+		ValaCodeContext* _tmp13_ = NULL;
+		ValaCodeContext* _tmp14_ = NULL;
+		ValaNamespace* _tmp15_ = NULL;
+		ValaNamespace* _tmp16_ = NULL;
+		ValaNamespace* _tmp17_ = NULL;
+		ValaIntegerType* int_type = NULL;
+		ValaNamespace* _tmp18_ = NULL;
+		ValaScope* _tmp19_ = NULL;
+		ValaScope* _tmp20_ = NULL;
 		ValaSymbol* _tmp21_ = NULL;
-		ValaStruct* _tmp22_;
-		ValaIntegerType* _tmp23_;
-		ValaIntegerType* _tmp24_;
-		ValaIntegerType* int_type;
-		ValaArrayResizeMethod* _tmp25_;
-		ValaIntegerType* _tmp26_;
-		ValaParameter* _tmp27_;
-		ValaParameter* _tmp28_;
-		ValaArrayResizeMethod* _tmp29_;
+		ValaStruct* _tmp22_ = NULL;
+		ValaIntegerType* _tmp23_ = NULL;
+		ValaIntegerType* _tmp24_ = NULL;
+		ValaArrayResizeMethod* _tmp25_ = NULL;
+		ValaIntegerType* _tmp26_ = NULL;
+		ValaParameter* _tmp27_ = NULL;
+		ValaParameter* _tmp28_ = NULL;
+		ValaArrayResizeMethod* _tmp29_ = NULL;
 		_tmp1_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
 		_tmp2_ = _tmp1_;
 		_tmp3_ = vala_array_resize_method_new (_tmp2_);
@@ -1803,50 +1808,50 @@ static ValaArrayResizeMethod* vala_array_type_get_resize_method (ValaArrayType* 
 
 static ValaArrayMoveMethod* vala_array_type_get_move_method (ValaArrayType* self) {
 	ValaArrayMoveMethod* result = NULL;
-	ValaArrayMoveMethod* _tmp0_;
-	ValaArrayMoveMethod* _tmp37_;
-	ValaArrayMoveMethod* _tmp38_;
+	ValaArrayMoveMethod* _tmp0_ = NULL;
+	ValaArrayMoveMethod* _tmp37_ = NULL;
+	ValaArrayMoveMethod* _tmp38_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->move_method;
 	if (_tmp0_ == NULL) {
-		ValaSourceReference* _tmp1_;
-		ValaSourceReference* _tmp2_;
-		ValaArrayMoveMethod* _tmp3_;
-		ValaArrayMoveMethod* _tmp4_;
-		ValaVoidType* _tmp5_;
-		ValaVoidType* _tmp6_;
-		ValaArrayMoveMethod* _tmp7_;
-		ValaArrayMoveMethod* _tmp8_;
-		ValaSourceReference* _tmp9_;
-		ValaSourceReference* _tmp10_;
-		ValaSourceFile* _tmp11_;
-		ValaSourceFile* _tmp12_;
-		ValaCodeContext* _tmp13_;
-		ValaCodeContext* _tmp14_;
-		ValaNamespace* _tmp15_;
-		ValaNamespace* _tmp16_;
-		ValaNamespace* _tmp17_;
-		ValaNamespace* root_symbol;
-		ValaNamespace* _tmp18_;
-		ValaScope* _tmp19_;
-		ValaScope* _tmp20_;
+		ValaSourceReference* _tmp1_ = NULL;
+		ValaSourceReference* _tmp2_ = NULL;
+		ValaArrayMoveMethod* _tmp3_ = NULL;
+		ValaArrayMoveMethod* _tmp4_ = NULL;
+		ValaVoidType* _tmp5_ = NULL;
+		ValaVoidType* _tmp6_ = NULL;
+		ValaArrayMoveMethod* _tmp7_ = NULL;
+		ValaArrayMoveMethod* _tmp8_ = NULL;
+		ValaNamespace* root_symbol = NULL;
+		ValaSourceReference* _tmp9_ = NULL;
+		ValaSourceReference* _tmp10_ = NULL;
+		ValaSourceFile* _tmp11_ = NULL;
+		ValaSourceFile* _tmp12_ = NULL;
+		ValaCodeContext* _tmp13_ = NULL;
+		ValaCodeContext* _tmp14_ = NULL;
+		ValaNamespace* _tmp15_ = NULL;
+		ValaNamespace* _tmp16_ = NULL;
+		ValaNamespace* _tmp17_ = NULL;
+		ValaIntegerType* int_type = NULL;
+		ValaNamespace* _tmp18_ = NULL;
+		ValaScope* _tmp19_ = NULL;
+		ValaScope* _tmp20_ = NULL;
 		ValaSymbol* _tmp21_ = NULL;
-		ValaStruct* _tmp22_;
-		ValaIntegerType* _tmp23_;
-		ValaIntegerType* _tmp24_;
-		ValaIntegerType* int_type;
-		ValaArrayMoveMethod* _tmp25_;
-		ValaIntegerType* _tmp26_;
-		ValaParameter* _tmp27_;
-		ValaParameter* _tmp28_;
-		ValaArrayMoveMethod* _tmp29_;
-		ValaIntegerType* _tmp30_;
-		ValaParameter* _tmp31_;
-		ValaParameter* _tmp32_;
-		ValaArrayMoveMethod* _tmp33_;
-		ValaIntegerType* _tmp34_;
-		ValaParameter* _tmp35_;
-		ValaParameter* _tmp36_;
+		ValaStruct* _tmp22_ = NULL;
+		ValaIntegerType* _tmp23_ = NULL;
+		ValaIntegerType* _tmp24_ = NULL;
+		ValaArrayMoveMethod* _tmp25_ = NULL;
+		ValaIntegerType* _tmp26_ = NULL;
+		ValaParameter* _tmp27_ = NULL;
+		ValaParameter* _tmp28_ = NULL;
+		ValaArrayMoveMethod* _tmp29_ = NULL;
+		ValaIntegerType* _tmp30_ = NULL;
+		ValaParameter* _tmp31_ = NULL;
+		ValaParameter* _tmp32_ = NULL;
+		ValaArrayMoveMethod* _tmp33_ = NULL;
+		ValaIntegerType* _tmp34_ = NULL;
+		ValaParameter* _tmp35_ = NULL;
+		ValaParameter* _tmp36_ = NULL;
 		_tmp1_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
 		_tmp2_ = _tmp1_;
 		_tmp3_ = vala_array_move_method_new (_tmp2_);
@@ -1911,28 +1916,28 @@ static ValaArrayMoveMethod* vala_array_type_get_move_method (ValaArrayType* self
 static ValaDataType* vala_array_type_real_copy (ValaDataType* base) {
 	ValaArrayType * self;
 	ValaDataType* result = NULL;
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
+	ValaArrayType* _result_ = NULL;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
 	ValaDataType* _tmp2_ = NULL;
-	ValaDataType* _tmp3_;
-	gint _tmp4_;
-	ValaSourceReference* _tmp5_;
-	ValaSourceReference* _tmp6_;
-	ValaArrayType* _tmp7_;
-	ValaArrayType* _tmp8_;
-	ValaArrayType* _result_;
-	ValaArrayType* _tmp9_;
-	gboolean _tmp10_;
-	gboolean _tmp11_;
-	ValaArrayType* _tmp12_;
-	gboolean _tmp13_;
-	gboolean _tmp14_;
-	ValaArrayType* _tmp15_;
-	gboolean _tmp16_;
-	gboolean _tmp17_;
-	ValaArrayType* _tmp18_;
-	gboolean _tmp19_;
-	gboolean _tmp20_;
+	ValaDataType* _tmp3_ = NULL;
+	gint _tmp4_ = 0;
+	ValaSourceReference* _tmp5_ = NULL;
+	ValaSourceReference* _tmp6_ = NULL;
+	ValaArrayType* _tmp7_ = NULL;
+	ValaArrayType* _tmp8_ = NULL;
+	ValaArrayType* _tmp9_ = NULL;
+	gboolean _tmp10_ = FALSE;
+	gboolean _tmp11_ = FALSE;
+	ValaArrayType* _tmp12_ = NULL;
+	gboolean _tmp13_ = FALSE;
+	gboolean _tmp14_ = FALSE;
+	ValaArrayType* _tmp15_ = NULL;
+	gboolean _tmp16_ = FALSE;
+	gboolean _tmp17_ = FALSE;
+	ValaArrayType* _tmp18_ = NULL;
+	gboolean _tmp19_ = FALSE;
+	gboolean _tmp20_ = FALSE;
 	self = (ValaArrayType*) base;
 	_tmp0_ = vala_array_type_get_element_type (self);
 	_tmp1_ = _tmp0_;
@@ -1962,14 +1967,16 @@ static ValaDataType* vala_array_type_real_copy (ValaDataType* base) {
 	vala_array_type_set_inline_allocated (_tmp18_, _tmp19_);
 	_tmp20_ = self->priv->_fixed_length;
 	if (_tmp20_) {
-		ValaArrayType* _tmp21_;
-		ValaArrayType* _tmp22_;
-		gint _tmp23_;
+		ValaArrayType* _tmp21_ = NULL;
+		ValaArrayType* _tmp22_ = NULL;
+		ValaExpression* _tmp23_ = NULL;
+		ValaExpression* _tmp24_ = NULL;
 		_tmp21_ = _result_;
 		vala_array_type_set_fixed_length (_tmp21_, TRUE);
 		_tmp22_ = _result_;
-		_tmp23_ = self->priv->_length;
-		vala_array_type_set_length (_tmp22_, _tmp23_);
+		_tmp23_ = vala_array_type_get_length (self);
+		_tmp24_ = _tmp23_;
+		vala_array_type_set_length (_tmp22_, _tmp24_);
 	}
 	result = (ValaDataType*) _result_;
 	return result;
@@ -1988,92 +1995,106 @@ static gboolean vala_array_type_real_is_array (ValaDataType* base) {
 static gchar* vala_array_type_real_to_qualified_string (ValaDataType* base, ValaScope* scope) {
 	ValaArrayType * self;
 	gchar* result = NULL;
-	gboolean _tmp0_;
+	gchar* elem_str = NULL;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaScope* _tmp2_ = NULL;
+	gchar* _tmp3_ = NULL;
+	gboolean _tmp4_ = FALSE;
+	ValaDataType* _tmp5_ = NULL;
+	ValaDataType* _tmp6_ = NULL;
+	gboolean _tmp7_ = FALSE;
+	gboolean _tmp12_ = FALSE;
 	self = (ValaArrayType*) base;
-	_tmp0_ = self->priv->_fixed_length;
-	if (!_tmp0_) {
-		const gchar* _tmp1_ = NULL;
-		gboolean _tmp2_;
-		gboolean _tmp3_;
-		ValaDataType* _tmp4_;
-		ValaDataType* _tmp5_;
-		ValaScope* _tmp6_;
-		gchar* _tmp7_ = NULL;
-		gchar* _tmp8_;
-		gint _tmp9_;
-		gchar* _tmp10_ = NULL;
-		gchar* _tmp11_;
-		const gchar* _tmp12_;
-		gchar* _tmp13_ = NULL;
-		gchar* _tmp14_;
-		_tmp2_ = vala_data_type_get_nullable ((ValaDataType*) self);
-		_tmp3_ = _tmp2_;
-		if (_tmp3_) {
-			_tmp1_ = "?";
+	_tmp0_ = vala_array_type_get_element_type (self);
+	_tmp1_ = _tmp0_;
+	_tmp2_ = scope;
+	_tmp3_ = vala_data_type_to_qualified_string (_tmp1_, _tmp2_);
+	elem_str = _tmp3_;
+	_tmp5_ = vala_array_type_get_element_type (self);
+	_tmp6_ = _tmp5_;
+	_tmp7_ = vala_data_type_is_weak (_tmp6_);
+	if (_tmp7_) {
+		ValaCodeNode* _tmp8_ = NULL;
+		ValaCodeNode* _tmp9_ = NULL;
+		_tmp8_ = vala_code_node_get_parent_node ((ValaCodeNode*) self);
+		_tmp9_ = _tmp8_;
+		_tmp4_ = !G_TYPE_CHECK_INSTANCE_TYPE (_tmp9_, VALA_TYPE_CONSTANT);
+	} else {
+		_tmp4_ = FALSE;
+	}
+	if (_tmp4_) {
+		const gchar* _tmp10_ = NULL;
+		gchar* _tmp11_ = NULL;
+		_tmp10_ = elem_str;
+		_tmp11_ = g_strdup_printf ("(unowned %s)", _tmp10_);
+		_g_free0 (elem_str);
+		elem_str = _tmp11_;
+	}
+	_tmp12_ = self->priv->_fixed_length;
+	if (!_tmp12_) {
+		const gchar* _tmp13_ = NULL;
+		gboolean _tmp14_ = FALSE;
+		gboolean _tmp15_ = FALSE;
+		const gchar* _tmp16_ = NULL;
+		gint _tmp17_ = 0;
+		gchar* _tmp18_ = NULL;
+		gchar* _tmp19_ = NULL;
+		gchar* _tmp20_ = NULL;
+		gchar* _tmp21_ = NULL;
+		_tmp14_ = vala_data_type_get_nullable ((ValaDataType*) self);
+		_tmp15_ = _tmp14_;
+		if (_tmp15_) {
+			_tmp13_ = "?";
 		} else {
-			_tmp1_ = "";
+			_tmp13_ = "";
 		}
-		_tmp4_ = vala_array_type_get_element_type (self);
-		_tmp5_ = _tmp4_;
-		_tmp6_ = scope;
-		_tmp7_ = vala_data_type_to_qualified_string (_tmp5_, _tmp6_);
-		_tmp8_ = _tmp7_;
-		_tmp9_ = self->priv->_rank;
-		_tmp10_ = g_strnfill ((gsize) (_tmp9_ - 1), ',');
-		_tmp11_ = _tmp10_;
-		_tmp12_ = _tmp1_;
-		_tmp13_ = g_strdup_printf ("%s[%s]%s", _tmp8_, _tmp11_, _tmp12_);
-		_tmp14_ = _tmp13_;
-		_g_free0 (_tmp11_);
-		_g_free0 (_tmp8_);
-		result = _tmp14_;
+		_tmp16_ = elem_str;
+		_tmp17_ = self->priv->_rank;
+		_tmp18_ = g_strnfill ((gsize) (_tmp17_ - 1), ',');
+		_tmp19_ = _tmp18_;
+		_tmp20_ = g_strdup_printf ("%s[%s]%s", _tmp16_, _tmp19_, _tmp13_);
+		_tmp21_ = _tmp20_;
+		_g_free0 (_tmp19_);
+		result = _tmp21_;
+		_g_free0 (elem_str);
 		return result;
 	} else {
-		ValaDataType* _tmp15_;
-		ValaDataType* _tmp16_;
-		ValaScope* _tmp17_;
-		gchar* _tmp18_ = NULL;
-		_tmp15_ = vala_array_type_get_element_type (self);
-		_tmp16_ = _tmp15_;
-		_tmp17_ = scope;
-		_tmp18_ = vala_data_type_to_qualified_string (_tmp16_, _tmp17_);
-		result = _tmp18_;
+		result = elem_str;
 		return result;
 	}
+	_g_free0 (elem_str);
 }
 
 
 static gboolean vala_array_type_real_compatible (ValaDataType* base, ValaDataType* target_type) {
 	ValaArrayType * self;
 	gboolean result = FALSE;
-	ValaDataType* _tmp0_;
-	ValaTypeSymbol* _tmp1_;
-	ValaTypeSymbol* _tmp2_;
-	gboolean _tmp41_ = FALSE;
-	ValaDataType* _tmp42_;
-	gboolean _tmp53_;
-	ValaDataType* _tmp54_;
-	ValaTypeParameter* _tmp55_;
-	ValaTypeParameter* _tmp56_;
-	ValaDataType* _tmp57_;
-	ValaArrayType* _tmp58_;
-	ValaArrayType* target_array_type;
-	ValaArrayType* _tmp59_;
-	ValaArrayType* _tmp60_;
-	gint _tmp61_;
-	gint _tmp62_;
-	gboolean _tmp63_ = FALSE;
-	ValaDataType* _tmp64_;
-	ValaDataType* _tmp65_;
-	gboolean _tmp75_;
-	gboolean _tmp76_ = FALSE;
-	ValaDataType* _tmp77_;
-	ValaDataType* _tmp78_;
-	ValaArrayType* _tmp79_;
-	ValaDataType* _tmp80_;
-	ValaDataType* _tmp81_;
-	gboolean _tmp82_ = FALSE;
-	gboolean _tmp89_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaTypeSymbol* _tmp1_ = NULL;
+	ValaTypeSymbol* _tmp2_ = NULL;
+	gboolean _tmp40_ = FALSE;
+	ValaDataType* _tmp41_ = NULL;
+	ValaDataType* _tmp51_ = NULL;
+	ValaTypeParameter* _tmp52_ = NULL;
+	ValaTypeParameter* _tmp53_ = NULL;
+	ValaArrayType* target_array_type = NULL;
+	ValaDataType* _tmp54_ = NULL;
+	ValaArrayType* _tmp55_ = NULL;
+	ValaArrayType* _tmp56_ = NULL;
+	ValaArrayType* _tmp57_ = NULL;
+	gint _tmp58_ = 0;
+	gint _tmp59_ = 0;
+	gboolean _tmp60_ = FALSE;
+	ValaDataType* _tmp61_ = NULL;
+	ValaDataType* _tmp62_ = NULL;
+	gboolean _tmp72_ = FALSE;
+	ValaDataType* _tmp73_ = NULL;
+	ValaDataType* _tmp74_ = NULL;
+	ValaArrayType* _tmp75_ = NULL;
+	ValaDataType* _tmp76_ = NULL;
+	ValaDataType* _tmp77_ = NULL;
+	gboolean _tmp78_ = FALSE;
 	self = (ValaArrayType*) base;
 	g_return_val_if_fail (target_type != NULL, FALSE);
 	_tmp0_ = target_type;
@@ -2081,31 +2102,30 @@ static gboolean vala_array_type_real_compatible (ValaDataType* base, ValaDataTyp
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ != NULL) {
 		gboolean _tmp3_ = FALSE;
-		ValaDataType* _tmp4_;
-		ValaTypeSymbol* _tmp5_;
-		ValaTypeSymbol* _tmp6_;
+		ValaDataType* _tmp4_ = NULL;
+		ValaTypeSymbol* _tmp5_ = NULL;
+		ValaTypeSymbol* _tmp6_ = NULL;
 		ValaCodeContext* _tmp7_ = NULL;
-		ValaCodeContext* _tmp8_;
-		ValaSemanticAnalyzer* _tmp9_;
-		ValaSemanticAnalyzer* _tmp10_;
-		ValaStructValueType* _tmp11_;
-		ValaTypeSymbol* _tmp12_;
-		ValaTypeSymbol* _tmp13_;
+		ValaCodeContext* _tmp8_ = NULL;
+		ValaSemanticAnalyzer* _tmp9_ = NULL;
+		ValaSemanticAnalyzer* _tmp10_ = NULL;
+		ValaStructValueType* _tmp11_ = NULL;
+		ValaTypeSymbol* _tmp12_ = NULL;
+		ValaTypeSymbol* _tmp13_ = NULL;
 		gboolean _tmp14_ = FALSE;
-		gboolean _tmp15_;
-		gboolean _tmp28_;
-		ValaDataType* _tmp29_;
-		ValaTypeSymbol* _tmp30_;
-		ValaTypeSymbol* _tmp31_;
+		gboolean _tmp15_ = FALSE;
+		ValaDataType* _tmp28_ = NULL;
+		ValaTypeSymbol* _tmp29_ = NULL;
+		ValaTypeSymbol* _tmp30_ = NULL;
+		ValaCodeContext* _tmp31_ = NULL;
 		ValaCodeContext* _tmp32_ = NULL;
-		ValaCodeContext* _tmp33_;
-		ValaSemanticAnalyzer* _tmp34_;
-		ValaSemanticAnalyzer* _tmp35_;
-		ValaObjectType* _tmp36_;
-		ValaTypeSymbol* _tmp37_;
-		ValaTypeSymbol* _tmp38_;
+		ValaSemanticAnalyzer* _tmp33_ = NULL;
+		ValaSemanticAnalyzer* _tmp34_ = NULL;
+		ValaObjectType* _tmp35_ = NULL;
+		ValaTypeSymbol* _tmp36_ = NULL;
+		ValaTypeSymbol* _tmp37_ = NULL;
+		gboolean _tmp38_ = FALSE;
 		gboolean _tmp39_ = FALSE;
-		gboolean _tmp40_;
 		_tmp4_ = target_type;
 		_tmp5_ = vala_data_type_get_data_type (_tmp4_);
 		_tmp6_ = _tmp5_;
@@ -2120,18 +2140,18 @@ static gboolean vala_array_type_real_compatible (ValaDataType* base, ValaDataTyp
 		_tmp15_ = _tmp14_;
 		_vala_code_context_unref0 (_tmp8_);
 		if (_tmp15_) {
-			ValaDataType* _tmp16_;
-			ValaDataType* _tmp17_;
-			ValaTypeSymbol* _tmp18_;
-			ValaTypeSymbol* _tmp19_;
+			ValaDataType* _tmp16_ = NULL;
+			ValaDataType* _tmp17_ = NULL;
+			ValaTypeSymbol* _tmp18_ = NULL;
+			ValaTypeSymbol* _tmp19_ = NULL;
 			ValaCodeContext* _tmp20_ = NULL;
-			ValaCodeContext* _tmp21_;
-			ValaNamespace* _tmp22_;
-			ValaNamespace* _tmp23_;
-			ValaScope* _tmp24_;
-			ValaScope* _tmp25_;
+			ValaCodeContext* _tmp21_ = NULL;
+			ValaNamespace* _tmp22_ = NULL;
+			ValaNamespace* _tmp23_ = NULL;
+			ValaScope* _tmp24_ = NULL;
+			ValaScope* _tmp25_ = NULL;
 			ValaSymbol* _tmp26_ = NULL;
-			ValaSymbol* _tmp27_;
+			ValaSymbol* _tmp27_ = NULL;
 			_tmp16_ = vala_array_type_get_element_type (self);
 			_tmp17_ = _tmp16_;
 			_tmp18_ = vala_data_type_get_data_type (_tmp17_);
@@ -2150,145 +2170,139 @@ static gboolean vala_array_type_real_compatible (ValaDataType* base, ValaDataTyp
 		} else {
 			_tmp3_ = FALSE;
 		}
-		_tmp28_ = _tmp3_;
-		if (_tmp28_) {
+		if (_tmp3_) {
 			result = TRUE;
 			return result;
 		}
-		_tmp29_ = target_type;
-		_tmp30_ = vala_data_type_get_data_type (_tmp29_);
-		_tmp31_ = _tmp30_;
-		_tmp32_ = vala_code_context_get ();
-		_tmp33_ = _tmp32_;
-		_tmp34_ = vala_code_context_get_analyzer (_tmp33_);
-		_tmp35_ = _tmp34_;
-		_tmp36_ = _tmp35_->gvariant_type;
-		_tmp37_ = vala_data_type_get_data_type ((ValaDataType*) _tmp36_);
-		_tmp38_ = _tmp37_;
-		_tmp39_ = vala_typesymbol_is_subtype_of (_tmp31_, _tmp38_);
-		_tmp40_ = _tmp39_;
-		_vala_code_context_unref0 (_tmp33_);
-		if (_tmp40_) {
+		_tmp28_ = target_type;
+		_tmp29_ = vala_data_type_get_data_type (_tmp28_);
+		_tmp30_ = _tmp29_;
+		_tmp31_ = vala_code_context_get ();
+		_tmp32_ = _tmp31_;
+		_tmp33_ = vala_code_context_get_analyzer (_tmp32_);
+		_tmp34_ = _tmp33_;
+		_tmp35_ = _tmp34_->gvariant_type;
+		_tmp36_ = vala_data_type_get_data_type ((ValaDataType*) _tmp35_);
+		_tmp37_ = _tmp36_;
+		_tmp38_ = vala_typesymbol_is_subtype_of (_tmp30_, _tmp37_);
+		_tmp39_ = _tmp38_;
+		_vala_code_context_unref0 (_tmp32_);
+		if (_tmp39_) {
 			result = TRUE;
 			return result;
 		}
 	}
-	_tmp42_ = target_type;
-	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp42_, VALA_TYPE_POINTER_TYPE)) {
-		_tmp41_ = TRUE;
+	_tmp41_ = target_type;
+	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp41_, VALA_TYPE_POINTER_TYPE)) {
+		_tmp40_ = TRUE;
 	} else {
-		gboolean _tmp43_ = FALSE;
-		ValaDataType* _tmp44_;
-		ValaTypeSymbol* _tmp45_;
-		ValaTypeSymbol* _tmp46_;
-		gboolean _tmp52_;
-		_tmp44_ = target_type;
-		_tmp45_ = vala_data_type_get_data_type (_tmp44_);
-		_tmp46_ = _tmp45_;
-		if (_tmp46_ != NULL) {
-			ValaDataType* _tmp47_;
-			ValaTypeSymbol* _tmp48_;
-			ValaTypeSymbol* _tmp49_;
+		gboolean _tmp42_ = FALSE;
+		ValaDataType* _tmp43_ = NULL;
+		ValaTypeSymbol* _tmp44_ = NULL;
+		ValaTypeSymbol* _tmp45_ = NULL;
+		_tmp43_ = target_type;
+		_tmp44_ = vala_data_type_get_data_type (_tmp43_);
+		_tmp45_ = _tmp44_;
+		if (_tmp45_ != NULL) {
+			ValaDataType* _tmp46_ = NULL;
+			ValaTypeSymbol* _tmp47_ = NULL;
+			ValaTypeSymbol* _tmp48_ = NULL;
+			ValaAttribute* _tmp49_ = NULL;
 			ValaAttribute* _tmp50_ = NULL;
-			ValaAttribute* _tmp51_;
-			_tmp47_ = target_type;
-			_tmp48_ = vala_data_type_get_data_type (_tmp47_);
-			_tmp49_ = _tmp48_;
-			_tmp50_ = vala_code_node_get_attribute ((ValaCodeNode*) _tmp49_, "PointerType");
-			_tmp51_ = _tmp50_;
-			_tmp43_ = _tmp51_ != NULL;
-			_vala_code_node_unref0 (_tmp51_);
+			_tmp46_ = target_type;
+			_tmp47_ = vala_data_type_get_data_type (_tmp46_);
+			_tmp48_ = _tmp47_;
+			_tmp49_ = vala_code_node_get_attribute ((ValaCodeNode*) _tmp48_, "PointerType");
+			_tmp50_ = _tmp49_;
+			_tmp42_ = _tmp50_ != NULL;
+			_vala_code_node_unref0 (_tmp50_);
 		} else {
-			_tmp43_ = FALSE;
+			_tmp42_ = FALSE;
 		}
-		_tmp52_ = _tmp43_;
-		_tmp41_ = _tmp52_;
+		_tmp40_ = _tmp42_;
 	}
-	_tmp53_ = _tmp41_;
-	if (_tmp53_) {
+	if (_tmp40_) {
+		result = TRUE;
+		return result;
+	}
+	_tmp51_ = target_type;
+	_tmp52_ = vala_data_type_get_type_parameter (_tmp51_);
+	_tmp53_ = _tmp52_;
+	if (_tmp53_ != NULL) {
 		result = TRUE;
 		return result;
 	}
 	_tmp54_ = target_type;
-	_tmp55_ = vala_data_type_get_type_parameter (_tmp54_);
-	_tmp56_ = _tmp55_;
-	if (_tmp56_ != NULL) {
-		result = TRUE;
-		return result;
-	}
-	_tmp57_ = target_type;
-	_tmp58_ = _vala_code_node_ref0 (G_TYPE_CHECK_INSTANCE_TYPE (_tmp57_, VALA_TYPE_ARRAY_TYPE) ? ((ValaArrayType*) _tmp57_) : NULL);
-	target_array_type = _tmp58_;
-	_tmp59_ = target_array_type;
-	if (_tmp59_ == NULL) {
+	_tmp55_ = _vala_code_node_ref0 (G_TYPE_CHECK_INSTANCE_TYPE (_tmp54_, VALA_TYPE_ARRAY_TYPE) ? ((ValaArrayType*) _tmp54_) : NULL);
+	target_array_type = _tmp55_;
+	_tmp56_ = target_array_type;
+	if (_tmp56_ == NULL) {
 		result = FALSE;
 		_vala_code_node_unref0 (target_array_type);
 		return result;
 	}
-	_tmp60_ = target_array_type;
-	_tmp61_ = _tmp60_->priv->_rank;
-	_tmp62_ = self->priv->_rank;
-	if (_tmp61_ != _tmp62_) {
+	_tmp57_ = target_array_type;
+	_tmp58_ = _tmp57_->priv->_rank;
+	_tmp59_ = self->priv->_rank;
+	if (_tmp58_ != _tmp59_) {
 		result = FALSE;
 		_vala_code_node_unref0 (target_array_type);
 		return result;
 	}
-	_tmp64_ = vala_array_type_get_element_type (self);
-	_tmp65_ = _tmp64_;
-	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp65_, VALA_TYPE_VALUE_TYPE)) {
-		ValaDataType* _tmp66_;
-		ValaDataType* _tmp67_;
-		gboolean _tmp68_;
-		gboolean _tmp69_;
-		ValaArrayType* _tmp70_;
-		ValaDataType* _tmp71_;
-		ValaDataType* _tmp72_;
-		gboolean _tmp73_;
-		gboolean _tmp74_;
-		_tmp66_ = vala_array_type_get_element_type (self);
-		_tmp67_ = _tmp66_;
-		_tmp68_ = vala_data_type_get_nullable (_tmp67_);
+	_tmp61_ = vala_array_type_get_element_type (self);
+	_tmp62_ = _tmp61_;
+	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp62_, VALA_TYPE_VALUE_TYPE)) {
+		ValaDataType* _tmp63_ = NULL;
+		ValaDataType* _tmp64_ = NULL;
+		gboolean _tmp65_ = FALSE;
+		gboolean _tmp66_ = FALSE;
+		ValaArrayType* _tmp67_ = NULL;
+		ValaDataType* _tmp68_ = NULL;
+		ValaDataType* _tmp69_ = NULL;
+		gboolean _tmp70_ = FALSE;
+		gboolean _tmp71_ = FALSE;
+		_tmp63_ = vala_array_type_get_element_type (self);
+		_tmp64_ = _tmp63_;
+		_tmp65_ = vala_data_type_get_nullable (_tmp64_);
+		_tmp66_ = _tmp65_;
+		_tmp67_ = target_array_type;
+		_tmp68_ = vala_array_type_get_element_type (_tmp67_);
 		_tmp69_ = _tmp68_;
-		_tmp70_ = target_array_type;
-		_tmp71_ = vala_array_type_get_element_type (_tmp70_);
-		_tmp72_ = _tmp71_;
-		_tmp73_ = vala_data_type_get_nullable (_tmp72_);
-		_tmp74_ = _tmp73_;
-		_tmp63_ = _tmp69_ != _tmp74_;
+		_tmp70_ = vala_data_type_get_nullable (_tmp69_);
+		_tmp71_ = _tmp70_;
+		_tmp60_ = _tmp66_ != _tmp71_;
 	} else {
-		_tmp63_ = FALSE;
+		_tmp60_ = FALSE;
 	}
-	_tmp75_ = _tmp63_;
-	if (_tmp75_) {
+	if (_tmp60_) {
 		result = FALSE;
 		_vala_code_node_unref0 (target_array_type);
 		return result;
 	}
-	_tmp77_ = vala_array_type_get_element_type (self);
-	_tmp78_ = _tmp77_;
-	_tmp79_ = target_array_type;
-	_tmp80_ = vala_array_type_get_element_type (_tmp79_);
-	_tmp81_ = _tmp80_;
-	_tmp82_ = vala_data_type_compatible (_tmp78_, _tmp81_);
-	if (_tmp82_) {
-		ValaArrayType* _tmp83_;
-		ValaDataType* _tmp84_;
-		ValaDataType* _tmp85_;
-		ValaDataType* _tmp86_;
-		ValaDataType* _tmp87_;
-		gboolean _tmp88_ = FALSE;
-		_tmp83_ = target_array_type;
-		_tmp84_ = vala_array_type_get_element_type (_tmp83_);
-		_tmp85_ = _tmp84_;
-		_tmp86_ = vala_array_type_get_element_type (self);
-		_tmp87_ = _tmp86_;
-		_tmp88_ = vala_data_type_compatible (_tmp85_, _tmp87_);
-		_tmp76_ = _tmp88_;
+	_tmp73_ = vala_array_type_get_element_type (self);
+	_tmp74_ = _tmp73_;
+	_tmp75_ = target_array_type;
+	_tmp76_ = vala_array_type_get_element_type (_tmp75_);
+	_tmp77_ = _tmp76_;
+	_tmp78_ = vala_data_type_compatible (_tmp74_, _tmp77_);
+	if (_tmp78_) {
+		ValaArrayType* _tmp79_ = NULL;
+		ValaDataType* _tmp80_ = NULL;
+		ValaDataType* _tmp81_ = NULL;
+		ValaDataType* _tmp82_ = NULL;
+		ValaDataType* _tmp83_ = NULL;
+		gboolean _tmp84_ = FALSE;
+		_tmp79_ = target_array_type;
+		_tmp80_ = vala_array_type_get_element_type (_tmp79_);
+		_tmp81_ = _tmp80_;
+		_tmp82_ = vala_array_type_get_element_type (self);
+		_tmp83_ = _tmp82_;
+		_tmp84_ = vala_data_type_compatible (_tmp81_, _tmp83_);
+		_tmp72_ = _tmp84_;
 	} else {
-		_tmp76_ = FALSE;
+		_tmp72_ = FALSE;
 	}
-	_tmp89_ = _tmp76_;
-	if (_tmp89_) {
+	if (_tmp72_) {
 		result = TRUE;
 		_vala_code_node_unref0 (target_array_type);
 		return result;
@@ -2310,9 +2324,9 @@ static gboolean vala_array_type_real_is_reference_type_or_type_parameter (ValaDa
 
 static void vala_array_type_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaArrayType * self;
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaCodeVisitor* _tmp2_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaCodeVisitor* _tmp2_ = NULL;
 	self = (ValaArrayType*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_array_type_get_element_type (self);
@@ -2324,9 +2338,9 @@ static void vala_array_type_real_accept_children (ValaCodeNode* base, ValaCodeVi
 
 static void vala_array_type_real_replace_type (ValaCodeNode* base, ValaDataType* old_type, ValaDataType* new_type) {
 	ValaArrayType * self;
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaDataType* _tmp2_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaDataType* _tmp2_ = NULL;
 	self = (ValaArrayType*) base;
 	g_return_if_fail (old_type != NULL);
 	g_return_if_fail (new_type != NULL);
@@ -2334,7 +2348,7 @@ static void vala_array_type_real_replace_type (ValaCodeNode* base, ValaDataType*
 	_tmp1_ = _tmp0_;
 	_tmp2_ = old_type;
 	if (_tmp1_ == _tmp2_) {
-		ValaDataType* _tmp3_;
+		ValaDataType* _tmp3_ = NULL;
 		_tmp3_ = new_type;
 		vala_array_type_set_element_type (self, _tmp3_);
 	}
@@ -2344,9 +2358,9 @@ static void vala_array_type_real_replace_type (ValaCodeNode* base, ValaDataType*
 static gboolean vala_array_type_real_is_accessible (ValaDataType* base, ValaSymbol* sym) {
 	ValaArrayType * self;
 	gboolean result = FALSE;
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaSymbol* _tmp2_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaSymbol* _tmp2_ = NULL;
 	gboolean _tmp3_ = FALSE;
 	self = (ValaArrayType*) base;
 	g_return_val_if_fail (sym != NULL, FALSE);
@@ -2362,17 +2376,19 @@ static gboolean vala_array_type_real_is_accessible (ValaDataType* base, ValaSymb
 static gboolean vala_array_type_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaArrayType * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	ValaDataType* _tmp3_;
-	ValaDataType* _tmp4_;
-	ValaCodeContext* _tmp5_;
-	gboolean _tmp6_ = FALSE;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp3_ = FALSE;
+	gboolean _tmp4_ = FALSE;
+	ValaDataType* _tmp27_ = NULL;
+	ValaDataType* _tmp28_ = NULL;
+	ValaCodeContext* _tmp29_ = NULL;
+	gboolean _tmp30_ = FALSE;
 	self = (ValaArrayType*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = self->priv->_invalid_syntax;
 	if (_tmp0_) {
-		ValaSourceReference* _tmp1_;
-		ValaSourceReference* _tmp2_;
+		ValaSourceReference* _tmp1_ = NULL;
+		ValaSourceReference* _tmp2_ = NULL;
 		_tmp1_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
 		_tmp2_ = _tmp1_;
 		vala_report_error (_tmp2_, "syntax error, no expression allowed between array brackets");
@@ -2380,11 +2396,77 @@ static gboolean vala_array_type_real_check (ValaCodeNode* base, ValaCodeContext*
 		result = FALSE;
 		return result;
 	}
-	_tmp3_ = vala_array_type_get_element_type (self);
-	_tmp4_ = _tmp3_;
-	_tmp5_ = context;
-	_tmp6_ = vala_code_node_check ((ValaCodeNode*) _tmp4_, _tmp5_);
-	result = _tmp6_;
+	_tmp4_ = self->priv->_fixed_length;
+	if (_tmp4_) {
+		ValaExpression* _tmp5_ = NULL;
+		ValaExpression* _tmp6_ = NULL;
+		_tmp5_ = vala_array_type_get_length (self);
+		_tmp6_ = _tmp5_;
+		_tmp3_ = _tmp6_ != NULL;
+	} else {
+		_tmp3_ = FALSE;
+	}
+	if (_tmp3_) {
+		ValaExpression* _tmp7_ = NULL;
+		ValaExpression* _tmp8_ = NULL;
+		ValaCodeContext* _tmp9_ = NULL;
+		gboolean _tmp10_ = FALSE;
+		gboolean _tmp11_ = FALSE;
+		ValaExpression* _tmp12_ = NULL;
+		ValaExpression* _tmp13_ = NULL;
+		ValaDataType* _tmp14_ = NULL;
+		ValaDataType* _tmp15_ = NULL;
+		_tmp7_ = vala_array_type_get_length (self);
+		_tmp8_ = _tmp7_;
+		_tmp9_ = context;
+		vala_code_node_check ((ValaCodeNode*) _tmp8_, _tmp9_);
+		_tmp12_ = vala_array_type_get_length (self);
+		_tmp13_ = _tmp12_;
+		_tmp14_ = vala_expression_get_value_type (_tmp13_);
+		_tmp15_ = _tmp14_;
+		if (_tmp15_ == NULL) {
+			_tmp11_ = TRUE;
+		} else {
+			ValaExpression* _tmp16_ = NULL;
+			ValaExpression* _tmp17_ = NULL;
+			ValaDataType* _tmp18_ = NULL;
+			ValaDataType* _tmp19_ = NULL;
+			_tmp16_ = vala_array_type_get_length (self);
+			_tmp17_ = _tmp16_;
+			_tmp18_ = vala_expression_get_value_type (_tmp17_);
+			_tmp19_ = _tmp18_;
+			_tmp11_ = !G_TYPE_CHECK_INSTANCE_TYPE (_tmp19_, VALA_TYPE_INTEGER_TYPE);
+		}
+		if (_tmp11_) {
+			_tmp10_ = TRUE;
+		} else {
+			ValaExpression* _tmp20_ = NULL;
+			ValaExpression* _tmp21_ = NULL;
+			gboolean _tmp22_ = FALSE;
+			_tmp20_ = vala_array_type_get_length (self);
+			_tmp21_ = _tmp20_;
+			_tmp22_ = vala_expression_is_constant (_tmp21_);
+			_tmp10_ = !_tmp22_;
+		}
+		if (_tmp10_) {
+			ValaExpression* _tmp23_ = NULL;
+			ValaExpression* _tmp24_ = NULL;
+			ValaSourceReference* _tmp25_ = NULL;
+			ValaSourceReference* _tmp26_ = NULL;
+			_tmp23_ = vala_array_type_get_length (self);
+			_tmp24_ = _tmp23_;
+			_tmp25_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp24_);
+			_tmp26_ = _tmp25_;
+			vala_report_error (_tmp26_, "Expression of constant integer type expected");
+			result = FALSE;
+			return result;
+		}
+	}
+	_tmp27_ = vala_array_type_get_element_type (self);
+	_tmp28_ = _tmp27_;
+	_tmp29_ = context;
+	_tmp30_ = vala_code_node_check ((ValaCodeNode*) _tmp28_, _tmp29_);
+	result = _tmp30_;
 	return result;
 }
 
@@ -2392,75 +2474,63 @@ static gboolean vala_array_type_real_check (ValaCodeNode* base, ValaCodeContext*
 static ValaDataType* vala_array_type_real_get_actual_type (ValaDataType* base, ValaDataType* derived_instance_type, ValaMemberAccess* method_access, ValaCodeNode* node_reference) {
 	ValaArrayType * self;
 	ValaDataType* result = NULL;
-	gboolean _tmp0_ = FALSE;
-	ValaDataType* _tmp1_;
-	gboolean _tmp3_;
-	ValaArrayType* _tmp5_;
-	ValaArrayType* _result_;
-	gboolean _tmp6_ = FALSE;
-	ValaDataType* _tmp7_;
-	ValaDataType* _tmp8_;
-	gboolean _tmp12_;
+	ValaArrayType* _result_ = NULL;
+	ValaDataType* _tmp0_ = NULL;
+	gboolean _tmp1_ = FALSE;
+	ValaDataType* _tmp2_ = NULL;
+	gboolean _tmp4_ = FALSE;
+	ValaDataType* _tmp5_ = NULL;
+	ValaDataType* _tmp6_ = NULL;
 	self = (ValaArrayType*) base;
 	g_return_val_if_fail (node_reference != NULL, NULL);
-	_tmp1_ = derived_instance_type;
-	if (_tmp1_ == NULL) {
-		ValaMemberAccess* _tmp2_;
-		_tmp2_ = method_access;
-		_tmp0_ = _tmp2_ == NULL;
+	_tmp0_ = vala_data_type_copy ((ValaDataType*) self);
+	_result_ = G_TYPE_CHECK_INSTANCE_CAST (_tmp0_, VALA_TYPE_ARRAY_TYPE, ValaArrayType);
+	_tmp2_ = derived_instance_type;
+	if (_tmp2_ == NULL) {
+		ValaMemberAccess* _tmp3_ = NULL;
+		_tmp3_ = method_access;
+		_tmp1_ = _tmp3_ == NULL;
 	} else {
-		_tmp0_ = FALSE;
+		_tmp1_ = FALSE;
 	}
-	_tmp3_ = _tmp0_;
-	if (_tmp3_) {
-		ValaDataType* _tmp4_;
-		_tmp4_ = _vala_code_node_ref0 ((ValaDataType*) self);
-		result = _tmp4_;
+	if (_tmp1_) {
+		result = (ValaDataType*) _result_;
 		return result;
 	}
-	_tmp5_ = _vala_code_node_ref0 (self);
-	_result_ = _tmp5_;
-	_tmp7_ = vala_array_type_get_element_type (self);
-	_tmp8_ = _tmp7_;
-	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp8_, VALA_TYPE_GENERIC_TYPE)) {
-		_tmp6_ = TRUE;
+	_tmp5_ = vala_array_type_get_element_type (self);
+	_tmp6_ = _tmp5_;
+	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp6_, VALA_TYPE_GENERIC_TYPE)) {
+		_tmp4_ = TRUE;
 	} else {
-		ValaDataType* _tmp9_;
-		ValaDataType* _tmp10_;
-		gboolean _tmp11_ = FALSE;
-		_tmp9_ = vala_array_type_get_element_type (self);
-		_tmp10_ = _tmp9_;
-		_tmp11_ = vala_data_type_has_type_arguments (_tmp10_);
-		_tmp6_ = _tmp11_;
+		ValaDataType* _tmp7_ = NULL;
+		ValaDataType* _tmp8_ = NULL;
+		gboolean _tmp9_ = FALSE;
+		_tmp7_ = vala_array_type_get_element_type (self);
+		_tmp8_ = _tmp7_;
+		_tmp9_ = vala_data_type_has_type_arguments (_tmp8_);
+		_tmp4_ = _tmp9_;
 	}
-	_tmp12_ = _tmp6_;
-	if (_tmp12_) {
-		ValaArrayType* _tmp13_;
+	if (_tmp4_) {
+		ValaArrayType* _tmp10_ = NULL;
+		ValaArrayType* _tmp11_ = NULL;
+		ValaDataType* _tmp12_ = NULL;
+		ValaDataType* _tmp13_ = NULL;
 		ValaDataType* _tmp14_ = NULL;
-		ValaArrayType* _tmp15_;
-		ValaArrayType* _tmp16_;
-		ValaDataType* _tmp17_;
-		ValaDataType* _tmp18_;
-		ValaDataType* _tmp19_;
-		ValaMemberAccess* _tmp20_;
-		ValaCodeNode* _tmp21_;
-		ValaDataType* _tmp22_ = NULL;
-		ValaDataType* _tmp23_;
-		_tmp13_ = _result_;
-		_tmp14_ = vala_data_type_copy ((ValaDataType*) _tmp13_);
-		_vala_code_node_unref0 (_result_);
-		_result_ = G_TYPE_CHECK_INSTANCE_CAST (_tmp14_, VALA_TYPE_ARRAY_TYPE, ValaArrayType);
-		_tmp15_ = _result_;
-		_tmp16_ = _result_;
-		_tmp17_ = vala_array_type_get_element_type (_tmp16_);
+		ValaMemberAccess* _tmp15_ = NULL;
+		ValaCodeNode* _tmp16_ = NULL;
+		ValaDataType* _tmp17_ = NULL;
+		ValaDataType* _tmp18_ = NULL;
+		_tmp10_ = _result_;
+		_tmp11_ = _result_;
+		_tmp12_ = vala_array_type_get_element_type (_tmp11_);
+		_tmp13_ = _tmp12_;
+		_tmp14_ = derived_instance_type;
+		_tmp15_ = method_access;
+		_tmp16_ = node_reference;
+		_tmp17_ = vala_data_type_get_actual_type (_tmp13_, _tmp14_, _tmp15_, _tmp16_);
 		_tmp18_ = _tmp17_;
-		_tmp19_ = derived_instance_type;
-		_tmp20_ = method_access;
-		_tmp21_ = node_reference;
-		_tmp22_ = vala_data_type_get_actual_type (_tmp18_, _tmp19_, _tmp20_, _tmp21_);
-		_tmp23_ = _tmp22_;
-		vala_array_type_set_element_type (_tmp15_, _tmp23_);
-		_vala_code_node_unref0 (_tmp23_);
+		vala_array_type_set_element_type (_tmp10_, _tmp18_);
+		_vala_code_node_unref0 (_tmp18_);
 	}
 	result = (ValaDataType*) _result_;
 	return result;
@@ -2470,12 +2540,12 @@ static ValaDataType* vala_array_type_real_get_actual_type (ValaDataType* base, V
 static gboolean vala_array_type_real_is_disposable (ValaDataType* base) {
 	ValaArrayType * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	self = (ValaArrayType*) base;
 	_tmp0_ = self->priv->_fixed_length;
 	if (_tmp0_) {
-		ValaDataType* _tmp1_;
-		ValaDataType* _tmp2_;
+		ValaDataType* _tmp1_ = NULL;
+		ValaDataType* _tmp2_ = NULL;
 		gboolean _tmp3_ = FALSE;
 		_tmp1_ = vala_array_type_get_element_type (self);
 		_tmp2_ = _tmp1_;
@@ -2493,7 +2563,7 @@ static gboolean vala_array_type_real_is_disposable (ValaDataType* base) {
 
 ValaDataType* vala_array_type_get_element_type (ValaArrayType* self) {
 	ValaDataType* result;
-	ValaDataType* _tmp0_;
+	ValaDataType* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_element_type;
 	result = _tmp0_;
@@ -2502,9 +2572,9 @@ ValaDataType* vala_array_type_get_element_type (ValaArrayType* self) {
 
 
 void vala_array_type_set_element_type (ValaArrayType* self, ValaDataType* value) {
-	ValaDataType* _tmp0_;
-	ValaDataType* _tmp1_;
-	ValaDataType* _tmp2_;
+	ValaDataType* _tmp0_ = NULL;
+	ValaDataType* _tmp1_ = NULL;
+	ValaDataType* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -2517,7 +2587,7 @@ void vala_array_type_set_element_type (ValaArrayType* self, ValaDataType* value)
 
 gboolean vala_array_type_get_invalid_syntax (ValaArrayType* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_invalid_syntax;
 	result = _tmp0_;
@@ -2526,7 +2596,7 @@ gboolean vala_array_type_get_invalid_syntax (ValaArrayType* self) {
 
 
 void vala_array_type_set_invalid_syntax (ValaArrayType* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_invalid_syntax = _tmp0_;
@@ -2535,7 +2605,7 @@ void vala_array_type_set_invalid_syntax (ValaArrayType* self, gboolean value) {
 
 gboolean vala_array_type_get_inline_allocated (ValaArrayType* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_inline_allocated;
 	result = _tmp0_;
@@ -2544,7 +2614,7 @@ gboolean vala_array_type_get_inline_allocated (ValaArrayType* self) {
 
 
 void vala_array_type_set_inline_allocated (ValaArrayType* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_inline_allocated = _tmp0_;
@@ -2553,7 +2623,7 @@ void vala_array_type_set_inline_allocated (ValaArrayType* self, gboolean value) 
 
 gboolean vala_array_type_get_fixed_length (ValaArrayType* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_fixed_length;
 	result = _tmp0_;
@@ -2562,34 +2632,44 @@ gboolean vala_array_type_get_fixed_length (ValaArrayType* self) {
 
 
 void vala_array_type_set_fixed_length (ValaArrayType* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_fixed_length = _tmp0_;
 }
 
 
-gint vala_array_type_get_length (ValaArrayType* self) {
-	gint result;
-	gint _tmp0_;
-	g_return_val_if_fail (self != NULL, 0);
+ValaExpression* vala_array_type_get_length (ValaArrayType* self) {
+	ValaExpression* result;
+	ValaExpression* _tmp0_ = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_length;
 	result = _tmp0_;
 	return result;
 }
 
 
-void vala_array_type_set_length (ValaArrayType* self, gint value) {
-	gint _tmp0_;
+void vala_array_type_set_length (ValaArrayType* self, ValaExpression* value) {
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
-	self->priv->_length = _tmp0_;
+	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
+	_vala_code_node_unref0 (self->priv->_length);
+	self->priv->_length = _tmp1_;
+	_tmp2_ = self->priv->_length;
+	if (_tmp2_ != NULL) {
+		ValaExpression* _tmp3_ = NULL;
+		_tmp3_ = self->priv->_length;
+		vala_code_node_set_parent_node ((ValaCodeNode*) _tmp3_, (ValaCodeNode*) self);
+	}
 }
 
 
 gint vala_array_type_get_rank (ValaArrayType* self) {
 	gint result;
-	gint _tmp0_;
+	gint _tmp0_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->_rank;
 	result = _tmp0_;
@@ -2598,7 +2678,7 @@ gint vala_array_type_get_rank (ValaArrayType* self) {
 
 
 void vala_array_type_set_rank (ValaArrayType* self, gint value) {
-	gint _tmp0_;
+	gint _tmp0_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_rank = _tmp0_;
@@ -2607,20 +2687,20 @@ void vala_array_type_set_rank (ValaArrayType* self, gint value) {
 
 static void vala_array_type_class_init (ValaArrayTypeClass * klass) {
 	vala_array_type_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_array_type_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_array_type_finalize;
 	g_type_class_add_private (klass, sizeof (ValaArrayTypePrivate));
-	VALA_DATA_TYPE_CLASS (klass)->get_member = vala_array_type_real_get_member;
-	VALA_DATA_TYPE_CLASS (klass)->copy = vala_array_type_real_copy;
-	VALA_DATA_TYPE_CLASS (klass)->is_array = vala_array_type_real_is_array;
-	VALA_DATA_TYPE_CLASS (klass)->to_qualified_string = vala_array_type_real_to_qualified_string;
-	VALA_DATA_TYPE_CLASS (klass)->compatible = vala_array_type_real_compatible;
-	VALA_DATA_TYPE_CLASS (klass)->is_reference_type_or_type_parameter = vala_array_type_real_is_reference_type_or_type_parameter;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_array_type_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->replace_type = vala_array_type_real_replace_type;
-	VALA_DATA_TYPE_CLASS (klass)->is_accessible = vala_array_type_real_is_accessible;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_array_type_real_check;
-	VALA_DATA_TYPE_CLASS (klass)->get_actual_type = vala_array_type_real_get_actual_type;
-	VALA_DATA_TYPE_CLASS (klass)->is_disposable = vala_array_type_real_is_disposable;
+	((ValaDataTypeClass *) klass)->get_member = vala_array_type_real_get_member;
+	((ValaDataTypeClass *) klass)->copy = vala_array_type_real_copy;
+	((ValaDataTypeClass *) klass)->is_array = vala_array_type_real_is_array;
+	((ValaDataTypeClass *) klass)->to_qualified_string = vala_array_type_real_to_qualified_string;
+	((ValaDataTypeClass *) klass)->compatible = vala_array_type_real_compatible;
+	((ValaDataTypeClass *) klass)->is_reference_type_or_type_parameter = vala_array_type_real_is_reference_type_or_type_parameter;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_array_type_real_accept_children;
+	((ValaCodeNodeClass *) klass)->replace_type = vala_array_type_real_replace_type;
+	((ValaDataTypeClass *) klass)->is_accessible = vala_array_type_real_is_accessible;
+	((ValaCodeNodeClass *) klass)->check = vala_array_type_real_check;
+	((ValaDataTypeClass *) klass)->get_actual_type = vala_array_type_real_get_actual_type;
+	((ValaDataTypeClass *) klass)->is_disposable = vala_array_type_real_is_disposable;
 }
 
 
@@ -2633,6 +2713,7 @@ static void vala_array_type_finalize (ValaCodeNode* obj) {
 	ValaArrayType * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_ARRAY_TYPE, ValaArrayType);
 	_vala_code_node_unref0 (self->priv->_element_type);
+	_vala_code_node_unref0 (self->priv->_length);
 	_vala_code_node_unref0 (self->priv->length_field);
 	_vala_code_node_unref0 (self->priv->resize_method);
 	_vala_code_node_unref0 (self->priv->move_method);

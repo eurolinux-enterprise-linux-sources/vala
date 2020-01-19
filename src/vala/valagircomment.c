@@ -63,7 +63,6 @@ typedef struct _ValaGirCommentPrivate ValaGirCommentPrivate;
 
 typedef struct _ValaSourceReference ValaSourceReference;
 typedef struct _ValaSourceReferenceClass ValaSourceReferenceClass;
-#define _g_free0(var) (var = (g_free (var), NULL))
 
 struct _ValaComment {
 	GTypeInstance parent_instance;
@@ -126,7 +125,7 @@ static void vala_gir_comment_finalize (ValaComment* obj);
 
 ValaMapIterator* vala_gir_comment_parameter_iterator (ValaGirComment* self) {
 	ValaMapIterator* result = NULL;
-	ValaHashMap* _tmp0_;
+	ValaHashMap* _tmp0_ = NULL;
 	ValaMapIterator* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->parameter_content;
@@ -138,27 +137,17 @@ ValaMapIterator* vala_gir_comment_parameter_iterator (ValaGirComment* self) {
 
 ValaGirComment* vala_gir_comment_construct (GType object_type, const gchar* comment, ValaSourceReference* _source_reference) {
 	ValaGirComment* self = NULL;
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
-	gchar* _tmp2_;
-	const gchar* _tmp3_;
-	const gchar* _tmp5_;
-	ValaSourceReference* _tmp6_;
+	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
+	ValaSourceReference* _tmp2_ = NULL;
 	g_return_val_if_fail (_source_reference != NULL, NULL);
-	_tmp0_ = comment;
-	_tmp1_ = g_strdup (_tmp0_);
-	_tmp2_ = _tmp1_;
-	_tmp3_ = _tmp2_;
-	if (_tmp3_ == NULL) {
-		gchar* _tmp4_;
-		_tmp4_ = g_strdup ("");
-		_g_free0 (_tmp2_);
-		_tmp2_ = _tmp4_;
+	_tmp1_ = comment;
+	_tmp0_ = _tmp1_;
+	if (_tmp0_ == NULL) {
+		_tmp0_ = "";
 	}
-	_tmp5_ = _tmp2_;
-	_tmp6_ = _source_reference;
-	self = (ValaGirComment*) vala_comment_construct (object_type, _tmp5_, _tmp6_);
-	_g_free0 (_tmp2_);
+	_tmp2_ = _source_reference;
+	self = (ValaGirComment*) vala_comment_construct (object_type, _tmp0_, _tmp2_);
 	return self;
 }
 
@@ -169,9 +158,9 @@ ValaGirComment* vala_gir_comment_new (const gchar* comment, ValaSourceReference*
 
 
 void vala_gir_comment_add_content_for_parameter (ValaGirComment* self, const gchar* name, ValaComment* comment) {
-	ValaHashMap* _tmp0_;
-	const gchar* _tmp1_;
-	ValaComment* _tmp2_;
+	ValaHashMap* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
+	ValaComment* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (comment != NULL);
@@ -184,8 +173,8 @@ void vala_gir_comment_add_content_for_parameter (ValaGirComment* self, const gch
 
 ValaComment* vala_gir_comment_get_content_for_parameter (ValaGirComment* self, const gchar* name) {
 	ValaComment* result = NULL;
-	ValaHashMap* _tmp0_;
-	const gchar* _tmp1_;
+	ValaHashMap* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	gpointer _tmp2_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
@@ -199,7 +188,7 @@ ValaComment* vala_gir_comment_get_content_for_parameter (ValaGirComment* self, c
 
 ValaComment* vala_gir_comment_get_return_content (ValaGirComment* self) {
 	ValaComment* result;
-	ValaComment* _tmp0_;
+	ValaComment* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_return_content;
 	result = _tmp0_;
@@ -213,8 +202,8 @@ static gpointer _vala_comment_ref0 (gpointer self) {
 
 
 void vala_gir_comment_set_return_content (ValaGirComment* self, ValaComment* value) {
-	ValaComment* _tmp0_;
-	ValaComment* _tmp1_;
+	ValaComment* _tmp0_ = NULL;
+	ValaComment* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_comment_ref0 (_tmp0_);
@@ -225,16 +214,16 @@ void vala_gir_comment_set_return_content (ValaGirComment* self, ValaComment* val
 
 static void vala_gir_comment_class_init (ValaGirCommentClass * klass) {
 	vala_gir_comment_parent_class = g_type_class_peek_parent (klass);
-	VALA_COMMENT_CLASS (klass)->finalize = vala_gir_comment_finalize;
+	((ValaCommentClass *) klass)->finalize = vala_gir_comment_finalize;
 	g_type_class_add_private (klass, sizeof (ValaGirCommentPrivate));
 }
 
 
 static void vala_gir_comment_instance_init (ValaGirComment * self) {
-	GHashFunc _tmp0_;
-	GEqualFunc _tmp1_;
-	GEqualFunc _tmp2_;
-	ValaHashMap* _tmp3_;
+	GHashFunc _tmp0_ = NULL;
+	GEqualFunc _tmp1_ = NULL;
+	GEqualFunc _tmp2_ = NULL;
+	ValaHashMap* _tmp3_ = NULL;
 	self->priv = VALA_GIR_COMMENT_GET_PRIVATE (self);
 	_tmp0_ = g_direct_hash;
 	_tmp1_ = g_direct_equal;

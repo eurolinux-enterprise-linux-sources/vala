@@ -46,7 +46,15 @@ public class Vala.ArrayType : ReferenceType {
 	/**
 	 * The length of this fixed-length array.
 	 */
-	public int length { get; set; }
+	public Expression? length {
+		get { return _length; }
+		set {
+			_length = value;
+			if (_length != null) {
+				_length.parent_node = this;
+			}
+		}
+	}
 
 	/**
 	 * The rank of this array.
@@ -54,6 +62,7 @@ public class Vala.ArrayType : ReferenceType {
 	public int rank { get; set; }
 
 	private DataType _element_type;
+	private Expression _length;
 
 	private ArrayLengthField length_field;
 	private ArrayResizeMethod resize_method;
@@ -156,10 +165,15 @@ public class Vala.ArrayType : ReferenceType {
 	}
 
 	public override string to_qualified_string (Scope? scope) {
+		var elem_str = element_type.to_qualified_string (scope);
+		if (element_type.is_weak () && !(parent_node is Constant)) {
+			elem_str = "(unowned %s)".printf (elem_str);
+		}
+		
 		if (!fixed_length) {
-			return "%s[%s]%s".printf (element_type.to_qualified_string (scope), string.nfill (rank - 1, ','), nullable ? "?" : "");
+			return "%s[%s]%s".printf (elem_str, string.nfill (rank - 1, ','), nullable ? "?" : "");
 		} else {
-			return element_type.to_qualified_string (scope);
+			return elem_str;
 		}
 	}
 
@@ -231,18 +245,27 @@ public class Vala.ArrayType : ReferenceType {
 			error = true;
 			return false;
 		}
+
+		if (fixed_length && length != null) {
+			length.check (context);
+
+			if (length.value_type == null || !(length.value_type is IntegerType) || !length.is_constant ()) {
+				Report.error (length.source_reference, "Expression of constant integer type expected");
+				return false;
+			}
+		}
+
 		return element_type.check (context);
 	}
 
 	public override DataType get_actual_type (DataType? derived_instance_type, MemberAccess? method_access, CodeNode node_reference) {
+		ArrayType result = (ArrayType) this.copy ();
+
 		if (derived_instance_type == null && method_access == null) {
-			return this;
+			return result;
 		}
 
-		ArrayType result = this;
-
 		if (element_type is GenericType || element_type.has_type_arguments ()) {
-			result = (ArrayType) result.copy ();
 			result.element_type = result.element_type.get_actual_type (derived_instance_type, method_access, node_reference);
 		}
 

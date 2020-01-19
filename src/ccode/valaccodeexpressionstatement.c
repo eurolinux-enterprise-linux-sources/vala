@@ -197,7 +197,7 @@ static void vala_ccode_expression_statement_finalize (ValaCCodeNode* obj);
 
 ValaCCodeExpressionStatement* vala_ccode_expression_statement_construct (GType object_type, ValaCCodeExpression* expr) {
 	ValaCCodeExpressionStatement* self = NULL;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (expr != NULL, NULL);
 	self = (ValaCCodeExpressionStatement*) vala_ccode_statement_construct (object_type);
 	_tmp0_ = expr;
@@ -218,26 +218,26 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 static void vala_ccode_expression_statement_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeExpressionStatement * self;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	self = (ValaCCodeExpressionStatement*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = self->priv->_expression;
 	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp0_, VALA_TYPE_CCODE_COMMA_EXPRESSION)) {
-		ValaCCodeExpression* _tmp1_;
-		ValaCCodeCommaExpression* _tmp2_;
-		ValaCCodeCommaExpression* ccomma;
+		ValaCCodeCommaExpression* ccomma = NULL;
+		ValaCCodeExpression* _tmp1_ = NULL;
+		ValaCCodeCommaExpression* _tmp2_ = NULL;
 		_tmp1_ = self->priv->_expression;
 		_tmp2_ = _vala_ccode_node_ref0 (G_TYPE_CHECK_INSTANCE_TYPE (_tmp1_, VALA_TYPE_CCODE_COMMA_EXPRESSION) ? ((ValaCCodeCommaExpression*) _tmp1_) : NULL);
 		ccomma = _tmp2_;
 		{
-			ValaCCodeCommaExpression* _tmp3_;
+			ValaList* _expr_list = NULL;
+			ValaCCodeCommaExpression* _tmp3_ = NULL;
 			ValaList* _tmp4_ = NULL;
-			ValaList* _expr_list;
-			ValaList* _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			gint _expr_size;
-			gint _expr_index;
+			gint _expr_size = 0;
+			ValaList* _tmp5_ = NULL;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			gint _expr_index = 0;
 			_tmp3_ = ccomma;
 			_tmp4_ = vala_ccode_comma_expression_get_inner (_tmp3_);
 			_expr_list = _tmp4_;
@@ -247,15 +247,15 @@ static void vala_ccode_expression_statement_real_write (ValaCCodeNode* base, Val
 			_expr_size = _tmp7_;
 			_expr_index = -1;
 			while (TRUE) {
-				gint _tmp8_;
-				gint _tmp9_;
-				gint _tmp10_;
-				ValaList* _tmp11_;
-				gint _tmp12_;
+				gint _tmp8_ = 0;
+				gint _tmp9_ = 0;
+				gint _tmp10_ = 0;
+				ValaCCodeExpression* expr = NULL;
+				ValaList* _tmp11_ = NULL;
+				gint _tmp12_ = 0;
 				gpointer _tmp13_ = NULL;
-				ValaCCodeExpression* expr;
-				ValaCCodeWriter* _tmp14_;
-				ValaCCodeExpression* _tmp15_;
+				ValaCCodeWriter* _tmp14_ = NULL;
+				ValaCCodeExpression* _tmp15_ = NULL;
 				_tmp8_ = _expr_index;
 				_expr_index = _tmp8_ + 1;
 				_tmp9_ = _expr_index;
@@ -276,16 +276,16 @@ static void vala_ccode_expression_statement_real_write (ValaCCodeNode* base, Val
 		}
 		_vala_ccode_node_unref0 (ccomma);
 	} else {
-		ValaCCodeExpression* _tmp16_;
+		ValaCCodeExpression* _tmp16_ = NULL;
 		_tmp16_ = self->priv->_expression;
 		if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp16_, VALA_TYPE_CCODE_PARENTHESIZED_EXPRESSION)) {
-			ValaCCodeExpression* _tmp17_;
-			ValaCCodeParenthesizedExpression* _tmp18_;
-			ValaCCodeParenthesizedExpression* cpar;
-			ValaCCodeWriter* _tmp19_;
-			ValaCCodeParenthesizedExpression* _tmp20_;
-			ValaCCodeExpression* _tmp21_;
-			ValaCCodeExpression* _tmp22_;
+			ValaCCodeParenthesizedExpression* cpar = NULL;
+			ValaCCodeExpression* _tmp17_ = NULL;
+			ValaCCodeParenthesizedExpression* _tmp18_ = NULL;
+			ValaCCodeWriter* _tmp19_ = NULL;
+			ValaCCodeParenthesizedExpression* _tmp20_ = NULL;
+			ValaCCodeExpression* _tmp21_ = NULL;
+			ValaCCodeExpression* _tmp22_ = NULL;
 			_tmp17_ = self->priv->_expression;
 			_tmp18_ = _vala_ccode_node_ref0 (G_TYPE_CHECK_INSTANCE_TYPE (_tmp17_, VALA_TYPE_CCODE_PARENTHESIZED_EXPRESSION) ? ((ValaCCodeParenthesizedExpression*) _tmp17_) : NULL);
 			cpar = _tmp18_;
@@ -296,8 +296,8 @@ static void vala_ccode_expression_statement_real_write (ValaCCodeNode* base, Val
 			vala_ccode_expression_statement_write_expression (self, _tmp19_, _tmp22_);
 			_vala_ccode_node_unref0 (cpar);
 		} else {
-			ValaCCodeWriter* _tmp23_;
-			ValaCCodeExpression* _tmp24_;
+			ValaCCodeWriter* _tmp23_ = NULL;
+			ValaCCodeExpression* _tmp24_ = NULL;
 			_tmp23_ = writer;
 			_tmp24_ = self->priv->_expression;
 			vala_ccode_expression_statement_write_expression (self, _tmp23_, _tmp24_);
@@ -307,12 +307,12 @@ static void vala_ccode_expression_statement_real_write (ValaCCodeNode* base, Val
 
 
 static void vala_ccode_expression_statement_write_expression (ValaCCodeExpressionStatement* self, ValaCCodeWriter* writer, ValaCCodeExpression* expr) {
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeLineDirective* _tmp1_;
-	ValaCCodeLineDirective* _tmp2_;
-	ValaCCodeExpression* _tmp3_;
-	ValaCCodeWriter* _tmp6_;
-	ValaCCodeWriter* _tmp7_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeLineDirective* _tmp1_ = NULL;
+	ValaCCodeLineDirective* _tmp2_ = NULL;
+	ValaCCodeExpression* _tmp3_ = NULL;
+	ValaCCodeWriter* _tmp6_ = NULL;
+	ValaCCodeWriter* _tmp7_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -321,8 +321,8 @@ static void vala_ccode_expression_statement_write_expression (ValaCCodeExpressio
 	vala_ccode_writer_write_indent (_tmp0_, _tmp2_);
 	_tmp3_ = expr;
 	if (_tmp3_ != NULL) {
-		ValaCCodeExpression* _tmp4_;
-		ValaCCodeWriter* _tmp5_;
+		ValaCCodeExpression* _tmp4_ = NULL;
+		ValaCCodeWriter* _tmp5_ = NULL;
 		_tmp4_ = expr;
 		_tmp5_ = writer;
 		vala_ccode_node_write ((ValaCCodeNode*) _tmp4_, _tmp5_);
@@ -336,7 +336,7 @@ static void vala_ccode_expression_statement_write_expression (ValaCCodeExpressio
 
 ValaCCodeExpression* vala_ccode_expression_statement_get_expression (ValaCCodeExpressionStatement* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_expression;
 	result = _tmp0_;
@@ -345,8 +345,8 @@ ValaCCodeExpression* vala_ccode_expression_statement_get_expression (ValaCCodeEx
 
 
 void vala_ccode_expression_statement_set_expression (ValaCCodeExpressionStatement* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -357,9 +357,9 @@ void vala_ccode_expression_statement_set_expression (ValaCCodeExpressionStatemen
 
 static void vala_ccode_expression_statement_class_init (ValaCCodeExpressionStatementClass * klass) {
 	vala_ccode_expression_statement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_expression_statement_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_expression_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeExpressionStatementPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_expression_statement_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_expression_statement_real_write;
 }
 
 

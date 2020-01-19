@@ -157,7 +157,7 @@ static void vala_ccode_label_finalize (ValaCCodeNode* obj);
 
 ValaCCodeLabel* vala_ccode_label_construct (GType object_type, const gchar* name) {
 	ValaCCodeLabel* self = NULL;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	self = (ValaCCodeLabel*) vala_ccode_statement_construct (object_type);
 	_tmp0_ = name;
@@ -173,11 +173,11 @@ ValaCCodeLabel* vala_ccode_label_new (const gchar* name) {
 
 static void vala_ccode_label_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeLabel * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	const gchar* _tmp2_;
-	ValaCCodeWriter* _tmp3_;
-	ValaCCodeWriter* _tmp4_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	const gchar* _tmp2_ = NULL;
+	ValaCCodeWriter* _tmp3_ = NULL;
+	ValaCCodeWriter* _tmp4_ = NULL;
 	self = (ValaCCodeLabel*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -194,7 +194,7 @@ static void vala_ccode_label_real_write (ValaCCodeNode* base, ValaCCodeWriter* w
 
 const gchar* vala_ccode_label_get_name (ValaCCodeLabel* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_name;
 	result = _tmp0_;
@@ -203,8 +203,8 @@ const gchar* vala_ccode_label_get_name (ValaCCodeLabel* self) {
 
 
 void vala_ccode_label_set_name (ValaCCodeLabel* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -215,9 +215,9 @@ void vala_ccode_label_set_name (ValaCCodeLabel* self, const gchar* value) {
 
 static void vala_ccode_label_class_init (ValaCCodeLabelClass * klass) {
 	vala_ccode_label_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_label_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_label_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeLabelPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_label_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_label_real_write;
 }
 
 

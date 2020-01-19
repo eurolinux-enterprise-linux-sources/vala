@@ -295,8 +295,8 @@ void vala_data_type_set_data_type (ValaDataType* self, ValaTypeSymbol* value);
 static gboolean vala_value_type_real_is_disposable (ValaDataType* base);
 gboolean vala_data_type_get_value_owned (ValaDataType* self);
 gboolean vala_data_type_get_nullable (ValaDataType* self);
-ValaTypeSymbol* vala_value_type_get_type_symbol (ValaValueType* self);
 GType vala_struct_get_type (void) G_GNUC_CONST;
+ValaTypeSymbol* vala_value_type_get_type_symbol (ValaValueType* self);
 gboolean vala_struct_is_disposable (ValaStruct* self);
 static gboolean vala_value_type_real_check (ValaCodeNode* base, ValaCodeContext* context);
 gboolean vala_code_node_check (ValaCodeNode* self, ValaCodeContext* context);
@@ -305,8 +305,8 @@ static void vala_value_type_finalize (ValaCodeNode* obj);
 
 ValaValueType* vala_value_type_construct (GType object_type, ValaTypeSymbol* type_symbol) {
 	ValaValueType* self = NULL;
-	ValaTypeSymbol* _tmp0_;
-	ValaTypeSymbol* _tmp1_;
+	ValaTypeSymbol* _tmp0_ = NULL;
+	ValaTypeSymbol* _tmp1_ = NULL;
 	g_return_val_if_fail (type_symbol != NULL, NULL);
 	self = (ValaValueType*) vala_data_type_construct (object_type);
 	_tmp0_ = type_symbol;
@@ -325,14 +325,14 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 static gboolean vala_value_type_real_is_disposable (ValaDataType* base) {
 	ValaValueType * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	gboolean _tmp2_;
-	gboolean _tmp3_;
-	ValaTypeSymbol* _tmp4_;
-	ValaStruct* _tmp5_;
-	ValaStruct* st;
-	ValaStruct* _tmp6_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	gboolean _tmp2_ = FALSE;
+	gboolean _tmp3_ = FALSE;
+	ValaStruct* st = NULL;
+	ValaTypeSymbol* _tmp4_ = NULL;
+	ValaStruct* _tmp5_ = NULL;
+	ValaStruct* _tmp6_ = NULL;
 	self = (ValaValueType*) base;
 	_tmp0_ = vala_data_type_get_value_owned ((ValaDataType*) self);
 	_tmp1_ = _tmp0_;
@@ -351,7 +351,7 @@ static gboolean vala_value_type_real_is_disposable (ValaDataType* base) {
 	st = _tmp5_;
 	_tmp6_ = st;
 	if (_tmp6_ != NULL) {
-		ValaStruct* _tmp7_;
+		ValaStruct* _tmp7_ = NULL;
 		gboolean _tmp8_ = FALSE;
 		_tmp7_ = st;
 		_tmp8_ = vala_struct_is_disposable (_tmp7_);
@@ -368,8 +368,8 @@ static gboolean vala_value_type_real_is_disposable (ValaDataType* base) {
 static gboolean vala_value_type_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaValueType * self;
 	gboolean result = FALSE;
-	ValaTypeSymbol* _tmp0_;
-	ValaCodeContext* _tmp1_;
+	ValaTypeSymbol* _tmp0_ = NULL;
+	ValaCodeContext* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
 	self = (ValaValueType*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
@@ -383,7 +383,7 @@ static gboolean vala_value_type_real_check (ValaCodeNode* base, ValaCodeContext*
 
 ValaTypeSymbol* vala_value_type_get_type_symbol (ValaValueType* self) {
 	ValaTypeSymbol* result;
-	ValaTypeSymbol* _tmp0_;
+	ValaTypeSymbol* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_type_symbol;
 	result = _tmp0_;
@@ -392,7 +392,7 @@ ValaTypeSymbol* vala_value_type_get_type_symbol (ValaValueType* self) {
 
 
 void vala_value_type_set_type_symbol (ValaValueType* self, ValaTypeSymbol* value) {
-	ValaTypeSymbol* _tmp0_;
+	ValaTypeSymbol* _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_type_symbol = _tmp0_;
@@ -401,10 +401,10 @@ void vala_value_type_set_type_symbol (ValaValueType* self, ValaTypeSymbol* value
 
 static void vala_value_type_class_init (ValaValueTypeClass * klass) {
 	vala_value_type_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_value_type_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_value_type_finalize;
 	g_type_class_add_private (klass, sizeof (ValaValueTypePrivate));
-	VALA_DATA_TYPE_CLASS (klass)->is_disposable = vala_value_type_real_is_disposable;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_value_type_real_check;
+	((ValaDataTypeClass *) klass)->is_disposable = vala_value_type_real_is_disposable;
+	((ValaCodeNodeClass *) klass)->check = vala_value_type_real_check;
 }
 
 

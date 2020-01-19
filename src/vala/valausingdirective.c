@@ -238,8 +238,8 @@ static void vala_using_directive_finalize (ValaCodeNode* obj);
  */
 ValaUsingDirective* vala_using_directive_construct (GType object_type, ValaSymbol* namespace_symbol, ValaSourceReference* source_reference) {
 	ValaUsingDirective* self = NULL;
-	ValaSymbol* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	ValaSymbol* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	g_return_val_if_fail (namespace_symbol != NULL, NULL);
 	self = (ValaUsingDirective*) vala_code_node_construct (object_type);
 	_tmp0_ = namespace_symbol;
@@ -257,7 +257,7 @@ ValaUsingDirective* vala_using_directive_new (ValaSymbol* namespace_symbol, Vala
 
 static void vala_using_directive_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaUsingDirective * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaUsingDirective*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -267,7 +267,7 @@ static void vala_using_directive_real_accept (ValaCodeNode* base, ValaCodeVisito
 
 ValaSymbol* vala_using_directive_get_namespace_symbol (ValaUsingDirective* self) {
 	ValaSymbol* result;
-	ValaSymbol* _tmp0_;
+	ValaSymbol* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_namespace_symbol;
 	result = _tmp0_;
@@ -281,8 +281,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 
 void vala_using_directive_set_namespace_symbol (ValaUsingDirective* self, ValaSymbol* value) {
-	ValaSymbol* _tmp0_;
-	ValaSymbol* _tmp1_;
+	ValaSymbol* _tmp0_ = NULL;
+	ValaSymbol* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -293,9 +293,9 @@ void vala_using_directive_set_namespace_symbol (ValaUsingDirective* self, ValaSy
 
 static void vala_using_directive_class_init (ValaUsingDirectiveClass * klass) {
 	vala_using_directive_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_using_directive_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_using_directive_finalize;
 	g_type_class_add_private (klass, sizeof (ValaUsingDirectivePrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_using_directive_real_accept;
+	((ValaCodeNodeClass *) klass)->accept = vala_using_directive_real_accept;
 }
 
 

@@ -624,7 +624,7 @@ gboolean vala_code_node_get_checked (ValaCodeNode* self);
 gboolean vala_code_node_get_error (ValaCodeNode* self);
 void vala_code_node_set_checked (ValaCodeNode* self, gboolean value);
 gboolean vala_attribute_has_argument (ValaAttribute* self, const gchar* name);
-gchar* vala_attribute_get_string (ValaAttribute* self, const gchar* name);
+gchar* vala_attribute_get_string (ValaAttribute* self, const gchar* name, const gchar* default_value);
 void vala_source_file_set_gir_namespace (ValaSourceFile* self, const gchar* value);
 void vala_source_file_set_gir_version (ValaSourceFile* self, const gchar* value);
 gboolean vala_code_node_check (ValaCodeNode* self, ValaCodeContext* context);
@@ -640,8 +640,8 @@ static void vala_namespace_finalize (ValaCodeNode* obj);
  */
 ValaNamespace* vala_namespace_construct (GType object_type, const gchar* name, ValaSourceReference* source_reference) {
 	ValaNamespace* self = NULL;
-	const gchar* _tmp0_;
-	ValaSourceReference* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
 	_tmp0_ = name;
 	_tmp1_ = source_reference;
 	self = (ValaNamespace*) vala_symbol_construct (object_type, _tmp0_, _tmp1_, NULL);
@@ -661,8 +661,8 @@ ValaNamespace* vala_namespace_new (const gchar* name, ValaSourceReference* sourc
  * @param ns reference to namespace
  */
 void vala_namespace_add_using_directive (ValaNamespace* self, ValaUsingDirective* ns) {
-	ValaList* _tmp0_;
-	ValaUsingDirective* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaUsingDirective* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (ns != NULL);
 	_tmp0_ = self->priv->using_directives;
@@ -672,8 +672,8 @@ void vala_namespace_add_using_directive (ValaNamespace* self, ValaUsingDirective
 
 
 void vala_namespace_add_comment (ValaNamespace* self, ValaComment* comment) {
-	ValaList* _tmp0_;
-	ValaComment* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaComment* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (comment != NULL);
 	_tmp0_ = self->priv->comments;
@@ -694,8 +694,8 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 
 ValaList* vala_namespace_get_comments (ValaNamespace* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->comments;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -716,29 +716,29 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 static void vala_namespace_real_add_namespace (ValaSymbol* base, ValaNamespace* ns) {
 	ValaNamespace * self;
-	ValaNamespace* _tmp0_;
-	ValaScope* _tmp1_;
-	ValaScope* _tmp2_;
-	ValaScope* _tmp9_;
-	ValaScope* _tmp10_;
-	ValaNamespace* _tmp11_;
-	const gchar* _tmp12_;
-	const gchar* _tmp13_;
+	ValaNamespace* _tmp0_ = NULL;
+	ValaScope* _tmp1_ = NULL;
+	ValaScope* _tmp2_ = NULL;
+	ValaScope* _tmp9_ = NULL;
+	ValaScope* _tmp10_ = NULL;
+	ValaNamespace* _tmp11_ = NULL;
+	const gchar* _tmp12_ = NULL;
+	const gchar* _tmp13_ = NULL;
 	ValaSymbol* _tmp14_ = NULL;
-	ValaSymbol* _tmp15_;
-	gboolean _tmp16_;
+	ValaSymbol* _tmp15_ = NULL;
+	gboolean _tmp16_ = FALSE;
 	self = (ValaNamespace*) base;
 	g_return_if_fail (ns != NULL);
 	_tmp0_ = ns;
 	_tmp1_ = vala_symbol_get_owner ((ValaSymbol*) _tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ == NULL) {
-		ValaNamespace* _tmp3_;
-		ValaSourceReference* _tmp4_;
-		ValaSourceReference* _tmp5_;
-		ValaSourceFile* _tmp6_;
-		ValaSourceFile* _tmp7_;
-		ValaNamespace* _tmp8_;
+		ValaNamespace* _tmp3_ = NULL;
+		ValaSourceReference* _tmp4_ = NULL;
+		ValaSourceReference* _tmp5_ = NULL;
+		ValaSourceFile* _tmp6_ = NULL;
+		ValaSourceFile* _tmp7_ = NULL;
+		ValaNamespace* _tmp8_ = NULL;
 		_tmp3_ = ns;
 		_tmp4_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp3_);
 		_tmp5_ = _tmp4_;
@@ -757,20 +757,19 @@ static void vala_namespace_real_add_namespace (ValaSymbol* base, ValaNamespace* 
 	_tmp16_ = G_TYPE_CHECK_INSTANCE_TYPE (_tmp15_, VALA_TYPE_NAMESPACE);
 	_vala_code_node_unref0 (_tmp15_);
 	if (_tmp16_) {
-		ValaScope* _tmp17_;
-		ValaScope* _tmp18_;
-		ValaNamespace* _tmp19_;
-		const gchar* _tmp20_;
-		const gchar* _tmp21_;
+		ValaNamespace* old_ns = NULL;
+		ValaScope* _tmp17_ = NULL;
+		ValaScope* _tmp18_ = NULL;
+		ValaNamespace* _tmp19_ = NULL;
+		const gchar* _tmp20_ = NULL;
+		const gchar* _tmp21_ = NULL;
 		ValaSymbol* _tmp22_ = NULL;
-		ValaNamespace* old_ns;
 		gboolean _tmp23_ = FALSE;
-		ValaNamespace* _tmp24_;
-		gboolean _tmp25_;
-		gboolean _tmp26_;
-		gboolean _tmp30_;
-		ValaNamespace* _tmp192_;
-		GList* _tmp193_;
+		ValaNamespace* _tmp24_ = NULL;
+		gboolean _tmp25_ = FALSE;
+		gboolean _tmp26_ = FALSE;
+		ValaNamespace* _tmp191_ = NULL;
+		GList* _tmp192_ = NULL;
 		_tmp17_ = vala_symbol_get_scope ((ValaSymbol*) self);
 		_tmp18_ = _tmp17_;
 		_tmp19_ = ns;
@@ -782,9 +781,9 @@ static void vala_namespace_real_add_namespace (ValaSymbol* base, ValaNamespace* 
 		_tmp25_ = vala_symbol_get_external_package ((ValaSymbol*) _tmp24_);
 		_tmp26_ = _tmp25_;
 		if (_tmp26_) {
-			ValaNamespace* _tmp27_;
-			gboolean _tmp28_;
-			gboolean _tmp29_;
+			ValaNamespace* _tmp27_ = NULL;
+			gboolean _tmp28_ = FALSE;
+			gboolean _tmp29_ = FALSE;
 			_tmp27_ = ns;
 			_tmp28_ = vala_symbol_get_external_package ((ValaSymbol*) _tmp27_);
 			_tmp29_ = _tmp28_;
@@ -792,595 +791,594 @@ static void vala_namespace_real_add_namespace (ValaSymbol* base, ValaNamespace* 
 		} else {
 			_tmp23_ = FALSE;
 		}
-		_tmp30_ = _tmp23_;
-		if (_tmp30_) {
-			ValaNamespace* _tmp31_;
-			ValaNamespace* _tmp32_;
-			ValaSourceReference* _tmp33_;
-			ValaSourceReference* _tmp34_;
-			_tmp31_ = old_ns;
-			_tmp32_ = ns;
-			_tmp33_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp32_);
-			_tmp34_ = _tmp33_;
-			vala_code_node_set_source_reference ((ValaCodeNode*) _tmp31_, _tmp34_);
+		if (_tmp23_) {
+			ValaNamespace* _tmp30_ = NULL;
+			ValaNamespace* _tmp31_ = NULL;
+			ValaSourceReference* _tmp32_ = NULL;
+			ValaSourceReference* _tmp33_ = NULL;
+			_tmp30_ = old_ns;
+			_tmp31_ = ns;
+			_tmp32_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp31_);
+			_tmp33_ = _tmp32_;
+			vala_code_node_set_source_reference ((ValaCodeNode*) _tmp30_, _tmp33_);
 		}
 		{
-			ValaNamespace* _tmp35_;
-			ValaList* _tmp36_;
-			ValaList* _tmp37_;
-			ValaList* _using_directive_list;
-			ValaList* _tmp38_;
-			gint _tmp39_;
-			gint _tmp40_;
-			gint _using_directive_size;
-			gint _using_directive_index;
-			_tmp35_ = ns;
-			_tmp36_ = _tmp35_->priv->using_directives;
-			_tmp37_ = _vala_iterable_ref0 (_tmp36_);
-			_using_directive_list = _tmp37_;
-			_tmp38_ = _using_directive_list;
-			_tmp39_ = vala_collection_get_size ((ValaCollection*) _tmp38_);
-			_tmp40_ = _tmp39_;
-			_using_directive_size = _tmp40_;
+			ValaList* _using_directive_list = NULL;
+			ValaNamespace* _tmp34_ = NULL;
+			ValaList* _tmp35_ = NULL;
+			ValaList* _tmp36_ = NULL;
+			gint _using_directive_size = 0;
+			ValaList* _tmp37_ = NULL;
+			gint _tmp38_ = 0;
+			gint _tmp39_ = 0;
+			gint _using_directive_index = 0;
+			_tmp34_ = ns;
+			_tmp35_ = _tmp34_->priv->using_directives;
+			_tmp36_ = _vala_iterable_ref0 (_tmp35_);
+			_using_directive_list = _tmp36_;
+			_tmp37_ = _using_directive_list;
+			_tmp38_ = vala_collection_get_size ((ValaCollection*) _tmp37_);
+			_tmp39_ = _tmp38_;
+			_using_directive_size = _tmp39_;
 			_using_directive_index = -1;
 			while (TRUE) {
-				gint _tmp41_;
-				gint _tmp42_;
-				gint _tmp43_;
-				ValaList* _tmp44_;
-				gint _tmp45_;
-				gpointer _tmp46_ = NULL;
-				ValaUsingDirective* using_directive;
-				ValaNamespace* _tmp47_;
-				ValaUsingDirective* _tmp48_;
+				gint _tmp40_ = 0;
+				gint _tmp41_ = 0;
+				gint _tmp42_ = 0;
+				ValaUsingDirective* using_directive = NULL;
+				ValaList* _tmp43_ = NULL;
+				gint _tmp44_ = 0;
+				gpointer _tmp45_ = NULL;
+				ValaNamespace* _tmp46_ = NULL;
+				ValaUsingDirective* _tmp47_ = NULL;
+				_tmp40_ = _using_directive_index;
+				_using_directive_index = _tmp40_ + 1;
 				_tmp41_ = _using_directive_index;
-				_using_directive_index = _tmp41_ + 1;
-				_tmp42_ = _using_directive_index;
-				_tmp43_ = _using_directive_size;
-				if (!(_tmp42_ < _tmp43_)) {
+				_tmp42_ = _using_directive_size;
+				if (!(_tmp41_ < _tmp42_)) {
 					break;
 				}
-				_tmp44_ = _using_directive_list;
-				_tmp45_ = _using_directive_index;
-				_tmp46_ = vala_list_get (_tmp44_, _tmp45_);
-				using_directive = (ValaUsingDirective*) _tmp46_;
-				_tmp47_ = old_ns;
-				_tmp48_ = using_directive;
-				vala_namespace_add_using_directive (_tmp47_, _tmp48_);
+				_tmp43_ = _using_directive_list;
+				_tmp44_ = _using_directive_index;
+				_tmp45_ = vala_list_get (_tmp43_, _tmp44_);
+				using_directive = (ValaUsingDirective*) _tmp45_;
+				_tmp46_ = old_ns;
+				_tmp47_ = using_directive;
+				vala_namespace_add_using_directive (_tmp46_, _tmp47_);
 				_vala_code_node_unref0 (using_directive);
 			}
 			_vala_iterable_unref0 (_using_directive_list);
 		}
 		{
-			ValaNamespace* _tmp49_;
+			ValaList* _sub_ns_list = NULL;
+			ValaNamespace* _tmp48_ = NULL;
+			ValaList* _tmp49_ = NULL;
+			gint _sub_ns_size = 0;
 			ValaList* _tmp50_ = NULL;
-			ValaList* _sub_ns_list;
-			ValaList* _tmp51_;
-			gint _tmp52_;
-			gint _tmp53_;
-			gint _sub_ns_size;
-			gint _sub_ns_index;
-			_tmp49_ = ns;
-			_tmp50_ = vala_namespace_get_namespaces (_tmp49_);
-			_sub_ns_list = _tmp50_;
-			_tmp51_ = _sub_ns_list;
-			_tmp52_ = vala_collection_get_size ((ValaCollection*) _tmp51_);
-			_tmp53_ = _tmp52_;
-			_sub_ns_size = _tmp53_;
+			gint _tmp51_ = 0;
+			gint _tmp52_ = 0;
+			gint _sub_ns_index = 0;
+			_tmp48_ = ns;
+			_tmp49_ = vala_namespace_get_namespaces (_tmp48_);
+			_sub_ns_list = _tmp49_;
+			_tmp50_ = _sub_ns_list;
+			_tmp51_ = vala_collection_get_size ((ValaCollection*) _tmp50_);
+			_tmp52_ = _tmp51_;
+			_sub_ns_size = _tmp52_;
 			_sub_ns_index = -1;
 			while (TRUE) {
-				gint _tmp54_;
-				gint _tmp55_;
-				gint _tmp56_;
-				ValaList* _tmp57_;
-				gint _tmp58_;
-				gpointer _tmp59_ = NULL;
-				ValaNamespace* sub_ns;
-				ValaNamespace* _tmp60_;
-				ValaNamespace* _tmp61_;
+				gint _tmp53_ = 0;
+				gint _tmp54_ = 0;
+				gint _tmp55_ = 0;
+				ValaNamespace* sub_ns = NULL;
+				ValaList* _tmp56_ = NULL;
+				gint _tmp57_ = 0;
+				gpointer _tmp58_ = NULL;
+				ValaNamespace* _tmp59_ = NULL;
+				ValaNamespace* _tmp60_ = NULL;
+				_tmp53_ = _sub_ns_index;
+				_sub_ns_index = _tmp53_ + 1;
 				_tmp54_ = _sub_ns_index;
-				_sub_ns_index = _tmp54_ + 1;
-				_tmp55_ = _sub_ns_index;
-				_tmp56_ = _sub_ns_size;
-				if (!(_tmp55_ < _tmp56_)) {
+				_tmp55_ = _sub_ns_size;
+				if (!(_tmp54_ < _tmp55_)) {
 					break;
 				}
-				_tmp57_ = _sub_ns_list;
-				_tmp58_ = _sub_ns_index;
-				_tmp59_ = vala_list_get (_tmp57_, _tmp58_);
-				sub_ns = (ValaNamespace*) _tmp59_;
-				_tmp60_ = old_ns;
-				_tmp61_ = sub_ns;
-				vala_symbol_add_namespace ((ValaSymbol*) _tmp60_, _tmp61_);
+				_tmp56_ = _sub_ns_list;
+				_tmp57_ = _sub_ns_index;
+				_tmp58_ = vala_list_get (_tmp56_, _tmp57_);
+				sub_ns = (ValaNamespace*) _tmp58_;
+				_tmp59_ = old_ns;
+				_tmp60_ = sub_ns;
+				vala_symbol_add_namespace ((ValaSymbol*) _tmp59_, _tmp60_);
 				_vala_code_node_unref0 (sub_ns);
 			}
 			_vala_iterable_unref0 (_sub_ns_list);
 		}
 		{
-			ValaNamespace* _tmp62_;
+			ValaList* _cl_list = NULL;
+			ValaNamespace* _tmp61_ = NULL;
+			ValaList* _tmp62_ = NULL;
+			gint _cl_size = 0;
 			ValaList* _tmp63_ = NULL;
-			ValaList* _cl_list;
-			ValaList* _tmp64_;
-			gint _tmp65_;
-			gint _tmp66_;
-			gint _cl_size;
-			gint _cl_index;
-			_tmp62_ = ns;
-			_tmp63_ = vala_namespace_get_classes (_tmp62_);
-			_cl_list = _tmp63_;
-			_tmp64_ = _cl_list;
-			_tmp65_ = vala_collection_get_size ((ValaCollection*) _tmp64_);
-			_tmp66_ = _tmp65_;
-			_cl_size = _tmp66_;
+			gint _tmp64_ = 0;
+			gint _tmp65_ = 0;
+			gint _cl_index = 0;
+			_tmp61_ = ns;
+			_tmp62_ = vala_namespace_get_classes (_tmp61_);
+			_cl_list = _tmp62_;
+			_tmp63_ = _cl_list;
+			_tmp64_ = vala_collection_get_size ((ValaCollection*) _tmp63_);
+			_tmp65_ = _tmp64_;
+			_cl_size = _tmp65_;
 			_cl_index = -1;
 			while (TRUE) {
-				gint _tmp67_;
-				gint _tmp68_;
-				gint _tmp69_;
-				ValaList* _tmp70_;
-				gint _tmp71_;
-				gpointer _tmp72_ = NULL;
-				ValaClass* cl;
-				ValaNamespace* _tmp73_;
-				ValaClass* _tmp74_;
+				gint _tmp66_ = 0;
+				gint _tmp67_ = 0;
+				gint _tmp68_ = 0;
+				ValaClass* cl = NULL;
+				ValaList* _tmp69_ = NULL;
+				gint _tmp70_ = 0;
+				gpointer _tmp71_ = NULL;
+				ValaNamespace* _tmp72_ = NULL;
+				ValaClass* _tmp73_ = NULL;
+				_tmp66_ = _cl_index;
+				_cl_index = _tmp66_ + 1;
 				_tmp67_ = _cl_index;
-				_cl_index = _tmp67_ + 1;
-				_tmp68_ = _cl_index;
-				_tmp69_ = _cl_size;
-				if (!(_tmp68_ < _tmp69_)) {
+				_tmp68_ = _cl_size;
+				if (!(_tmp67_ < _tmp68_)) {
 					break;
 				}
-				_tmp70_ = _cl_list;
-				_tmp71_ = _cl_index;
-				_tmp72_ = vala_list_get (_tmp70_, _tmp71_);
-				cl = (ValaClass*) _tmp72_;
-				_tmp73_ = old_ns;
-				_tmp74_ = cl;
-				vala_symbol_add_class ((ValaSymbol*) _tmp73_, _tmp74_);
+				_tmp69_ = _cl_list;
+				_tmp70_ = _cl_index;
+				_tmp71_ = vala_list_get (_tmp69_, _tmp70_);
+				cl = (ValaClass*) _tmp71_;
+				_tmp72_ = old_ns;
+				_tmp73_ = cl;
+				vala_symbol_add_class ((ValaSymbol*) _tmp72_, _tmp73_);
 				_vala_code_node_unref0 (cl);
 			}
 			_vala_iterable_unref0 (_cl_list);
 		}
 		{
-			ValaNamespace* _tmp75_;
+			ValaList* _st_list = NULL;
+			ValaNamespace* _tmp74_ = NULL;
+			ValaList* _tmp75_ = NULL;
+			gint _st_size = 0;
 			ValaList* _tmp76_ = NULL;
-			ValaList* _st_list;
-			ValaList* _tmp77_;
-			gint _tmp78_;
-			gint _tmp79_;
-			gint _st_size;
-			gint _st_index;
-			_tmp75_ = ns;
-			_tmp76_ = vala_namespace_get_structs (_tmp75_);
-			_st_list = _tmp76_;
-			_tmp77_ = _st_list;
-			_tmp78_ = vala_collection_get_size ((ValaCollection*) _tmp77_);
-			_tmp79_ = _tmp78_;
-			_st_size = _tmp79_;
+			gint _tmp77_ = 0;
+			gint _tmp78_ = 0;
+			gint _st_index = 0;
+			_tmp74_ = ns;
+			_tmp75_ = vala_namespace_get_structs (_tmp74_);
+			_st_list = _tmp75_;
+			_tmp76_ = _st_list;
+			_tmp77_ = vala_collection_get_size ((ValaCollection*) _tmp76_);
+			_tmp78_ = _tmp77_;
+			_st_size = _tmp78_;
 			_st_index = -1;
 			while (TRUE) {
-				gint _tmp80_;
-				gint _tmp81_;
-				gint _tmp82_;
-				ValaList* _tmp83_;
-				gint _tmp84_;
-				gpointer _tmp85_ = NULL;
-				ValaStruct* st;
-				ValaNamespace* _tmp86_;
-				ValaStruct* _tmp87_;
+				gint _tmp79_ = 0;
+				gint _tmp80_ = 0;
+				gint _tmp81_ = 0;
+				ValaStruct* st = NULL;
+				ValaList* _tmp82_ = NULL;
+				gint _tmp83_ = 0;
+				gpointer _tmp84_ = NULL;
+				ValaNamespace* _tmp85_ = NULL;
+				ValaStruct* _tmp86_ = NULL;
+				_tmp79_ = _st_index;
+				_st_index = _tmp79_ + 1;
 				_tmp80_ = _st_index;
-				_st_index = _tmp80_ + 1;
-				_tmp81_ = _st_index;
-				_tmp82_ = _st_size;
-				if (!(_tmp81_ < _tmp82_)) {
+				_tmp81_ = _st_size;
+				if (!(_tmp80_ < _tmp81_)) {
 					break;
 				}
-				_tmp83_ = _st_list;
-				_tmp84_ = _st_index;
-				_tmp85_ = vala_list_get (_tmp83_, _tmp84_);
-				st = (ValaStruct*) _tmp85_;
-				_tmp86_ = old_ns;
-				_tmp87_ = st;
-				vala_symbol_add_struct ((ValaSymbol*) _tmp86_, _tmp87_);
+				_tmp82_ = _st_list;
+				_tmp83_ = _st_index;
+				_tmp84_ = vala_list_get (_tmp82_, _tmp83_);
+				st = (ValaStruct*) _tmp84_;
+				_tmp85_ = old_ns;
+				_tmp86_ = st;
+				vala_symbol_add_struct ((ValaSymbol*) _tmp85_, _tmp86_);
 				_vala_code_node_unref0 (st);
 			}
 			_vala_iterable_unref0 (_st_list);
 		}
 		{
-			ValaNamespace* _tmp88_;
+			ValaList* _iface_list = NULL;
+			ValaNamespace* _tmp87_ = NULL;
+			ValaList* _tmp88_ = NULL;
+			gint _iface_size = 0;
 			ValaList* _tmp89_ = NULL;
-			ValaList* _iface_list;
-			ValaList* _tmp90_;
-			gint _tmp91_;
-			gint _tmp92_;
-			gint _iface_size;
-			gint _iface_index;
-			_tmp88_ = ns;
-			_tmp89_ = vala_namespace_get_interfaces (_tmp88_);
-			_iface_list = _tmp89_;
-			_tmp90_ = _iface_list;
-			_tmp91_ = vala_collection_get_size ((ValaCollection*) _tmp90_);
-			_tmp92_ = _tmp91_;
-			_iface_size = _tmp92_;
+			gint _tmp90_ = 0;
+			gint _tmp91_ = 0;
+			gint _iface_index = 0;
+			_tmp87_ = ns;
+			_tmp88_ = vala_namespace_get_interfaces (_tmp87_);
+			_iface_list = _tmp88_;
+			_tmp89_ = _iface_list;
+			_tmp90_ = vala_collection_get_size ((ValaCollection*) _tmp89_);
+			_tmp91_ = _tmp90_;
+			_iface_size = _tmp91_;
 			_iface_index = -1;
 			while (TRUE) {
-				gint _tmp93_;
-				gint _tmp94_;
-				gint _tmp95_;
-				ValaList* _tmp96_;
-				gint _tmp97_;
-				gpointer _tmp98_ = NULL;
-				ValaInterface* iface;
-				ValaNamespace* _tmp99_;
-				ValaInterface* _tmp100_;
+				gint _tmp92_ = 0;
+				gint _tmp93_ = 0;
+				gint _tmp94_ = 0;
+				ValaInterface* iface = NULL;
+				ValaList* _tmp95_ = NULL;
+				gint _tmp96_ = 0;
+				gpointer _tmp97_ = NULL;
+				ValaNamespace* _tmp98_ = NULL;
+				ValaInterface* _tmp99_ = NULL;
+				_tmp92_ = _iface_index;
+				_iface_index = _tmp92_ + 1;
 				_tmp93_ = _iface_index;
-				_iface_index = _tmp93_ + 1;
-				_tmp94_ = _iface_index;
-				_tmp95_ = _iface_size;
-				if (!(_tmp94_ < _tmp95_)) {
+				_tmp94_ = _iface_size;
+				if (!(_tmp93_ < _tmp94_)) {
 					break;
 				}
-				_tmp96_ = _iface_list;
-				_tmp97_ = _iface_index;
-				_tmp98_ = vala_list_get (_tmp96_, _tmp97_);
-				iface = (ValaInterface*) _tmp98_;
-				_tmp99_ = old_ns;
-				_tmp100_ = iface;
-				vala_symbol_add_interface ((ValaSymbol*) _tmp99_, _tmp100_);
+				_tmp95_ = _iface_list;
+				_tmp96_ = _iface_index;
+				_tmp97_ = vala_list_get (_tmp95_, _tmp96_);
+				iface = (ValaInterface*) _tmp97_;
+				_tmp98_ = old_ns;
+				_tmp99_ = iface;
+				vala_symbol_add_interface ((ValaSymbol*) _tmp98_, _tmp99_);
 				_vala_code_node_unref0 (iface);
 			}
 			_vala_iterable_unref0 (_iface_list);
 		}
 		{
-			ValaNamespace* _tmp101_;
+			ValaList* _d_list = NULL;
+			ValaNamespace* _tmp100_ = NULL;
+			ValaList* _tmp101_ = NULL;
+			gint _d_size = 0;
 			ValaList* _tmp102_ = NULL;
-			ValaList* _d_list;
-			ValaList* _tmp103_;
-			gint _tmp104_;
-			gint _tmp105_;
-			gint _d_size;
-			gint _d_index;
-			_tmp101_ = ns;
-			_tmp102_ = vala_namespace_get_delegates (_tmp101_);
-			_d_list = _tmp102_;
-			_tmp103_ = _d_list;
-			_tmp104_ = vala_collection_get_size ((ValaCollection*) _tmp103_);
-			_tmp105_ = _tmp104_;
-			_d_size = _tmp105_;
+			gint _tmp103_ = 0;
+			gint _tmp104_ = 0;
+			gint _d_index = 0;
+			_tmp100_ = ns;
+			_tmp101_ = vala_namespace_get_delegates (_tmp100_);
+			_d_list = _tmp101_;
+			_tmp102_ = _d_list;
+			_tmp103_ = vala_collection_get_size ((ValaCollection*) _tmp102_);
+			_tmp104_ = _tmp103_;
+			_d_size = _tmp104_;
 			_d_index = -1;
 			while (TRUE) {
-				gint _tmp106_;
-				gint _tmp107_;
-				gint _tmp108_;
-				ValaList* _tmp109_;
-				gint _tmp110_;
-				gpointer _tmp111_ = NULL;
-				ValaDelegate* d;
-				ValaNamespace* _tmp112_;
-				ValaDelegate* _tmp113_;
+				gint _tmp105_ = 0;
+				gint _tmp106_ = 0;
+				gint _tmp107_ = 0;
+				ValaDelegate* d = NULL;
+				ValaList* _tmp108_ = NULL;
+				gint _tmp109_ = 0;
+				gpointer _tmp110_ = NULL;
+				ValaNamespace* _tmp111_ = NULL;
+				ValaDelegate* _tmp112_ = NULL;
+				_tmp105_ = _d_index;
+				_d_index = _tmp105_ + 1;
 				_tmp106_ = _d_index;
-				_d_index = _tmp106_ + 1;
-				_tmp107_ = _d_index;
-				_tmp108_ = _d_size;
-				if (!(_tmp107_ < _tmp108_)) {
+				_tmp107_ = _d_size;
+				if (!(_tmp106_ < _tmp107_)) {
 					break;
 				}
-				_tmp109_ = _d_list;
-				_tmp110_ = _d_index;
-				_tmp111_ = vala_list_get (_tmp109_, _tmp110_);
-				d = (ValaDelegate*) _tmp111_;
-				_tmp112_ = old_ns;
-				_tmp113_ = d;
-				vala_symbol_add_delegate ((ValaSymbol*) _tmp112_, _tmp113_);
+				_tmp108_ = _d_list;
+				_tmp109_ = _d_index;
+				_tmp110_ = vala_list_get (_tmp108_, _tmp109_);
+				d = (ValaDelegate*) _tmp110_;
+				_tmp111_ = old_ns;
+				_tmp112_ = d;
+				vala_symbol_add_delegate ((ValaSymbol*) _tmp111_, _tmp112_);
 				_vala_code_node_unref0 (d);
 			}
 			_vala_iterable_unref0 (_d_list);
 		}
 		{
-			ValaNamespace* _tmp114_;
+			ValaList* _en_list = NULL;
+			ValaNamespace* _tmp113_ = NULL;
+			ValaList* _tmp114_ = NULL;
+			gint _en_size = 0;
 			ValaList* _tmp115_ = NULL;
-			ValaList* _en_list;
-			ValaList* _tmp116_;
-			gint _tmp117_;
-			gint _tmp118_;
-			gint _en_size;
-			gint _en_index;
-			_tmp114_ = ns;
-			_tmp115_ = vala_namespace_get_enums (_tmp114_);
-			_en_list = _tmp115_;
-			_tmp116_ = _en_list;
-			_tmp117_ = vala_collection_get_size ((ValaCollection*) _tmp116_);
-			_tmp118_ = _tmp117_;
-			_en_size = _tmp118_;
+			gint _tmp116_ = 0;
+			gint _tmp117_ = 0;
+			gint _en_index = 0;
+			_tmp113_ = ns;
+			_tmp114_ = vala_namespace_get_enums (_tmp113_);
+			_en_list = _tmp114_;
+			_tmp115_ = _en_list;
+			_tmp116_ = vala_collection_get_size ((ValaCollection*) _tmp115_);
+			_tmp117_ = _tmp116_;
+			_en_size = _tmp117_;
 			_en_index = -1;
 			while (TRUE) {
-				gint _tmp119_;
-				gint _tmp120_;
-				gint _tmp121_;
-				ValaList* _tmp122_;
-				gint _tmp123_;
-				gpointer _tmp124_ = NULL;
-				ValaEnum* en;
-				ValaNamespace* _tmp125_;
-				ValaEnum* _tmp126_;
+				gint _tmp118_ = 0;
+				gint _tmp119_ = 0;
+				gint _tmp120_ = 0;
+				ValaEnum* en = NULL;
+				ValaList* _tmp121_ = NULL;
+				gint _tmp122_ = 0;
+				gpointer _tmp123_ = NULL;
+				ValaNamespace* _tmp124_ = NULL;
+				ValaEnum* _tmp125_ = NULL;
+				_tmp118_ = _en_index;
+				_en_index = _tmp118_ + 1;
 				_tmp119_ = _en_index;
-				_en_index = _tmp119_ + 1;
-				_tmp120_ = _en_index;
-				_tmp121_ = _en_size;
-				if (!(_tmp120_ < _tmp121_)) {
+				_tmp120_ = _en_size;
+				if (!(_tmp119_ < _tmp120_)) {
 					break;
 				}
-				_tmp122_ = _en_list;
-				_tmp123_ = _en_index;
-				_tmp124_ = vala_list_get (_tmp122_, _tmp123_);
-				en = (ValaEnum*) _tmp124_;
-				_tmp125_ = old_ns;
-				_tmp126_ = en;
-				vala_symbol_add_enum ((ValaSymbol*) _tmp125_, _tmp126_);
+				_tmp121_ = _en_list;
+				_tmp122_ = _en_index;
+				_tmp123_ = vala_list_get (_tmp121_, _tmp122_);
+				en = (ValaEnum*) _tmp123_;
+				_tmp124_ = old_ns;
+				_tmp125_ = en;
+				vala_symbol_add_enum ((ValaSymbol*) _tmp124_, _tmp125_);
 				_vala_code_node_unref0 (en);
 			}
 			_vala_iterable_unref0 (_en_list);
 		}
 		{
-			ValaNamespace* _tmp127_;
+			ValaList* _ed_list = NULL;
+			ValaNamespace* _tmp126_ = NULL;
+			ValaList* _tmp127_ = NULL;
+			gint _ed_size = 0;
 			ValaList* _tmp128_ = NULL;
-			ValaList* _ed_list;
-			ValaList* _tmp129_;
-			gint _tmp130_;
-			gint _tmp131_;
-			gint _ed_size;
-			gint _ed_index;
-			_tmp127_ = ns;
-			_tmp128_ = vala_namespace_get_error_domains (_tmp127_);
-			_ed_list = _tmp128_;
-			_tmp129_ = _ed_list;
-			_tmp130_ = vala_collection_get_size ((ValaCollection*) _tmp129_);
-			_tmp131_ = _tmp130_;
-			_ed_size = _tmp131_;
+			gint _tmp129_ = 0;
+			gint _tmp130_ = 0;
+			gint _ed_index = 0;
+			_tmp126_ = ns;
+			_tmp127_ = vala_namespace_get_error_domains (_tmp126_);
+			_ed_list = _tmp127_;
+			_tmp128_ = _ed_list;
+			_tmp129_ = vala_collection_get_size ((ValaCollection*) _tmp128_);
+			_tmp130_ = _tmp129_;
+			_ed_size = _tmp130_;
 			_ed_index = -1;
 			while (TRUE) {
-				gint _tmp132_;
-				gint _tmp133_;
-				gint _tmp134_;
-				ValaList* _tmp135_;
-				gint _tmp136_;
-				gpointer _tmp137_ = NULL;
-				ValaErrorDomain* ed;
-				ValaNamespace* _tmp138_;
-				ValaErrorDomain* _tmp139_;
+				gint _tmp131_ = 0;
+				gint _tmp132_ = 0;
+				gint _tmp133_ = 0;
+				ValaErrorDomain* ed = NULL;
+				ValaList* _tmp134_ = NULL;
+				gint _tmp135_ = 0;
+				gpointer _tmp136_ = NULL;
+				ValaNamespace* _tmp137_ = NULL;
+				ValaErrorDomain* _tmp138_ = NULL;
+				_tmp131_ = _ed_index;
+				_ed_index = _tmp131_ + 1;
 				_tmp132_ = _ed_index;
-				_ed_index = _tmp132_ + 1;
-				_tmp133_ = _ed_index;
-				_tmp134_ = _ed_size;
-				if (!(_tmp133_ < _tmp134_)) {
+				_tmp133_ = _ed_size;
+				if (!(_tmp132_ < _tmp133_)) {
 					break;
 				}
-				_tmp135_ = _ed_list;
-				_tmp136_ = _ed_index;
-				_tmp137_ = vala_list_get (_tmp135_, _tmp136_);
-				ed = (ValaErrorDomain*) _tmp137_;
-				_tmp138_ = old_ns;
-				_tmp139_ = ed;
-				vala_symbol_add_error_domain ((ValaSymbol*) _tmp138_, _tmp139_);
+				_tmp134_ = _ed_list;
+				_tmp135_ = _ed_index;
+				_tmp136_ = vala_list_get (_tmp134_, _tmp135_);
+				ed = (ValaErrorDomain*) _tmp136_;
+				_tmp137_ = old_ns;
+				_tmp138_ = ed;
+				vala_symbol_add_error_domain ((ValaSymbol*) _tmp137_, _tmp138_);
 				_vala_code_node_unref0 (ed);
 			}
 			_vala_iterable_unref0 (_ed_list);
 		}
 		{
-			ValaNamespace* _tmp140_;
+			ValaList* _c_list = NULL;
+			ValaNamespace* _tmp139_ = NULL;
+			ValaList* _tmp140_ = NULL;
+			gint _c_size = 0;
 			ValaList* _tmp141_ = NULL;
-			ValaList* _c_list;
-			ValaList* _tmp142_;
-			gint _tmp143_;
-			gint _tmp144_;
-			gint _c_size;
-			gint _c_index;
-			_tmp140_ = ns;
-			_tmp141_ = vala_namespace_get_constants (_tmp140_);
-			_c_list = _tmp141_;
-			_tmp142_ = _c_list;
-			_tmp143_ = vala_collection_get_size ((ValaCollection*) _tmp142_);
-			_tmp144_ = _tmp143_;
-			_c_size = _tmp144_;
+			gint _tmp142_ = 0;
+			gint _tmp143_ = 0;
+			gint _c_index = 0;
+			_tmp139_ = ns;
+			_tmp140_ = vala_namespace_get_constants (_tmp139_);
+			_c_list = _tmp140_;
+			_tmp141_ = _c_list;
+			_tmp142_ = vala_collection_get_size ((ValaCollection*) _tmp141_);
+			_tmp143_ = _tmp142_;
+			_c_size = _tmp143_;
 			_c_index = -1;
 			while (TRUE) {
-				gint _tmp145_;
-				gint _tmp146_;
-				gint _tmp147_;
-				ValaList* _tmp148_;
-				gint _tmp149_;
-				gpointer _tmp150_ = NULL;
-				ValaConstant* c;
-				ValaNamespace* _tmp151_;
-				ValaConstant* _tmp152_;
+				gint _tmp144_ = 0;
+				gint _tmp145_ = 0;
+				gint _tmp146_ = 0;
+				ValaConstant* c = NULL;
+				ValaList* _tmp147_ = NULL;
+				gint _tmp148_ = 0;
+				gpointer _tmp149_ = NULL;
+				ValaNamespace* _tmp150_ = NULL;
+				ValaConstant* _tmp151_ = NULL;
+				_tmp144_ = _c_index;
+				_c_index = _tmp144_ + 1;
 				_tmp145_ = _c_index;
-				_c_index = _tmp145_ + 1;
-				_tmp146_ = _c_index;
-				_tmp147_ = _c_size;
-				if (!(_tmp146_ < _tmp147_)) {
+				_tmp146_ = _c_size;
+				if (!(_tmp145_ < _tmp146_)) {
 					break;
 				}
-				_tmp148_ = _c_list;
-				_tmp149_ = _c_index;
-				_tmp150_ = vala_list_get (_tmp148_, _tmp149_);
-				c = (ValaConstant*) _tmp150_;
-				_tmp151_ = old_ns;
-				_tmp152_ = c;
-				vala_symbol_add_constant ((ValaSymbol*) _tmp151_, _tmp152_);
+				_tmp147_ = _c_list;
+				_tmp148_ = _c_index;
+				_tmp149_ = vala_list_get (_tmp147_, _tmp148_);
+				c = (ValaConstant*) _tmp149_;
+				_tmp150_ = old_ns;
+				_tmp151_ = c;
+				vala_symbol_add_constant ((ValaSymbol*) _tmp150_, _tmp151_);
 				_vala_code_node_unref0 (c);
 			}
 			_vala_iterable_unref0 (_c_list);
 		}
 		{
-			ValaNamespace* _tmp153_;
+			ValaList* _f_list = NULL;
+			ValaNamespace* _tmp152_ = NULL;
+			ValaList* _tmp153_ = NULL;
+			gint _f_size = 0;
 			ValaList* _tmp154_ = NULL;
-			ValaList* _f_list;
-			ValaList* _tmp155_;
-			gint _tmp156_;
-			gint _tmp157_;
-			gint _f_size;
-			gint _f_index;
-			_tmp153_ = ns;
-			_tmp154_ = vala_namespace_get_fields (_tmp153_);
-			_f_list = _tmp154_;
-			_tmp155_ = _f_list;
-			_tmp156_ = vala_collection_get_size ((ValaCollection*) _tmp155_);
-			_tmp157_ = _tmp156_;
-			_f_size = _tmp157_;
+			gint _tmp155_ = 0;
+			gint _tmp156_ = 0;
+			gint _f_index = 0;
+			_tmp152_ = ns;
+			_tmp153_ = vala_namespace_get_fields (_tmp152_);
+			_f_list = _tmp153_;
+			_tmp154_ = _f_list;
+			_tmp155_ = vala_collection_get_size ((ValaCollection*) _tmp154_);
+			_tmp156_ = _tmp155_;
+			_f_size = _tmp156_;
 			_f_index = -1;
 			while (TRUE) {
-				gint _tmp158_;
-				gint _tmp159_;
-				gint _tmp160_;
-				ValaList* _tmp161_;
-				gint _tmp162_;
-				gpointer _tmp163_ = NULL;
-				ValaField* f;
-				ValaNamespace* _tmp164_;
-				ValaField* _tmp165_;
+				gint _tmp157_ = 0;
+				gint _tmp158_ = 0;
+				gint _tmp159_ = 0;
+				ValaField* f = NULL;
+				ValaList* _tmp160_ = NULL;
+				gint _tmp161_ = 0;
+				gpointer _tmp162_ = NULL;
+				ValaNamespace* _tmp163_ = NULL;
+				ValaField* _tmp164_ = NULL;
+				_tmp157_ = _f_index;
+				_f_index = _tmp157_ + 1;
 				_tmp158_ = _f_index;
-				_f_index = _tmp158_ + 1;
-				_tmp159_ = _f_index;
-				_tmp160_ = _f_size;
-				if (!(_tmp159_ < _tmp160_)) {
+				_tmp159_ = _f_size;
+				if (!(_tmp158_ < _tmp159_)) {
 					break;
 				}
-				_tmp161_ = _f_list;
-				_tmp162_ = _f_index;
-				_tmp163_ = vala_list_get (_tmp161_, _tmp162_);
-				f = (ValaField*) _tmp163_;
-				_tmp164_ = old_ns;
-				_tmp165_ = f;
-				vala_symbol_add_field ((ValaSymbol*) _tmp164_, _tmp165_);
+				_tmp160_ = _f_list;
+				_tmp161_ = _f_index;
+				_tmp162_ = vala_list_get (_tmp160_, _tmp161_);
+				f = (ValaField*) _tmp162_;
+				_tmp163_ = old_ns;
+				_tmp164_ = f;
+				vala_symbol_add_field ((ValaSymbol*) _tmp163_, _tmp164_);
 				_vala_code_node_unref0 (f);
 			}
 			_vala_iterable_unref0 (_f_list);
 		}
 		{
-			ValaNamespace* _tmp166_;
+			ValaList* _m_list = NULL;
+			ValaNamespace* _tmp165_ = NULL;
+			ValaList* _tmp166_ = NULL;
+			gint _m_size = 0;
 			ValaList* _tmp167_ = NULL;
-			ValaList* _m_list;
-			ValaList* _tmp168_;
-			gint _tmp169_;
-			gint _tmp170_;
-			gint _m_size;
-			gint _m_index;
-			_tmp166_ = ns;
-			_tmp167_ = vala_namespace_get_methods (_tmp166_);
-			_m_list = _tmp167_;
-			_tmp168_ = _m_list;
-			_tmp169_ = vala_collection_get_size ((ValaCollection*) _tmp168_);
-			_tmp170_ = _tmp169_;
-			_m_size = _tmp170_;
+			gint _tmp168_ = 0;
+			gint _tmp169_ = 0;
+			gint _m_index = 0;
+			_tmp165_ = ns;
+			_tmp166_ = vala_namespace_get_methods (_tmp165_);
+			_m_list = _tmp166_;
+			_tmp167_ = _m_list;
+			_tmp168_ = vala_collection_get_size ((ValaCollection*) _tmp167_);
+			_tmp169_ = _tmp168_;
+			_m_size = _tmp169_;
 			_m_index = -1;
 			while (TRUE) {
-				gint _tmp171_;
-				gint _tmp172_;
-				gint _tmp173_;
-				ValaList* _tmp174_;
-				gint _tmp175_;
-				gpointer _tmp176_ = NULL;
-				ValaMethod* m;
-				ValaNamespace* _tmp177_;
-				ValaMethod* _tmp178_;
+				gint _tmp170_ = 0;
+				gint _tmp171_ = 0;
+				gint _tmp172_ = 0;
+				ValaMethod* m = NULL;
+				ValaList* _tmp173_ = NULL;
+				gint _tmp174_ = 0;
+				gpointer _tmp175_ = NULL;
+				ValaNamespace* _tmp176_ = NULL;
+				ValaMethod* _tmp177_ = NULL;
+				_tmp170_ = _m_index;
+				_m_index = _tmp170_ + 1;
 				_tmp171_ = _m_index;
-				_m_index = _tmp171_ + 1;
-				_tmp172_ = _m_index;
-				_tmp173_ = _m_size;
-				if (!(_tmp172_ < _tmp173_)) {
+				_tmp172_ = _m_size;
+				if (!(_tmp171_ < _tmp172_)) {
 					break;
 				}
-				_tmp174_ = _m_list;
-				_tmp175_ = _m_index;
-				_tmp176_ = vala_list_get (_tmp174_, _tmp175_);
-				m = (ValaMethod*) _tmp176_;
-				_tmp177_ = old_ns;
-				_tmp178_ = m;
-				vala_symbol_add_method ((ValaSymbol*) _tmp177_, _tmp178_);
+				_tmp173_ = _m_list;
+				_tmp174_ = _m_index;
+				_tmp175_ = vala_list_get (_tmp173_, _tmp174_);
+				m = (ValaMethod*) _tmp175_;
+				_tmp176_ = old_ns;
+				_tmp177_ = m;
+				vala_symbol_add_method ((ValaSymbol*) _tmp176_, _tmp177_);
 				_vala_code_node_unref0 (m);
 			}
 			_vala_iterable_unref0 (_m_list);
 		}
 		{
-			ValaNamespace* _tmp179_;
+			ValaList* _c_list = NULL;
+			ValaNamespace* _tmp178_ = NULL;
+			ValaList* _tmp179_ = NULL;
+			gint _c_size = 0;
 			ValaList* _tmp180_ = NULL;
-			ValaList* _c_list;
-			ValaList* _tmp181_;
-			gint _tmp182_;
-			gint _tmp183_;
-			gint _c_size;
-			gint _c_index;
-			_tmp179_ = ns;
-			_tmp180_ = vala_namespace_get_comments (_tmp179_);
-			_c_list = _tmp180_;
-			_tmp181_ = _c_list;
-			_tmp182_ = vala_collection_get_size ((ValaCollection*) _tmp181_);
-			_tmp183_ = _tmp182_;
-			_c_size = _tmp183_;
+			gint _tmp181_ = 0;
+			gint _tmp182_ = 0;
+			gint _c_index = 0;
+			_tmp178_ = ns;
+			_tmp179_ = vala_namespace_get_comments (_tmp178_);
+			_c_list = _tmp179_;
+			_tmp180_ = _c_list;
+			_tmp181_ = vala_collection_get_size ((ValaCollection*) _tmp180_);
+			_tmp182_ = _tmp181_;
+			_c_size = _tmp182_;
 			_c_index = -1;
 			while (TRUE) {
-				gint _tmp184_;
-				gint _tmp185_;
-				gint _tmp186_;
-				ValaList* _tmp187_;
-				gint _tmp188_;
-				gpointer _tmp189_ = NULL;
-				ValaComment* c;
-				ValaNamespace* _tmp190_;
-				ValaComment* _tmp191_;
+				gint _tmp183_ = 0;
+				gint _tmp184_ = 0;
+				gint _tmp185_ = 0;
+				ValaComment* c = NULL;
+				ValaList* _tmp186_ = NULL;
+				gint _tmp187_ = 0;
+				gpointer _tmp188_ = NULL;
+				ValaNamespace* _tmp189_ = NULL;
+				ValaComment* _tmp190_ = NULL;
+				_tmp183_ = _c_index;
+				_c_index = _tmp183_ + 1;
 				_tmp184_ = _c_index;
-				_c_index = _tmp184_ + 1;
-				_tmp185_ = _c_index;
-				_tmp186_ = _c_size;
-				if (!(_tmp185_ < _tmp186_)) {
+				_tmp185_ = _c_size;
+				if (!(_tmp184_ < _tmp185_)) {
 					break;
 				}
-				_tmp187_ = _c_list;
-				_tmp188_ = _c_index;
-				_tmp189_ = vala_list_get (_tmp187_, _tmp188_);
-				c = (ValaComment*) _tmp189_;
-				_tmp190_ = old_ns;
-				_tmp191_ = c;
-				vala_namespace_add_comment (_tmp190_, _tmp191_);
+				_tmp186_ = _c_list;
+				_tmp187_ = _c_index;
+				_tmp188_ = vala_list_get (_tmp186_, _tmp187_);
+				c = (ValaComment*) _tmp188_;
+				_tmp189_ = old_ns;
+				_tmp190_ = c;
+				vala_namespace_add_comment (_tmp189_, _tmp190_);
 				_vala_comment_unref0 (c);
 			}
 			_vala_iterable_unref0 (_c_list);
 		}
-		_tmp192_ = ns;
-		_tmp193_ = ((ValaCodeNode*) _tmp192_)->attributes;
+		_tmp191_ = ns;
+		_tmp192_ = ((ValaCodeNode*) _tmp191_)->attributes;
 		{
 			GList* a_collection = NULL;
 			GList* a_it = NULL;
-			a_collection = _tmp193_;
+			a_collection = _tmp192_;
 			for (a_it = a_collection; a_it != NULL; a_it = a_it->next) {
-				ValaAttribute* _tmp194_;
+				ValaAttribute* _tmp193_ = NULL;
 				ValaAttribute* a = NULL;
-				_tmp194_ = _vala_code_node_ref0 ((ValaAttribute*) a_it->data);
-				a = _tmp194_;
+				_tmp193_ = _vala_code_node_ref0 ((ValaAttribute*) a_it->data);
+				a = _tmp193_;
 				{
-					ValaNamespace* _tmp195_;
-					ValaAttribute* _tmp196_;
-					const gchar* _tmp197_;
-					const gchar* _tmp198_;
+					ValaNamespace* _tmp194_ = NULL;
+					ValaAttribute* _tmp195_ = NULL;
+					const gchar* _tmp196_ = NULL;
+					const gchar* _tmp197_ = NULL;
+					ValaAttribute* _tmp198_ = NULL;
 					ValaAttribute* _tmp199_ = NULL;
-					ValaAttribute* _tmp200_;
-					gboolean _tmp201_;
-					_tmp195_ = old_ns;
-					_tmp196_ = a;
-					_tmp197_ = vala_attribute_get_name (_tmp196_);
-					_tmp198_ = _tmp197_;
-					_tmp199_ = vala_code_node_get_attribute ((ValaCodeNode*) _tmp195_, _tmp198_);
-					_tmp200_ = _tmp199_;
-					_tmp201_ = _tmp200_ == NULL;
-					_vala_code_node_unref0 (_tmp200_);
-					if (_tmp201_) {
-						ValaNamespace* _tmp202_;
-						ValaAttribute* _tmp203_;
-						ValaAttribute* _tmp204_;
-						_tmp202_ = old_ns;
-						_tmp203_ = a;
-						_tmp204_ = _vala_code_node_ref0 (_tmp203_);
-						((ValaCodeNode*) _tmp202_)->attributes = g_list_append (((ValaCodeNode*) _tmp202_)->attributes, _tmp204_);
+					gboolean _tmp200_ = FALSE;
+					_tmp194_ = old_ns;
+					_tmp195_ = a;
+					_tmp196_ = vala_attribute_get_name (_tmp195_);
+					_tmp197_ = _tmp196_;
+					_tmp198_ = vala_code_node_get_attribute ((ValaCodeNode*) _tmp194_, _tmp197_);
+					_tmp199_ = _tmp198_;
+					_tmp200_ = _tmp199_ == NULL;
+					_vala_code_node_unref0 (_tmp199_);
+					if (_tmp200_) {
+						ValaNamespace* _tmp201_ = NULL;
+						ValaAttribute* _tmp202_ = NULL;
+						ValaAttribute* _tmp203_ = NULL;
+						_tmp201_ = old_ns;
+						_tmp202_ = a;
+						_tmp203_ = _vala_code_node_ref0 (_tmp202_);
+						((ValaCodeNode*) _tmp201_)->attributes = g_list_append (((ValaCodeNode*) _tmp201_)->attributes, _tmp203_);
 					}
 					_vala_code_node_unref0 (a);
 				}
@@ -1388,24 +1386,24 @@ static void vala_namespace_real_add_namespace (ValaSymbol* base, ValaNamespace* 
 		}
 		_vala_code_node_unref0 (old_ns);
 	} else {
-		ValaList* _tmp205_;
-		ValaNamespace* _tmp206_;
-		ValaScope* _tmp207_;
-		ValaScope* _tmp208_;
-		ValaNamespace* _tmp209_;
-		const gchar* _tmp210_;
-		const gchar* _tmp211_;
-		ValaNamespace* _tmp212_;
-		_tmp205_ = self->priv->namespaces;
-		_tmp206_ = ns;
-		vala_collection_add ((ValaCollection*) _tmp205_, _tmp206_);
-		_tmp207_ = vala_symbol_get_scope ((ValaSymbol*) self);
-		_tmp208_ = _tmp207_;
-		_tmp209_ = ns;
-		_tmp210_ = vala_symbol_get_name ((ValaSymbol*) _tmp209_);
-		_tmp211_ = _tmp210_;
-		_tmp212_ = ns;
-		vala_scope_add (_tmp208_, _tmp211_, (ValaSymbol*) _tmp212_);
+		ValaList* _tmp204_ = NULL;
+		ValaNamespace* _tmp205_ = NULL;
+		ValaScope* _tmp206_ = NULL;
+		ValaScope* _tmp207_ = NULL;
+		ValaNamespace* _tmp208_ = NULL;
+		const gchar* _tmp209_ = NULL;
+		const gchar* _tmp210_ = NULL;
+		ValaNamespace* _tmp211_ = NULL;
+		_tmp204_ = self->priv->namespaces;
+		_tmp205_ = ns;
+		vala_collection_add ((ValaCollection*) _tmp204_, _tmp205_);
+		_tmp206_ = vala_symbol_get_scope ((ValaSymbol*) self);
+		_tmp207_ = _tmp206_;
+		_tmp208_ = ns;
+		_tmp209_ = vala_symbol_get_name ((ValaSymbol*) _tmp208_);
+		_tmp210_ = _tmp209_;
+		_tmp211_ = ns;
+		vala_scope_add (_tmp207_, _tmp210_, (ValaSymbol*) _tmp211_);
 	}
 }
 
@@ -1417,8 +1415,8 @@ static void vala_namespace_real_add_namespace (ValaSymbol* base, ValaNamespace* 
  */
 ValaList* vala_namespace_get_namespaces (ValaNamespace* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->namespaces;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -1434,27 +1432,27 @@ ValaList* vala_namespace_get_namespaces (ValaNamespace* self) {
  */
 static void vala_namespace_real_add_class (ValaSymbol* base, ValaClass* cl) {
 	ValaNamespace * self;
-	ValaClass* _tmp0_;
-	ValaSymbolAccessibility _tmp1_;
-	ValaSymbolAccessibility _tmp2_;
-	ValaClass* _tmp4_;
-	ValaScope* _tmp5_;
-	ValaScope* _tmp6_;
-	ValaList* _tmp13_;
-	ValaClass* _tmp14_;
-	ValaScope* _tmp15_;
-	ValaScope* _tmp16_;
-	ValaClass* _tmp17_;
-	const gchar* _tmp18_;
-	const gchar* _tmp19_;
-	ValaClass* _tmp20_;
+	ValaClass* _tmp0_ = NULL;
+	ValaSymbolAccessibility _tmp1_ = 0;
+	ValaSymbolAccessibility _tmp2_ = 0;
+	ValaClass* _tmp4_ = NULL;
+	ValaScope* _tmp5_ = NULL;
+	ValaScope* _tmp6_ = NULL;
+	ValaList* _tmp13_ = NULL;
+	ValaClass* _tmp14_ = NULL;
+	ValaScope* _tmp15_ = NULL;
+	ValaScope* _tmp16_ = NULL;
+	ValaClass* _tmp17_ = NULL;
+	const gchar* _tmp18_ = NULL;
+	const gchar* _tmp19_ = NULL;
+	ValaClass* _tmp20_ = NULL;
 	self = (ValaNamespace*) base;
 	g_return_if_fail (cl != NULL);
 	_tmp0_ = cl;
 	_tmp1_ = vala_symbol_get_access ((ValaSymbol*) _tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ == VALA_SYMBOL_ACCESSIBILITY_PRIVATE) {
-		ValaClass* _tmp3_;
+		ValaClass* _tmp3_ = NULL;
 		_tmp3_ = cl;
 		vala_symbol_set_access ((ValaSymbol*) _tmp3_, VALA_SYMBOL_ACCESSIBILITY_INTERNAL);
 	}
@@ -1462,12 +1460,12 @@ static void vala_namespace_real_add_class (ValaSymbol* base, ValaClass* cl) {
 	_tmp5_ = vala_symbol_get_owner ((ValaSymbol*) _tmp4_);
 	_tmp6_ = _tmp5_;
 	if (_tmp6_ == NULL) {
-		ValaClass* _tmp7_;
-		ValaSourceReference* _tmp8_;
-		ValaSourceReference* _tmp9_;
-		ValaSourceFile* _tmp10_;
-		ValaSourceFile* _tmp11_;
-		ValaClass* _tmp12_;
+		ValaClass* _tmp7_ = NULL;
+		ValaSourceReference* _tmp8_ = NULL;
+		ValaSourceReference* _tmp9_ = NULL;
+		ValaSourceFile* _tmp10_ = NULL;
+		ValaSourceFile* _tmp11_ = NULL;
+		ValaClass* _tmp12_ = NULL;
 		_tmp7_ = cl;
 		_tmp8_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp7_);
 		_tmp9_ = _tmp8_;
@@ -1496,27 +1494,27 @@ static void vala_namespace_real_add_class (ValaSymbol* base, ValaClass* cl) {
  */
 static void vala_namespace_real_add_interface (ValaSymbol* base, ValaInterface* iface) {
 	ValaNamespace * self;
-	ValaInterface* _tmp0_;
-	ValaSymbolAccessibility _tmp1_;
-	ValaSymbolAccessibility _tmp2_;
-	ValaInterface* _tmp4_;
-	ValaScope* _tmp5_;
-	ValaScope* _tmp6_;
-	ValaList* _tmp13_;
-	ValaInterface* _tmp14_;
-	ValaScope* _tmp15_;
-	ValaScope* _tmp16_;
-	ValaInterface* _tmp17_;
-	const gchar* _tmp18_;
-	const gchar* _tmp19_;
-	ValaInterface* _tmp20_;
+	ValaInterface* _tmp0_ = NULL;
+	ValaSymbolAccessibility _tmp1_ = 0;
+	ValaSymbolAccessibility _tmp2_ = 0;
+	ValaInterface* _tmp4_ = NULL;
+	ValaScope* _tmp5_ = NULL;
+	ValaScope* _tmp6_ = NULL;
+	ValaList* _tmp13_ = NULL;
+	ValaInterface* _tmp14_ = NULL;
+	ValaScope* _tmp15_ = NULL;
+	ValaScope* _tmp16_ = NULL;
+	ValaInterface* _tmp17_ = NULL;
+	const gchar* _tmp18_ = NULL;
+	const gchar* _tmp19_ = NULL;
+	ValaInterface* _tmp20_ = NULL;
 	self = (ValaNamespace*) base;
 	g_return_if_fail (iface != NULL);
 	_tmp0_ = iface;
 	_tmp1_ = vala_symbol_get_access ((ValaSymbol*) _tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ == VALA_SYMBOL_ACCESSIBILITY_PRIVATE) {
-		ValaInterface* _tmp3_;
+		ValaInterface* _tmp3_ = NULL;
 		_tmp3_ = iface;
 		vala_symbol_set_access ((ValaSymbol*) _tmp3_, VALA_SYMBOL_ACCESSIBILITY_INTERNAL);
 	}
@@ -1524,12 +1522,12 @@ static void vala_namespace_real_add_interface (ValaSymbol* base, ValaInterface* 
 	_tmp5_ = vala_symbol_get_owner ((ValaSymbol*) _tmp4_);
 	_tmp6_ = _tmp5_;
 	if (_tmp6_ == NULL) {
-		ValaInterface* _tmp7_;
-		ValaSourceReference* _tmp8_;
-		ValaSourceReference* _tmp9_;
-		ValaSourceFile* _tmp10_;
-		ValaSourceFile* _tmp11_;
-		ValaInterface* _tmp12_;
+		ValaInterface* _tmp7_ = NULL;
+		ValaSourceReference* _tmp8_ = NULL;
+		ValaSourceReference* _tmp9_ = NULL;
+		ValaSourceFile* _tmp10_ = NULL;
+		ValaSourceFile* _tmp11_ = NULL;
+		ValaInterface* _tmp12_ = NULL;
 		_tmp7_ = iface;
 		_tmp8_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp7_);
 		_tmp9_ = _tmp8_;
@@ -1558,27 +1556,27 @@ static void vala_namespace_real_add_interface (ValaSymbol* base, ValaInterface* 
  */
 static void vala_namespace_real_add_struct (ValaSymbol* base, ValaStruct* st) {
 	ValaNamespace * self;
-	ValaStruct* _tmp0_;
-	ValaSymbolAccessibility _tmp1_;
-	ValaSymbolAccessibility _tmp2_;
-	ValaStruct* _tmp4_;
-	ValaScope* _tmp5_;
-	ValaScope* _tmp6_;
-	ValaList* _tmp13_;
-	ValaStruct* _tmp14_;
-	ValaScope* _tmp15_;
-	ValaScope* _tmp16_;
-	ValaStruct* _tmp17_;
-	const gchar* _tmp18_;
-	const gchar* _tmp19_;
-	ValaStruct* _tmp20_;
+	ValaStruct* _tmp0_ = NULL;
+	ValaSymbolAccessibility _tmp1_ = 0;
+	ValaSymbolAccessibility _tmp2_ = 0;
+	ValaStruct* _tmp4_ = NULL;
+	ValaScope* _tmp5_ = NULL;
+	ValaScope* _tmp6_ = NULL;
+	ValaList* _tmp13_ = NULL;
+	ValaStruct* _tmp14_ = NULL;
+	ValaScope* _tmp15_ = NULL;
+	ValaScope* _tmp16_ = NULL;
+	ValaStruct* _tmp17_ = NULL;
+	const gchar* _tmp18_ = NULL;
+	const gchar* _tmp19_ = NULL;
+	ValaStruct* _tmp20_ = NULL;
 	self = (ValaNamespace*) base;
 	g_return_if_fail (st != NULL);
 	_tmp0_ = st;
 	_tmp1_ = vala_symbol_get_access ((ValaSymbol*) _tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ == VALA_SYMBOL_ACCESSIBILITY_PRIVATE) {
-		ValaStruct* _tmp3_;
+		ValaStruct* _tmp3_ = NULL;
 		_tmp3_ = st;
 		vala_symbol_set_access ((ValaSymbol*) _tmp3_, VALA_SYMBOL_ACCESSIBILITY_INTERNAL);
 	}
@@ -1586,12 +1584,12 @@ static void vala_namespace_real_add_struct (ValaSymbol* base, ValaStruct* st) {
 	_tmp5_ = vala_symbol_get_owner ((ValaSymbol*) _tmp4_);
 	_tmp6_ = _tmp5_;
 	if (_tmp6_ == NULL) {
-		ValaStruct* _tmp7_;
-		ValaSourceReference* _tmp8_;
-		ValaSourceReference* _tmp9_;
-		ValaSourceFile* _tmp10_;
-		ValaSourceFile* _tmp11_;
-		ValaStruct* _tmp12_;
+		ValaStruct* _tmp7_ = NULL;
+		ValaSourceReference* _tmp8_ = NULL;
+		ValaSourceReference* _tmp9_ = NULL;
+		ValaSourceFile* _tmp10_ = NULL;
+		ValaSourceFile* _tmp11_ = NULL;
+		ValaStruct* _tmp12_ = NULL;
 		_tmp7_ = st;
 		_tmp8_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp7_);
 		_tmp9_ = _tmp8_;
@@ -1619,13 +1617,13 @@ static void vala_namespace_real_add_struct (ValaSymbol* base, ValaStruct* st) {
  * @param st a struct
  */
 void vala_namespace_remove_struct (ValaNamespace* self, ValaStruct* st) {
-	ValaList* _tmp0_;
-	ValaStruct* _tmp1_;
-	ValaScope* _tmp2_;
-	ValaScope* _tmp3_;
-	ValaStruct* _tmp4_;
-	const gchar* _tmp5_;
-	const gchar* _tmp6_;
+	ValaList* _tmp0_ = NULL;
+	ValaStruct* _tmp1_ = NULL;
+	ValaScope* _tmp2_ = NULL;
+	ValaScope* _tmp3_ = NULL;
+	ValaStruct* _tmp4_ = NULL;
+	const gchar* _tmp5_ = NULL;
+	const gchar* _tmp6_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (st != NULL);
 	_tmp0_ = self->priv->structs;
@@ -1647,27 +1645,27 @@ void vala_namespace_remove_struct (ValaNamespace* self, ValaStruct* st) {
  */
 static void vala_namespace_real_add_enum (ValaSymbol* base, ValaEnum* en) {
 	ValaNamespace * self;
-	ValaEnum* _tmp0_;
-	ValaSymbolAccessibility _tmp1_;
-	ValaSymbolAccessibility _tmp2_;
-	ValaEnum* _tmp4_;
-	ValaScope* _tmp5_;
-	ValaScope* _tmp6_;
-	ValaList* _tmp13_;
-	ValaEnum* _tmp14_;
-	ValaScope* _tmp15_;
-	ValaScope* _tmp16_;
-	ValaEnum* _tmp17_;
-	const gchar* _tmp18_;
-	const gchar* _tmp19_;
-	ValaEnum* _tmp20_;
+	ValaEnum* _tmp0_ = NULL;
+	ValaSymbolAccessibility _tmp1_ = 0;
+	ValaSymbolAccessibility _tmp2_ = 0;
+	ValaEnum* _tmp4_ = NULL;
+	ValaScope* _tmp5_ = NULL;
+	ValaScope* _tmp6_ = NULL;
+	ValaList* _tmp13_ = NULL;
+	ValaEnum* _tmp14_ = NULL;
+	ValaScope* _tmp15_ = NULL;
+	ValaScope* _tmp16_ = NULL;
+	ValaEnum* _tmp17_ = NULL;
+	const gchar* _tmp18_ = NULL;
+	const gchar* _tmp19_ = NULL;
+	ValaEnum* _tmp20_ = NULL;
 	self = (ValaNamespace*) base;
 	g_return_if_fail (en != NULL);
 	_tmp0_ = en;
 	_tmp1_ = vala_symbol_get_access ((ValaSymbol*) _tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ == VALA_SYMBOL_ACCESSIBILITY_PRIVATE) {
-		ValaEnum* _tmp3_;
+		ValaEnum* _tmp3_ = NULL;
 		_tmp3_ = en;
 		vala_symbol_set_access ((ValaSymbol*) _tmp3_, VALA_SYMBOL_ACCESSIBILITY_INTERNAL);
 	}
@@ -1675,12 +1673,12 @@ static void vala_namespace_real_add_enum (ValaSymbol* base, ValaEnum* en) {
 	_tmp5_ = vala_symbol_get_owner ((ValaSymbol*) _tmp4_);
 	_tmp6_ = _tmp5_;
 	if (_tmp6_ == NULL) {
-		ValaEnum* _tmp7_;
-		ValaSourceReference* _tmp8_;
-		ValaSourceReference* _tmp9_;
-		ValaSourceFile* _tmp10_;
-		ValaSourceFile* _tmp11_;
-		ValaEnum* _tmp12_;
+		ValaEnum* _tmp7_ = NULL;
+		ValaSourceReference* _tmp8_ = NULL;
+		ValaSourceReference* _tmp9_ = NULL;
+		ValaSourceFile* _tmp10_ = NULL;
+		ValaSourceFile* _tmp11_ = NULL;
+		ValaEnum* _tmp12_ = NULL;
 		_tmp7_ = en;
 		_tmp8_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp7_);
 		_tmp9_ = _tmp8_;
@@ -1709,27 +1707,27 @@ static void vala_namespace_real_add_enum (ValaSymbol* base, ValaEnum* en) {
  */
 static void vala_namespace_real_add_error_domain (ValaSymbol* base, ValaErrorDomain* edomain) {
 	ValaNamespace * self;
-	ValaErrorDomain* _tmp0_;
-	ValaSymbolAccessibility _tmp1_;
-	ValaSymbolAccessibility _tmp2_;
-	ValaErrorDomain* _tmp4_;
-	ValaScope* _tmp5_;
-	ValaScope* _tmp6_;
-	ValaList* _tmp13_;
-	ValaErrorDomain* _tmp14_;
-	ValaScope* _tmp15_;
-	ValaScope* _tmp16_;
-	ValaErrorDomain* _tmp17_;
-	const gchar* _tmp18_;
-	const gchar* _tmp19_;
-	ValaErrorDomain* _tmp20_;
+	ValaErrorDomain* _tmp0_ = NULL;
+	ValaSymbolAccessibility _tmp1_ = 0;
+	ValaSymbolAccessibility _tmp2_ = 0;
+	ValaErrorDomain* _tmp4_ = NULL;
+	ValaScope* _tmp5_ = NULL;
+	ValaScope* _tmp6_ = NULL;
+	ValaList* _tmp13_ = NULL;
+	ValaErrorDomain* _tmp14_ = NULL;
+	ValaScope* _tmp15_ = NULL;
+	ValaScope* _tmp16_ = NULL;
+	ValaErrorDomain* _tmp17_ = NULL;
+	const gchar* _tmp18_ = NULL;
+	const gchar* _tmp19_ = NULL;
+	ValaErrorDomain* _tmp20_ = NULL;
 	self = (ValaNamespace*) base;
 	g_return_if_fail (edomain != NULL);
 	_tmp0_ = edomain;
 	_tmp1_ = vala_symbol_get_access ((ValaSymbol*) _tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ == VALA_SYMBOL_ACCESSIBILITY_PRIVATE) {
-		ValaErrorDomain* _tmp3_;
+		ValaErrorDomain* _tmp3_ = NULL;
 		_tmp3_ = edomain;
 		vala_symbol_set_access ((ValaSymbol*) _tmp3_, VALA_SYMBOL_ACCESSIBILITY_INTERNAL);
 	}
@@ -1737,12 +1735,12 @@ static void vala_namespace_real_add_error_domain (ValaSymbol* base, ValaErrorDom
 	_tmp5_ = vala_symbol_get_owner ((ValaSymbol*) _tmp4_);
 	_tmp6_ = _tmp5_;
 	if (_tmp6_ == NULL) {
-		ValaErrorDomain* _tmp7_;
-		ValaSourceReference* _tmp8_;
-		ValaSourceReference* _tmp9_;
-		ValaSourceFile* _tmp10_;
-		ValaSourceFile* _tmp11_;
-		ValaErrorDomain* _tmp12_;
+		ValaErrorDomain* _tmp7_ = NULL;
+		ValaSourceReference* _tmp8_ = NULL;
+		ValaSourceReference* _tmp9_ = NULL;
+		ValaSourceFile* _tmp10_ = NULL;
+		ValaSourceFile* _tmp11_ = NULL;
+		ValaErrorDomain* _tmp12_ = NULL;
 		_tmp7_ = edomain;
 		_tmp8_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp7_);
 		_tmp9_ = _tmp8_;
@@ -1771,27 +1769,27 @@ static void vala_namespace_real_add_error_domain (ValaSymbol* base, ValaErrorDom
  */
 static void vala_namespace_real_add_delegate (ValaSymbol* base, ValaDelegate* d) {
 	ValaNamespace * self;
-	ValaDelegate* _tmp0_;
-	ValaSymbolAccessibility _tmp1_;
-	ValaSymbolAccessibility _tmp2_;
-	ValaDelegate* _tmp4_;
-	ValaScope* _tmp5_;
-	ValaScope* _tmp6_;
-	ValaList* _tmp13_;
-	ValaDelegate* _tmp14_;
-	ValaScope* _tmp15_;
-	ValaScope* _tmp16_;
-	ValaDelegate* _tmp17_;
-	const gchar* _tmp18_;
-	const gchar* _tmp19_;
-	ValaDelegate* _tmp20_;
+	ValaDelegate* _tmp0_ = NULL;
+	ValaSymbolAccessibility _tmp1_ = 0;
+	ValaSymbolAccessibility _tmp2_ = 0;
+	ValaDelegate* _tmp4_ = NULL;
+	ValaScope* _tmp5_ = NULL;
+	ValaScope* _tmp6_ = NULL;
+	ValaList* _tmp13_ = NULL;
+	ValaDelegate* _tmp14_ = NULL;
+	ValaScope* _tmp15_ = NULL;
+	ValaScope* _tmp16_ = NULL;
+	ValaDelegate* _tmp17_ = NULL;
+	const gchar* _tmp18_ = NULL;
+	const gchar* _tmp19_ = NULL;
+	ValaDelegate* _tmp20_ = NULL;
 	self = (ValaNamespace*) base;
 	g_return_if_fail (d != NULL);
 	_tmp0_ = d;
 	_tmp1_ = vala_symbol_get_access ((ValaSymbol*) _tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ == VALA_SYMBOL_ACCESSIBILITY_PRIVATE) {
-		ValaDelegate* _tmp3_;
+		ValaDelegate* _tmp3_ = NULL;
 		_tmp3_ = d;
 		vala_symbol_set_access ((ValaSymbol*) _tmp3_, VALA_SYMBOL_ACCESSIBILITY_INTERNAL);
 	}
@@ -1799,12 +1797,12 @@ static void vala_namespace_real_add_delegate (ValaSymbol* base, ValaDelegate* d)
 	_tmp5_ = vala_symbol_get_owner ((ValaSymbol*) _tmp4_);
 	_tmp6_ = _tmp5_;
 	if (_tmp6_ == NULL) {
-		ValaDelegate* _tmp7_;
-		ValaSourceReference* _tmp8_;
-		ValaSourceReference* _tmp9_;
-		ValaSourceFile* _tmp10_;
-		ValaSourceFile* _tmp11_;
-		ValaDelegate* _tmp12_;
+		ValaDelegate* _tmp7_ = NULL;
+		ValaSourceReference* _tmp8_ = NULL;
+		ValaSourceReference* _tmp9_ = NULL;
+		ValaSourceFile* _tmp10_ = NULL;
+		ValaSourceFile* _tmp11_ = NULL;
+		ValaDelegate* _tmp12_ = NULL;
 		_tmp7_ = d;
 		_tmp8_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp7_);
 		_tmp9_ = _tmp8_;
@@ -1833,8 +1831,8 @@ static void vala_namespace_real_add_delegate (ValaSymbol* base, ValaDelegate* d)
  */
 ValaList* vala_namespace_get_structs (ValaNamespace* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->structs;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -1850,8 +1848,8 @@ ValaList* vala_namespace_get_structs (ValaNamespace* self) {
  */
 ValaList* vala_namespace_get_classes (ValaNamespace* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->classes;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -1867,8 +1865,8 @@ ValaList* vala_namespace_get_classes (ValaNamespace* self) {
  */
 ValaList* vala_namespace_get_interfaces (ValaNamespace* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->interfaces;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -1884,8 +1882,8 @@ ValaList* vala_namespace_get_interfaces (ValaNamespace* self) {
  */
 ValaList* vala_namespace_get_enums (ValaNamespace* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->enums;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -1901,8 +1899,8 @@ ValaList* vala_namespace_get_enums (ValaNamespace* self) {
  */
 ValaList* vala_namespace_get_error_domains (ValaNamespace* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->error_domains;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -1918,8 +1916,8 @@ ValaList* vala_namespace_get_error_domains (ValaNamespace* self) {
  */
 ValaList* vala_namespace_get_fields (ValaNamespace* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->fields;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -1935,8 +1933,8 @@ ValaList* vala_namespace_get_fields (ValaNamespace* self) {
  */
 ValaList* vala_namespace_get_constants (ValaNamespace* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->constants;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -1952,8 +1950,8 @@ ValaList* vala_namespace_get_constants (ValaNamespace* self) {
  */
 ValaList* vala_namespace_get_delegates (ValaNamespace* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->delegates;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -1969,8 +1967,8 @@ ValaList* vala_namespace_get_delegates (ValaNamespace* self) {
  */
 ValaList* vala_namespace_get_methods (ValaNamespace* self) {
 	ValaList* result = NULL;
-	ValaList* _tmp0_;
-	ValaList* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaList* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->methods;
 	_tmp1_ = _vala_iterable_ref0 (_tmp0_);
@@ -1986,27 +1984,27 @@ ValaList* vala_namespace_get_methods (ValaNamespace* self) {
  */
 static void vala_namespace_real_add_constant (ValaSymbol* base, ValaConstant* constant) {
 	ValaNamespace * self;
-	ValaConstant* _tmp0_;
-	ValaSymbolAccessibility _tmp1_;
-	ValaSymbolAccessibility _tmp2_;
-	ValaConstant* _tmp4_;
-	ValaScope* _tmp5_;
-	ValaScope* _tmp6_;
-	ValaList* _tmp13_;
-	ValaConstant* _tmp14_;
-	ValaScope* _tmp15_;
-	ValaScope* _tmp16_;
-	ValaConstant* _tmp17_;
-	const gchar* _tmp18_;
-	const gchar* _tmp19_;
-	ValaConstant* _tmp20_;
+	ValaConstant* _tmp0_ = NULL;
+	ValaSymbolAccessibility _tmp1_ = 0;
+	ValaSymbolAccessibility _tmp2_ = 0;
+	ValaConstant* _tmp4_ = NULL;
+	ValaScope* _tmp5_ = NULL;
+	ValaScope* _tmp6_ = NULL;
+	ValaList* _tmp13_ = NULL;
+	ValaConstant* _tmp14_ = NULL;
+	ValaScope* _tmp15_ = NULL;
+	ValaScope* _tmp16_ = NULL;
+	ValaConstant* _tmp17_ = NULL;
+	const gchar* _tmp18_ = NULL;
+	const gchar* _tmp19_ = NULL;
+	ValaConstant* _tmp20_ = NULL;
 	self = (ValaNamespace*) base;
 	g_return_if_fail (constant != NULL);
 	_tmp0_ = constant;
 	_tmp1_ = vala_symbol_get_access ((ValaSymbol*) _tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ == VALA_SYMBOL_ACCESSIBILITY_PRIVATE) {
-		ValaConstant* _tmp3_;
+		ValaConstant* _tmp3_ = NULL;
 		_tmp3_ = constant;
 		vala_symbol_set_access ((ValaSymbol*) _tmp3_, VALA_SYMBOL_ACCESSIBILITY_INTERNAL);
 	}
@@ -2014,12 +2012,12 @@ static void vala_namespace_real_add_constant (ValaSymbol* base, ValaConstant* co
 	_tmp5_ = vala_symbol_get_owner ((ValaSymbol*) _tmp4_);
 	_tmp6_ = _tmp5_;
 	if (_tmp6_ == NULL) {
-		ValaConstant* _tmp7_;
-		ValaSourceReference* _tmp8_;
-		ValaSourceReference* _tmp9_;
-		ValaSourceFile* _tmp10_;
-		ValaSourceFile* _tmp11_;
-		ValaConstant* _tmp12_;
+		ValaConstant* _tmp7_ = NULL;
+		ValaSourceReference* _tmp8_ = NULL;
+		ValaSourceReference* _tmp9_ = NULL;
+		ValaSourceFile* _tmp10_ = NULL;
+		ValaSourceFile* _tmp11_ = NULL;
+		ValaConstant* _tmp12_ = NULL;
 		_tmp7_ = constant;
 		_tmp8_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp7_);
 		_tmp9_ = _tmp8_;
@@ -2048,33 +2046,33 @@ static void vala_namespace_real_add_constant (ValaSymbol* base, ValaConstant* co
  */
 static void vala_namespace_real_add_field (ValaSymbol* base, ValaField* f) {
 	ValaNamespace * self;
-	ValaField* _tmp0_;
-	ValaMemberBinding _tmp1_;
-	ValaMemberBinding _tmp2_;
-	ValaField* _tmp4_;
-	ValaSymbolAccessibility _tmp5_;
-	ValaSymbolAccessibility _tmp6_;
-	ValaField* _tmp8_;
-	ValaMemberBinding _tmp9_;
-	ValaMemberBinding _tmp10_;
-	ValaField* _tmp22_;
-	ValaScope* _tmp23_;
-	ValaScope* _tmp24_;
-	ValaList* _tmp31_;
-	ValaField* _tmp32_;
-	ValaScope* _tmp33_;
-	ValaScope* _tmp34_;
-	ValaField* _tmp35_;
-	const gchar* _tmp36_;
-	const gchar* _tmp37_;
-	ValaField* _tmp38_;
+	ValaField* _tmp0_ = NULL;
+	ValaMemberBinding _tmp1_ = 0;
+	ValaMemberBinding _tmp2_ = 0;
+	ValaField* _tmp4_ = NULL;
+	ValaSymbolAccessibility _tmp5_ = 0;
+	ValaSymbolAccessibility _tmp6_ = 0;
+	ValaField* _tmp8_ = NULL;
+	ValaMemberBinding _tmp9_ = 0;
+	ValaMemberBinding _tmp10_ = 0;
+	ValaField* _tmp22_ = NULL;
+	ValaScope* _tmp23_ = NULL;
+	ValaScope* _tmp24_ = NULL;
+	ValaList* _tmp31_ = NULL;
+	ValaField* _tmp32_ = NULL;
+	ValaScope* _tmp33_ = NULL;
+	ValaScope* _tmp34_ = NULL;
+	ValaField* _tmp35_ = NULL;
+	const gchar* _tmp36_ = NULL;
+	const gchar* _tmp37_ = NULL;
+	ValaField* _tmp38_ = NULL;
 	self = (ValaNamespace*) base;
 	g_return_if_fail (f != NULL);
 	_tmp0_ = f;
 	_tmp1_ = vala_field_get_binding (_tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ == VALA_MEMBER_BINDING_INSTANCE) {
-		ValaField* _tmp3_;
+		ValaField* _tmp3_ = NULL;
 		_tmp3_ = f;
 		vala_field_set_binding (_tmp3_, VALA_MEMBER_BINDING_STATIC);
 	}
@@ -2082,7 +2080,7 @@ static void vala_namespace_real_add_field (ValaSymbol* base, ValaField* f) {
 	_tmp5_ = vala_symbol_get_access ((ValaSymbol*) _tmp4_);
 	_tmp6_ = _tmp5_;
 	if (_tmp6_ == VALA_SYMBOL_ACCESSIBILITY_PRIVATE) {
-		ValaField* _tmp7_;
+		ValaField* _tmp7_ = NULL;
 		_tmp7_ = f;
 		vala_symbol_set_access ((ValaSymbol*) _tmp7_, VALA_SYMBOL_ACCESSIBILITY_INTERNAL);
 	}
@@ -2090,10 +2088,10 @@ static void vala_namespace_real_add_field (ValaSymbol* base, ValaField* f) {
 	_tmp9_ = vala_field_get_binding (_tmp8_);
 	_tmp10_ = _tmp9_;
 	if (_tmp10_ == VALA_MEMBER_BINDING_INSTANCE) {
-		ValaField* _tmp11_;
-		ValaSourceReference* _tmp12_;
-		ValaSourceReference* _tmp13_;
-		ValaField* _tmp14_;
+		ValaField* _tmp11_ = NULL;
+		ValaSourceReference* _tmp12_ = NULL;
+		ValaSourceReference* _tmp13_ = NULL;
+		ValaField* _tmp14_ = NULL;
 		_tmp11_ = f;
 		_tmp12_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp11_);
 		_tmp13_ = _tmp12_;
@@ -2102,17 +2100,17 @@ static void vala_namespace_real_add_field (ValaSymbol* base, ValaField* f) {
 		vala_code_node_set_error ((ValaCodeNode*) _tmp14_, TRUE);
 		return;
 	} else {
-		ValaField* _tmp15_;
-		ValaMemberBinding _tmp16_;
-		ValaMemberBinding _tmp17_;
+		ValaField* _tmp15_ = NULL;
+		ValaMemberBinding _tmp16_ = 0;
+		ValaMemberBinding _tmp17_ = 0;
 		_tmp15_ = f;
 		_tmp16_ = vala_field_get_binding (_tmp15_);
 		_tmp17_ = _tmp16_;
 		if (_tmp17_ == VALA_MEMBER_BINDING_CLASS) {
-			ValaField* _tmp18_;
-			ValaSourceReference* _tmp19_;
-			ValaSourceReference* _tmp20_;
-			ValaField* _tmp21_;
+			ValaField* _tmp18_ = NULL;
+			ValaSourceReference* _tmp19_ = NULL;
+			ValaSourceReference* _tmp20_ = NULL;
+			ValaField* _tmp21_ = NULL;
 			_tmp18_ = f;
 			_tmp19_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp18_);
 			_tmp20_ = _tmp19_;
@@ -2126,12 +2124,12 @@ static void vala_namespace_real_add_field (ValaSymbol* base, ValaField* f) {
 	_tmp23_ = vala_symbol_get_owner ((ValaSymbol*) _tmp22_);
 	_tmp24_ = _tmp23_;
 	if (_tmp24_ == NULL) {
-		ValaField* _tmp25_;
-		ValaSourceReference* _tmp26_;
-		ValaSourceReference* _tmp27_;
-		ValaSourceFile* _tmp28_;
-		ValaSourceFile* _tmp29_;
-		ValaField* _tmp30_;
+		ValaField* _tmp25_ = NULL;
+		ValaSourceReference* _tmp26_ = NULL;
+		ValaSourceReference* _tmp27_ = NULL;
+		ValaSourceFile* _tmp28_ = NULL;
+		ValaSourceFile* _tmp29_ = NULL;
+		ValaField* _tmp30_ = NULL;
 		_tmp25_ = f;
 		_tmp26_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp25_);
 		_tmp27_ = _tmp26_;
@@ -2160,39 +2158,38 @@ static void vala_namespace_real_add_field (ValaSymbol* base, ValaField* f) {
  */
 static void vala_namespace_real_add_method (ValaSymbol* base, ValaMethod* m) {
 	ValaNamespace * self;
-	ValaMethod* _tmp0_;
-	ValaMemberBinding _tmp1_;
-	ValaMemberBinding _tmp2_;
-	ValaMethod* _tmp4_;
-	ValaSymbolAccessibility _tmp5_;
-	ValaSymbolAccessibility _tmp6_;
-	ValaMethod* _tmp8_;
-	ValaMethod* _tmp13_;
-	ValaMemberBinding _tmp14_;
-	ValaMemberBinding _tmp15_;
+	ValaMethod* _tmp0_ = NULL;
+	ValaMemberBinding _tmp1_ = 0;
+	ValaMemberBinding _tmp2_ = 0;
+	ValaMethod* _tmp4_ = NULL;
+	ValaSymbolAccessibility _tmp5_ = 0;
+	ValaSymbolAccessibility _tmp6_ = 0;
+	ValaMethod* _tmp8_ = NULL;
+	ValaMethod* _tmp13_ = NULL;
+	ValaMemberBinding _tmp14_ = 0;
+	ValaMemberBinding _tmp15_ = 0;
 	gboolean _tmp27_ = FALSE;
-	ValaMethod* _tmp28_;
-	ValaDataType* _tmp29_;
-	ValaDataType* _tmp30_;
-	gboolean _tmp36_;
-	ValaMethod* _tmp50_;
-	ValaScope* _tmp51_;
-	ValaScope* _tmp52_;
-	ValaList* _tmp59_;
-	ValaMethod* _tmp60_;
-	ValaScope* _tmp61_;
-	ValaScope* _tmp62_;
-	ValaMethod* _tmp63_;
-	const gchar* _tmp64_;
-	const gchar* _tmp65_;
-	ValaMethod* _tmp66_;
+	ValaMethod* _tmp28_ = NULL;
+	ValaDataType* _tmp29_ = NULL;
+	ValaDataType* _tmp30_ = NULL;
+	ValaMethod* _tmp49_ = NULL;
+	ValaScope* _tmp50_ = NULL;
+	ValaScope* _tmp51_ = NULL;
+	ValaList* _tmp58_ = NULL;
+	ValaMethod* _tmp59_ = NULL;
+	ValaScope* _tmp60_ = NULL;
+	ValaScope* _tmp61_ = NULL;
+	ValaMethod* _tmp62_ = NULL;
+	const gchar* _tmp63_ = NULL;
+	const gchar* _tmp64_ = NULL;
+	ValaMethod* _tmp65_ = NULL;
 	self = (ValaNamespace*) base;
 	g_return_if_fail (m != NULL);
 	_tmp0_ = m;
 	_tmp1_ = vala_method_get_binding (_tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ == VALA_MEMBER_BINDING_INSTANCE) {
-		ValaMethod* _tmp3_;
+		ValaMethod* _tmp3_ = NULL;
 		_tmp3_ = m;
 		vala_method_set_binding (_tmp3_, VALA_MEMBER_BINDING_STATIC);
 	}
@@ -2200,16 +2197,16 @@ static void vala_namespace_real_add_method (ValaSymbol* base, ValaMethod* m) {
 	_tmp5_ = vala_symbol_get_access ((ValaSymbol*) _tmp4_);
 	_tmp6_ = _tmp5_;
 	if (_tmp6_ == VALA_SYMBOL_ACCESSIBILITY_PRIVATE) {
-		ValaMethod* _tmp7_;
+		ValaMethod* _tmp7_ = NULL;
 		_tmp7_ = m;
 		vala_symbol_set_access ((ValaSymbol*) _tmp7_, VALA_SYMBOL_ACCESSIBILITY_INTERNAL);
 	}
 	_tmp8_ = m;
 	if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp8_, VALA_TYPE_CREATION_METHOD)) {
-		ValaMethod* _tmp9_;
-		ValaSourceReference* _tmp10_;
-		ValaSourceReference* _tmp11_;
-		ValaMethod* _tmp12_;
+		ValaMethod* _tmp9_ = NULL;
+		ValaSourceReference* _tmp10_ = NULL;
+		ValaSourceReference* _tmp11_ = NULL;
+		ValaMethod* _tmp12_ = NULL;
 		_tmp9_ = m;
 		_tmp10_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp9_);
 		_tmp11_ = _tmp10_;
@@ -2222,10 +2219,10 @@ static void vala_namespace_real_add_method (ValaSymbol* base, ValaMethod* m) {
 	_tmp14_ = vala_method_get_binding (_tmp13_);
 	_tmp15_ = _tmp14_;
 	if (_tmp15_ == VALA_MEMBER_BINDING_INSTANCE) {
-		ValaMethod* _tmp16_;
-		ValaSourceReference* _tmp17_;
-		ValaSourceReference* _tmp18_;
-		ValaMethod* _tmp19_;
+		ValaMethod* _tmp16_ = NULL;
+		ValaSourceReference* _tmp17_ = NULL;
+		ValaSourceReference* _tmp18_ = NULL;
+		ValaMethod* _tmp19_ = NULL;
 		_tmp16_ = m;
 		_tmp17_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp16_);
 		_tmp18_ = _tmp17_;
@@ -2234,17 +2231,17 @@ static void vala_namespace_real_add_method (ValaSymbol* base, ValaMethod* m) {
 		vala_code_node_set_error ((ValaCodeNode*) _tmp19_, TRUE);
 		return;
 	} else {
-		ValaMethod* _tmp20_;
-		ValaMemberBinding _tmp21_;
-		ValaMemberBinding _tmp22_;
+		ValaMethod* _tmp20_ = NULL;
+		ValaMemberBinding _tmp21_ = 0;
+		ValaMemberBinding _tmp22_ = 0;
 		_tmp20_ = m;
 		_tmp21_ = vala_method_get_binding (_tmp20_);
 		_tmp22_ = _tmp21_;
 		if (_tmp22_ == VALA_MEMBER_BINDING_CLASS) {
-			ValaMethod* _tmp23_;
-			ValaSourceReference* _tmp24_;
-			ValaSourceReference* _tmp25_;
-			ValaMethod* _tmp26_;
+			ValaMethod* _tmp23_ = NULL;
+			ValaSourceReference* _tmp24_ = NULL;
+			ValaSourceReference* _tmp25_ = NULL;
+			ValaMethod* _tmp26_ = NULL;
 			_tmp23_ = m;
 			_tmp24_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp23_);
 			_tmp25_ = _tmp24_;
@@ -2258,11 +2255,11 @@ static void vala_namespace_real_add_method (ValaSymbol* base, ValaMethod* m) {
 	_tmp29_ = vala_method_get_return_type (_tmp28_);
 	_tmp30_ = _tmp29_;
 	if (!G_TYPE_CHECK_INSTANCE_TYPE (_tmp30_, VALA_TYPE_VOID_TYPE)) {
-		ValaMethod* _tmp31_;
+		ValaMethod* _tmp31_ = NULL;
 		ValaList* _tmp32_ = NULL;
-		ValaList* _tmp33_;
-		gint _tmp34_;
-		gint _tmp35_;
+		ValaList* _tmp33_ = NULL;
+		gint _tmp34_ = 0;
+		gint _tmp35_ = 0;
 		_tmp31_ = m;
 		_tmp32_ = vala_method_get_postconditions (_tmp31_);
 		_tmp33_ = _tmp32_;
@@ -2273,73 +2270,72 @@ static void vala_namespace_real_add_method (ValaSymbol* base, ValaMethod* m) {
 	} else {
 		_tmp27_ = FALSE;
 	}
-	_tmp36_ = _tmp27_;
-	if (_tmp36_) {
-		ValaMethod* _tmp37_;
-		ValaMethod* _tmp38_;
-		ValaDataType* _tmp39_;
-		ValaDataType* _tmp40_;
+	if (_tmp27_) {
+		ValaMethod* _tmp36_ = NULL;
+		ValaMethod* _tmp37_ = NULL;
+		ValaDataType* _tmp38_ = NULL;
+		ValaDataType* _tmp39_ = NULL;
+		ValaDataType* _tmp40_ = NULL;
 		ValaDataType* _tmp41_ = NULL;
-		ValaDataType* _tmp42_;
-		ValaSourceReference* _tmp43_;
-		ValaSourceReference* _tmp44_;
-		ValaLocalVariable* _tmp45_;
-		ValaLocalVariable* _tmp46_;
-		ValaMethod* _tmp47_;
-		ValaLocalVariable* _tmp48_;
-		ValaLocalVariable* _tmp49_;
+		ValaSourceReference* _tmp42_ = NULL;
+		ValaSourceReference* _tmp43_ = NULL;
+		ValaLocalVariable* _tmp44_ = NULL;
+		ValaLocalVariable* _tmp45_ = NULL;
+		ValaMethod* _tmp46_ = NULL;
+		ValaLocalVariable* _tmp47_ = NULL;
+		ValaLocalVariable* _tmp48_ = NULL;
+		_tmp36_ = m;
 		_tmp37_ = m;
-		_tmp38_ = m;
-		_tmp39_ = vala_method_get_return_type (_tmp38_);
-		_tmp40_ = _tmp39_;
-		_tmp41_ = vala_data_type_copy (_tmp40_);
-		_tmp42_ = _tmp41_;
-		_tmp43_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
-		_tmp44_ = _tmp43_;
-		_tmp45_ = vala_local_variable_new (_tmp42_, "result", NULL, _tmp44_);
-		_tmp46_ = _tmp45_;
-		vala_subroutine_set_result_var ((ValaSubroutine*) _tmp37_, _tmp46_);
-		_vala_code_node_unref0 (_tmp46_);
-		_vala_code_node_unref0 (_tmp42_);
-		_tmp47_ = m;
-		_tmp48_ = vala_subroutine_get_result_var ((ValaSubroutine*) _tmp47_);
-		_tmp49_ = _tmp48_;
-		vala_local_variable_set_is_result (_tmp49_, TRUE);
+		_tmp38_ = vala_method_get_return_type (_tmp37_);
+		_tmp39_ = _tmp38_;
+		_tmp40_ = vala_data_type_copy (_tmp39_);
+		_tmp41_ = _tmp40_;
+		_tmp42_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+		_tmp43_ = _tmp42_;
+		_tmp44_ = vala_local_variable_new (_tmp41_, "result", NULL, _tmp43_);
+		_tmp45_ = _tmp44_;
+		vala_subroutine_set_result_var ((ValaSubroutine*) _tmp36_, _tmp45_);
+		_vala_code_node_unref0 (_tmp45_);
+		_vala_code_node_unref0 (_tmp41_);
+		_tmp46_ = m;
+		_tmp47_ = vala_subroutine_get_result_var ((ValaSubroutine*) _tmp46_);
+		_tmp48_ = _tmp47_;
+		vala_local_variable_set_is_result (_tmp48_, TRUE);
 	}
-	_tmp50_ = m;
-	_tmp51_ = vala_symbol_get_owner ((ValaSymbol*) _tmp50_);
-	_tmp52_ = _tmp51_;
-	if (_tmp52_ == NULL) {
-		ValaMethod* _tmp53_;
-		ValaSourceReference* _tmp54_;
-		ValaSourceReference* _tmp55_;
-		ValaSourceFile* _tmp56_;
-		ValaSourceFile* _tmp57_;
-		ValaMethod* _tmp58_;
-		_tmp53_ = m;
-		_tmp54_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp53_);
-		_tmp55_ = _tmp54_;
-		_tmp56_ = vala_source_reference_get_file (_tmp55_);
-		_tmp57_ = _tmp56_;
-		_tmp58_ = m;
-		vala_source_file_add_node (_tmp57_, (ValaCodeNode*) _tmp58_);
+	_tmp49_ = m;
+	_tmp50_ = vala_symbol_get_owner ((ValaSymbol*) _tmp49_);
+	_tmp51_ = _tmp50_;
+	if (_tmp51_ == NULL) {
+		ValaMethod* _tmp52_ = NULL;
+		ValaSourceReference* _tmp53_ = NULL;
+		ValaSourceReference* _tmp54_ = NULL;
+		ValaSourceFile* _tmp55_ = NULL;
+		ValaSourceFile* _tmp56_ = NULL;
+		ValaMethod* _tmp57_ = NULL;
+		_tmp52_ = m;
+		_tmp53_ = vala_code_node_get_source_reference ((ValaCodeNode*) _tmp52_);
+		_tmp54_ = _tmp53_;
+		_tmp55_ = vala_source_reference_get_file (_tmp54_);
+		_tmp56_ = _tmp55_;
+		_tmp57_ = m;
+		vala_source_file_add_node (_tmp56_, (ValaCodeNode*) _tmp57_);
 	}
-	_tmp59_ = self->priv->methods;
-	_tmp60_ = m;
-	vala_collection_add ((ValaCollection*) _tmp59_, _tmp60_);
-	_tmp61_ = vala_symbol_get_scope ((ValaSymbol*) self);
-	_tmp62_ = _tmp61_;
-	_tmp63_ = m;
-	_tmp64_ = vala_symbol_get_name ((ValaSymbol*) _tmp63_);
-	_tmp65_ = _tmp64_;
-	_tmp66_ = m;
-	vala_scope_add (_tmp62_, _tmp65_, (ValaSymbol*) _tmp66_);
+	_tmp58_ = self->priv->methods;
+	_tmp59_ = m;
+	vala_collection_add ((ValaCollection*) _tmp58_, _tmp59_);
+	_tmp60_ = vala_symbol_get_scope ((ValaSymbol*) self);
+	_tmp61_ = _tmp60_;
+	_tmp62_ = m;
+	_tmp63_ = vala_symbol_get_name ((ValaSymbol*) _tmp62_);
+	_tmp64_ = _tmp63_;
+	_tmp65_ = m;
+	vala_scope_add (_tmp61_, _tmp64_, (ValaSymbol*) _tmp65_);
 }
 
 
 static void vala_namespace_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaNamespace * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaNamespace*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -2352,14 +2348,14 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 	self = (ValaNamespace*) base;
 	g_return_if_fail (visitor != NULL);
 	{
-		ValaList* _tmp0_;
-		ValaList* _tmp1_;
-		ValaList* _ns_ref_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _ns_ref_size;
-		gint _ns_ref_index;
+		ValaList* _ns_ref_list = NULL;
+		ValaList* _tmp0_ = NULL;
+		ValaList* _tmp1_ = NULL;
+		gint _ns_ref_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _ns_ref_index = 0;
 		_tmp0_ = self->priv->using_directives;
 		_tmp1_ = _vala_iterable_ref0 (_tmp0_);
 		_ns_ref_list = _tmp1_;
@@ -2369,15 +2365,15 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_ns_ref_size = _tmp4_;
 		_ns_ref_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaUsingDirective* ns_ref = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaUsingDirective* ns_ref;
-			ValaUsingDirective* _tmp11_;
-			ValaCodeVisitor* _tmp12_;
+			ValaUsingDirective* _tmp11_ = NULL;
+			ValaCodeVisitor* _tmp12_ = NULL;
 			_tmp5_ = _ns_ref_index;
 			_ns_ref_index = _tmp5_ + 1;
 			_tmp6_ = _ns_ref_index;
@@ -2397,14 +2393,14 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_vala_iterable_unref0 (_ns_ref_list);
 	}
 	{
-		ValaList* _tmp13_;
-		ValaList* _tmp14_;
-		ValaList* _ns_list;
-		ValaList* _tmp15_;
-		gint _tmp16_;
-		gint _tmp17_;
-		gint _ns_size;
-		gint _ns_index;
+		ValaList* _ns_list = NULL;
+		ValaList* _tmp13_ = NULL;
+		ValaList* _tmp14_ = NULL;
+		gint _ns_size = 0;
+		ValaList* _tmp15_ = NULL;
+		gint _tmp16_ = 0;
+		gint _tmp17_ = 0;
+		gint _ns_index = 0;
 		_tmp13_ = self->priv->namespaces;
 		_tmp14_ = _vala_iterable_ref0 (_tmp13_);
 		_ns_list = _tmp14_;
@@ -2414,15 +2410,15 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_ns_size = _tmp17_;
 		_ns_index = -1;
 		while (TRUE) {
-			gint _tmp18_;
-			gint _tmp19_;
-			gint _tmp20_;
-			ValaList* _tmp21_;
-			gint _tmp22_;
+			gint _tmp18_ = 0;
+			gint _tmp19_ = 0;
+			gint _tmp20_ = 0;
+			ValaNamespace* ns = NULL;
+			ValaList* _tmp21_ = NULL;
+			gint _tmp22_ = 0;
 			gpointer _tmp23_ = NULL;
-			ValaNamespace* ns;
-			ValaNamespace* _tmp24_;
-			ValaCodeVisitor* _tmp25_;
+			ValaNamespace* _tmp24_ = NULL;
+			ValaCodeVisitor* _tmp25_ = NULL;
 			_tmp18_ = _ns_index;
 			_ns_index = _tmp18_ + 1;
 			_tmp19_ = _ns_index;
@@ -2442,14 +2438,14 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_vala_iterable_unref0 (_ns_list);
 	}
 	{
-		ValaList* _tmp26_;
-		ValaList* _tmp27_;
-		ValaList* _en_list;
-		ValaList* _tmp28_;
-		gint _tmp29_;
-		gint _tmp30_;
-		gint _en_size;
-		gint _en_index;
+		ValaList* _en_list = NULL;
+		ValaList* _tmp26_ = NULL;
+		ValaList* _tmp27_ = NULL;
+		gint _en_size = 0;
+		ValaList* _tmp28_ = NULL;
+		gint _tmp29_ = 0;
+		gint _tmp30_ = 0;
+		gint _en_index = 0;
 		_tmp26_ = self->priv->enums;
 		_tmp27_ = _vala_iterable_ref0 (_tmp26_);
 		_en_list = _tmp27_;
@@ -2459,15 +2455,15 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_en_size = _tmp30_;
 		_en_index = -1;
 		while (TRUE) {
-			gint _tmp31_;
-			gint _tmp32_;
-			gint _tmp33_;
-			ValaList* _tmp34_;
-			gint _tmp35_;
+			gint _tmp31_ = 0;
+			gint _tmp32_ = 0;
+			gint _tmp33_ = 0;
+			ValaEnum* en = NULL;
+			ValaList* _tmp34_ = NULL;
+			gint _tmp35_ = 0;
 			gpointer _tmp36_ = NULL;
-			ValaEnum* en;
-			ValaEnum* _tmp37_;
-			ValaCodeVisitor* _tmp38_;
+			ValaEnum* _tmp37_ = NULL;
+			ValaCodeVisitor* _tmp38_ = NULL;
 			_tmp31_ = _en_index;
 			_en_index = _tmp31_ + 1;
 			_tmp32_ = _en_index;
@@ -2487,14 +2483,14 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_vala_iterable_unref0 (_en_list);
 	}
 	{
-		ValaList* _tmp39_;
-		ValaList* _tmp40_;
-		ValaList* _edomain_list;
-		ValaList* _tmp41_;
-		gint _tmp42_;
-		gint _tmp43_;
-		gint _edomain_size;
-		gint _edomain_index;
+		ValaList* _edomain_list = NULL;
+		ValaList* _tmp39_ = NULL;
+		ValaList* _tmp40_ = NULL;
+		gint _edomain_size = 0;
+		ValaList* _tmp41_ = NULL;
+		gint _tmp42_ = 0;
+		gint _tmp43_ = 0;
+		gint _edomain_index = 0;
 		_tmp39_ = self->priv->error_domains;
 		_tmp40_ = _vala_iterable_ref0 (_tmp39_);
 		_edomain_list = _tmp40_;
@@ -2504,15 +2500,15 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_edomain_size = _tmp43_;
 		_edomain_index = -1;
 		while (TRUE) {
-			gint _tmp44_;
-			gint _tmp45_;
-			gint _tmp46_;
-			ValaList* _tmp47_;
-			gint _tmp48_;
+			gint _tmp44_ = 0;
+			gint _tmp45_ = 0;
+			gint _tmp46_ = 0;
+			ValaErrorDomain* edomain = NULL;
+			ValaList* _tmp47_ = NULL;
+			gint _tmp48_ = 0;
 			gpointer _tmp49_ = NULL;
-			ValaErrorDomain* edomain;
-			ValaErrorDomain* _tmp50_;
-			ValaCodeVisitor* _tmp51_;
+			ValaErrorDomain* _tmp50_ = NULL;
+			ValaCodeVisitor* _tmp51_ = NULL;
 			_tmp44_ = _edomain_index;
 			_edomain_index = _tmp44_ + 1;
 			_tmp45_ = _edomain_index;
@@ -2532,14 +2528,14 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_vala_iterable_unref0 (_edomain_list);
 	}
 	{
-		ValaList* _tmp52_;
-		ValaList* _tmp53_;
-		ValaList* _cl_list;
-		ValaList* _tmp54_;
-		gint _tmp55_;
-		gint _tmp56_;
-		gint _cl_size;
-		gint _cl_index;
+		ValaList* _cl_list = NULL;
+		ValaList* _tmp52_ = NULL;
+		ValaList* _tmp53_ = NULL;
+		gint _cl_size = 0;
+		ValaList* _tmp54_ = NULL;
+		gint _tmp55_ = 0;
+		gint _tmp56_ = 0;
+		gint _cl_index = 0;
 		_tmp52_ = self->priv->classes;
 		_tmp53_ = _vala_iterable_ref0 (_tmp52_);
 		_cl_list = _tmp53_;
@@ -2549,15 +2545,15 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_cl_size = _tmp56_;
 		_cl_index = -1;
 		while (TRUE) {
-			gint _tmp57_;
-			gint _tmp58_;
-			gint _tmp59_;
-			ValaList* _tmp60_;
-			gint _tmp61_;
+			gint _tmp57_ = 0;
+			gint _tmp58_ = 0;
+			gint _tmp59_ = 0;
+			ValaClass* cl = NULL;
+			ValaList* _tmp60_ = NULL;
+			gint _tmp61_ = 0;
 			gpointer _tmp62_ = NULL;
-			ValaClass* cl;
-			ValaClass* _tmp63_;
-			ValaCodeVisitor* _tmp64_;
+			ValaClass* _tmp63_ = NULL;
+			ValaCodeVisitor* _tmp64_ = NULL;
 			_tmp57_ = _cl_index;
 			_cl_index = _tmp57_ + 1;
 			_tmp58_ = _cl_index;
@@ -2577,14 +2573,14 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_vala_iterable_unref0 (_cl_list);
 	}
 	{
-		ValaList* _tmp65_;
-		ValaList* _tmp66_;
-		ValaList* _iface_list;
-		ValaList* _tmp67_;
-		gint _tmp68_;
-		gint _tmp69_;
-		gint _iface_size;
-		gint _iface_index;
+		ValaList* _iface_list = NULL;
+		ValaList* _tmp65_ = NULL;
+		ValaList* _tmp66_ = NULL;
+		gint _iface_size = 0;
+		ValaList* _tmp67_ = NULL;
+		gint _tmp68_ = 0;
+		gint _tmp69_ = 0;
+		gint _iface_index = 0;
 		_tmp65_ = self->priv->interfaces;
 		_tmp66_ = _vala_iterable_ref0 (_tmp65_);
 		_iface_list = _tmp66_;
@@ -2594,15 +2590,15 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_iface_size = _tmp69_;
 		_iface_index = -1;
 		while (TRUE) {
-			gint _tmp70_;
-			gint _tmp71_;
-			gint _tmp72_;
-			ValaList* _tmp73_;
-			gint _tmp74_;
+			gint _tmp70_ = 0;
+			gint _tmp71_ = 0;
+			gint _tmp72_ = 0;
+			ValaInterface* iface = NULL;
+			ValaList* _tmp73_ = NULL;
+			gint _tmp74_ = 0;
 			gpointer _tmp75_ = NULL;
-			ValaInterface* iface;
-			ValaInterface* _tmp76_;
-			ValaCodeVisitor* _tmp77_;
+			ValaInterface* _tmp76_ = NULL;
+			ValaCodeVisitor* _tmp77_ = NULL;
 			_tmp70_ = _iface_index;
 			_iface_index = _tmp70_ + 1;
 			_tmp71_ = _iface_index;
@@ -2622,14 +2618,14 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_vala_iterable_unref0 (_iface_list);
 	}
 	{
-		ValaList* _tmp78_;
-		ValaList* _tmp79_;
-		ValaList* _st_list;
-		ValaList* _tmp80_;
-		gint _tmp81_;
-		gint _tmp82_;
-		gint _st_size;
-		gint _st_index;
+		ValaList* _st_list = NULL;
+		ValaList* _tmp78_ = NULL;
+		ValaList* _tmp79_ = NULL;
+		gint _st_size = 0;
+		ValaList* _tmp80_ = NULL;
+		gint _tmp81_ = 0;
+		gint _tmp82_ = 0;
+		gint _st_index = 0;
 		_tmp78_ = self->priv->structs;
 		_tmp79_ = _vala_iterable_ref0 (_tmp78_);
 		_st_list = _tmp79_;
@@ -2639,15 +2635,15 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_st_size = _tmp82_;
 		_st_index = -1;
 		while (TRUE) {
-			gint _tmp83_;
-			gint _tmp84_;
-			gint _tmp85_;
-			ValaList* _tmp86_;
-			gint _tmp87_;
+			gint _tmp83_ = 0;
+			gint _tmp84_ = 0;
+			gint _tmp85_ = 0;
+			ValaStruct* st = NULL;
+			ValaList* _tmp86_ = NULL;
+			gint _tmp87_ = 0;
 			gpointer _tmp88_ = NULL;
-			ValaStruct* st;
-			ValaStruct* _tmp89_;
-			ValaCodeVisitor* _tmp90_;
+			ValaStruct* _tmp89_ = NULL;
+			ValaCodeVisitor* _tmp90_ = NULL;
 			_tmp83_ = _st_index;
 			_st_index = _tmp83_ + 1;
 			_tmp84_ = _st_index;
@@ -2667,14 +2663,14 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_vala_iterable_unref0 (_st_list);
 	}
 	{
-		ValaList* _tmp91_;
-		ValaList* _tmp92_;
-		ValaList* _d_list;
-		ValaList* _tmp93_;
-		gint _tmp94_;
-		gint _tmp95_;
-		gint _d_size;
-		gint _d_index;
+		ValaList* _d_list = NULL;
+		ValaList* _tmp91_ = NULL;
+		ValaList* _tmp92_ = NULL;
+		gint _d_size = 0;
+		ValaList* _tmp93_ = NULL;
+		gint _tmp94_ = 0;
+		gint _tmp95_ = 0;
+		gint _d_index = 0;
 		_tmp91_ = self->priv->delegates;
 		_tmp92_ = _vala_iterable_ref0 (_tmp91_);
 		_d_list = _tmp92_;
@@ -2684,15 +2680,15 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_d_size = _tmp95_;
 		_d_index = -1;
 		while (TRUE) {
-			gint _tmp96_;
-			gint _tmp97_;
-			gint _tmp98_;
-			ValaList* _tmp99_;
-			gint _tmp100_;
+			gint _tmp96_ = 0;
+			gint _tmp97_ = 0;
+			gint _tmp98_ = 0;
+			ValaDelegate* d = NULL;
+			ValaList* _tmp99_ = NULL;
+			gint _tmp100_ = 0;
 			gpointer _tmp101_ = NULL;
-			ValaDelegate* d;
-			ValaDelegate* _tmp102_;
-			ValaCodeVisitor* _tmp103_;
+			ValaDelegate* _tmp102_ = NULL;
+			ValaCodeVisitor* _tmp103_ = NULL;
 			_tmp96_ = _d_index;
 			_d_index = _tmp96_ + 1;
 			_tmp97_ = _d_index;
@@ -2712,14 +2708,14 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_vala_iterable_unref0 (_d_list);
 	}
 	{
-		ValaList* _tmp104_;
-		ValaList* _tmp105_;
-		ValaList* _c_list;
-		ValaList* _tmp106_;
-		gint _tmp107_;
-		gint _tmp108_;
-		gint _c_size;
-		gint _c_index;
+		ValaList* _c_list = NULL;
+		ValaList* _tmp104_ = NULL;
+		ValaList* _tmp105_ = NULL;
+		gint _c_size = 0;
+		ValaList* _tmp106_ = NULL;
+		gint _tmp107_ = 0;
+		gint _tmp108_ = 0;
+		gint _c_index = 0;
 		_tmp104_ = self->priv->constants;
 		_tmp105_ = _vala_iterable_ref0 (_tmp104_);
 		_c_list = _tmp105_;
@@ -2729,15 +2725,15 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_c_size = _tmp108_;
 		_c_index = -1;
 		while (TRUE) {
-			gint _tmp109_;
-			gint _tmp110_;
-			gint _tmp111_;
-			ValaList* _tmp112_;
-			gint _tmp113_;
+			gint _tmp109_ = 0;
+			gint _tmp110_ = 0;
+			gint _tmp111_ = 0;
+			ValaConstant* c = NULL;
+			ValaList* _tmp112_ = NULL;
+			gint _tmp113_ = 0;
 			gpointer _tmp114_ = NULL;
-			ValaConstant* c;
-			ValaConstant* _tmp115_;
-			ValaCodeVisitor* _tmp116_;
+			ValaConstant* _tmp115_ = NULL;
+			ValaCodeVisitor* _tmp116_ = NULL;
 			_tmp109_ = _c_index;
 			_c_index = _tmp109_ + 1;
 			_tmp110_ = _c_index;
@@ -2757,14 +2753,14 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_vala_iterable_unref0 (_c_list);
 	}
 	{
-		ValaList* _tmp117_;
-		ValaList* _tmp118_;
-		ValaList* _f_list;
-		ValaList* _tmp119_;
-		gint _tmp120_;
-		gint _tmp121_;
-		gint _f_size;
-		gint _f_index;
+		ValaList* _f_list = NULL;
+		ValaList* _tmp117_ = NULL;
+		ValaList* _tmp118_ = NULL;
+		gint _f_size = 0;
+		ValaList* _tmp119_ = NULL;
+		gint _tmp120_ = 0;
+		gint _tmp121_ = 0;
+		gint _f_index = 0;
 		_tmp117_ = self->priv->fields;
 		_tmp118_ = _vala_iterable_ref0 (_tmp117_);
 		_f_list = _tmp118_;
@@ -2774,15 +2770,15 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_f_size = _tmp121_;
 		_f_index = -1;
 		while (TRUE) {
-			gint _tmp122_;
-			gint _tmp123_;
-			gint _tmp124_;
-			ValaList* _tmp125_;
-			gint _tmp126_;
+			gint _tmp122_ = 0;
+			gint _tmp123_ = 0;
+			gint _tmp124_ = 0;
+			ValaField* f = NULL;
+			ValaList* _tmp125_ = NULL;
+			gint _tmp126_ = 0;
 			gpointer _tmp127_ = NULL;
-			ValaField* f;
-			ValaField* _tmp128_;
-			ValaCodeVisitor* _tmp129_;
+			ValaField* _tmp128_ = NULL;
+			ValaCodeVisitor* _tmp129_ = NULL;
 			_tmp122_ = _f_index;
 			_f_index = _tmp122_ + 1;
 			_tmp123_ = _f_index;
@@ -2802,14 +2798,14 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_vala_iterable_unref0 (_f_list);
 	}
 	{
-		ValaList* _tmp130_;
-		ValaList* _tmp131_;
-		ValaList* _m_list;
-		ValaList* _tmp132_;
-		gint _tmp133_;
-		gint _tmp134_;
-		gint _m_size;
-		gint _m_index;
+		ValaList* _m_list = NULL;
+		ValaList* _tmp130_ = NULL;
+		ValaList* _tmp131_ = NULL;
+		gint _m_size = 0;
+		ValaList* _tmp132_ = NULL;
+		gint _tmp133_ = 0;
+		gint _tmp134_ = 0;
+		gint _m_index = 0;
 		_tmp130_ = self->priv->methods;
 		_tmp131_ = _vala_iterable_ref0 (_tmp130_);
 		_m_list = _tmp131_;
@@ -2819,15 +2815,15 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 		_m_size = _tmp134_;
 		_m_index = -1;
 		while (TRUE) {
-			gint _tmp135_;
-			gint _tmp136_;
-			gint _tmp137_;
-			ValaList* _tmp138_;
-			gint _tmp139_;
+			gint _tmp135_ = 0;
+			gint _tmp136_ = 0;
+			gint _tmp137_ = 0;
+			ValaMethod* m = NULL;
+			ValaList* _tmp138_ = NULL;
+			gint _tmp139_ = 0;
 			gpointer _tmp140_ = NULL;
-			ValaMethod* m;
-			ValaMethod* _tmp141_;
-			ValaCodeVisitor* _tmp142_;
+			ValaMethod* _tmp141_ = NULL;
+			ValaCodeVisitor* _tmp142_ = NULL;
 			_tmp135_ = _m_index;
 			_m_index = _tmp135_ + 1;
 			_tmp136_ = _m_index;
@@ -2852,25 +2848,23 @@ static void vala_namespace_real_accept_children (ValaCodeNode* base, ValaCodeVis
 static gboolean vala_namespace_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaNamespace * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaAttribute* a = NULL;
 	ValaAttribute* _tmp4_ = NULL;
-	ValaAttribute* a;
 	gboolean _tmp5_ = FALSE;
-	ValaAttribute* _tmp6_;
-	gboolean _tmp9_;
-	gboolean _tmp17_ = FALSE;
-	ValaAttribute* _tmp18_;
-	gboolean _tmp21_;
-	gboolean _tmp42_;
-	gboolean _tmp43_;
+	ValaAttribute* _tmp6_ = NULL;
+	gboolean _tmp16_ = FALSE;
+	ValaAttribute* _tmp17_ = NULL;
+	gboolean _tmp40_ = FALSE;
+	gboolean _tmp41_ = FALSE;
 	self = (ValaNamespace*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -2881,7 +2875,7 @@ static gboolean vala_namespace_real_check (ValaCodeNode* base, ValaCodeContext* 
 	a = _tmp4_;
 	_tmp6_ = a;
 	if (_tmp6_ != NULL) {
-		ValaAttribute* _tmp7_;
+		ValaAttribute* _tmp7_ = NULL;
 		gboolean _tmp8_ = FALSE;
 		_tmp7_ = a;
 		_tmp8_ = vala_attribute_has_argument (_tmp7_, "gir_namespace");
@@ -2889,102 +2883,100 @@ static gboolean vala_namespace_real_check (ValaCodeNode* base, ValaCodeContext* 
 	} else {
 		_tmp5_ = FALSE;
 	}
-	_tmp9_ = _tmp5_;
-	if (_tmp9_) {
-		ValaSourceReference* _tmp10_;
-		ValaSourceReference* _tmp11_;
-		ValaSourceFile* _tmp12_;
-		ValaSourceFile* _tmp13_;
-		ValaAttribute* _tmp14_;
+	if (_tmp5_) {
+		ValaSourceReference* _tmp9_ = NULL;
+		ValaSourceReference* _tmp10_ = NULL;
+		ValaSourceFile* _tmp11_ = NULL;
+		ValaSourceFile* _tmp12_ = NULL;
+		ValaAttribute* _tmp13_ = NULL;
+		gchar* _tmp14_ = NULL;
 		gchar* _tmp15_ = NULL;
-		gchar* _tmp16_;
-		_tmp10_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
-		_tmp11_ = _tmp10_;
-		_tmp12_ = vala_source_reference_get_file (_tmp11_);
-		_tmp13_ = _tmp12_;
-		_tmp14_ = a;
-		_tmp15_ = vala_attribute_get_string (_tmp14_, "gir_namespace");
-		_tmp16_ = _tmp15_;
-		vala_source_file_set_gir_namespace (_tmp13_, _tmp16_);
-		_g_free0 (_tmp16_);
+		_tmp9_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+		_tmp10_ = _tmp9_;
+		_tmp11_ = vala_source_reference_get_file (_tmp10_);
+		_tmp12_ = _tmp11_;
+		_tmp13_ = a;
+		_tmp14_ = vala_attribute_get_string (_tmp13_, "gir_namespace", NULL);
+		_tmp15_ = _tmp14_;
+		vala_source_file_set_gir_namespace (_tmp12_, _tmp15_);
+		_g_free0 (_tmp15_);
 	}
-	_tmp18_ = a;
-	if (_tmp18_ != NULL) {
-		ValaAttribute* _tmp19_;
-		gboolean _tmp20_ = FALSE;
-		_tmp19_ = a;
-		_tmp20_ = vala_attribute_has_argument (_tmp19_, "gir_version");
-		_tmp17_ = _tmp20_;
+	_tmp17_ = a;
+	if (_tmp17_ != NULL) {
+		ValaAttribute* _tmp18_ = NULL;
+		gboolean _tmp19_ = FALSE;
+		_tmp18_ = a;
+		_tmp19_ = vala_attribute_has_argument (_tmp18_, "gir_version");
+		_tmp16_ = _tmp19_;
 	} else {
-		_tmp17_ = FALSE;
+		_tmp16_ = FALSE;
 	}
-	_tmp21_ = _tmp17_;
-	if (_tmp21_) {
-		ValaSourceReference* _tmp22_;
-		ValaSourceReference* _tmp23_;
-		ValaSourceFile* _tmp24_;
-		ValaSourceFile* _tmp25_;
-		ValaAttribute* _tmp26_;
-		gchar* _tmp27_ = NULL;
-		gchar* _tmp28_;
-		_tmp22_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+	if (_tmp16_) {
+		ValaSourceReference* _tmp20_ = NULL;
+		ValaSourceReference* _tmp21_ = NULL;
+		ValaSourceFile* _tmp22_ = NULL;
+		ValaSourceFile* _tmp23_ = NULL;
+		ValaAttribute* _tmp24_ = NULL;
+		gchar* _tmp25_ = NULL;
+		gchar* _tmp26_ = NULL;
+		_tmp20_ = vala_code_node_get_source_reference ((ValaCodeNode*) self);
+		_tmp21_ = _tmp20_;
+		_tmp22_ = vala_source_reference_get_file (_tmp21_);
 		_tmp23_ = _tmp22_;
-		_tmp24_ = vala_source_reference_get_file (_tmp23_);
-		_tmp25_ = _tmp24_;
-		_tmp26_ = a;
-		_tmp27_ = vala_attribute_get_string (_tmp26_, "gir_version");
-		_tmp28_ = _tmp27_;
-		vala_source_file_set_gir_version (_tmp25_, _tmp28_);
-		_g_free0 (_tmp28_);
+		_tmp24_ = a;
+		_tmp25_ = vala_attribute_get_string (_tmp24_, "gir_version", NULL);
+		_tmp26_ = _tmp25_;
+		vala_source_file_set_gir_version (_tmp23_, _tmp26_);
+		_g_free0 (_tmp26_);
 	}
 	{
-		ValaList* _tmp29_;
-		ValaList* _tmp30_;
-		ValaList* _ns_list;
-		ValaList* _tmp31_;
-		gint _tmp32_;
-		gint _tmp33_;
-		gint _ns_size;
-		gint _ns_index;
-		_tmp29_ = self->priv->namespaces;
-		_tmp30_ = _vala_iterable_ref0 (_tmp29_);
-		_ns_list = _tmp30_;
-		_tmp31_ = _ns_list;
-		_tmp32_ = vala_collection_get_size ((ValaCollection*) _tmp31_);
-		_tmp33_ = _tmp32_;
-		_ns_size = _tmp33_;
+		ValaList* _ns_list = NULL;
+		ValaList* _tmp27_ = NULL;
+		ValaList* _tmp28_ = NULL;
+		gint _ns_size = 0;
+		ValaList* _tmp29_ = NULL;
+		gint _tmp30_ = 0;
+		gint _tmp31_ = 0;
+		gint _ns_index = 0;
+		_tmp27_ = self->priv->namespaces;
+		_tmp28_ = _vala_iterable_ref0 (_tmp27_);
+		_ns_list = _tmp28_;
+		_tmp29_ = _ns_list;
+		_tmp30_ = vala_collection_get_size ((ValaCollection*) _tmp29_);
+		_tmp31_ = _tmp30_;
+		_ns_size = _tmp31_;
 		_ns_index = -1;
 		while (TRUE) {
-			gint _tmp34_;
-			gint _tmp35_;
-			gint _tmp36_;
-			ValaList* _tmp37_;
-			gint _tmp38_;
-			gpointer _tmp39_ = NULL;
-			ValaNamespace* ns;
-			ValaNamespace* _tmp40_;
-			ValaCodeContext* _tmp41_;
-			_tmp34_ = _ns_index;
-			_ns_index = _tmp34_ + 1;
-			_tmp35_ = _ns_index;
-			_tmp36_ = _ns_size;
-			if (!(_tmp35_ < _tmp36_)) {
+			gint _tmp32_ = 0;
+			gint _tmp33_ = 0;
+			gint _tmp34_ = 0;
+			ValaNamespace* ns = NULL;
+			ValaList* _tmp35_ = NULL;
+			gint _tmp36_ = 0;
+			gpointer _tmp37_ = NULL;
+			ValaNamespace* _tmp38_ = NULL;
+			ValaCodeContext* _tmp39_ = NULL;
+			_tmp32_ = _ns_index;
+			_ns_index = _tmp32_ + 1;
+			_tmp33_ = _ns_index;
+			_tmp34_ = _ns_size;
+			if (!(_tmp33_ < _tmp34_)) {
 				break;
 			}
-			_tmp37_ = _ns_list;
-			_tmp38_ = _ns_index;
-			_tmp39_ = vala_list_get (_tmp37_, _tmp38_);
-			ns = (ValaNamespace*) _tmp39_;
-			_tmp40_ = ns;
-			_tmp41_ = context;
-			vala_code_node_check ((ValaCodeNode*) _tmp40_, _tmp41_);
+			_tmp35_ = _ns_list;
+			_tmp36_ = _ns_index;
+			_tmp37_ = vala_list_get (_tmp35_, _tmp36_);
+			ns = (ValaNamespace*) _tmp37_;
+			_tmp38_ = ns;
+			_tmp39_ = context;
+			vala_code_node_check ((ValaCodeNode*) _tmp38_, _tmp39_);
 			_vala_code_node_unref0 (ns);
 		}
 		_vala_iterable_unref0 (_ns_list);
 	}
-	_tmp42_ = vala_code_node_get_error ((ValaCodeNode*) self);
-	_tmp43_ = _tmp42_;
-	result = !_tmp43_;
+	_tmp40_ = vala_code_node_get_error ((ValaCodeNode*) self);
+	_tmp41_ = _tmp40_;
+	result = !_tmp41_;
 	_vala_code_node_unref0 (a);
 	return result;
 }
@@ -2992,49 +2984,49 @@ static gboolean vala_namespace_real_check (ValaCodeNode* base, ValaCodeContext* 
 
 static void vala_namespace_class_init (ValaNamespaceClass * klass) {
 	vala_namespace_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_namespace_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_namespace_finalize;
 	g_type_class_add_private (klass, sizeof (ValaNamespacePrivate));
-	VALA_SYMBOL_CLASS (klass)->add_namespace = vala_namespace_real_add_namespace;
-	VALA_SYMBOL_CLASS (klass)->add_class = vala_namespace_real_add_class;
-	VALA_SYMBOL_CLASS (klass)->add_interface = vala_namespace_real_add_interface;
-	VALA_SYMBOL_CLASS (klass)->add_struct = vala_namespace_real_add_struct;
-	VALA_SYMBOL_CLASS (klass)->add_enum = vala_namespace_real_add_enum;
-	VALA_SYMBOL_CLASS (klass)->add_error_domain = vala_namespace_real_add_error_domain;
-	VALA_SYMBOL_CLASS (klass)->add_delegate = vala_namespace_real_add_delegate;
-	VALA_SYMBOL_CLASS (klass)->add_constant = vala_namespace_real_add_constant;
-	VALA_SYMBOL_CLASS (klass)->add_field = vala_namespace_real_add_field;
-	VALA_SYMBOL_CLASS (klass)->add_method = vala_namespace_real_add_method;
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_namespace_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_namespace_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_namespace_real_check;
+	((ValaSymbolClass *) klass)->add_namespace = vala_namespace_real_add_namespace;
+	((ValaSymbolClass *) klass)->add_class = vala_namespace_real_add_class;
+	((ValaSymbolClass *) klass)->add_interface = vala_namespace_real_add_interface;
+	((ValaSymbolClass *) klass)->add_struct = vala_namespace_real_add_struct;
+	((ValaSymbolClass *) klass)->add_enum = vala_namespace_real_add_enum;
+	((ValaSymbolClass *) klass)->add_error_domain = vala_namespace_real_add_error_domain;
+	((ValaSymbolClass *) klass)->add_delegate = vala_namespace_real_add_delegate;
+	((ValaSymbolClass *) klass)->add_constant = vala_namespace_real_add_constant;
+	((ValaSymbolClass *) klass)->add_field = vala_namespace_real_add_field;
+	((ValaSymbolClass *) klass)->add_method = vala_namespace_real_add_method;
+	((ValaCodeNodeClass *) klass)->accept = vala_namespace_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_namespace_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = vala_namespace_real_check;
 }
 
 
 static void vala_namespace_instance_init (ValaNamespace * self) {
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
-	GEqualFunc _tmp2_;
-	ValaArrayList* _tmp3_;
-	GEqualFunc _tmp4_;
-	ValaArrayList* _tmp5_;
-	GEqualFunc _tmp6_;
-	ValaArrayList* _tmp7_;
-	GEqualFunc _tmp8_;
-	ValaArrayList* _tmp9_;
-	GEqualFunc _tmp10_;
-	ValaArrayList* _tmp11_;
-	GEqualFunc _tmp12_;
-	ValaArrayList* _tmp13_;
-	GEqualFunc _tmp14_;
-	ValaArrayList* _tmp15_;
-	GEqualFunc _tmp16_;
-	ValaArrayList* _tmp17_;
-	GEqualFunc _tmp18_;
-	ValaArrayList* _tmp19_;
-	GEqualFunc _tmp20_;
-	ValaArrayList* _tmp21_;
-	GEqualFunc _tmp22_;
-	ValaArrayList* _tmp23_;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
+	GEqualFunc _tmp2_ = NULL;
+	ValaArrayList* _tmp3_ = NULL;
+	GEqualFunc _tmp4_ = NULL;
+	ValaArrayList* _tmp5_ = NULL;
+	GEqualFunc _tmp6_ = NULL;
+	ValaArrayList* _tmp7_ = NULL;
+	GEqualFunc _tmp8_ = NULL;
+	ValaArrayList* _tmp9_ = NULL;
+	GEqualFunc _tmp10_ = NULL;
+	ValaArrayList* _tmp11_ = NULL;
+	GEqualFunc _tmp12_ = NULL;
+	ValaArrayList* _tmp13_ = NULL;
+	GEqualFunc _tmp14_ = NULL;
+	ValaArrayList* _tmp15_ = NULL;
+	GEqualFunc _tmp16_ = NULL;
+	ValaArrayList* _tmp17_ = NULL;
+	GEqualFunc _tmp18_ = NULL;
+	ValaArrayList* _tmp19_ = NULL;
+	GEqualFunc _tmp20_ = NULL;
+	ValaArrayList* _tmp21_ = NULL;
+	GEqualFunc _tmp22_ = NULL;
+	ValaArrayList* _tmp23_ = NULL;
 	self->priv = VALA_NAMESPACE_GET_PRIVATE (self);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (VALA_TYPE_CLASS, (GBoxedCopyFunc) vala_code_node_ref, vala_code_node_unref, _tmp0_);

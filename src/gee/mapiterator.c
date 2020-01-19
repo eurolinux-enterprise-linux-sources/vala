@@ -267,11 +267,11 @@ void vala_value_take_map_iterator (GValue* value, gpointer v_object) {
 
 static void vala_map_iterator_class_init (ValaMapIteratorClass * klass) {
 	vala_map_iterator_parent_class = g_type_class_peek_parent (klass);
-	VALA_MAP_ITERATOR_CLASS (klass)->finalize = vala_map_iterator_finalize;
+	((ValaMapIteratorClass *) klass)->finalize = vala_map_iterator_finalize;
 	g_type_class_add_private (klass, sizeof (ValaMapIteratorPrivate));
-	VALA_MAP_ITERATOR_CLASS (klass)->next = vala_map_iterator_real_next;
-	VALA_MAP_ITERATOR_CLASS (klass)->get_key = vala_map_iterator_real_get_key;
-	VALA_MAP_ITERATOR_CLASS (klass)->get_value = vala_map_iterator_real_get_value;
+	((ValaMapIteratorClass *) klass)->next = vala_map_iterator_real_next;
+	((ValaMapIteratorClass *) klass)->get_key = vala_map_iterator_real_get_key;
+	((ValaMapIteratorClass *) klass)->get_value = vala_map_iterator_real_get_value;
 }
 
 
@@ -284,6 +284,7 @@ static void vala_map_iterator_instance_init (ValaMapIterator * self) {
 static void vala_map_iterator_finalize (ValaMapIterator* obj) {
 	ValaMapIterator * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_MAP_ITERATOR, ValaMapIterator);
+	g_signal_handlers_destroy (self);
 }
 
 

@@ -335,7 +335,7 @@ GType vala_comment_get_type (void) G_GNUC_CONST;
 static GType vala_genie_scanner_conditional_get_type (void) G_GNUC_CONST G_GNUC_UNUSED;
 static ValaGenieScannerConditional* vala_genie_scanner_conditional_dup (const ValaGenieScannerConditional* self);
 static void vala_genie_scanner_conditional_free (ValaGenieScannerConditional* self);
-static GType vala_genie_scanner_state_get_type (void) G_GNUC_UNUSED;
+static GType vala_genie_scanner_state_get_type (void) G_GNUC_CONST G_GNUC_UNUSED;
 #define VALA_GENIE_SCANNER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), VALA_GENIE_TYPE_SCANNER, ValaGenieScannerPrivate))
 enum  {
 	VALA_GENIE_SCANNER_DUMMY_PROPERTY
@@ -438,13 +438,13 @@ static GType vala_genie_scanner_state_get_type (void) {
 
 ValaGenieScanner* vala_genie_scanner_construct (GType object_type, ValaSourceFile* source_file) {
 	ValaGenieScanner* self = NULL;
-	ValaSourceFile* _tmp0_;
-	ValaSourceFile* _tmp1_;
+	ValaSourceFile* _tmp0_ = NULL;
+	ValaSourceFile* _tmp1_ = NULL;
 	gchar* _tmp2_ = NULL;
-	gchar* _tmp3_;
-	ValaSourceFile* _tmp4_;
+	gchar* _tmp3_ = NULL;
+	ValaSourceFile* _tmp4_ = NULL;
 	gsize _tmp5_ = 0UL;
-	gchar* _tmp6_;
+	gchar* _tmp6_ = NULL;
 	g_return_val_if_fail (source_file != NULL, NULL);
 	self = (ValaGenieScanner*) g_type_create_instance (object_type);
 	_tmp0_ = source_file;
@@ -480,18 +480,17 @@ ValaGenieScanner* vala_genie_scanner_new (ValaSourceFile* source_file) {
 static gboolean vala_genie_scanner_in_template (ValaGenieScanner* self) {
 	gboolean result = FALSE;
 	gboolean _tmp0_ = FALSE;
-	ValaGenieScannerState* _tmp1_;
-	gint _tmp1__length1;
-	gboolean _tmp5_;
+	ValaGenieScannerState* _tmp1_ = NULL;
+	gint _tmp1__length1 = 0;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp1_ = self->priv->state_stack;
 	_tmp1__length1 = self->priv->state_stack_length1;
 	if (_tmp1__length1 > 0) {
-		ValaGenieScannerState* _tmp2_;
-		gint _tmp2__length1;
-		ValaGenieScannerState* _tmp3_;
-		gint _tmp3__length1;
-		ValaGenieScannerState _tmp4_;
+		ValaGenieScannerState* _tmp2_ = NULL;
+		gint _tmp2__length1 = 0;
+		ValaGenieScannerState* _tmp3_ = NULL;
+		gint _tmp3__length1 = 0;
+		ValaGenieScannerState _tmp4_ = 0;
 		_tmp2_ = self->priv->state_stack;
 		_tmp2__length1 = self->priv->state_stack_length1;
 		_tmp3_ = self->priv->state_stack;
@@ -501,8 +500,7 @@ static gboolean vala_genie_scanner_in_template (ValaGenieScanner* self) {
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp5_ = _tmp0_;
-	result = _tmp5_;
+	result = _tmp0_;
 	return result;
 }
 
@@ -510,18 +508,17 @@ static gboolean vala_genie_scanner_in_template (ValaGenieScanner* self) {
 static gboolean vala_genie_scanner_in_template_part (ValaGenieScanner* self) {
 	gboolean result = FALSE;
 	gboolean _tmp0_ = FALSE;
-	ValaGenieScannerState* _tmp1_;
-	gint _tmp1__length1;
-	gboolean _tmp5_;
+	ValaGenieScannerState* _tmp1_ = NULL;
+	gint _tmp1__length1 = 0;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp1_ = self->priv->state_stack;
 	_tmp1__length1 = self->priv->state_stack_length1;
 	if (_tmp1__length1 > 0) {
-		ValaGenieScannerState* _tmp2_;
-		gint _tmp2__length1;
-		ValaGenieScannerState* _tmp3_;
-		gint _tmp3__length1;
-		ValaGenieScannerState _tmp4_;
+		ValaGenieScannerState* _tmp2_ = NULL;
+		gint _tmp2__length1 = 0;
+		ValaGenieScannerState* _tmp3_ = NULL;
+		gint _tmp3__length1 = 0;
+		ValaGenieScannerState _tmp4_ = 0;
 		_tmp2_ = self->priv->state_stack;
 		_tmp2__length1 = self->priv->state_stack_length1;
 		_tmp3_ = self->priv->state_stack;
@@ -531,8 +528,7 @@ static gboolean vala_genie_scanner_in_template_part (ValaGenieScanner* self) {
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp5_ = _tmp0_;
-	result = _tmp5_;
+	result = _tmp0_;
 	return result;
 }
 
@@ -540,21 +536,19 @@ static gboolean vala_genie_scanner_in_template_part (ValaGenieScanner* self) {
 static gboolean vala_genie_scanner_is_ident_char (ValaGenieScanner* self, gchar c) {
 	gboolean result = FALSE;
 	gboolean _tmp0_ = FALSE;
-	gchar _tmp1_;
+	gchar _tmp1_ = '\0';
 	gboolean _tmp2_ = FALSE;
-	gboolean _tmp4_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp1_ = c;
 	_tmp2_ = g_ascii_isalnum (_tmp1_);
 	if (_tmp2_) {
 		_tmp0_ = TRUE;
 	} else {
-		gchar _tmp3_;
+		gchar _tmp3_ = '\0';
 		_tmp3_ = c;
 		_tmp0_ = _tmp3_ == '_';
 	}
-	_tmp4_ = _tmp0_;
-	result = _tmp4_;
+	result = _tmp0_;
 	return result;
 }
 
@@ -562,18 +556,17 @@ static gboolean vala_genie_scanner_is_ident_char (ValaGenieScanner* self, gchar 
 static gboolean vala_genie_scanner_in_regex_literal (ValaGenieScanner* self) {
 	gboolean result = FALSE;
 	gboolean _tmp0_ = FALSE;
-	ValaGenieScannerState* _tmp1_;
-	gint _tmp1__length1;
-	gboolean _tmp5_;
+	ValaGenieScannerState* _tmp1_ = NULL;
+	gint _tmp1__length1 = 0;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp1_ = self->priv->state_stack;
 	_tmp1__length1 = self->priv->state_stack_length1;
 	if (_tmp1__length1 > 0) {
-		ValaGenieScannerState* _tmp2_;
-		gint _tmp2__length1;
-		ValaGenieScannerState* _tmp3_;
-		gint _tmp3__length1;
-		ValaGenieScannerState _tmp4_;
+		ValaGenieScannerState* _tmp2_ = NULL;
+		gint _tmp2__length1 = 0;
+		ValaGenieScannerState* _tmp3_ = NULL;
+		gint _tmp3__length1 = 0;
+		ValaGenieScannerState _tmp4_ = 0;
 		_tmp2_ = self->priv->state_stack;
 		_tmp2__length1 = self->priv->state_stack_length1;
 		_tmp3_ = self->priv->state_stack;
@@ -583,28 +576,27 @@ static gboolean vala_genie_scanner_in_regex_literal (ValaGenieScanner* self) {
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp5_ = _tmp0_;
-	result = _tmp5_;
+	result = _tmp0_;
 	return result;
 }
 
 
 static ValaSourceReference* vala_genie_scanner_get_source_reference (ValaGenieScanner* self, gint offset, gint length) {
 	ValaSourceReference* result = NULL;
-	ValaSourceFile* _tmp0_;
-	gchar* _tmp1_;
-	gint _tmp2_;
-	gint _tmp3_;
-	gint _tmp4_;
+	ValaSourceFile* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
+	gint _tmp2_ = 0;
+	gint _tmp3_ = 0;
+	gint _tmp4_ = 0;
 	ValaSourceLocation _tmp5_ = {0};
-	gchar* _tmp6_;
-	gint _tmp7_;
-	gint _tmp8_;
-	gint _tmp9_;
-	gint _tmp10_;
-	gint _tmp11_;
+	gchar* _tmp6_ = NULL;
+	gint _tmp7_ = 0;
+	gint _tmp8_ = 0;
+	gint _tmp9_ = 0;
+	gint _tmp10_ = 0;
+	gint _tmp11_ = 0;
 	ValaSourceLocation _tmp12_ = {0};
-	ValaSourceReference* _tmp13_;
+	ValaSourceReference* _tmp13_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_source_file;
 	_tmp1_ = self->priv->current;
@@ -630,18 +622,18 @@ ValaGenieTokenType vala_genie_scanner_read_regex_token (ValaGenieScanner* self, 
 	ValaSourceLocation _vala_token_end = {0};
 	ValaGenieTokenType result = 0;
 	ValaGenieTokenType type = 0;
-	gchar* _tmp0_;
-	gchar* begin;
-	gchar* _tmp1_;
-	gint _tmp2_;
-	gint _tmp3_;
-	gint token_length_in_chars;
-	gchar* _tmp4_;
-	gchar* _tmp5_;
-	gint _tmp102_;
-	gchar* _tmp108_;
-	gint _tmp109_;
-	gint _tmp110_;
+	gchar* begin = NULL;
+	gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
+	gint _tmp2_ = 0;
+	gint _tmp3_ = 0;
+	gint token_length_in_chars = 0;
+	gchar* _tmp4_ = NULL;
+	gchar* _tmp5_ = NULL;
+	gint _tmp96_ = 0;
+	gchar* _tmp102_ = NULL;
+	gint _tmp103_ = 0;
+	gint _tmp104_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->current;
 	begin = _tmp0_;
@@ -655,19 +647,19 @@ ValaGenieTokenType vala_genie_scanner_read_regex_token (ValaGenieScanner* self, 
 	if (_tmp4_ >= _tmp5_) {
 		type = VALA_GENIE_TOKEN_TYPE_EOF;
 	} else {
-		gchar* _tmp6_;
-		gchar _tmp7_;
+		gchar* _tmp6_ = NULL;
+		gchar _tmp7_ = '\0';
 		_tmp6_ = self->priv->current;
 		_tmp7_ = _tmp6_[0];
 		switch (_tmp7_) {
 			case '/':
 			{
-				gchar* _tmp8_;
-				gint _tmp9_;
-				gboolean fl_i;
-				gboolean fl_s;
-				gboolean fl_m;
-				gboolean fl_x;
+				gchar* _tmp8_ = NULL;
+				gint _tmp9_ = 0;
+				gboolean fl_i = FALSE;
+				gboolean fl_s = FALSE;
+				gboolean fl_m = FALSE;
+				gboolean fl_x = FALSE;
 				type = VALA_GENIE_TOKEN_TYPE_CLOSE_REGEX_LITERAL;
 				_tmp8_ = self->priv->current;
 				self->priv->current = _tmp8_ + 1;
@@ -681,117 +673,111 @@ ValaGenieTokenType vala_genie_scanner_read_regex_token (ValaGenieScanner* self, 
 					gboolean _tmp10_ = FALSE;
 					gboolean _tmp11_ = FALSE;
 					gboolean _tmp12_ = FALSE;
-					gchar* _tmp13_;
-					gchar _tmp14_;
-					gboolean _tmp17_;
-					gboolean _tmp20_;
-					gboolean _tmp23_;
-					gchar* _tmp24_;
-					gchar _tmp25_;
-					gchar* _tmp42_;
-					gint _tmp43_;
+					gchar* _tmp13_ = NULL;
+					gchar _tmp14_ = '\0';
+					gchar* _tmp21_ = NULL;
+					gchar _tmp22_ = '\0';
+					gchar* _tmp39_ = NULL;
+					gint _tmp40_ = 0;
 					_tmp13_ = self->priv->current;
 					_tmp14_ = _tmp13_[0];
 					if (_tmp14_ == 'i') {
 						_tmp12_ = TRUE;
 					} else {
-						gchar* _tmp15_;
-						gchar _tmp16_;
+						gchar* _tmp15_ = NULL;
+						gchar _tmp16_ = '\0';
 						_tmp15_ = self->priv->current;
 						_tmp16_ = _tmp15_[0];
 						_tmp12_ = _tmp16_ == 's';
 					}
-					_tmp17_ = _tmp12_;
-					if (_tmp17_) {
+					if (_tmp12_) {
 						_tmp11_ = TRUE;
 					} else {
-						gchar* _tmp18_;
-						gchar _tmp19_;
-						_tmp18_ = self->priv->current;
-						_tmp19_ = _tmp18_[0];
-						_tmp11_ = _tmp19_ == 'm';
+						gchar* _tmp17_ = NULL;
+						gchar _tmp18_ = '\0';
+						_tmp17_ = self->priv->current;
+						_tmp18_ = _tmp17_[0];
+						_tmp11_ = _tmp18_ == 'm';
 					}
-					_tmp20_ = _tmp11_;
-					if (_tmp20_) {
+					if (_tmp11_) {
 						_tmp10_ = TRUE;
 					} else {
-						gchar* _tmp21_;
-						gchar _tmp22_;
-						_tmp21_ = self->priv->current;
-						_tmp22_ = _tmp21_[0];
-						_tmp10_ = _tmp22_ == 'x';
+						gchar* _tmp19_ = NULL;
+						gchar _tmp20_ = '\0';
+						_tmp19_ = self->priv->current;
+						_tmp20_ = _tmp19_[0];
+						_tmp10_ = _tmp20_ == 'x';
 					}
-					_tmp23_ = _tmp10_;
-					if (!_tmp23_) {
+					if (!_tmp10_) {
 						break;
 					}
-					_tmp24_ = self->priv->current;
-					_tmp25_ = _tmp24_[0];
-					switch (_tmp25_) {
+					_tmp21_ = self->priv->current;
+					_tmp22_ = _tmp21_[0];
+					switch (_tmp22_) {
 						case 'i':
 						{
-							gboolean _tmp26_;
-							_tmp26_ = fl_i;
-							if (_tmp26_) {
-								gint _tmp27_;
-								ValaSourceReference* _tmp28_ = NULL;
-								ValaSourceReference* _tmp29_;
-								_tmp27_ = token_length_in_chars;
-								_tmp28_ = vala_genie_scanner_get_source_reference (self, _tmp27_, 0);
-								_tmp29_ = _tmp28_;
-								vala_report_error (_tmp29_, "modifier 'i' used more than once");
-								_vala_source_reference_unref0 (_tmp29_);
+							gboolean _tmp23_ = FALSE;
+							_tmp23_ = fl_i;
+							if (_tmp23_) {
+								gint _tmp24_ = 0;
+								ValaSourceReference* _tmp25_ = NULL;
+								ValaSourceReference* _tmp26_ = NULL;
+								_tmp24_ = token_length_in_chars;
+								_tmp25_ = vala_genie_scanner_get_source_reference (self, _tmp24_, 0);
+								_tmp26_ = _tmp25_;
+								vala_report_error (_tmp26_, "modifier 'i' used more than once");
+								_vala_source_reference_unref0 (_tmp26_);
 							}
 							fl_i = TRUE;
 							break;
 						}
 						case 's':
 						{
-							gboolean _tmp30_;
-							_tmp30_ = fl_s;
-							if (_tmp30_) {
-								gint _tmp31_;
-								ValaSourceReference* _tmp32_ = NULL;
-								ValaSourceReference* _tmp33_;
-								_tmp31_ = token_length_in_chars;
-								_tmp32_ = vala_genie_scanner_get_source_reference (self, _tmp31_, 0);
-								_tmp33_ = _tmp32_;
-								vala_report_error (_tmp33_, "modifier 's' used more than once");
-								_vala_source_reference_unref0 (_tmp33_);
+							gboolean _tmp27_ = FALSE;
+							_tmp27_ = fl_s;
+							if (_tmp27_) {
+								gint _tmp28_ = 0;
+								ValaSourceReference* _tmp29_ = NULL;
+								ValaSourceReference* _tmp30_ = NULL;
+								_tmp28_ = token_length_in_chars;
+								_tmp29_ = vala_genie_scanner_get_source_reference (self, _tmp28_, 0);
+								_tmp30_ = _tmp29_;
+								vala_report_error (_tmp30_, "modifier 's' used more than once");
+								_vala_source_reference_unref0 (_tmp30_);
 							}
 							fl_s = TRUE;
 							break;
 						}
 						case 'm':
 						{
-							gboolean _tmp34_;
-							_tmp34_ = fl_m;
-							if (_tmp34_) {
-								gint _tmp35_;
-								ValaSourceReference* _tmp36_ = NULL;
-								ValaSourceReference* _tmp37_;
-								_tmp35_ = token_length_in_chars;
-								_tmp36_ = vala_genie_scanner_get_source_reference (self, _tmp35_, 0);
-								_tmp37_ = _tmp36_;
-								vala_report_error (_tmp37_, "modifier 'm' used more than once");
-								_vala_source_reference_unref0 (_tmp37_);
+							gboolean _tmp31_ = FALSE;
+							_tmp31_ = fl_m;
+							if (_tmp31_) {
+								gint _tmp32_ = 0;
+								ValaSourceReference* _tmp33_ = NULL;
+								ValaSourceReference* _tmp34_ = NULL;
+								_tmp32_ = token_length_in_chars;
+								_tmp33_ = vala_genie_scanner_get_source_reference (self, _tmp32_, 0);
+								_tmp34_ = _tmp33_;
+								vala_report_error (_tmp34_, "modifier 'm' used more than once");
+								_vala_source_reference_unref0 (_tmp34_);
 							}
 							fl_m = TRUE;
 							break;
 						}
 						case 'x':
 						{
-							gboolean _tmp38_;
-							_tmp38_ = fl_x;
-							if (_tmp38_) {
-								gint _tmp39_;
-								ValaSourceReference* _tmp40_ = NULL;
-								ValaSourceReference* _tmp41_;
-								_tmp39_ = token_length_in_chars;
-								_tmp40_ = vala_genie_scanner_get_source_reference (self, _tmp39_, 0);
-								_tmp41_ = _tmp40_;
-								vala_report_error (_tmp41_, "modifier 'x' used more than once");
-								_vala_source_reference_unref0 (_tmp41_);
+							gboolean _tmp35_ = FALSE;
+							_tmp35_ = fl_x;
+							if (_tmp35_) {
+								gint _tmp36_ = 0;
+								ValaSourceReference* _tmp37_ = NULL;
+								ValaSourceReference* _tmp38_ = NULL;
+								_tmp36_ = token_length_in_chars;
+								_tmp37_ = vala_genie_scanner_get_source_reference (self, _tmp36_, 0);
+								_tmp38_ = _tmp37_;
+								vala_report_error (_tmp38_, "modifier 'x' used more than once");
+								_vala_source_reference_unref0 (_tmp38_);
 							}
 							fl_x = TRUE;
 							break;
@@ -799,64 +785,61 @@ ValaGenieTokenType vala_genie_scanner_read_regex_token (ValaGenieScanner* self, 
 						default:
 						break;
 					}
-					_tmp42_ = self->priv->current;
-					self->priv->current = _tmp42_ + 1;
-					_tmp43_ = token_length_in_chars;
-					token_length_in_chars = _tmp43_ + 1;
+					_tmp39_ = self->priv->current;
+					self->priv->current = _tmp39_ + 1;
+					_tmp40_ = token_length_in_chars;
+					token_length_in_chars = _tmp40_ + 1;
 				}
 				break;
 			}
 			default:
 			{
-				gboolean _tmp89_ = FALSE;
-				gchar* _tmp90_;
-				gchar* _tmp91_;
-				gboolean _tmp94_;
+				gboolean _tmp84_ = FALSE;
+				gchar* _tmp85_ = NULL;
+				gchar* _tmp86_ = NULL;
 				type = VALA_GENIE_TOKEN_TYPE_REGEX_LITERAL;
 				token_length_in_chars = 0;
 				while (TRUE) {
-					gboolean _tmp44_ = FALSE;
-					gchar* _tmp45_;
-					gchar* _tmp46_;
-					gboolean _tmp49_;
-					gchar* _tmp50_;
-					gchar _tmp51_;
-					_tmp45_ = self->priv->current;
-					_tmp46_ = self->priv->end;
-					if (_tmp45_ < _tmp46_) {
-						gchar* _tmp47_;
-						gchar _tmp48_;
-						_tmp47_ = self->priv->current;
-						_tmp48_ = _tmp47_[0];
-						_tmp44_ = _tmp48_ != '/';
+					gboolean _tmp41_ = FALSE;
+					gchar* _tmp42_ = NULL;
+					gchar* _tmp43_ = NULL;
+					gchar* _tmp46_ = NULL;
+					gchar _tmp47_ = '\0';
+					_tmp42_ = self->priv->current;
+					_tmp43_ = self->priv->end;
+					if (_tmp42_ < _tmp43_) {
+						gchar* _tmp44_ = NULL;
+						gchar _tmp45_ = '\0';
+						_tmp44_ = self->priv->current;
+						_tmp45_ = _tmp44_[0];
+						_tmp41_ = _tmp45_ != '/';
 					} else {
-						_tmp44_ = FALSE;
+						_tmp41_ = FALSE;
 					}
-					_tmp49_ = _tmp44_;
-					if (!_tmp49_) {
+					if (!_tmp41_) {
 						break;
 					}
-					_tmp50_ = self->priv->current;
-					_tmp51_ = _tmp50_[0];
-					if (_tmp51_ == '\\') {
-						gchar* _tmp52_;
-						gint _tmp53_;
-						gchar* _tmp54_;
-						gchar* _tmp55_;
-						gchar* _tmp56_;
-						gchar _tmp57_;
-						_tmp52_ = self->priv->current;
-						self->priv->current = _tmp52_ + 1;
-						_tmp53_ = token_length_in_chars;
-						token_length_in_chars = _tmp53_ + 1;
-						_tmp54_ = self->priv->current;
-						_tmp55_ = self->priv->end;
-						if (_tmp54_ >= _tmp55_) {
+					_tmp46_ = self->priv->current;
+					_tmp47_ = _tmp46_[0];
+					if (_tmp47_ == '\\') {
+						gchar* _tmp48_ = NULL;
+						gint _tmp49_ = 0;
+						gchar* _tmp50_ = NULL;
+						gchar* _tmp51_ = NULL;
+						gchar* _tmp52_ = NULL;
+						gchar _tmp53_ = '\0';
+						_tmp48_ = self->priv->current;
+						self->priv->current = _tmp48_ + 1;
+						_tmp49_ = token_length_in_chars;
+						token_length_in_chars = _tmp49_ + 1;
+						_tmp50_ = self->priv->current;
+						_tmp51_ = self->priv->end;
+						if (_tmp50_ >= _tmp51_) {
 							break;
 						}
-						_tmp56_ = self->priv->current;
-						_tmp57_ = _tmp56_[0];
-						switch (_tmp57_) {
+						_tmp52_ = self->priv->current;
+						_tmp53_ = _tmp52_[0];
+						switch (_tmp53_) {
 							case '\'':
 							case '"':
 							case '\\':
@@ -907,144 +890,141 @@ ValaGenieTokenType vala_genie_scanner_read_regex_token (ValaGenieScanner* self, 
 							case 'z':
 							case 'Z':
 							{
-								gchar* _tmp58_;
-								gint _tmp59_;
-								_tmp58_ = self->priv->current;
-								self->priv->current = _tmp58_ + 1;
-								_tmp59_ = token_length_in_chars;
-								token_length_in_chars = _tmp59_ + 1;
+								gchar* _tmp54_ = NULL;
+								gint _tmp55_ = 0;
+								_tmp54_ = self->priv->current;
+								self->priv->current = _tmp54_ + 1;
+								_tmp55_ = token_length_in_chars;
+								token_length_in_chars = _tmp55_ + 1;
 								break;
 							}
 							case 'x':
 							{
-								gchar* _tmp60_;
-								gint _tmp61_;
-								_tmp60_ = self->priv->current;
-								self->priv->current = _tmp60_ + 1;
-								_tmp61_ = token_length_in_chars;
-								token_length_in_chars = _tmp61_ + 1;
+								gchar* _tmp56_ = NULL;
+								gint _tmp57_ = 0;
+								_tmp56_ = self->priv->current;
+								self->priv->current = _tmp56_ + 1;
+								_tmp57_ = token_length_in_chars;
+								token_length_in_chars = _tmp57_ + 1;
 								while (TRUE) {
-									gboolean _tmp62_ = FALSE;
-									gchar* _tmp63_;
-									gchar* _tmp64_;
-									gboolean _tmp68_;
-									gchar* _tmp69_;
-									gint _tmp70_;
-									_tmp63_ = self->priv->current;
-									_tmp64_ = self->priv->end;
-									if (_tmp63_ < _tmp64_) {
-										gchar* _tmp65_;
-										gchar _tmp66_;
-										gboolean _tmp67_ = FALSE;
-										_tmp65_ = self->priv->current;
-										_tmp66_ = _tmp65_[0];
-										_tmp67_ = g_ascii_isxdigit (_tmp66_);
-										_tmp62_ = _tmp67_;
+									gboolean _tmp58_ = FALSE;
+									gchar* _tmp59_ = NULL;
+									gchar* _tmp60_ = NULL;
+									gchar* _tmp64_ = NULL;
+									gint _tmp65_ = 0;
+									_tmp59_ = self->priv->current;
+									_tmp60_ = self->priv->end;
+									if (_tmp59_ < _tmp60_) {
+										gchar* _tmp61_ = NULL;
+										gchar _tmp62_ = '\0';
+										gboolean _tmp63_ = FALSE;
+										_tmp61_ = self->priv->current;
+										_tmp62_ = _tmp61_[0];
+										_tmp63_ = g_ascii_isxdigit (_tmp62_);
+										_tmp58_ = _tmp63_;
 									} else {
-										_tmp62_ = FALSE;
+										_tmp58_ = FALSE;
 									}
-									_tmp68_ = _tmp62_;
-									if (!_tmp68_) {
+									if (!_tmp58_) {
 										break;
 									}
-									_tmp69_ = self->priv->current;
-									self->priv->current = _tmp69_ + 1;
-									_tmp70_ = token_length_in_chars;
-									token_length_in_chars = _tmp70_ + 1;
+									_tmp64_ = self->priv->current;
+									self->priv->current = _tmp64_ + 1;
+									_tmp65_ = token_length_in_chars;
+									token_length_in_chars = _tmp65_ + 1;
 								}
 								break;
 							}
 							default:
 							{
-								gint _tmp71_;
-								ValaSourceReference* _tmp72_ = NULL;
-								ValaSourceReference* _tmp73_;
-								_tmp71_ = token_length_in_chars;
-								_tmp72_ = vala_genie_scanner_get_source_reference (self, _tmp71_, 0);
-								_tmp73_ = _tmp72_;
-								vala_report_error (_tmp73_, "invalid escape sequence");
-								_vala_source_reference_unref0 (_tmp73_);
+								gint _tmp66_ = 0;
+								ValaSourceReference* _tmp67_ = NULL;
+								ValaSourceReference* _tmp68_ = NULL;
+								_tmp66_ = token_length_in_chars;
+								_tmp67_ = vala_genie_scanner_get_source_reference (self, _tmp66_, 0);
+								_tmp68_ = _tmp67_;
+								vala_report_error (_tmp68_, "invalid escape sequence");
+								_vala_source_reference_unref0 (_tmp68_);
 								break;
 							}
 						}
 					} else {
-						gchar* _tmp74_;
-						gchar _tmp75_;
-						_tmp74_ = self->priv->current;
-						_tmp75_ = _tmp74_[0];
-						if (_tmp75_ == '\n') {
+						gchar* _tmp69_ = NULL;
+						gchar _tmp70_ = '\0';
+						_tmp69_ = self->priv->current;
+						_tmp70_ = _tmp69_[0];
+						if (_tmp70_ == '\n') {
 							break;
 						} else {
-							gchar* _tmp76_;
-							gchar* _tmp77_;
-							gchar* _tmp78_;
-							gunichar _tmp79_ = 0U;
-							gunichar u;
-							gunichar _tmp80_;
-							_tmp76_ = self->priv->current;
-							_tmp77_ = self->priv->end;
-							_tmp78_ = self->priv->current;
-							_tmp79_ = g_utf8_get_char_validated ((const gchar*) _tmp76_, (gssize) ((glong) (_tmp77_ - _tmp78_)));
-							u = _tmp79_;
-							_tmp80_ = u;
-							if (_tmp80_ != ((gunichar) (-1))) {
-								gchar* _tmp81_;
-								gunichar _tmp82_;
-								gint _tmp83_ = 0;
-								gint _tmp84_;
-								_tmp81_ = self->priv->current;
-								_tmp82_ = u;
-								_tmp83_ = g_unichar_to_utf8 (_tmp82_, NULL);
-								self->priv->current = _tmp81_ + _tmp83_;
-								_tmp84_ = token_length_in_chars;
-								token_length_in_chars = _tmp84_ + 1;
+							gunichar u = 0U;
+							gchar* _tmp71_ = NULL;
+							gchar* _tmp72_ = NULL;
+							gchar* _tmp73_ = NULL;
+							gunichar _tmp74_ = 0U;
+							gunichar _tmp75_ = 0U;
+							_tmp71_ = self->priv->current;
+							_tmp72_ = self->priv->end;
+							_tmp73_ = self->priv->current;
+							_tmp74_ = g_utf8_get_char_validated ((const gchar*) _tmp71_, (gssize) ((glong) (_tmp72_ - _tmp73_)));
+							u = _tmp74_;
+							_tmp75_ = u;
+							if (_tmp75_ != ((gunichar) (-1))) {
+								gchar* _tmp76_ = NULL;
+								gunichar _tmp77_ = 0U;
+								gint _tmp78_ = 0;
+								gint _tmp79_ = 0;
+								_tmp76_ = self->priv->current;
+								_tmp77_ = u;
+								_tmp78_ = g_unichar_to_utf8 (_tmp77_, NULL);
+								self->priv->current = _tmp76_ + _tmp78_;
+								_tmp79_ = token_length_in_chars;
+								token_length_in_chars = _tmp79_ + 1;
 							} else {
-								gchar* _tmp85_;
-								gint _tmp86_;
-								ValaSourceReference* _tmp87_ = NULL;
-								ValaSourceReference* _tmp88_;
-								_tmp85_ = self->priv->current;
-								self->priv->current = _tmp85_ + 1;
-								_tmp86_ = token_length_in_chars;
-								_tmp87_ = vala_genie_scanner_get_source_reference (self, _tmp86_, 0);
-								_tmp88_ = _tmp87_;
-								vala_report_error (_tmp88_, "invalid UTF-8 character");
-								_vala_source_reference_unref0 (_tmp88_);
+								gchar* _tmp80_ = NULL;
+								gint _tmp81_ = 0;
+								ValaSourceReference* _tmp82_ = NULL;
+								ValaSourceReference* _tmp83_ = NULL;
+								_tmp80_ = self->priv->current;
+								self->priv->current = _tmp80_ + 1;
+								_tmp81_ = token_length_in_chars;
+								_tmp82_ = vala_genie_scanner_get_source_reference (self, _tmp81_, 0);
+								_tmp83_ = _tmp82_;
+								vala_report_error (_tmp83_, "invalid UTF-8 character");
+								_vala_source_reference_unref0 (_tmp83_);
 							}
 						}
 					}
 				}
-				_tmp90_ = self->priv->current;
-				_tmp91_ = self->priv->end;
-				if (_tmp90_ >= _tmp91_) {
-					_tmp89_ = TRUE;
+				_tmp85_ = self->priv->current;
+				_tmp86_ = self->priv->end;
+				if (_tmp85_ >= _tmp86_) {
+					_tmp84_ = TRUE;
 				} else {
-					gchar* _tmp92_;
-					gchar _tmp93_;
-					_tmp92_ = self->priv->current;
-					_tmp93_ = _tmp92_[0];
-					_tmp89_ = _tmp93_ == '\n';
+					gchar* _tmp87_ = NULL;
+					gchar _tmp88_ = '\0';
+					_tmp87_ = self->priv->current;
+					_tmp88_ = _tmp87_[0];
+					_tmp84_ = _tmp88_ == '\n';
 				}
-				_tmp94_ = _tmp89_;
-				if (_tmp94_) {
-					gint _tmp95_;
-					ValaSourceReference* _tmp96_ = NULL;
-					ValaSourceReference* _tmp97_;
-					gint _tmp98_;
-					ValaSourceLocation _tmp99_ = {0};
-					ValaSourceLocation _tmp100_ = {0};
-					ValaGenieTokenType _tmp101_ = 0;
-					_tmp95_ = token_length_in_chars;
-					_tmp96_ = vala_genie_scanner_get_source_reference (self, _tmp95_, 0);
-					_tmp97_ = _tmp96_;
-					vala_report_error (_tmp97_, "syntax error, expected \"");
-					_vala_source_reference_unref0 (_tmp97_);
-					_tmp98_ = self->priv->state_stack_length1;
-					self->priv->state_stack_length1 = _tmp98_ - 1;
-					_tmp101_ = vala_genie_scanner_read_token (self, &_tmp99_, &_tmp100_);
-					_vala_token_begin = _tmp99_;
-					_vala_token_end = _tmp100_;
-					result = _tmp101_;
+				if (_tmp84_) {
+					gint _tmp89_ = 0;
+					ValaSourceReference* _tmp90_ = NULL;
+					ValaSourceReference* _tmp91_ = NULL;
+					gint _tmp92_ = 0;
+					ValaSourceLocation _tmp93_ = {0};
+					ValaSourceLocation _tmp94_ = {0};
+					ValaGenieTokenType _tmp95_ = 0;
+					_tmp89_ = token_length_in_chars;
+					_tmp90_ = vala_genie_scanner_get_source_reference (self, _tmp89_, 0);
+					_tmp91_ = _tmp90_;
+					vala_report_error (_tmp91_, "syntax error, expected \"");
+					_vala_source_reference_unref0 (_tmp91_);
+					_tmp92_ = self->priv->state_stack_length1;
+					self->priv->state_stack_length1 = _tmp92_ - 1;
+					_tmp95_ = vala_genie_scanner_read_token (self, &_tmp93_, &_tmp94_);
+					_vala_token_begin = _tmp93_;
+					_vala_token_end = _tmp94_;
+					result = _tmp95_;
 					if (token_begin) {
 						*token_begin = _vala_token_begin;
 					}
@@ -1057,26 +1037,26 @@ ValaGenieTokenType vala_genie_scanner_read_regex_token (ValaGenieScanner* self, 
 			}
 		}
 	}
-	_tmp102_ = token_length_in_chars;
-	if (_tmp102_ < 0) {
-		gint _tmp103_;
-		gchar* _tmp104_;
-		gchar* _tmp105_;
-		_tmp103_ = self->priv->column;
-		_tmp104_ = self->priv->current;
-		_tmp105_ = begin;
-		self->priv->column = _tmp103_ + ((gint) (_tmp104_ - _tmp105_));
+	_tmp96_ = token_length_in_chars;
+	if (_tmp96_ < 0) {
+		gint _tmp97_ = 0;
+		gchar* _tmp98_ = NULL;
+		gchar* _tmp99_ = NULL;
+		_tmp97_ = self->priv->column;
+		_tmp98_ = self->priv->current;
+		_tmp99_ = begin;
+		self->priv->column = _tmp97_ + ((gint) (_tmp98_ - _tmp99_));
 	} else {
-		gint _tmp106_;
-		gint _tmp107_;
-		_tmp106_ = self->priv->column;
-		_tmp107_ = token_length_in_chars;
-		self->priv->column = _tmp106_ + _tmp107_;
+		gint _tmp100_ = 0;
+		gint _tmp101_ = 0;
+		_tmp100_ = self->priv->column;
+		_tmp101_ = token_length_in_chars;
+		self->priv->column = _tmp100_ + _tmp101_;
 	}
-	_tmp108_ = self->priv->current;
-	_tmp109_ = self->priv->line;
-	_tmp110_ = self->priv->column;
-	vala_source_location_init (&_vala_token_end, _tmp108_, _tmp109_, _tmp110_ - 1);
+	_tmp102_ = self->priv->current;
+	_tmp103_ = self->priv->line;
+	_tmp104_ = self->priv->column;
+	vala_source_location_init (&_vala_token_end, _tmp102_, _tmp103_, _tmp104_ - 1);
 	result = type;
 	if (token_begin) {
 		*token_begin = _vala_token_begin;
@@ -1089,12 +1069,12 @@ ValaGenieTokenType vala_genie_scanner_read_regex_token (ValaGenieScanner* self, 
 
 
 void vala_genie_scanner_seek (ValaGenieScanner* self, ValaSourceLocation* location) {
-	ValaSourceLocation _tmp0_;
-	gchar* _tmp1_;
-	ValaSourceLocation _tmp2_;
-	gint _tmp3_;
-	ValaSourceLocation _tmp4_;
-	gint _tmp5_;
+	ValaSourceLocation _tmp0_ = {0};
+	gchar* _tmp1_ = NULL;
+	ValaSourceLocation _tmp2_ = {0};
+	gint _tmp3_ = 0;
+	ValaSourceLocation _tmp4_ = {0};
+	gint _tmp5_ = 0;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (location != NULL);
 	_tmp0_ = *location;
@@ -1119,19 +1099,19 @@ void vala_genie_scanner_seek (ValaGenieScanner* self, ValaSourceLocation* locati
 
 ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, gint len) {
 	ValaGenieTokenType result = 0;
-	gint _tmp0_;
+	gint _tmp0_ = 0;
 	_tmp0_ = len;
 	switch (_tmp0_) {
 		case 2:
 		{
-			gchar* _tmp1_;
-			gchar _tmp2_;
+			gchar* _tmp1_ = NULL;
+			gchar _tmp2_ = '\0';
 			_tmp1_ = begin;
 			_tmp2_ = _tmp1_[0];
 			switch (_tmp2_) {
 				case 'a':
 				{
-					gchar* _tmp3_;
+					gchar* _tmp3_ = NULL;
 					gboolean _tmp4_ = FALSE;
 					_tmp3_ = begin;
 					_tmp4_ = vala_genie_scanner_matches (_tmp3_, "as");
@@ -1143,7 +1123,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'd':
 				{
-					gchar* _tmp5_;
+					gchar* _tmp5_ = NULL;
 					gboolean _tmp6_ = FALSE;
 					_tmp5_ = begin;
 					_tmp6_ = vala_genie_scanner_matches (_tmp5_, "do");
@@ -1155,8 +1135,8 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'i':
 				{
-					gchar* _tmp7_;
-					gchar _tmp8_;
+					gchar* _tmp7_ = NULL;
+					gchar _tmp8_ = '\0';
 					_tmp7_ = begin;
 					_tmp8_ = _tmp7_[1];
 					switch (_tmp8_) {
@@ -1182,9 +1162,9 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'o':
 				{
-					gchar* _tmp9_;
+					gchar* _tmp9_ = NULL;
 					gboolean _tmp10_ = FALSE;
-					gchar* _tmp11_;
+					gchar* _tmp11_ = NULL;
 					gboolean _tmp12_ = FALSE;
 					_tmp9_ = begin;
 					_tmp10_ = vala_genie_scanner_matches (_tmp9_, "of");
@@ -1202,7 +1182,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 't':
 				{
-					gchar* _tmp13_;
+					gchar* _tmp13_ = NULL;
 					gboolean _tmp14_ = FALSE;
 					_tmp13_ = begin;
 					_tmp14_ = vala_genie_scanner_matches (_tmp13_, "to");
@@ -1219,14 +1199,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 		}
 		case 3:
 		{
-			gchar* _tmp15_;
-			gchar _tmp16_;
+			gchar* _tmp15_ = NULL;
+			gchar _tmp16_ = '\0';
 			_tmp15_ = begin;
 			_tmp16_ = _tmp15_[0];
 			switch (_tmp16_) {
 				case 'a':
 				{
-					gchar* _tmp17_;
+					gchar* _tmp17_ = NULL;
 					gboolean _tmp18_ = FALSE;
 					_tmp17_ = begin;
 					_tmp18_ = vala_genie_scanner_matches (_tmp17_, "and");
@@ -1238,7 +1218,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'd':
 				{
-					gchar* _tmp19_;
+					gchar* _tmp19_ = NULL;
 					gboolean _tmp20_ = FALSE;
 					_tmp19_ = begin;
 					_tmp20_ = vala_genie_scanner_matches (_tmp19_, "def");
@@ -1250,7 +1230,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'f':
 				{
-					gchar* _tmp21_;
+					gchar* _tmp21_ = NULL;
 					gboolean _tmp22_ = FALSE;
 					_tmp21_ = begin;
 					_tmp22_ = vala_genie_scanner_matches (_tmp21_, "for");
@@ -1262,7 +1242,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'g':
 				{
-					gchar* _tmp23_;
+					gchar* _tmp23_ = NULL;
 					gboolean _tmp24_ = FALSE;
 					_tmp23_ = begin;
 					_tmp24_ = vala_genie_scanner_matches (_tmp23_, "get");
@@ -1274,7 +1254,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'i':
 				{
-					gchar* _tmp25_;
+					gchar* _tmp25_ = NULL;
 					gboolean _tmp26_ = FALSE;
 					_tmp25_ = begin;
 					_tmp26_ = vala_genie_scanner_matches (_tmp25_, "isa");
@@ -1286,14 +1266,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'n':
 				{
-					gchar* _tmp27_;
-					gchar _tmp28_;
+					gchar* _tmp27_ = NULL;
+					gchar _tmp28_ = '\0';
 					_tmp27_ = begin;
 					_tmp28_ = _tmp27_[1];
 					switch (_tmp28_) {
 						case 'e':
 						{
-							gchar* _tmp29_;
+							gchar* _tmp29_ = NULL;
 							gboolean _tmp30_ = FALSE;
 							_tmp29_ = begin;
 							_tmp30_ = vala_genie_scanner_matches (_tmp29_, "new");
@@ -1305,7 +1285,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'o':
 						{
-							gchar* _tmp31_;
+							gchar* _tmp31_ = NULL;
 							gboolean _tmp32_ = FALSE;
 							_tmp31_ = begin;
 							_tmp32_ = vala_genie_scanner_matches (_tmp31_, "not");
@@ -1322,7 +1302,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'o':
 				{
-					gchar* _tmp33_;
+					gchar* _tmp33_ = NULL;
 					gboolean _tmp34_ = FALSE;
 					_tmp33_ = begin;
 					_tmp34_ = vala_genie_scanner_matches (_tmp33_, "out");
@@ -1334,7 +1314,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'r':
 				{
-					gchar* _tmp35_;
+					gchar* _tmp35_ = NULL;
 					gboolean _tmp36_ = FALSE;
 					_tmp35_ = begin;
 					_tmp36_ = vala_genie_scanner_matches (_tmp35_, "ref");
@@ -1346,7 +1326,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 's':
 				{
-					gchar* _tmp37_;
+					gchar* _tmp37_ = NULL;
 					gboolean _tmp38_ = FALSE;
 					_tmp37_ = begin;
 					_tmp38_ = vala_genie_scanner_matches (_tmp37_, "set");
@@ -1358,7 +1338,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 't':
 				{
-					gchar* _tmp39_;
+					gchar* _tmp39_ = NULL;
 					gboolean _tmp40_ = FALSE;
 					_tmp39_ = begin;
 					_tmp40_ = vala_genie_scanner_matches (_tmp39_, "try");
@@ -1370,7 +1350,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'v':
 				{
-					gchar* _tmp41_;
+					gchar* _tmp41_ = NULL;
 					gboolean _tmp42_ = FALSE;
 					_tmp41_ = begin;
 					_tmp42_ = vala_genie_scanner_matches (_tmp41_, "var");
@@ -1387,14 +1367,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 		}
 		case 4:
 		{
-			gchar* _tmp43_;
-			gchar _tmp44_;
+			gchar* _tmp43_ = NULL;
+			gchar _tmp44_ = '\0';
 			_tmp43_ = begin;
 			_tmp44_ = _tmp43_[0];
 			switch (_tmp44_) {
 				case 'c':
 				{
-					gchar* _tmp45_;
+					gchar* _tmp45_ = NULL;
 					gboolean _tmp46_ = FALSE;
 					_tmp45_ = begin;
 					_tmp46_ = vala_genie_scanner_matches (_tmp45_, "case");
@@ -1406,7 +1386,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'd':
 				{
-					gchar* _tmp47_;
+					gchar* _tmp47_ = NULL;
 					gboolean _tmp48_ = FALSE;
 					_tmp47_ = begin;
 					_tmp48_ = vala_genie_scanner_matches (_tmp47_, "dict");
@@ -1418,14 +1398,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'e':
 				{
-					gchar* _tmp49_;
-					gchar _tmp50_;
+					gchar* _tmp49_ = NULL;
+					gchar _tmp50_ = '\0';
 					_tmp49_ = begin;
 					_tmp50_ = _tmp49_[1];
 					switch (_tmp50_) {
 						case 'l':
 						{
-							gchar* _tmp51_;
+							gchar* _tmp51_ = NULL;
 							gboolean _tmp52_ = FALSE;
 							_tmp51_ = begin;
 							_tmp52_ = vala_genie_scanner_matches (_tmp51_, "else");
@@ -1437,7 +1417,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'n':
 						{
-							gchar* _tmp53_;
+							gchar* _tmp53_ = NULL;
 							gboolean _tmp54_ = FALSE;
 							_tmp53_ = begin;
 							_tmp54_ = vala_genie_scanner_matches (_tmp53_, "enum");
@@ -1454,7 +1434,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'i':
 				{
-					gchar* _tmp55_;
+					gchar* _tmp55_ = NULL;
 					gboolean _tmp56_ = FALSE;
 					_tmp55_ = begin;
 					_tmp56_ = vala_genie_scanner_matches (_tmp55_, "init");
@@ -1466,14 +1446,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'l':
 				{
-					gchar* _tmp57_;
-					gchar _tmp58_;
+					gchar* _tmp57_ = NULL;
+					gchar _tmp58_ = '\0';
 					_tmp57_ = begin;
 					_tmp58_ = _tmp57_[1];
 					switch (_tmp58_) {
 						case 'i':
 						{
-							gchar* _tmp59_;
+							gchar* _tmp59_ = NULL;
 							gboolean _tmp60_ = FALSE;
 							_tmp59_ = begin;
 							_tmp60_ = vala_genie_scanner_matches (_tmp59_, "list");
@@ -1485,7 +1465,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'o':
 						{
-							gchar* _tmp61_;
+							gchar* _tmp61_ = NULL;
 							gboolean _tmp62_ = FALSE;
 							_tmp61_ = begin;
 							_tmp62_ = vala_genie_scanner_matches (_tmp61_, "lock");
@@ -1502,7 +1482,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'n':
 				{
-					gchar* _tmp63_;
+					gchar* _tmp63_ = NULL;
 					gboolean _tmp64_ = FALSE;
 					_tmp63_ = begin;
 					_tmp64_ = vala_genie_scanner_matches (_tmp63_, "null");
@@ -1514,14 +1494,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'p':
 				{
-					gchar* _tmp65_;
-					gchar _tmp66_;
+					gchar* _tmp65_ = NULL;
+					gchar _tmp66_ = '\0';
 					_tmp65_ = begin;
 					_tmp66_ = _tmp65_[1];
 					switch (_tmp66_) {
 						case 'a':
 						{
-							gchar* _tmp67_;
+							gchar* _tmp67_ = NULL;
 							gboolean _tmp68_ = FALSE;
 							_tmp67_ = begin;
 							_tmp68_ = vala_genie_scanner_matches (_tmp67_, "pass");
@@ -1533,7 +1513,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'r':
 						{
-							gchar* _tmp69_;
+							gchar* _tmp69_ = NULL;
 							gboolean _tmp70_ = FALSE;
 							_tmp69_ = begin;
 							_tmp70_ = vala_genie_scanner_matches (_tmp69_, "prop");
@@ -1550,7 +1530,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 's':
 				{
-					gchar* _tmp71_;
+					gchar* _tmp71_ = NULL;
 					gboolean _tmp72_ = FALSE;
 					_tmp71_ = begin;
 					_tmp72_ = vala_genie_scanner_matches (_tmp71_, "self");
@@ -1562,7 +1542,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 't':
 				{
-					gchar* _tmp73_;
+					gchar* _tmp73_ = NULL;
 					gboolean _tmp74_ = FALSE;
 					_tmp73_ = begin;
 					_tmp74_ = vala_genie_scanner_matches (_tmp73_, "true");
@@ -1574,7 +1554,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'u':
 				{
-					gchar* _tmp75_;
+					gchar* _tmp75_ = NULL;
 					gboolean _tmp76_ = FALSE;
 					_tmp75_ = begin;
 					_tmp76_ = vala_genie_scanner_matches (_tmp75_, "uses");
@@ -1586,7 +1566,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'v':
 				{
-					gchar* _tmp77_;
+					gchar* _tmp77_ = NULL;
 					gboolean _tmp78_ = FALSE;
 					_tmp77_ = begin;
 					_tmp78_ = vala_genie_scanner_matches (_tmp77_, "void");
@@ -1598,14 +1578,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'w':
 				{
-					gchar* _tmp79_;
-					gchar _tmp80_;
+					gchar* _tmp79_ = NULL;
+					gchar _tmp80_ = '\0';
 					_tmp79_ = begin;
 					_tmp80_ = _tmp79_[1];
 					switch (_tmp80_) {
 						case 'e':
 						{
-							gchar* _tmp81_;
+							gchar* _tmp81_ = NULL;
 							gboolean _tmp82_ = FALSE;
 							_tmp81_ = begin;
 							_tmp82_ = vala_genie_scanner_matches (_tmp81_, "weak");
@@ -1617,7 +1597,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'h':
 						{
-							gchar* _tmp83_;
+							gchar* _tmp83_ = NULL;
 							gboolean _tmp84_ = FALSE;
 							_tmp83_ = begin;
 							_tmp84_ = vala_genie_scanner_matches (_tmp83_, "when");
@@ -1639,21 +1619,21 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 		}
 		case 5:
 		{
-			gchar* _tmp85_;
-			gchar _tmp86_;
+			gchar* _tmp85_ = NULL;
+			gchar _tmp86_ = '\0';
 			_tmp85_ = begin;
 			_tmp86_ = _tmp85_[0];
 			switch (_tmp86_) {
 				case 'a':
 				{
-					gchar* _tmp87_;
-					gchar _tmp88_;
+					gchar* _tmp87_ = NULL;
+					gchar _tmp88_ = '\0';
 					_tmp87_ = begin;
 					_tmp88_ = _tmp87_[1];
 					switch (_tmp88_) {
 						case 'r':
 						{
-							gchar* _tmp89_;
+							gchar* _tmp89_ = NULL;
 							gboolean _tmp90_ = FALSE;
 							_tmp89_ = begin;
 							_tmp90_ = vala_genie_scanner_matches (_tmp89_, "array");
@@ -1665,7 +1645,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 's':
 						{
-							gchar* _tmp91_;
+							gchar* _tmp91_ = NULL;
 							gboolean _tmp92_ = FALSE;
 							_tmp91_ = begin;
 							_tmp92_ = vala_genie_scanner_matches (_tmp91_, "async");
@@ -1682,7 +1662,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'b':
 				{
-					gchar* _tmp93_;
+					gchar* _tmp93_ = NULL;
 					gboolean _tmp94_ = FALSE;
 					_tmp93_ = begin;
 					_tmp94_ = vala_genie_scanner_matches (_tmp93_, "break");
@@ -1694,14 +1674,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'c':
 				{
-					gchar* _tmp95_;
-					gchar _tmp96_;
+					gchar* _tmp95_ = NULL;
+					gchar _tmp96_ = '\0';
 					_tmp95_ = begin;
 					_tmp96_ = _tmp95_[1];
 					switch (_tmp96_) {
 						case 'l':
 						{
-							gchar* _tmp97_;
+							gchar* _tmp97_ = NULL;
 							gboolean _tmp98_ = FALSE;
 							_tmp97_ = begin;
 							_tmp98_ = vala_genie_scanner_matches (_tmp97_, "class");
@@ -1713,7 +1693,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'o':
 						{
-							gchar* _tmp99_;
+							gchar* _tmp99_ = NULL;
 							gboolean _tmp100_ = FALSE;
 							_tmp99_ = begin;
 							_tmp100_ = vala_genie_scanner_matches (_tmp99_, "const");
@@ -1730,7 +1710,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'e':
 				{
-					gchar* _tmp101_;
+					gchar* _tmp101_ = NULL;
 					gboolean _tmp102_ = FALSE;
 					_tmp101_ = begin;
 					_tmp102_ = vala_genie_scanner_matches (_tmp101_, "event");
@@ -1742,14 +1722,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'f':
 				{
-					gchar* _tmp103_;
-					gchar _tmp104_;
+					gchar* _tmp103_ = NULL;
+					gchar _tmp104_ = '\0';
 					_tmp103_ = begin;
 					_tmp104_ = _tmp103_[1];
 					switch (_tmp104_) {
 						case 'a':
 						{
-							gchar* _tmp105_;
+							gchar* _tmp105_ = NULL;
 							gboolean _tmp106_ = FALSE;
 							_tmp105_ = begin;
 							_tmp106_ = vala_genie_scanner_matches (_tmp105_, "false");
@@ -1761,7 +1741,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'i':
 						{
-							gchar* _tmp107_;
+							gchar* _tmp107_ = NULL;
 							gboolean _tmp108_ = FALSE;
 							_tmp107_ = begin;
 							_tmp108_ = vala_genie_scanner_matches (_tmp107_, "final");
@@ -1778,7 +1758,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'o':
 				{
-					gchar* _tmp109_;
+					gchar* _tmp109_ = NULL;
 					gboolean _tmp110_ = FALSE;
 					_tmp109_ = begin;
 					_tmp110_ = vala_genie_scanner_matches (_tmp109_, "owned");
@@ -1790,7 +1770,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'p':
 				{
-					gchar* _tmp111_;
+					gchar* _tmp111_ = NULL;
 					gboolean _tmp112_ = FALSE;
 					_tmp111_ = begin;
 					_tmp112_ = vala_genie_scanner_matches (_tmp111_, "print");
@@ -1802,7 +1782,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 's':
 				{
-					gchar* _tmp113_;
+					gchar* _tmp113_ = NULL;
 					gboolean _tmp114_ = FALSE;
 					_tmp113_ = begin;
 					_tmp114_ = vala_genie_scanner_matches (_tmp113_, "super");
@@ -1814,7 +1794,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'r':
 				{
-					gchar* _tmp115_;
+					gchar* _tmp115_ = NULL;
 					gboolean _tmp116_ = FALSE;
 					_tmp115_ = begin;
 					_tmp116_ = vala_genie_scanner_matches (_tmp115_, "raise");
@@ -1826,7 +1806,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'w':
 				{
-					gchar* _tmp117_;
+					gchar* _tmp117_ = NULL;
 					gboolean _tmp118_ = FALSE;
 					_tmp117_ = begin;
 					_tmp118_ = vala_genie_scanner_matches (_tmp117_, "while");
@@ -1838,7 +1818,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'y':
 				{
-					gchar* _tmp119_;
+					gchar* _tmp119_ = NULL;
 					gboolean _tmp120_ = FALSE;
 					_tmp119_ = begin;
 					_tmp120_ = vala_genie_scanner_matches (_tmp119_, "yield");
@@ -1855,14 +1835,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 		}
 		case 6:
 		{
-			gchar* _tmp121_;
-			gchar _tmp122_;
+			gchar* _tmp121_ = NULL;
+			gchar _tmp122_ = '\0';
 			_tmp121_ = begin;
 			_tmp122_ = _tmp121_[0];
 			switch (_tmp122_) {
 				case 'a':
 				{
-					gchar* _tmp123_;
+					gchar* _tmp123_ = NULL;
 					gboolean _tmp124_ = FALSE;
 					_tmp123_ = begin;
 					_tmp124_ = vala_genie_scanner_matches (_tmp123_, "assert");
@@ -1874,14 +1854,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'd':
 				{
-					gchar* _tmp125_;
-					gchar _tmp126_;
+					gchar* _tmp125_ = NULL;
+					gchar _tmp126_ = '\0';
 					_tmp125_ = begin;
 					_tmp126_ = _tmp125_[1];
 					switch (_tmp126_) {
 						case 'e':
 						{
-							gchar* _tmp127_;
+							gchar* _tmp127_ = NULL;
 							gboolean _tmp128_ = FALSE;
 							_tmp127_ = begin;
 							_tmp128_ = vala_genie_scanner_matches (_tmp127_, "delete");
@@ -1893,7 +1873,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'o':
 						{
-							gchar* _tmp129_;
+							gchar* _tmp129_ = NULL;
 							gboolean _tmp130_ = FALSE;
 							_tmp129_ = begin;
 							_tmp130_ = vala_genie_scanner_matches (_tmp129_, "downto");
@@ -1910,21 +1890,21 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'e':
 				{
-					gchar* _tmp131_;
-					gchar _tmp132_;
+					gchar* _tmp131_ = NULL;
+					gchar _tmp132_ = '\0';
 					_tmp131_ = begin;
 					_tmp132_ = _tmp131_[1];
 					switch (_tmp132_) {
 						case 'x':
 						{
-							gchar* _tmp133_;
-							gchar _tmp134_;
+							gchar* _tmp133_ = NULL;
+							gchar _tmp134_ = '\0';
 							_tmp133_ = begin;
 							_tmp134_ = _tmp133_[2];
 							switch (_tmp134_) {
 								case 'c':
 								{
-									gchar* _tmp135_;
+									gchar* _tmp135_ = NULL;
 									gboolean _tmp136_ = FALSE;
 									_tmp135_ = begin;
 									_tmp136_ = vala_genie_scanner_matches (_tmp135_, "except");
@@ -1936,7 +1916,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 								}
 								case 't':
 								{
-									gchar* _tmp137_;
+									gchar* _tmp137_ = NULL;
 									gboolean _tmp138_ = FALSE;
 									_tmp137_ = begin;
 									_tmp138_ = vala_genie_scanner_matches (_tmp137_, "extern");
@@ -1958,7 +1938,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'i':
 				{
-					gchar* _tmp139_;
+					gchar* _tmp139_ = NULL;
 					gboolean _tmp140_ = FALSE;
 					_tmp139_ = begin;
 					_tmp140_ = vala_genie_scanner_matches (_tmp139_, "inline");
@@ -1970,14 +1950,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'p':
 				{
-					gchar* _tmp141_;
-					gchar _tmp142_;
+					gchar* _tmp141_ = NULL;
+					gchar _tmp142_ = '\0';
 					_tmp141_ = begin;
 					_tmp142_ = _tmp141_[1];
 					switch (_tmp142_) {
 						case 'a':
 						{
-							gchar* _tmp143_;
+							gchar* _tmp143_ = NULL;
 							gboolean _tmp144_ = FALSE;
 							_tmp143_ = begin;
 							_tmp144_ = vala_genie_scanner_matches (_tmp143_, "params");
@@ -1989,7 +1969,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'u':
 						{
-							gchar* _tmp145_;
+							gchar* _tmp145_ = NULL;
 							gboolean _tmp146_ = FALSE;
 							_tmp145_ = begin;
 							_tmp146_ = vala_genie_scanner_matches (_tmp145_, "public");
@@ -2006,14 +1986,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'r':
 				{
-					gchar* _tmp147_;
-					gchar _tmp148_;
+					gchar* _tmp147_ = NULL;
+					gchar _tmp148_ = '\0';
 					_tmp147_ = begin;
 					_tmp148_ = _tmp147_[1];
 					switch (_tmp148_) {
 						case 'a':
 						{
-							gchar* _tmp149_;
+							gchar* _tmp149_ = NULL;
 							gboolean _tmp150_ = FALSE;
 							_tmp149_ = begin;
 							_tmp150_ = vala_genie_scanner_matches (_tmp149_, "raises");
@@ -2025,7 +2005,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'e':
 						{
-							gchar* _tmp151_;
+							gchar* _tmp151_ = NULL;
 							gboolean _tmp152_ = FALSE;
 							_tmp151_ = begin;
 							_tmp152_ = vala_genie_scanner_matches (_tmp151_, "return");
@@ -2042,14 +2022,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 's':
 				{
-					gchar* _tmp153_;
-					gchar _tmp154_;
+					gchar* _tmp153_ = NULL;
+					gchar _tmp154_ = '\0';
 					_tmp153_ = begin;
 					_tmp154_ = _tmp153_[1];
 					switch (_tmp154_) {
 						case 'e':
 						{
-							gchar* _tmp155_;
+							gchar* _tmp155_ = NULL;
 							gboolean _tmp156_ = FALSE;
 							_tmp155_ = begin;
 							_tmp156_ = vala_genie_scanner_matches (_tmp155_, "sealed");
@@ -2061,7 +2041,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'i':
 						{
-							gchar* _tmp157_;
+							gchar* _tmp157_ = NULL;
 							gboolean _tmp158_ = FALSE;
 							_tmp157_ = begin;
 							_tmp158_ = vala_genie_scanner_matches (_tmp157_, "sizeof");
@@ -2073,14 +2053,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 't':
 						{
-							gchar* _tmp159_;
-							gchar _tmp160_;
+							gchar* _tmp159_ = NULL;
+							gchar _tmp160_ = '\0';
 							_tmp159_ = begin;
 							_tmp160_ = _tmp159_[2];
 							switch (_tmp160_) {
 								case 'a':
 								{
-									gchar* _tmp161_;
+									gchar* _tmp161_ = NULL;
 									gboolean _tmp162_ = FALSE;
 									_tmp161_ = begin;
 									_tmp162_ = vala_genie_scanner_matches (_tmp161_, "static");
@@ -2092,7 +2072,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 								}
 								case 'r':
 								{
-									gchar* _tmp163_;
+									gchar* _tmp163_ = NULL;
 									gboolean _tmp164_ = FALSE;
 									_tmp163_ = begin;
 									_tmp164_ = vala_genie_scanner_matches (_tmp163_, "struct");
@@ -2114,7 +2094,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 't':
 				{
-					gchar* _tmp165_;
+					gchar* _tmp165_ = NULL;
 					gboolean _tmp166_ = FALSE;
 					_tmp165_ = begin;
 					_tmp166_ = vala_genie_scanner_matches (_tmp165_, "typeof");
@@ -2131,21 +2111,21 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 		}
 		case 7:
 		{
-			gchar* _tmp167_;
-			gchar _tmp168_;
+			gchar* _tmp167_ = NULL;
+			gchar _tmp168_ = '\0';
 			_tmp167_ = begin;
 			_tmp168_ = _tmp167_[0];
 			switch (_tmp168_) {
 				case 'd':
 				{
-					gchar* _tmp169_;
-					gchar _tmp170_;
+					gchar* _tmp169_ = NULL;
+					gchar _tmp170_ = '\0';
 					_tmp169_ = begin;
 					_tmp170_ = _tmp169_[1];
 					switch (_tmp170_) {
 						case 'e':
 						{
-							gchar* _tmp171_;
+							gchar* _tmp171_ = NULL;
 							gboolean _tmp172_ = FALSE;
 							_tmp171_ = begin;
 							_tmp172_ = vala_genie_scanner_matches (_tmp171_, "default");
@@ -2157,7 +2137,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'y':
 						{
-							gchar* _tmp173_;
+							gchar* _tmp173_ = NULL;
 							gboolean _tmp174_ = FALSE;
 							_tmp173_ = begin;
 							_tmp174_ = vala_genie_scanner_matches (_tmp173_, "dynamic");
@@ -2174,7 +2154,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'e':
 				{
-					gchar* _tmp175_;
+					gchar* _tmp175_ = NULL;
 					gboolean _tmp176_ = FALSE;
 					_tmp175_ = begin;
 					_tmp176_ = vala_genie_scanner_matches (_tmp175_, "ensures");
@@ -2186,14 +2166,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'f':
 				{
-					gchar* _tmp177_;
-					gchar _tmp178_;
+					gchar* _tmp177_ = NULL;
+					gchar _tmp178_ = '\0';
 					_tmp177_ = begin;
 					_tmp178_ = _tmp177_[1];
 					switch (_tmp178_) {
 						case 'i':
 						{
-							gchar* _tmp179_;
+							gchar* _tmp179_ = NULL;
 							gboolean _tmp180_ = FALSE;
 							_tmp179_ = begin;
 							_tmp180_ = vala_genie_scanner_matches (_tmp179_, "finally");
@@ -2210,7 +2190,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'p':
 				{
-					gchar* _tmp181_;
+					gchar* _tmp181_ = NULL;
 					gboolean _tmp182_ = FALSE;
 					_tmp181_ = begin;
 					_tmp182_ = vala_genie_scanner_matches (_tmp181_, "private");
@@ -2222,7 +2202,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'u':
 				{
-					gchar* _tmp183_;
+					gchar* _tmp183_ = NULL;
 					gboolean _tmp184_ = FALSE;
 					_tmp183_ = begin;
 					_tmp184_ = vala_genie_scanner_matches (_tmp183_, "unowned");
@@ -2234,7 +2214,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'v':
 				{
-					gchar* _tmp185_;
+					gchar* _tmp185_ = NULL;
 					gboolean _tmp186_ = FALSE;
 					_tmp185_ = begin;
 					_tmp186_ = vala_genie_scanner_matches (_tmp185_, "virtual");
@@ -2251,14 +2231,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 		}
 		case 8:
 		{
-			gchar* _tmp187_;
-			gchar _tmp188_;
+			gchar* _tmp187_ = NULL;
+			gchar _tmp188_ = '\0';
 			_tmp187_ = begin;
 			_tmp188_ = _tmp187_[0];
 			switch (_tmp188_) {
 				case 'a':
 				{
-					gchar* _tmp189_;
+					gchar* _tmp189_ = NULL;
 					gboolean _tmp190_ = FALSE;
 					_tmp189_ = begin;
 					_tmp190_ = vala_genie_scanner_matches (_tmp189_, "abstract");
@@ -2270,7 +2250,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'c':
 				{
-					gchar* _tmp191_;
+					gchar* _tmp191_ = NULL;
 					gboolean _tmp192_ = FALSE;
 					_tmp191_ = begin;
 					_tmp192_ = vala_genie_scanner_matches (_tmp191_, "continue");
@@ -2282,7 +2262,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'd':
 				{
-					gchar* _tmp193_;
+					gchar* _tmp193_ = NULL;
 					gboolean _tmp194_ = FALSE;
 					_tmp193_ = begin;
 					_tmp194_ = vala_genie_scanner_matches (_tmp193_, "delegate");
@@ -2294,7 +2274,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'i':
 				{
-					gchar* _tmp195_;
+					gchar* _tmp195_ = NULL;
 					gboolean _tmp196_ = FALSE;
 					_tmp195_ = begin;
 					_tmp196_ = vala_genie_scanner_matches (_tmp195_, "internal");
@@ -2306,7 +2286,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'o':
 				{
-					gchar* _tmp197_;
+					gchar* _tmp197_ = NULL;
 					gboolean _tmp198_ = FALSE;
 					_tmp197_ = begin;
 					_tmp198_ = vala_genie_scanner_matches (_tmp197_, "override");
@@ -2318,14 +2298,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'r':
 				{
-					gchar* _tmp199_;
-					gchar _tmp200_;
+					gchar* _tmp199_ = NULL;
+					gchar _tmp200_ = '\0';
 					_tmp199_ = begin;
 					_tmp200_ = _tmp199_[2];
 					switch (_tmp200_) {
 						case 'a':
 						{
-							gchar* _tmp201_;
+							gchar* _tmp201_ = NULL;
 							gboolean _tmp202_ = FALSE;
 							_tmp201_ = begin;
 							_tmp202_ = vala_genie_scanner_matches (_tmp201_, "readonly");
@@ -2337,7 +2317,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 						}
 						case 'q':
 						{
-							gchar* _tmp203_;
+							gchar* _tmp203_ = NULL;
 							gboolean _tmp204_ = FALSE;
 							_tmp203_ = begin;
 							_tmp204_ = vala_genie_scanner_matches (_tmp203_, "requires");
@@ -2354,7 +2334,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'v':
 				{
-					gchar* _tmp205_;
+					gchar* _tmp205_ = NULL;
 					gboolean _tmp206_ = FALSE;
 					_tmp205_ = begin;
 					_tmp206_ = vala_genie_scanner_matches (_tmp205_, "volatile");
@@ -2371,14 +2351,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 		}
 		case 9:
 		{
-			gchar* _tmp207_;
-			gchar _tmp208_;
+			gchar* _tmp207_ = NULL;
+			gchar _tmp208_ = '\0';
 			_tmp207_ = begin;
 			_tmp208_ = _tmp207_[0];
 			switch (_tmp208_) {
 				case 'c':
 				{
-					gchar* _tmp209_;
+					gchar* _tmp209_ = NULL;
 					gboolean _tmp210_ = FALSE;
 					_tmp209_ = begin;
 					_tmp210_ = vala_genie_scanner_matches (_tmp209_, "construct");
@@ -2390,7 +2370,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'e':
 				{
-					gchar* _tmp211_;
+					gchar* _tmp211_ = NULL;
 					gboolean _tmp212_ = FALSE;
 					_tmp211_ = begin;
 					_tmp212_ = vala_genie_scanner_matches (_tmp211_, "exception");
@@ -2402,7 +2382,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'i':
 				{
-					gchar* _tmp213_;
+					gchar* _tmp213_ = NULL;
 					gboolean _tmp214_ = FALSE;
 					_tmp213_ = begin;
 					_tmp214_ = vala_genie_scanner_matches (_tmp213_, "interface");
@@ -2414,7 +2394,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'n':
 				{
-					gchar* _tmp215_;
+					gchar* _tmp215_ = NULL;
 					gboolean _tmp216_ = FALSE;
 					_tmp215_ = begin;
 					_tmp216_ = vala_genie_scanner_matches (_tmp215_, "namespace");
@@ -2426,7 +2406,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'p':
 				{
-					gchar* _tmp217_;
+					gchar* _tmp217_ = NULL;
 					gboolean _tmp218_ = FALSE;
 					_tmp217_ = begin;
 					_tmp218_ = vala_genie_scanner_matches (_tmp217_, "protected");
@@ -2438,7 +2418,7 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 				}
 				case 'w':
 				{
-					gchar* _tmp219_;
+					gchar* _tmp219_ = NULL;
 					gboolean _tmp220_ = FALSE;
 					_tmp219_ = begin;
 					_tmp220_ = vala_genie_scanner_matches (_tmp219_, "writeonly");
@@ -2455,14 +2435,14 @@ ValaGenieTokenType vala_genie_scanner_get_identifier_or_keyword (gchar* begin, g
 		}
 		case 10:
 		{
-			gchar* _tmp221_;
-			gchar _tmp222_;
+			gchar* _tmp221_ = NULL;
+			gchar _tmp222_ = '\0';
 			_tmp221_ = begin;
 			_tmp222_ = _tmp221_[0];
 			switch (_tmp222_) {
 				case 'i':
 				{
-					gchar* _tmp223_;
+					gchar* _tmp223_ = NULL;
 					gboolean _tmp224_ = FALSE;
 					_tmp223_ = begin;
 					_tmp224_ = vala_genie_scanner_matches (_tmp223_, "implements");
@@ -2526,18 +2506,18 @@ ValaGenieTokenType vala_genie_scanner_read_template_token (ValaGenieScanner* sel
 	ValaSourceLocation _vala_token_end = {0};
 	ValaGenieTokenType result = 0;
 	ValaGenieTokenType type = 0;
-	gchar* _tmp0_;
-	gchar* begin;
-	gchar* _tmp1_;
-	gint _tmp2_;
-	gint _tmp3_;
-	gint token_length_in_chars;
-	gchar* _tmp4_;
-	gchar* _tmp5_;
-	gint _tmp107_;
-	gchar* _tmp113_;
-	gint _tmp114_;
-	gint _tmp115_;
+	gchar* begin = NULL;
+	gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
+	gint _tmp2_ = 0;
+	gint _tmp3_ = 0;
+	gint token_length_in_chars = 0;
+	gchar* _tmp4_ = NULL;
+	gchar* _tmp5_ = NULL;
+	gint _tmp102_ = 0;
+	gchar* _tmp108_ = NULL;
+	gint _tmp109_ = 0;
+	gint _tmp110_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->current;
 	begin = _tmp0_;
@@ -2551,15 +2531,15 @@ ValaGenieTokenType vala_genie_scanner_read_template_token (ValaGenieScanner* sel
 	if (_tmp4_ >= _tmp5_) {
 		type = VALA_GENIE_TOKEN_TYPE_EOF;
 	} else {
-		gchar* _tmp6_;
-		gchar _tmp7_;
+		gchar* _tmp6_ = NULL;
+		gchar _tmp7_ = '\0';
 		_tmp6_ = self->priv->current;
 		_tmp7_ = _tmp6_[0];
 		switch (_tmp7_) {
 			case '"':
 			{
-				gchar* _tmp8_;
-				gint _tmp9_;
+				gchar* _tmp8_ = NULL;
+				gint _tmp9_ = 0;
 				type = VALA_GENIE_TOKEN_TYPE_CLOSE_TEMPLATE;
 				_tmp8_ = self->priv->current;
 				self->priv->current = _tmp8_ + 1;
@@ -2569,13 +2549,12 @@ ValaGenieTokenType vala_genie_scanner_read_template_token (ValaGenieScanner* sel
 			}
 			case '$':
 			{
-				gchar* _tmp10_;
-				gchar* _tmp11_;
+				gchar* _tmp10_ = NULL;
+				gchar* _tmp11_ = NULL;
 				gboolean _tmp12_ = FALSE;
-				gchar* _tmp13_;
-				gchar _tmp14_;
+				gchar* _tmp13_ = NULL;
+				gchar _tmp14_ = '\0';
 				gboolean _tmp15_ = FALSE;
-				gboolean _tmp18_;
 				_tmp10_ = _vala_token_begin.pos;
 				_vala_token_begin.pos = _tmp10_ + 1;
 				_tmp11_ = self->priv->current;
@@ -2586,75 +2565,72 @@ ValaGenieTokenType vala_genie_scanner_read_template_token (ValaGenieScanner* sel
 				if (_tmp15_) {
 					_tmp12_ = TRUE;
 				} else {
-					gchar* _tmp16_;
-					gchar _tmp17_;
+					gchar* _tmp16_ = NULL;
+					gchar _tmp17_ = '\0';
 					_tmp16_ = self->priv->current;
 					_tmp17_ = _tmp16_[0];
 					_tmp12_ = _tmp17_ == '_';
 				}
-				_tmp18_ = _tmp12_;
-				if (_tmp18_) {
-					gint len;
-					ValaGenieScannerState* _tmp28_;
-					gint _tmp28__length1;
+				if (_tmp12_) {
+					gint len = 0;
+					ValaGenieScannerState* _tmp26_ = NULL;
+					gint _tmp26__length1 = 0;
 					len = 0;
 					while (TRUE) {
-						gboolean _tmp19_ = FALSE;
-						gchar* _tmp20_;
-						gchar* _tmp21_;
-						gboolean _tmp25_;
-						gchar* _tmp26_;
-						gint _tmp27_;
-						_tmp20_ = self->priv->current;
-						_tmp21_ = self->priv->end;
-						if (_tmp20_ < _tmp21_) {
-							gchar* _tmp22_;
-							gchar _tmp23_;
-							gboolean _tmp24_ = FALSE;
-							_tmp22_ = self->priv->current;
-							_tmp23_ = _tmp22_[0];
-							_tmp24_ = vala_genie_scanner_is_ident_char (self, _tmp23_);
-							_tmp19_ = _tmp24_;
+						gboolean _tmp18_ = FALSE;
+						gchar* _tmp19_ = NULL;
+						gchar* _tmp20_ = NULL;
+						gchar* _tmp24_ = NULL;
+						gint _tmp25_ = 0;
+						_tmp19_ = self->priv->current;
+						_tmp20_ = self->priv->end;
+						if (_tmp19_ < _tmp20_) {
+							gchar* _tmp21_ = NULL;
+							gchar _tmp22_ = '\0';
+							gboolean _tmp23_ = FALSE;
+							_tmp21_ = self->priv->current;
+							_tmp22_ = _tmp21_[0];
+							_tmp23_ = vala_genie_scanner_is_ident_char (self, _tmp22_);
+							_tmp18_ = _tmp23_;
 						} else {
-							_tmp19_ = FALSE;
+							_tmp18_ = FALSE;
 						}
-						_tmp25_ = _tmp19_;
-						if (!_tmp25_) {
+						if (!_tmp18_) {
 							break;
 						}
-						_tmp26_ = self->priv->current;
-						self->priv->current = _tmp26_ + 1;
-						_tmp27_ = len;
-						len = _tmp27_ + 1;
+						_tmp24_ = self->priv->current;
+						self->priv->current = _tmp24_ + 1;
+						_tmp25_ = len;
+						len = _tmp25_ + 1;
 					}
 					type = VALA_GENIE_TOKEN_TYPE_IDENTIFIER;
-					_tmp28_ = self->priv->state_stack;
-					_tmp28__length1 = self->priv->state_stack_length1;
+					_tmp26_ = self->priv->state_stack;
+					_tmp26__length1 = self->priv->state_stack_length1;
 					_vala_array_add2 (&self->priv->state_stack, &self->priv->state_stack_length1, &self->priv->_state_stack_size_, VALA_GENIE_SCANNER_STATE_TEMPLATE_PART);
 				} else {
-					gchar* _tmp29_;
-					gchar _tmp30_;
-					_tmp29_ = self->priv->current;
-					_tmp30_ = _tmp29_[0];
-					if (_tmp30_ == '(') {
-						gchar* _tmp31_;
-						gint _tmp32_;
-						ValaGenieScannerState* _tmp33_;
-						gint _tmp33__length1;
-						ValaSourceLocation _tmp34_ = {0};
-						ValaSourceLocation _tmp35_ = {0};
-						ValaGenieTokenType _tmp36_ = 0;
-						_tmp31_ = self->priv->current;
-						self->priv->current = _tmp31_ + 1;
-						_tmp32_ = self->priv->column;
-						self->priv->column = _tmp32_ + 2;
-						_tmp33_ = self->priv->state_stack;
-						_tmp33__length1 = self->priv->state_stack_length1;
+					gchar* _tmp27_ = NULL;
+					gchar _tmp28_ = '\0';
+					_tmp27_ = self->priv->current;
+					_tmp28_ = _tmp27_[0];
+					if (_tmp28_ == '(') {
+						gchar* _tmp29_ = NULL;
+						gint _tmp30_ = 0;
+						ValaGenieScannerState* _tmp31_ = NULL;
+						gint _tmp31__length1 = 0;
+						ValaSourceLocation _tmp32_ = {0};
+						ValaSourceLocation _tmp33_ = {0};
+						ValaGenieTokenType _tmp34_ = 0;
+						_tmp29_ = self->priv->current;
+						self->priv->current = _tmp29_ + 1;
+						_tmp30_ = self->priv->column;
+						self->priv->column = _tmp30_ + 2;
+						_tmp31_ = self->priv->state_stack;
+						_tmp31__length1 = self->priv->state_stack_length1;
 						_vala_array_add3 (&self->priv->state_stack, &self->priv->state_stack_length1, &self->priv->_state_stack_size_, VALA_GENIE_SCANNER_STATE_PARENS);
-						_tmp36_ = vala_genie_scanner_read_token (self, &_tmp34_, &_tmp35_);
-						_vala_token_begin = _tmp34_;
-						_vala_token_end = _tmp35_;
-						result = _tmp36_;
+						_tmp34_ = vala_genie_scanner_read_token (self, &_tmp32_, &_tmp33_);
+						_vala_token_begin = _tmp32_;
+						_vala_token_end = _tmp33_;
+						result = _tmp34_;
 						if (token_begin) {
 							*token_begin = _vala_token_begin;
 						}
@@ -2663,34 +2639,34 @@ ValaGenieTokenType vala_genie_scanner_read_template_token (ValaGenieScanner* sel
 						}
 						return result;
 					} else {
-						gchar* _tmp37_;
-						gchar _tmp38_;
-						_tmp37_ = self->priv->current;
-						_tmp38_ = _tmp37_[0];
-						if (_tmp38_ == '$') {
-							gchar* _tmp39_;
-							ValaGenieScannerState* _tmp40_;
-							gint _tmp40__length1;
+						gchar* _tmp35_ = NULL;
+						gchar _tmp36_ = '\0';
+						_tmp35_ = self->priv->current;
+						_tmp36_ = _tmp35_[0];
+						if (_tmp36_ == '$') {
+							gchar* _tmp37_ = NULL;
+							ValaGenieScannerState* _tmp38_ = NULL;
+							gint _tmp38__length1 = 0;
 							type = VALA_GENIE_TOKEN_TYPE_TEMPLATE_STRING_LITERAL;
-							_tmp39_ = self->priv->current;
-							self->priv->current = _tmp39_ + 1;
-							_tmp40_ = self->priv->state_stack;
-							_tmp40__length1 = self->priv->state_stack_length1;
+							_tmp37_ = self->priv->current;
+							self->priv->current = _tmp37_ + 1;
+							_tmp38_ = self->priv->state_stack;
+							_tmp38__length1 = self->priv->state_stack_length1;
 							_vala_array_add4 (&self->priv->state_stack, &self->priv->state_stack_length1, &self->priv->_state_stack_size_, VALA_GENIE_SCANNER_STATE_TEMPLATE_PART);
 						} else {
-							ValaSourceReference* _tmp41_ = NULL;
-							ValaSourceReference* _tmp42_;
-							ValaSourceLocation _tmp43_ = {0};
-							ValaSourceLocation _tmp44_ = {0};
-							ValaGenieTokenType _tmp45_ = 0;
-							_tmp41_ = vala_genie_scanner_get_source_reference (self, 1, 0);
-							_tmp42_ = _tmp41_;
-							vala_report_error (_tmp42_, "unexpected character");
-							_vala_source_reference_unref0 (_tmp42_);
-							_tmp45_ = vala_genie_scanner_read_template_token (self, &_tmp43_, &_tmp44_);
-							_vala_token_begin = _tmp43_;
-							_vala_token_end = _tmp44_;
-							result = _tmp45_;
+							ValaSourceReference* _tmp39_ = NULL;
+							ValaSourceReference* _tmp40_ = NULL;
+							ValaSourceLocation _tmp41_ = {0};
+							ValaSourceLocation _tmp42_ = {0};
+							ValaGenieTokenType _tmp43_ = 0;
+							_tmp39_ = vala_genie_scanner_get_source_reference (self, 1, 0);
+							_tmp40_ = _tmp39_;
+							vala_report_error (_tmp40_, "unexpected character");
+							_vala_source_reference_unref0 (_tmp40_);
+							_tmp43_ = vala_genie_scanner_read_template_token (self, &_tmp41_, &_tmp42_);
+							_vala_token_begin = _tmp41_;
+							_vala_token_end = _tmp42_;
+							result = _tmp43_;
 							if (token_begin) {
 								*token_begin = _vala_token_begin;
 							}
@@ -2705,67 +2681,63 @@ ValaGenieTokenType vala_genie_scanner_read_template_token (ValaGenieScanner* sel
 			}
 			default:
 			{
-				gchar* _tmp97_;
-				gchar* _tmp98_;
-				ValaGenieScannerState* _tmp106_;
-				gint _tmp106__length1;
+				gchar* _tmp92_ = NULL;
+				gchar* _tmp93_ = NULL;
+				ValaGenieScannerState* _tmp101_ = NULL;
+				gint _tmp101__length1 = 0;
 				type = VALA_GENIE_TOKEN_TYPE_TEMPLATE_STRING_LITERAL;
 				token_length_in_chars = 0;
 				while (TRUE) {
-					gboolean _tmp46_ = FALSE;
-					gboolean _tmp47_ = FALSE;
-					gchar* _tmp48_;
-					gchar* _tmp49_;
-					gboolean _tmp52_;
-					gboolean _tmp55_;
-					gchar* _tmp56_;
-					gchar _tmp57_;
-					_tmp48_ = self->priv->current;
-					_tmp49_ = self->priv->end;
-					if (_tmp48_ < _tmp49_) {
-						gchar* _tmp50_;
-						gchar _tmp51_;
+					gboolean _tmp44_ = FALSE;
+					gboolean _tmp45_ = FALSE;
+					gchar* _tmp46_ = NULL;
+					gchar* _tmp47_ = NULL;
+					gchar* _tmp52_ = NULL;
+					gchar _tmp53_ = '\0';
+					_tmp46_ = self->priv->current;
+					_tmp47_ = self->priv->end;
+					if (_tmp46_ < _tmp47_) {
+						gchar* _tmp48_ = NULL;
+						gchar _tmp49_ = '\0';
+						_tmp48_ = self->priv->current;
+						_tmp49_ = _tmp48_[0];
+						_tmp45_ = _tmp49_ != '"';
+					} else {
+						_tmp45_ = FALSE;
+					}
+					if (_tmp45_) {
+						gchar* _tmp50_ = NULL;
+						gchar _tmp51_ = '\0';
 						_tmp50_ = self->priv->current;
 						_tmp51_ = _tmp50_[0];
-						_tmp47_ = _tmp51_ != '"';
+						_tmp44_ = _tmp51_ != '$';
 					} else {
-						_tmp47_ = FALSE;
+						_tmp44_ = FALSE;
 					}
-					_tmp52_ = _tmp47_;
-					if (_tmp52_) {
-						gchar* _tmp53_;
-						gchar _tmp54_;
-						_tmp53_ = self->priv->current;
-						_tmp54_ = _tmp53_[0];
-						_tmp46_ = _tmp54_ != '$';
-					} else {
-						_tmp46_ = FALSE;
-					}
-					_tmp55_ = _tmp46_;
-					if (!_tmp55_) {
+					if (!_tmp44_) {
 						break;
 					}
-					_tmp56_ = self->priv->current;
-					_tmp57_ = _tmp56_[0];
-					if (_tmp57_ == '\\') {
-						gchar* _tmp58_;
-						gint _tmp59_;
-						gchar* _tmp60_;
-						gchar* _tmp61_;
-						gchar* _tmp62_;
-						gchar _tmp63_;
-						_tmp58_ = self->priv->current;
-						self->priv->current = _tmp58_ + 1;
-						_tmp59_ = token_length_in_chars;
-						token_length_in_chars = _tmp59_ + 1;
-						_tmp60_ = self->priv->current;
-						_tmp61_ = self->priv->end;
-						if (_tmp60_ >= _tmp61_) {
+					_tmp52_ = self->priv->current;
+					_tmp53_ = _tmp52_[0];
+					if (_tmp53_ == '\\') {
+						gchar* _tmp54_ = NULL;
+						gint _tmp55_ = 0;
+						gchar* _tmp56_ = NULL;
+						gchar* _tmp57_ = NULL;
+						gchar* _tmp58_ = NULL;
+						gchar _tmp59_ = '\0';
+						_tmp54_ = self->priv->current;
+						self->priv->current = _tmp54_ + 1;
+						_tmp55_ = token_length_in_chars;
+						token_length_in_chars = _tmp55_ + 1;
+						_tmp56_ = self->priv->current;
+						_tmp57_ = self->priv->end;
+						if (_tmp56_ >= _tmp57_) {
 							break;
 						}
-						_tmp62_ = self->priv->current;
-						_tmp63_ = _tmp62_[0];
-						switch (_tmp63_) {
+						_tmp58_ = self->priv->current;
+						_tmp59_ = _tmp58_[0];
+						switch (_tmp59_) {
 							case '\'':
 							case '"':
 							case '\\':
@@ -2776,141 +2748,139 @@ ValaGenieTokenType vala_genie_scanner_read_template_token (ValaGenieScanner* sel
 							case 'r':
 							case 't':
 							{
-								gchar* _tmp64_;
-								gint _tmp65_;
-								_tmp64_ = self->priv->current;
-								self->priv->current = _tmp64_ + 1;
-								_tmp65_ = token_length_in_chars;
-								token_length_in_chars = _tmp65_ + 1;
+								gchar* _tmp60_ = NULL;
+								gint _tmp61_ = 0;
+								_tmp60_ = self->priv->current;
+								self->priv->current = _tmp60_ + 1;
+								_tmp61_ = token_length_in_chars;
+								token_length_in_chars = _tmp61_ + 1;
 								break;
 							}
 							case 'x':
 							{
-								gchar* _tmp66_;
-								gint _tmp67_;
-								_tmp66_ = self->priv->current;
-								self->priv->current = _tmp66_ + 1;
-								_tmp67_ = token_length_in_chars;
-								token_length_in_chars = _tmp67_ + 1;
+								gchar* _tmp62_ = NULL;
+								gint _tmp63_ = 0;
+								_tmp62_ = self->priv->current;
+								self->priv->current = _tmp62_ + 1;
+								_tmp63_ = token_length_in_chars;
+								token_length_in_chars = _tmp63_ + 1;
 								while (TRUE) {
-									gboolean _tmp68_ = FALSE;
-									gchar* _tmp69_;
-									gchar* _tmp70_;
-									gboolean _tmp74_;
-									gchar* _tmp75_;
-									gint _tmp76_;
-									_tmp69_ = self->priv->current;
-									_tmp70_ = self->priv->end;
-									if (_tmp69_ < _tmp70_) {
-										gchar* _tmp71_;
-										gchar _tmp72_;
-										gboolean _tmp73_ = FALSE;
-										_tmp71_ = self->priv->current;
-										_tmp72_ = _tmp71_[0];
-										_tmp73_ = g_ascii_isxdigit (_tmp72_);
-										_tmp68_ = _tmp73_;
+									gboolean _tmp64_ = FALSE;
+									gchar* _tmp65_ = NULL;
+									gchar* _tmp66_ = NULL;
+									gchar* _tmp70_ = NULL;
+									gint _tmp71_ = 0;
+									_tmp65_ = self->priv->current;
+									_tmp66_ = self->priv->end;
+									if (_tmp65_ < _tmp66_) {
+										gchar* _tmp67_ = NULL;
+										gchar _tmp68_ = '\0';
+										gboolean _tmp69_ = FALSE;
+										_tmp67_ = self->priv->current;
+										_tmp68_ = _tmp67_[0];
+										_tmp69_ = g_ascii_isxdigit (_tmp68_);
+										_tmp64_ = _tmp69_;
 									} else {
-										_tmp68_ = FALSE;
+										_tmp64_ = FALSE;
 									}
-									_tmp74_ = _tmp68_;
-									if (!_tmp74_) {
+									if (!_tmp64_) {
 										break;
 									}
-									_tmp75_ = self->priv->current;
-									self->priv->current = _tmp75_ + 1;
-									_tmp76_ = token_length_in_chars;
-									token_length_in_chars = _tmp76_ + 1;
+									_tmp70_ = self->priv->current;
+									self->priv->current = _tmp70_ + 1;
+									_tmp71_ = token_length_in_chars;
+									token_length_in_chars = _tmp71_ + 1;
 								}
 								break;
 							}
 							default:
 							{
-								gint _tmp77_;
-								ValaSourceReference* _tmp78_ = NULL;
-								ValaSourceReference* _tmp79_;
-								_tmp77_ = token_length_in_chars;
-								_tmp78_ = vala_genie_scanner_get_source_reference (self, _tmp77_, 0);
-								_tmp79_ = _tmp78_;
-								vala_report_error (_tmp79_, "invalid escape sequence");
-								_vala_source_reference_unref0 (_tmp79_);
+								gint _tmp72_ = 0;
+								ValaSourceReference* _tmp73_ = NULL;
+								ValaSourceReference* _tmp74_ = NULL;
+								_tmp72_ = token_length_in_chars;
+								_tmp73_ = vala_genie_scanner_get_source_reference (self, _tmp72_, 0);
+								_tmp74_ = _tmp73_;
+								vala_report_error (_tmp74_, "invalid escape sequence");
+								_vala_source_reference_unref0 (_tmp74_);
 								break;
 							}
 						}
 					} else {
-						gchar* _tmp80_;
-						gchar _tmp81_;
-						_tmp80_ = self->priv->current;
-						_tmp81_ = _tmp80_[0];
-						if (_tmp81_ == '\n') {
-							gchar* _tmp82_;
-							gint _tmp83_;
-							_tmp82_ = self->priv->current;
-							self->priv->current = _tmp82_ + 1;
-							_tmp83_ = self->priv->line;
-							self->priv->line = _tmp83_ + 1;
+						gchar* _tmp75_ = NULL;
+						gchar _tmp76_ = '\0';
+						_tmp75_ = self->priv->current;
+						_tmp76_ = _tmp75_[0];
+						if (_tmp76_ == '\n') {
+							gchar* _tmp77_ = NULL;
+							gint _tmp78_ = 0;
+							_tmp77_ = self->priv->current;
+							self->priv->current = _tmp77_ + 1;
+							_tmp78_ = self->priv->line;
+							self->priv->line = _tmp78_ + 1;
 							self->priv->column = 1;
 							token_length_in_chars = 1;
 						} else {
-							gchar* _tmp84_;
-							gchar* _tmp85_;
-							gchar* _tmp86_;
-							gunichar _tmp87_ = 0U;
-							gunichar u;
-							gunichar _tmp88_;
-							_tmp84_ = self->priv->current;
-							_tmp85_ = self->priv->end;
-							_tmp86_ = self->priv->current;
-							_tmp87_ = g_utf8_get_char_validated ((const gchar*) _tmp84_, (gssize) ((glong) (_tmp85_ - _tmp86_)));
-							u = _tmp87_;
-							_tmp88_ = u;
-							if (_tmp88_ != ((gunichar) (-1))) {
-								gchar* _tmp89_;
-								gunichar _tmp90_;
-								gint _tmp91_ = 0;
-								gint _tmp92_;
-								_tmp89_ = self->priv->current;
-								_tmp90_ = u;
-								_tmp91_ = g_unichar_to_utf8 (_tmp90_, NULL);
-								self->priv->current = _tmp89_ + _tmp91_;
-								_tmp92_ = token_length_in_chars;
-								token_length_in_chars = _tmp92_ + 1;
+							gunichar u = 0U;
+							gchar* _tmp79_ = NULL;
+							gchar* _tmp80_ = NULL;
+							gchar* _tmp81_ = NULL;
+							gunichar _tmp82_ = 0U;
+							gunichar _tmp83_ = 0U;
+							_tmp79_ = self->priv->current;
+							_tmp80_ = self->priv->end;
+							_tmp81_ = self->priv->current;
+							_tmp82_ = g_utf8_get_char_validated ((const gchar*) _tmp79_, (gssize) ((glong) (_tmp80_ - _tmp81_)));
+							u = _tmp82_;
+							_tmp83_ = u;
+							if (_tmp83_ != ((gunichar) (-1))) {
+								gchar* _tmp84_ = NULL;
+								gunichar _tmp85_ = 0U;
+								gint _tmp86_ = 0;
+								gint _tmp87_ = 0;
+								_tmp84_ = self->priv->current;
+								_tmp85_ = u;
+								_tmp86_ = g_unichar_to_utf8 (_tmp85_, NULL);
+								self->priv->current = _tmp84_ + _tmp86_;
+								_tmp87_ = token_length_in_chars;
+								token_length_in_chars = _tmp87_ + 1;
 							} else {
-								gchar* _tmp93_;
-								gint _tmp94_;
-								ValaSourceReference* _tmp95_ = NULL;
-								ValaSourceReference* _tmp96_;
-								_tmp93_ = self->priv->current;
-								self->priv->current = _tmp93_ + 1;
-								_tmp94_ = token_length_in_chars;
-								_tmp95_ = vala_genie_scanner_get_source_reference (self, _tmp94_, 0);
-								_tmp96_ = _tmp95_;
-								vala_report_error (_tmp96_, "invalid UTF-8 character");
-								_vala_source_reference_unref0 (_tmp96_);
+								gchar* _tmp88_ = NULL;
+								gint _tmp89_ = 0;
+								ValaSourceReference* _tmp90_ = NULL;
+								ValaSourceReference* _tmp91_ = NULL;
+								_tmp88_ = self->priv->current;
+								self->priv->current = _tmp88_ + 1;
+								_tmp89_ = token_length_in_chars;
+								_tmp90_ = vala_genie_scanner_get_source_reference (self, _tmp89_, 0);
+								_tmp91_ = _tmp90_;
+								vala_report_error (_tmp91_, "invalid UTF-8 character");
+								_vala_source_reference_unref0 (_tmp91_);
 							}
 						}
 					}
 				}
-				_tmp97_ = self->priv->current;
-				_tmp98_ = self->priv->end;
-				if (_tmp97_ >= _tmp98_) {
-					gint _tmp99_;
-					ValaSourceReference* _tmp100_ = NULL;
-					ValaSourceReference* _tmp101_;
-					gint _tmp102_;
-					ValaSourceLocation _tmp103_ = {0};
-					ValaSourceLocation _tmp104_ = {0};
-					ValaGenieTokenType _tmp105_ = 0;
-					_tmp99_ = token_length_in_chars;
-					_tmp100_ = vala_genie_scanner_get_source_reference (self, _tmp99_, 0);
-					_tmp101_ = _tmp100_;
-					vala_report_error (_tmp101_, "syntax error, expected \"");
-					_vala_source_reference_unref0 (_tmp101_);
-					_tmp102_ = self->priv->state_stack_length1;
-					self->priv->state_stack_length1 = _tmp102_ - 1;
-					_tmp105_ = vala_genie_scanner_read_token (self, &_tmp103_, &_tmp104_);
-					_vala_token_begin = _tmp103_;
-					_vala_token_end = _tmp104_;
-					result = _tmp105_;
+				_tmp92_ = self->priv->current;
+				_tmp93_ = self->priv->end;
+				if (_tmp92_ >= _tmp93_) {
+					gint _tmp94_ = 0;
+					ValaSourceReference* _tmp95_ = NULL;
+					ValaSourceReference* _tmp96_ = NULL;
+					gint _tmp97_ = 0;
+					ValaSourceLocation _tmp98_ = {0};
+					ValaSourceLocation _tmp99_ = {0};
+					ValaGenieTokenType _tmp100_ = 0;
+					_tmp94_ = token_length_in_chars;
+					_tmp95_ = vala_genie_scanner_get_source_reference (self, _tmp94_, 0);
+					_tmp96_ = _tmp95_;
+					vala_report_error (_tmp96_, "syntax error, expected \"");
+					_vala_source_reference_unref0 (_tmp96_);
+					_tmp97_ = self->priv->state_stack_length1;
+					self->priv->state_stack_length1 = _tmp97_ - 1;
+					_tmp100_ = vala_genie_scanner_read_token (self, &_tmp98_, &_tmp99_);
+					_vala_token_begin = _tmp98_;
+					_vala_token_end = _tmp99_;
+					result = _tmp100_;
 					if (token_begin) {
 						*token_begin = _vala_token_begin;
 					}
@@ -2919,33 +2889,33 @@ ValaGenieTokenType vala_genie_scanner_read_template_token (ValaGenieScanner* sel
 					}
 					return result;
 				}
-				_tmp106_ = self->priv->state_stack;
-				_tmp106__length1 = self->priv->state_stack_length1;
+				_tmp101_ = self->priv->state_stack;
+				_tmp101__length1 = self->priv->state_stack_length1;
 				_vala_array_add5 (&self->priv->state_stack, &self->priv->state_stack_length1, &self->priv->_state_stack_size_, VALA_GENIE_SCANNER_STATE_TEMPLATE_PART);
 				break;
 			}
 		}
 	}
-	_tmp107_ = token_length_in_chars;
-	if (_tmp107_ < 0) {
-		gint _tmp108_;
-		gchar* _tmp109_;
-		gchar* _tmp110_;
-		_tmp108_ = self->priv->column;
-		_tmp109_ = self->priv->current;
-		_tmp110_ = begin;
-		self->priv->column = _tmp108_ + ((gint) (_tmp109_ - _tmp110_));
+	_tmp102_ = token_length_in_chars;
+	if (_tmp102_ < 0) {
+		gint _tmp103_ = 0;
+		gchar* _tmp104_ = NULL;
+		gchar* _tmp105_ = NULL;
+		_tmp103_ = self->priv->column;
+		_tmp104_ = self->priv->current;
+		_tmp105_ = begin;
+		self->priv->column = _tmp103_ + ((gint) (_tmp104_ - _tmp105_));
 	} else {
-		gint _tmp111_;
-		gint _tmp112_;
-		_tmp111_ = self->priv->column;
-		_tmp112_ = token_length_in_chars;
-		self->priv->column = _tmp111_ + _tmp112_;
+		gint _tmp106_ = 0;
+		gint _tmp107_ = 0;
+		_tmp106_ = self->priv->column;
+		_tmp107_ = token_length_in_chars;
+		self->priv->column = _tmp106_ + _tmp107_;
 	}
-	_tmp113_ = self->priv->current;
-	_tmp114_ = self->priv->line;
-	_tmp115_ = self->priv->column;
-	vala_source_location_init (&_vala_token_end, _tmp113_, _tmp114_, _tmp115_ - 1);
+	_tmp108_ = self->priv->current;
+	_tmp109_ = self->priv->line;
+	_tmp110_ = self->priv->column;
+	vala_source_location_init (&_vala_token_end, _tmp108_, _tmp109_, _tmp110_ - 1);
 	result = type;
 	if (token_begin) {
 		*token_begin = _vala_token_begin;
@@ -3007,31 +2977,27 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 	ValaSourceLocation _vala_token_end = {0};
 	ValaGenieTokenType result = 0;
 	gboolean _tmp0_ = FALSE;
-	gint _tmp16_;
+	gint _tmp16_ = 0;
 	gboolean _tmp25_ = FALSE;
-	gint _tmp26_;
-	gboolean _tmp28_;
-	gboolean _tmp55_ = FALSE;
-	gboolean _tmp56_ = FALSE;
-	gboolean _tmp57_ = FALSE;
-	gboolean _tmp58_ = FALSE;
-	gboolean _tmp60_;
-	gboolean _tmp62_;
-	gboolean _tmp64_;
+	gint _tmp26_ = 0;
+	gboolean _tmp49_ = FALSE;
+	gboolean _tmp50_ = FALSE;
+	gboolean _tmp51_ = FALSE;
+	gboolean _tmp52_ = FALSE;
 	ValaGenieTokenType type = 0;
-	gchar* _tmp91_;
-	gchar* begin;
-	gchar* _tmp92_;
-	gint _tmp93_;
-	gint _tmp94_;
-	gint token_length_in_chars;
-	gchar* _tmp95_;
-	gchar* _tmp96_;
-	gint _tmp577_;
-	gchar* _tmp583_;
-	gint _tmp584_;
-	gint _tmp585_;
-	ValaGenieTokenType _tmp586_;
+	gchar* begin = NULL;
+	gchar* _tmp82_ = NULL;
+	gchar* _tmp83_ = NULL;
+	gint _tmp84_ = 0;
+	gint _tmp85_ = 0;
+	gint token_length_in_chars = 0;
+	gchar* _tmp86_ = NULL;
+	gchar* _tmp87_ = NULL;
+	gint _tmp524_ = 0;
+	gchar* _tmp530_ = NULL;
+	gint _tmp531_ = 0;
+	gint _tmp532_ = 0;
+	ValaGenieTokenType _tmp533_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = vala_genie_scanner_in_template (self);
 	if (_tmp0_) {
@@ -3053,13 +3019,13 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 		gboolean _tmp4_ = FALSE;
 		_tmp4_ = vala_genie_scanner_in_template_part (self);
 		if (_tmp4_) {
-			gint _tmp5_;
-			gchar* _tmp6_;
-			gint _tmp7_;
-			gint _tmp8_;
-			gchar* _tmp9_;
-			gint _tmp10_;
-			gint _tmp11_;
+			gint _tmp5_ = 0;
+			gchar* _tmp6_ = NULL;
+			gint _tmp7_ = 0;
+			gint _tmp8_ = 0;
+			gchar* _tmp9_ = NULL;
+			gint _tmp10_ = 0;
+			gint _tmp11_ = 0;
 			_tmp5_ = self->priv->state_stack_length1;
 			self->priv->state_stack_length1 = _tmp5_ - 1;
 			_tmp6_ = self->priv->current;
@@ -3101,14 +3067,14 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 	}
 	_tmp16_ = self->priv->pending_dedents;
 	if (_tmp16_ > 0) {
-		gint _tmp17_;
-		gint _tmp18_;
-		gchar* _tmp19_;
-		gint _tmp20_;
-		gint _tmp21_;
-		gchar* _tmp22_;
-		gint _tmp23_;
-		gint _tmp24_;
+		gint _tmp17_ = 0;
+		gint _tmp18_ = 0;
+		gchar* _tmp19_ = NULL;
+		gint _tmp20_ = 0;
+		gint _tmp21_ = 0;
+		gchar* _tmp22_ = NULL;
+		gint _tmp23_ = 0;
+		gint _tmp24_ = 0;
 		_tmp17_ = self->priv->pending_dedents;
 		self->priv->pending_dedents = _tmp17_ - 1;
 		_tmp18_ = self->priv->indent_level;
@@ -3135,142 +3101,128 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 	if (_tmp26_ == 0) {
 		_tmp25_ = TRUE;
 	} else {
-		ValaGenieTokenType _tmp27_;
+		ValaGenieTokenType _tmp27_ = 0;
 		_tmp27_ = self->priv->last_token;
 		_tmp25_ = _tmp27_ != VALA_GENIE_TOKEN_TYPE_EOL;
 	}
-	_tmp28_ = _tmp25_;
-	if (_tmp28_) {
+	if (_tmp25_) {
 		vala_genie_scanner_space (self);
 	}
 	while (TRUE) {
+		gboolean _tmp28_ = FALSE;
 		gboolean _tmp29_ = FALSE;
-		gboolean _tmp30_ = FALSE;
-		gchar* _tmp31_;
-		gchar* _tmp32_;
-		gboolean _tmp35_;
-		gboolean _tmp38_;
-		gchar* _tmp39_;
-		gint _tmp40_;
-		_tmp31_ = self->priv->current;
-		_tmp32_ = self->priv->end;
-		if (_tmp31_ < _tmp32_) {
-			gchar* _tmp33_;
-			gchar _tmp34_;
-			_tmp33_ = self->priv->current;
-			_tmp34_ = _tmp33_[0];
-			_tmp30_ = _tmp34_ == '\\';
-		} else {
-			_tmp30_ = FALSE;
-		}
-		_tmp35_ = _tmp30_;
-		if (_tmp35_) {
-			gchar* _tmp36_;
-			gchar _tmp37_;
-			_tmp36_ = self->priv->current;
-			_tmp37_ = _tmp36_[1];
-			_tmp29_ = _tmp37_ == '\n';
+		gchar* _tmp30_ = NULL;
+		gchar* _tmp31_ = NULL;
+		gchar* _tmp36_ = NULL;
+		gint _tmp37_ = 0;
+		_tmp30_ = self->priv->current;
+		_tmp31_ = self->priv->end;
+		if (_tmp30_ < _tmp31_) {
+			gchar* _tmp32_ = NULL;
+			gchar _tmp33_ = '\0';
+			_tmp32_ = self->priv->current;
+			_tmp33_ = _tmp32_[0];
+			_tmp29_ = _tmp33_ == '\\';
 		} else {
 			_tmp29_ = FALSE;
 		}
-		_tmp38_ = _tmp29_;
-		if (!_tmp38_) {
+		if (_tmp29_) {
+			gchar* _tmp34_ = NULL;
+			gchar _tmp35_ = '\0';
+			_tmp34_ = self->priv->current;
+			_tmp35_ = _tmp34_[1];
+			_tmp28_ = _tmp35_ == '\n';
+		} else {
+			_tmp28_ = FALSE;
+		}
+		if (!_tmp28_) {
 			break;
 		}
-		_tmp39_ = self->priv->current;
-		self->priv->current = _tmp39_ + 2;
-		_tmp40_ = self->priv->line;
-		self->priv->line = _tmp40_ + 1;
+		_tmp36_ = self->priv->current;
+		self->priv->current = _tmp36_ + 2;
+		_tmp37_ = self->priv->line;
+		self->priv->line = _tmp37_ + 1;
 		vala_genie_scanner_skip_space_tabs (self);
 	}
 	while (TRUE) {
-		gboolean _tmp41_ = FALSE;
-		gboolean _tmp42_ = FALSE;
-		gchar* _tmp43_;
-		gchar* _tmp44_;
-		gboolean _tmp47_;
-		gboolean _tmp52_;
-		gchar* _tmp53_;
-		gint _tmp54_;
-		_tmp43_ = self->priv->current;
-		_tmp44_ = self->priv->end;
-		if (_tmp43_ < _tmp44_) {
-			gchar* _tmp45_;
-			gchar _tmp46_;
-			_tmp45_ = self->priv->current;
-			_tmp46_ = _tmp45_[0];
-			_tmp42_ = _tmp46_ == '\n';
+		gboolean _tmp38_ = FALSE;
+		gboolean _tmp39_ = FALSE;
+		gchar* _tmp40_ = NULL;
+		gchar* _tmp41_ = NULL;
+		gchar* _tmp47_ = NULL;
+		gint _tmp48_ = 0;
+		_tmp40_ = self->priv->current;
+		_tmp41_ = self->priv->end;
+		if (_tmp40_ < _tmp41_) {
+			gchar* _tmp42_ = NULL;
+			gchar _tmp43_ = '\0';
+			_tmp42_ = self->priv->current;
+			_tmp43_ = _tmp42_[0];
+			_tmp39_ = _tmp43_ == '\n';
 		} else {
-			_tmp42_ = FALSE;
+			_tmp39_ = FALSE;
 		}
-		_tmp47_ = _tmp42_;
-		if (_tmp47_) {
-			gboolean _tmp48_ = FALSE;
-			gint _tmp49_;
-			gboolean _tmp51_;
-			_tmp49_ = self->priv->open_parens_count;
-			if (_tmp49_ > 0) {
-				_tmp48_ = TRUE;
+		if (_tmp39_) {
+			gboolean _tmp44_ = FALSE;
+			gint _tmp45_ = 0;
+			_tmp45_ = self->priv->open_parens_count;
+			if (_tmp45_ > 0) {
+				_tmp44_ = TRUE;
 			} else {
-				gint _tmp50_;
-				_tmp50_ = self->priv->open_brace_count;
-				_tmp48_ = _tmp50_ > 0;
+				gint _tmp46_ = 0;
+				_tmp46_ = self->priv->open_brace_count;
+				_tmp44_ = _tmp46_ > 0;
 			}
-			_tmp51_ = _tmp48_;
-			_tmp41_ = _tmp51_;
+			_tmp38_ = _tmp44_;
 		} else {
-			_tmp41_ = FALSE;
+			_tmp38_ = FALSE;
 		}
-		_tmp52_ = _tmp41_;
-		if (!_tmp52_) {
+		if (!_tmp38_) {
 			break;
 		}
-		_tmp53_ = self->priv->current;
-		self->priv->current = _tmp53_ + 1;
-		_tmp54_ = self->priv->line;
-		self->priv->line = _tmp54_ + 1;
+		_tmp47_ = self->priv->current;
+		self->priv->current = _tmp47_ + 1;
+		_tmp48_ = self->priv->line;
+		self->priv->line = _tmp48_ + 1;
 		vala_genie_scanner_skip_space_tabs (self);
 	}
-	_tmp58_ = vala_genie_scanner_newline (self);
-	if (_tmp58_) {
-		gboolean _tmp59_;
-		_tmp59_ = self->priv->parse_started;
-		_tmp57_ = _tmp59_;
+	_tmp52_ = vala_genie_scanner_newline (self);
+	if (_tmp52_) {
+		gboolean _tmp53_ = FALSE;
+		_tmp53_ = self->priv->parse_started;
+		_tmp51_ = _tmp53_;
 	} else {
-		_tmp57_ = FALSE;
+		_tmp51_ = FALSE;
 	}
-	_tmp60_ = _tmp57_;
-	if (_tmp60_) {
-		ValaGenieTokenType _tmp61_;
-		_tmp61_ = self->priv->last_token;
-		_tmp56_ = _tmp61_ != VALA_GENIE_TOKEN_TYPE_EOL;
+	if (_tmp51_) {
+		ValaGenieTokenType _tmp54_ = 0;
+		_tmp54_ = self->priv->last_token;
+		_tmp50_ = _tmp54_ != VALA_GENIE_TOKEN_TYPE_EOL;
 	} else {
-		_tmp56_ = FALSE;
+		_tmp50_ = FALSE;
 	}
-	_tmp62_ = _tmp56_;
-	if (_tmp62_) {
-		ValaGenieTokenType _tmp63_;
-		_tmp63_ = self->priv->last_token;
-		_tmp55_ = _tmp63_ != VALA_GENIE_TOKEN_TYPE_SEMICOLON;
+	if (_tmp50_) {
+		ValaGenieTokenType _tmp55_ = 0;
+		_tmp55_ = self->priv->last_token;
+		_tmp49_ = _tmp55_ != VALA_GENIE_TOKEN_TYPE_SEMICOLON;
 	} else {
-		_tmp55_ = FALSE;
+		_tmp49_ = FALSE;
 	}
-	_tmp64_ = _tmp55_;
-	if (_tmp64_) {
-		gchar* _tmp65_;
-		gint _tmp66_;
-		gint _tmp67_;
-		gchar* _tmp68_;
-		gint _tmp69_;
-		gint _tmp70_;
-		_tmp65_ = self->priv->current;
-		_tmp66_ = self->priv->line;
-		_tmp67_ = self->priv->column;
-		vala_source_location_init (&_vala_token_begin, _tmp65_, _tmp66_, _tmp67_);
-		_tmp68_ = self->priv->current;
-		_tmp69_ = self->priv->line;
-		_tmp70_ = self->priv->column;
-		vala_source_location_init (&_vala_token_end, _tmp68_, _tmp69_, _tmp70_);
+	if (_tmp49_) {
+		gchar* _tmp56_ = NULL;
+		gint _tmp57_ = 0;
+		gint _tmp58_ = 0;
+		gchar* _tmp59_ = NULL;
+		gint _tmp60_ = 0;
+		gint _tmp61_ = 0;
+		_tmp56_ = self->priv->current;
+		_tmp57_ = self->priv->line;
+		_tmp58_ = self->priv->column;
+		vala_source_location_init (&_vala_token_begin, _tmp56_, _tmp57_, _tmp58_);
+		_tmp59_ = self->priv->current;
+		_tmp60_ = self->priv->line;
+		_tmp61_ = self->priv->column;
+		vala_source_location_init (&_vala_token_end, _tmp59_, _tmp60_, _tmp61_);
 		self->priv->last_token = VALA_GENIE_TOKEN_TYPE_EOL;
 		result = VALA_GENIE_TOKEN_TYPE_EOL;
 		if (token_begin) {
@@ -3282,41 +3234,41 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 		return result;
 	}
 	while (TRUE) {
-		gboolean _tmp71_ = FALSE;
-		gchar* _tmp72_;
-		gint _tmp73_;
-		gint _tmp74_;
-		gint _tmp75_ = 0;
-		gint _tmp76_;
-		gint _tmp77_;
-		gint _tmp78_;
-		_tmp71_ = vala_genie_scanner_skip_newlines (self);
-		if (!_tmp71_) {
+		gboolean _tmp62_ = FALSE;
+		gchar* _tmp63_ = NULL;
+		gint _tmp64_ = 0;
+		gint _tmp65_ = 0;
+		gint _tmp66_ = 0;
+		gint _tmp67_ = 0;
+		gint _tmp68_ = 0;
+		gint _tmp69_ = 0;
+		_tmp62_ = vala_genie_scanner_skip_newlines (self);
+		if (!_tmp62_) {
 			break;
 		}
-		_tmp72_ = self->priv->current;
-		_tmp73_ = self->priv->line;
-		_tmp74_ = self->priv->column;
-		vala_source_location_init (&_vala_token_begin, _tmp72_, _tmp73_, _tmp74_);
-		_tmp75_ = vala_genie_scanner_count_tabs (self);
-		self->priv->current_indent_level = _tmp75_;
-		_tmp76_ = self->priv->current_indent_level;
-		if (_tmp76_ == (-1)) {
+		_tmp63_ = self->priv->current;
+		_tmp64_ = self->priv->line;
+		_tmp65_ = self->priv->column;
+		vala_source_location_init (&_vala_token_begin, _tmp63_, _tmp64_, _tmp65_);
+		_tmp66_ = vala_genie_scanner_count_tabs (self);
+		self->priv->current_indent_level = _tmp66_;
+		_tmp67_ = self->priv->current_indent_level;
+		if (_tmp67_ == (-1)) {
 			continue;
 		}
-		_tmp77_ = self->priv->current_indent_level;
-		_tmp78_ = self->priv->indent_level;
-		if (_tmp77_ > _tmp78_) {
-			gint _tmp79_;
-			gchar* _tmp80_;
-			gint _tmp81_;
-			gint _tmp82_;
-			_tmp79_ = self->priv->current_indent_level;
-			self->priv->indent_level = _tmp79_;
-			_tmp80_ = self->priv->current;
-			_tmp81_ = self->priv->line;
-			_tmp82_ = self->priv->column;
-			vala_source_location_init (&_vala_token_end, _tmp80_, _tmp81_, _tmp82_);
+		_tmp68_ = self->priv->current_indent_level;
+		_tmp69_ = self->priv->indent_level;
+		if (_tmp68_ > _tmp69_) {
+			gint _tmp70_ = 0;
+			gchar* _tmp71_ = NULL;
+			gint _tmp72_ = 0;
+			gint _tmp73_ = 0;
+			_tmp70_ = self->priv->current_indent_level;
+			self->priv->indent_level = _tmp70_;
+			_tmp71_ = self->priv->current;
+			_tmp72_ = self->priv->line;
+			_tmp73_ = self->priv->column;
+			vala_source_location_init (&_vala_token_end, _tmp71_, _tmp72_, _tmp73_);
 			self->priv->last_token = VALA_GENIE_TOKEN_TYPE_INDENT;
 			result = VALA_GENIE_TOKEN_TYPE_INDENT;
 			if (token_begin) {
@@ -3327,26 +3279,26 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 			}
 			return result;
 		} else {
-			gint _tmp83_;
-			gint _tmp84_;
-			_tmp83_ = self->priv->current_indent_level;
-			_tmp84_ = self->priv->indent_level;
-			if (_tmp83_ < _tmp84_) {
-				gint _tmp85_;
-				gint _tmp86_;
-				gint _tmp87_;
-				gchar* _tmp88_;
-				gint _tmp89_;
-				gint _tmp90_;
-				_tmp85_ = self->priv->indent_level;
-				self->priv->indent_level = _tmp85_ - 1;
-				_tmp86_ = self->priv->indent_level;
-				_tmp87_ = self->priv->current_indent_level;
-				self->priv->pending_dedents = _tmp86_ - _tmp87_;
-				_tmp88_ = self->priv->current;
-				_tmp89_ = self->priv->line;
-				_tmp90_ = self->priv->column;
-				vala_source_location_init (&_vala_token_end, _tmp88_, _tmp89_, _tmp90_);
+			gint _tmp74_ = 0;
+			gint _tmp75_ = 0;
+			_tmp74_ = self->priv->current_indent_level;
+			_tmp75_ = self->priv->indent_level;
+			if (_tmp74_ < _tmp75_) {
+				gint _tmp76_ = 0;
+				gint _tmp77_ = 0;
+				gint _tmp78_ = 0;
+				gchar* _tmp79_ = NULL;
+				gint _tmp80_ = 0;
+				gint _tmp81_ = 0;
+				_tmp76_ = self->priv->indent_level;
+				self->priv->indent_level = _tmp76_ - 1;
+				_tmp77_ = self->priv->indent_level;
+				_tmp78_ = self->priv->current_indent_level;
+				self->priv->pending_dedents = _tmp77_ - _tmp78_;
+				_tmp79_ = self->priv->current;
+				_tmp80_ = self->priv->line;
+				_tmp81_ = self->priv->column;
+				vala_source_location_init (&_vala_token_end, _tmp79_, _tmp80_, _tmp81_);
 				self->priv->last_token = VALA_GENIE_TOKEN_TYPE_DEDENT;
 				result = VALA_GENIE_TOKEN_TYPE_DEDENT;
 				if (token_begin) {
@@ -3359,606 +3311,556 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 			}
 		}
 	}
-	_tmp91_ = self->priv->current;
-	begin = _tmp91_;
-	_tmp92_ = begin;
-	_tmp93_ = self->priv->line;
-	_tmp94_ = self->priv->column;
-	vala_source_location_init (&_vala_token_begin, _tmp92_, _tmp93_, _tmp94_);
+	_tmp82_ = self->priv->current;
+	begin = _tmp82_;
+	_tmp83_ = begin;
+	_tmp84_ = self->priv->line;
+	_tmp85_ = self->priv->column;
+	vala_source_location_init (&_vala_token_begin, _tmp83_, _tmp84_, _tmp85_);
 	token_length_in_chars = -1;
 	self->priv->parse_started = TRUE;
-	_tmp95_ = self->priv->current;
-	_tmp96_ = self->priv->end;
-	if (_tmp95_ >= _tmp96_) {
-		gint _tmp97_;
-		_tmp97_ = self->priv->indent_level;
-		if (_tmp97_ > 0) {
-			gint _tmp98_;
-			gint _tmp99_;
-			_tmp98_ = self->priv->indent_level;
-			self->priv->indent_level = _tmp98_ - 1;
-			_tmp99_ = self->priv->indent_level;
-			self->priv->pending_dedents = _tmp99_;
+	_tmp86_ = self->priv->current;
+	_tmp87_ = self->priv->end;
+	if (_tmp86_ >= _tmp87_) {
+		gint _tmp88_ = 0;
+		_tmp88_ = self->priv->indent_level;
+		if (_tmp88_ > 0) {
+			gint _tmp89_ = 0;
+			gint _tmp90_ = 0;
+			_tmp89_ = self->priv->indent_level;
+			self->priv->indent_level = _tmp89_ - 1;
+			_tmp90_ = self->priv->indent_level;
+			self->priv->pending_dedents = _tmp90_;
 			type = VALA_GENIE_TOKEN_TYPE_DEDENT;
 		} else {
 			type = VALA_GENIE_TOKEN_TYPE_EOF;
 		}
 	} else {
-		gboolean _tmp100_ = FALSE;
-		gchar* _tmp101_;
-		gchar _tmp102_;
-		gboolean _tmp103_ = FALSE;
-		gboolean _tmp106_;
-		_tmp101_ = self->priv->current;
-		_tmp102_ = _tmp101_[0];
-		_tmp103_ = g_ascii_isalpha (_tmp102_);
-		if (_tmp103_) {
-			_tmp100_ = TRUE;
+		gboolean _tmp91_ = FALSE;
+		gchar* _tmp92_ = NULL;
+		gchar _tmp93_ = '\0';
+		gboolean _tmp94_ = FALSE;
+		_tmp92_ = self->priv->current;
+		_tmp93_ = _tmp92_[0];
+		_tmp94_ = g_ascii_isalpha (_tmp93_);
+		if (_tmp94_) {
+			_tmp91_ = TRUE;
 		} else {
-			gchar* _tmp104_;
-			gchar _tmp105_;
-			_tmp104_ = self->priv->current;
-			_tmp105_ = _tmp104_[0];
-			_tmp100_ = _tmp105_ == '_';
+			gchar* _tmp95_ = NULL;
+			gchar _tmp96_ = '\0';
+			_tmp95_ = self->priv->current;
+			_tmp96_ = _tmp95_[0];
+			_tmp91_ = _tmp96_ == '_';
 		}
-		_tmp106_ = _tmp100_;
-		if (_tmp106_) {
-			gint len;
-			gchar* _tmp116_;
-			gint _tmp117_;
-			ValaGenieTokenType _tmp118_ = 0;
+		if (_tmp91_) {
+			gint len = 0;
+			gchar* _tmp105_ = NULL;
+			gint _tmp106_ = 0;
+			ValaGenieTokenType _tmp107_ = 0;
 			len = 0;
 			while (TRUE) {
-				gboolean _tmp107_ = FALSE;
-				gchar* _tmp108_;
-				gchar* _tmp109_;
-				gboolean _tmp113_;
-				gchar* _tmp114_;
-				gint _tmp115_;
-				_tmp108_ = self->priv->current;
-				_tmp109_ = self->priv->end;
-				if (_tmp108_ < _tmp109_) {
-					gchar* _tmp110_;
-					gchar _tmp111_;
-					gboolean _tmp112_ = FALSE;
-					_tmp110_ = self->priv->current;
-					_tmp111_ = _tmp110_[0];
-					_tmp112_ = vala_genie_scanner_is_ident_char (self, _tmp111_);
-					_tmp107_ = _tmp112_;
+				gboolean _tmp97_ = FALSE;
+				gchar* _tmp98_ = NULL;
+				gchar* _tmp99_ = NULL;
+				gchar* _tmp103_ = NULL;
+				gint _tmp104_ = 0;
+				_tmp98_ = self->priv->current;
+				_tmp99_ = self->priv->end;
+				if (_tmp98_ < _tmp99_) {
+					gchar* _tmp100_ = NULL;
+					gchar _tmp101_ = '\0';
+					gboolean _tmp102_ = FALSE;
+					_tmp100_ = self->priv->current;
+					_tmp101_ = _tmp100_[0];
+					_tmp102_ = vala_genie_scanner_is_ident_char (self, _tmp101_);
+					_tmp97_ = _tmp102_;
 				} else {
-					_tmp107_ = FALSE;
+					_tmp97_ = FALSE;
 				}
-				_tmp113_ = _tmp107_;
-				if (!_tmp113_) {
+				if (!_tmp97_) {
 					break;
 				}
-				_tmp114_ = self->priv->current;
-				self->priv->current = _tmp114_ + 1;
-				_tmp115_ = len;
-				len = _tmp115_ + 1;
+				_tmp103_ = self->priv->current;
+				self->priv->current = _tmp103_ + 1;
+				_tmp104_ = len;
+				len = _tmp104_ + 1;
 			}
-			_tmp116_ = begin;
-			_tmp117_ = len;
-			_tmp118_ = vala_genie_scanner_get_identifier_or_keyword (_tmp116_, _tmp117_);
-			type = _tmp118_;
+			_tmp105_ = begin;
+			_tmp106_ = len;
+			_tmp107_ = vala_genie_scanner_get_identifier_or_keyword (_tmp105_, _tmp106_);
+			type = _tmp107_;
 		} else {
-			gchar* _tmp119_;
-			gchar _tmp120_;
-			_tmp119_ = self->priv->current;
-			_tmp120_ = _tmp119_[0];
-			if (_tmp120_ == '@') {
-				gboolean _tmp121_ = FALSE;
-				gchar* _tmp122_;
-				gchar* _tmp123_;
-				gboolean _tmp126_;
-				_tmp122_ = self->priv->current;
-				_tmp123_ = self->priv->end;
-				if (_tmp122_ < (_tmp123_ - 1)) {
-					gchar* _tmp124_;
-					gchar _tmp125_;
-					_tmp124_ = self->priv->current;
-					_tmp125_ = _tmp124_[1];
-					_tmp121_ = _tmp125_ == '"';
+			gchar* _tmp108_ = NULL;
+			gchar _tmp109_ = '\0';
+			_tmp108_ = self->priv->current;
+			_tmp109_ = _tmp108_[0];
+			if (_tmp109_ == '@') {
+				gboolean _tmp110_ = FALSE;
+				gchar* _tmp111_ = NULL;
+				gchar* _tmp112_ = NULL;
+				_tmp111_ = self->priv->current;
+				_tmp112_ = self->priv->end;
+				if (_tmp111_ < (_tmp112_ - 1)) {
+					gchar* _tmp113_ = NULL;
+					gchar _tmp114_ = '\0';
+					_tmp113_ = self->priv->current;
+					_tmp114_ = _tmp113_[1];
+					_tmp110_ = _tmp114_ == '"';
 				} else {
-					_tmp121_ = FALSE;
+					_tmp110_ = FALSE;
 				}
-				_tmp126_ = _tmp121_;
-				if (_tmp126_) {
-					gchar* _tmp127_;
-					ValaGenieScannerState* _tmp128_;
-					gint _tmp128__length1;
+				if (_tmp110_) {
+					gchar* _tmp115_ = NULL;
+					ValaGenieScannerState* _tmp116_ = NULL;
+					gint _tmp116__length1 = 0;
 					type = VALA_GENIE_TOKEN_TYPE_OPEN_TEMPLATE;
-					_tmp127_ = self->priv->current;
-					self->priv->current = _tmp127_ + 2;
-					_tmp128_ = self->priv->state_stack;
-					_tmp128__length1 = self->priv->state_stack_length1;
+					_tmp115_ = self->priv->current;
+					self->priv->current = _tmp115_ + 2;
+					_tmp116_ = self->priv->state_stack;
+					_tmp116__length1 = self->priv->state_stack_length1;
 					_vala_array_add6 (&self->priv->state_stack, &self->priv->state_stack_length1, &self->priv->_state_stack_size_, VALA_GENIE_SCANNER_STATE_TEMPLATE);
 				} else {
-					gchar* _tmp129_;
-					gchar* _tmp130_;
-					gint len;
-					_tmp129_ = _vala_token_begin.pos;
-					_vala_token_begin.pos = _tmp129_ + 1;
-					_tmp130_ = self->priv->current;
-					self->priv->current = _tmp130_ + 1;
+					gchar* _tmp117_ = NULL;
+					gchar* _tmp118_ = NULL;
+					gint len = 0;
+					_tmp117_ = _vala_token_begin.pos;
+					_vala_token_begin.pos = _tmp117_ + 1;
+					_tmp118_ = self->priv->current;
+					self->priv->current = _tmp118_ + 1;
 					len = 0;
 					while (TRUE) {
-						gboolean _tmp131_ = FALSE;
-						gchar* _tmp132_;
-						gchar* _tmp133_;
-						gboolean _tmp137_;
-						gchar* _tmp138_;
-						gint _tmp139_;
-						_tmp132_ = self->priv->current;
-						_tmp133_ = self->priv->end;
-						if (_tmp132_ < _tmp133_) {
-							gchar* _tmp134_;
-							gchar _tmp135_;
-							gboolean _tmp136_ = FALSE;
-							_tmp134_ = self->priv->current;
-							_tmp135_ = _tmp134_[0];
-							_tmp136_ = vala_genie_scanner_is_ident_char (self, _tmp135_);
-							_tmp131_ = _tmp136_;
+						gboolean _tmp119_ = FALSE;
+						gchar* _tmp120_ = NULL;
+						gchar* _tmp121_ = NULL;
+						gchar* _tmp125_ = NULL;
+						gint _tmp126_ = 0;
+						_tmp120_ = self->priv->current;
+						_tmp121_ = self->priv->end;
+						if (_tmp120_ < _tmp121_) {
+							gchar* _tmp122_ = NULL;
+							gchar _tmp123_ = '\0';
+							gboolean _tmp124_ = FALSE;
+							_tmp122_ = self->priv->current;
+							_tmp123_ = _tmp122_[0];
+							_tmp124_ = vala_genie_scanner_is_ident_char (self, _tmp123_);
+							_tmp119_ = _tmp124_;
 						} else {
-							_tmp131_ = FALSE;
+							_tmp119_ = FALSE;
 						}
-						_tmp137_ = _tmp131_;
-						if (!_tmp137_) {
+						if (!_tmp119_) {
 							break;
 						}
-						_tmp138_ = self->priv->current;
-						self->priv->current = _tmp138_ + 1;
-						_tmp139_ = len;
-						len = _tmp139_ + 1;
+						_tmp125_ = self->priv->current;
+						self->priv->current = _tmp125_ + 1;
+						_tmp126_ = len;
+						len = _tmp126_ + 1;
 					}
 					type = VALA_GENIE_TOKEN_TYPE_IDENTIFIER;
 				}
 			} else {
-				gchar* _tmp140_;
-				gchar _tmp141_;
-				gboolean _tmp142_ = FALSE;
-				_tmp140_ = self->priv->current;
-				_tmp141_ = _tmp140_[0];
-				_tmp142_ = g_ascii_isdigit (_tmp141_);
-				if (_tmp142_) {
-					gboolean _tmp151_ = FALSE;
-					gchar* _tmp152_;
-					gchar* _tmp153_;
-					gboolean _tmp157_;
+				gchar* _tmp127_ = NULL;
+				gchar _tmp128_ = '\0';
+				gboolean _tmp129_ = FALSE;
+				_tmp127_ = self->priv->current;
+				_tmp128_ = _tmp127_[0];
+				_tmp129_ = g_ascii_isdigit (_tmp128_);
+				if (_tmp129_) {
+					gboolean _tmp137_ = FALSE;
+					gchar* _tmp138_ = NULL;
+					gchar* _tmp139_ = NULL;
 					while (TRUE) {
-						gboolean _tmp143_ = FALSE;
-						gchar* _tmp144_;
-						gchar* _tmp145_;
-						gboolean _tmp149_;
-						gchar* _tmp150_;
-						_tmp144_ = self->priv->current;
-						_tmp145_ = self->priv->end;
-						if (_tmp144_ < _tmp145_) {
-							gchar* _tmp146_;
-							gchar _tmp147_;
-							gboolean _tmp148_ = FALSE;
-							_tmp146_ = self->priv->current;
-							_tmp147_ = _tmp146_[0];
-							_tmp148_ = g_ascii_isdigit (_tmp147_);
-							_tmp143_ = _tmp148_;
+						gboolean _tmp130_ = FALSE;
+						gchar* _tmp131_ = NULL;
+						gchar* _tmp132_ = NULL;
+						gchar* _tmp136_ = NULL;
+						_tmp131_ = self->priv->current;
+						_tmp132_ = self->priv->end;
+						if (_tmp131_ < _tmp132_) {
+							gchar* _tmp133_ = NULL;
+							gchar _tmp134_ = '\0';
+							gboolean _tmp135_ = FALSE;
+							_tmp133_ = self->priv->current;
+							_tmp134_ = _tmp133_[0];
+							_tmp135_ = g_ascii_isdigit (_tmp134_);
+							_tmp130_ = _tmp135_;
 						} else {
-							_tmp143_ = FALSE;
+							_tmp130_ = FALSE;
 						}
-						_tmp149_ = _tmp143_;
-						if (!_tmp149_) {
+						if (!_tmp130_) {
 							break;
 						}
-						_tmp150_ = self->priv->current;
-						self->priv->current = _tmp150_ + 1;
+						_tmp136_ = self->priv->current;
+						self->priv->current = _tmp136_ + 1;
 					}
 					type = VALA_GENIE_TOKEN_TYPE_INTEGER_LITERAL;
-					_tmp152_ = self->priv->current;
-					_tmp153_ = self->priv->end;
-					if (_tmp152_ < _tmp153_) {
-						gchar* _tmp154_;
-						gchar _tmp155_;
-						gchar _tmp156_ = '\0';
-						_tmp154_ = self->priv->current;
-						_tmp155_ = _tmp154_[0];
-						_tmp156_ = g_ascii_tolower (_tmp155_);
-						_tmp151_ = _tmp156_ == 'l';
+					_tmp138_ = self->priv->current;
+					_tmp139_ = self->priv->end;
+					if (_tmp138_ < _tmp139_) {
+						gchar* _tmp140_ = NULL;
+						gchar _tmp141_ = '\0';
+						gchar _tmp142_ = '\0';
+						_tmp140_ = self->priv->current;
+						_tmp141_ = _tmp140_[0];
+						_tmp142_ = g_ascii_tolower (_tmp141_);
+						_tmp137_ = _tmp142_ == 'l';
 					} else {
-						_tmp151_ = FALSE;
+						_tmp137_ = FALSE;
 					}
-					_tmp157_ = _tmp151_;
-					if (_tmp157_) {
-						gchar* _tmp158_;
-						gboolean _tmp159_ = FALSE;
-						gchar* _tmp160_;
-						gchar* _tmp161_;
-						gboolean _tmp165_;
-						_tmp158_ = self->priv->current;
-						self->priv->current = _tmp158_ + 1;
-						_tmp160_ = self->priv->current;
-						_tmp161_ = self->priv->end;
-						if (_tmp160_ < _tmp161_) {
-							gchar* _tmp162_;
-							gchar _tmp163_;
-							gchar _tmp164_ = '\0';
-							_tmp162_ = self->priv->current;
-							_tmp163_ = _tmp162_[0];
-							_tmp164_ = g_ascii_tolower (_tmp163_);
-							_tmp159_ = _tmp164_ == 'l';
+					if (_tmp137_) {
+						gchar* _tmp143_ = NULL;
+						gboolean _tmp144_ = FALSE;
+						gchar* _tmp145_ = NULL;
+						gchar* _tmp146_ = NULL;
+						_tmp143_ = self->priv->current;
+						self->priv->current = _tmp143_ + 1;
+						_tmp145_ = self->priv->current;
+						_tmp146_ = self->priv->end;
+						if (_tmp145_ < _tmp146_) {
+							gchar* _tmp147_ = NULL;
+							gchar _tmp148_ = '\0';
+							gchar _tmp149_ = '\0';
+							_tmp147_ = self->priv->current;
+							_tmp148_ = _tmp147_[0];
+							_tmp149_ = g_ascii_tolower (_tmp148_);
+							_tmp144_ = _tmp149_ == 'l';
 						} else {
-							_tmp159_ = FALSE;
+							_tmp144_ = FALSE;
 						}
-						_tmp165_ = _tmp159_;
-						if (_tmp165_) {
-							gchar* _tmp166_;
-							_tmp166_ = self->priv->current;
-							self->priv->current = _tmp166_ + 1;
+						if (_tmp144_) {
+							gchar* _tmp150_ = NULL;
+							_tmp150_ = self->priv->current;
+							self->priv->current = _tmp150_ + 1;
 						}
 					} else {
-						gboolean _tmp167_ = FALSE;
-						gchar* _tmp168_;
-						gchar* _tmp169_;
-						gboolean _tmp173_;
-						_tmp168_ = self->priv->current;
-						_tmp169_ = self->priv->end;
-						if (_tmp168_ < _tmp169_) {
-							gchar* _tmp170_;
-							gchar _tmp171_;
-							gchar _tmp172_ = '\0';
-							_tmp170_ = self->priv->current;
-							_tmp171_ = _tmp170_[0];
-							_tmp172_ = g_ascii_tolower (_tmp171_);
-							_tmp167_ = _tmp172_ == 'u';
+						gboolean _tmp151_ = FALSE;
+						gchar* _tmp152_ = NULL;
+						gchar* _tmp153_ = NULL;
+						_tmp152_ = self->priv->current;
+						_tmp153_ = self->priv->end;
+						if (_tmp152_ < _tmp153_) {
+							gchar* _tmp154_ = NULL;
+							gchar _tmp155_ = '\0';
+							gchar _tmp156_ = '\0';
+							_tmp154_ = self->priv->current;
+							_tmp155_ = _tmp154_[0];
+							_tmp156_ = g_ascii_tolower (_tmp155_);
+							_tmp151_ = _tmp156_ == 'u';
 						} else {
-							_tmp167_ = FALSE;
+							_tmp151_ = FALSE;
 						}
-						_tmp173_ = _tmp167_;
-						if (_tmp173_) {
-							gchar* _tmp174_;
-							gboolean _tmp175_ = FALSE;
-							gchar* _tmp176_;
-							gchar* _tmp177_;
-							gboolean _tmp181_;
-							_tmp174_ = self->priv->current;
-							self->priv->current = _tmp174_ + 1;
-							_tmp176_ = self->priv->current;
-							_tmp177_ = self->priv->end;
-							if (_tmp176_ < _tmp177_) {
-								gchar* _tmp178_;
-								gchar _tmp179_;
-								gchar _tmp180_ = '\0';
-								_tmp178_ = self->priv->current;
-								_tmp179_ = _tmp178_[0];
-								_tmp180_ = g_ascii_tolower (_tmp179_);
-								_tmp175_ = _tmp180_ == 'l';
+						if (_tmp151_) {
+							gchar* _tmp157_ = NULL;
+							gboolean _tmp158_ = FALSE;
+							gchar* _tmp159_ = NULL;
+							gchar* _tmp160_ = NULL;
+							_tmp157_ = self->priv->current;
+							self->priv->current = _tmp157_ + 1;
+							_tmp159_ = self->priv->current;
+							_tmp160_ = self->priv->end;
+							if (_tmp159_ < _tmp160_) {
+								gchar* _tmp161_ = NULL;
+								gchar _tmp162_ = '\0';
+								gchar _tmp163_ = '\0';
+								_tmp161_ = self->priv->current;
+								_tmp162_ = _tmp161_[0];
+								_tmp163_ = g_ascii_tolower (_tmp162_);
+								_tmp158_ = _tmp163_ == 'l';
 							} else {
-								_tmp175_ = FALSE;
+								_tmp158_ = FALSE;
 							}
-							_tmp181_ = _tmp175_;
-							if (_tmp181_) {
-								gchar* _tmp182_;
-								gboolean _tmp183_ = FALSE;
-								gchar* _tmp184_;
-								gchar* _tmp185_;
-								gboolean _tmp189_;
-								_tmp182_ = self->priv->current;
-								self->priv->current = _tmp182_ + 1;
-								_tmp184_ = self->priv->current;
-								_tmp185_ = self->priv->end;
-								if (_tmp184_ < _tmp185_) {
-									gchar* _tmp186_;
-									gchar _tmp187_;
-									gchar _tmp188_ = '\0';
-									_tmp186_ = self->priv->current;
-									_tmp187_ = _tmp186_[0];
-									_tmp188_ = g_ascii_tolower (_tmp187_);
-									_tmp183_ = _tmp188_ == 'l';
+							if (_tmp158_) {
+								gchar* _tmp164_ = NULL;
+								gboolean _tmp165_ = FALSE;
+								gchar* _tmp166_ = NULL;
+								gchar* _tmp167_ = NULL;
+								_tmp164_ = self->priv->current;
+								self->priv->current = _tmp164_ + 1;
+								_tmp166_ = self->priv->current;
+								_tmp167_ = self->priv->end;
+								if (_tmp166_ < _tmp167_) {
+									gchar* _tmp168_ = NULL;
+									gchar _tmp169_ = '\0';
+									gchar _tmp170_ = '\0';
+									_tmp168_ = self->priv->current;
+									_tmp169_ = _tmp168_[0];
+									_tmp170_ = g_ascii_tolower (_tmp169_);
+									_tmp165_ = _tmp170_ == 'l';
 								} else {
-									_tmp183_ = FALSE;
+									_tmp165_ = FALSE;
 								}
-								_tmp189_ = _tmp183_;
-								if (_tmp189_) {
-									gchar* _tmp190_;
-									_tmp190_ = self->priv->current;
-									self->priv->current = _tmp190_ + 1;
+								if (_tmp165_) {
+									gchar* _tmp171_ = NULL;
+									_tmp171_ = self->priv->current;
+									self->priv->current = _tmp171_ + 1;
 								}
 							}
 						} else {
-							gboolean _tmp191_ = FALSE;
-							gboolean _tmp192_ = FALSE;
-							gchar* _tmp193_;
-							gchar* _tmp194_;
-							gboolean _tmp197_;
-							gboolean _tmp201_;
-							_tmp193_ = self->priv->current;
-							_tmp194_ = self->priv->end;
-							if (_tmp193_ < (_tmp194_ - 1)) {
-								gchar* _tmp195_;
-								gchar _tmp196_;
-								_tmp195_ = self->priv->current;
-								_tmp196_ = _tmp195_[0];
-								_tmp192_ = _tmp196_ == '.';
+							gboolean _tmp172_ = FALSE;
+							gboolean _tmp173_ = FALSE;
+							gchar* _tmp174_ = NULL;
+							gchar* _tmp175_ = NULL;
+							_tmp174_ = self->priv->current;
+							_tmp175_ = self->priv->end;
+							if (_tmp174_ < (_tmp175_ - 1)) {
+								gchar* _tmp176_ = NULL;
+								gchar _tmp177_ = '\0';
+								_tmp176_ = self->priv->current;
+								_tmp177_ = _tmp176_[0];
+								_tmp173_ = _tmp177_ == '.';
 							} else {
-								_tmp192_ = FALSE;
+								_tmp173_ = FALSE;
 							}
-							_tmp197_ = _tmp192_;
-							if (_tmp197_) {
-								gchar* _tmp198_;
-								gchar _tmp199_;
-								gboolean _tmp200_ = FALSE;
-								_tmp198_ = self->priv->current;
-								_tmp199_ = _tmp198_[1];
-								_tmp200_ = g_ascii_isdigit (_tmp199_);
-								_tmp191_ = _tmp200_;
+							if (_tmp173_) {
+								gchar* _tmp178_ = NULL;
+								gchar _tmp179_ = '\0';
+								gboolean _tmp180_ = FALSE;
+								_tmp178_ = self->priv->current;
+								_tmp179_ = _tmp178_[1];
+								_tmp180_ = g_ascii_isdigit (_tmp179_);
+								_tmp172_ = _tmp180_;
 							} else {
-								_tmp191_ = FALSE;
+								_tmp172_ = FALSE;
 							}
-							_tmp201_ = _tmp191_;
-							if (_tmp201_) {
-								gchar* _tmp202_;
-								gboolean _tmp211_ = FALSE;
-								gchar* _tmp212_;
-								gchar* _tmp213_;
-								gboolean _tmp217_;
-								gboolean _tmp238_ = FALSE;
-								gchar* _tmp239_;
-								gchar* _tmp240_;
-								gboolean _tmp244_;
-								_tmp202_ = self->priv->current;
-								self->priv->current = _tmp202_ + 1;
+							if (_tmp172_) {
+								gchar* _tmp181_ = NULL;
+								gboolean _tmp189_ = FALSE;
+								gchar* _tmp190_ = NULL;
+								gchar* _tmp191_ = NULL;
+								gboolean _tmp212_ = FALSE;
+								gchar* _tmp213_ = NULL;
+								gchar* _tmp214_ = NULL;
+								_tmp181_ = self->priv->current;
+								self->priv->current = _tmp181_ + 1;
 								while (TRUE) {
-									gboolean _tmp203_ = FALSE;
-									gchar* _tmp204_;
-									gchar* _tmp205_;
-									gboolean _tmp209_;
-									gchar* _tmp210_;
-									_tmp204_ = self->priv->current;
-									_tmp205_ = self->priv->end;
-									if (_tmp204_ < _tmp205_) {
-										gchar* _tmp206_;
-										gchar _tmp207_;
-										gboolean _tmp208_ = FALSE;
-										_tmp206_ = self->priv->current;
-										_tmp207_ = _tmp206_[0];
-										_tmp208_ = g_ascii_isdigit (_tmp207_);
-										_tmp203_ = _tmp208_;
+									gboolean _tmp182_ = FALSE;
+									gchar* _tmp183_ = NULL;
+									gchar* _tmp184_ = NULL;
+									gchar* _tmp188_ = NULL;
+									_tmp183_ = self->priv->current;
+									_tmp184_ = self->priv->end;
+									if (_tmp183_ < _tmp184_) {
+										gchar* _tmp185_ = NULL;
+										gchar _tmp186_ = '\0';
+										gboolean _tmp187_ = FALSE;
+										_tmp185_ = self->priv->current;
+										_tmp186_ = _tmp185_[0];
+										_tmp187_ = g_ascii_isdigit (_tmp186_);
+										_tmp182_ = _tmp187_;
 									} else {
-										_tmp203_ = FALSE;
+										_tmp182_ = FALSE;
 									}
-									_tmp209_ = _tmp203_;
-									if (!_tmp209_) {
+									if (!_tmp182_) {
 										break;
 									}
-									_tmp210_ = self->priv->current;
-									self->priv->current = _tmp210_ + 1;
+									_tmp188_ = self->priv->current;
+									self->priv->current = _tmp188_ + 1;
 								}
-								_tmp212_ = self->priv->current;
-								_tmp213_ = self->priv->end;
-								if (_tmp212_ < _tmp213_) {
-									gchar* _tmp214_;
-									gchar _tmp215_;
-									gchar _tmp216_ = '\0';
-									_tmp214_ = self->priv->current;
-									_tmp215_ = _tmp214_[0];
-									_tmp216_ = g_ascii_tolower (_tmp215_);
-									_tmp211_ = _tmp216_ == 'e';
+								_tmp190_ = self->priv->current;
+								_tmp191_ = self->priv->end;
+								if (_tmp190_ < _tmp191_) {
+									gchar* _tmp192_ = NULL;
+									gchar _tmp193_ = '\0';
+									gchar _tmp194_ = '\0';
+									_tmp192_ = self->priv->current;
+									_tmp193_ = _tmp192_[0];
+									_tmp194_ = g_ascii_tolower (_tmp193_);
+									_tmp189_ = _tmp194_ == 'e';
 								} else {
-									_tmp211_ = FALSE;
+									_tmp189_ = FALSE;
 								}
-								_tmp217_ = _tmp211_;
-								if (_tmp217_) {
-									gchar* _tmp218_;
-									gboolean _tmp219_ = FALSE;
-									gchar* _tmp220_;
-									gchar* _tmp221_;
-									gboolean _tmp228_;
-									_tmp218_ = self->priv->current;
-									self->priv->current = _tmp218_ + 1;
-									_tmp220_ = self->priv->current;
-									_tmp221_ = self->priv->end;
-									if (_tmp220_ < _tmp221_) {
-										gboolean _tmp222_ = FALSE;
-										gchar* _tmp223_;
-										gchar _tmp224_;
-										gboolean _tmp227_;
-										_tmp223_ = self->priv->current;
-										_tmp224_ = _tmp223_[0];
-										if (_tmp224_ == '+') {
-											_tmp222_ = TRUE;
+								if (_tmp189_) {
+									gchar* _tmp195_ = NULL;
+									gboolean _tmp196_ = FALSE;
+									gchar* _tmp197_ = NULL;
+									gchar* _tmp198_ = NULL;
+									_tmp195_ = self->priv->current;
+									self->priv->current = _tmp195_ + 1;
+									_tmp197_ = self->priv->current;
+									_tmp198_ = self->priv->end;
+									if (_tmp197_ < _tmp198_) {
+										gboolean _tmp199_ = FALSE;
+										gchar* _tmp200_ = NULL;
+										gchar _tmp201_ = '\0';
+										_tmp200_ = self->priv->current;
+										_tmp201_ = _tmp200_[0];
+										if (_tmp201_ == '+') {
+											_tmp199_ = TRUE;
 										} else {
-											gchar* _tmp225_;
-											gchar _tmp226_;
-											_tmp225_ = self->priv->current;
-											_tmp226_ = _tmp225_[0];
-											_tmp222_ = _tmp226_ == '-';
+											gchar* _tmp202_ = NULL;
+											gchar _tmp203_ = '\0';
+											_tmp202_ = self->priv->current;
+											_tmp203_ = _tmp202_[0];
+											_tmp199_ = _tmp203_ == '-';
 										}
-										_tmp227_ = _tmp222_;
-										_tmp219_ = _tmp227_;
+										_tmp196_ = _tmp199_;
 									} else {
-										_tmp219_ = FALSE;
+										_tmp196_ = FALSE;
 									}
-									_tmp228_ = _tmp219_;
-									if (_tmp228_) {
-										gchar* _tmp229_;
-										_tmp229_ = self->priv->current;
-										self->priv->current = _tmp229_ + 1;
+									if (_tmp196_) {
+										gchar* _tmp204_ = NULL;
+										_tmp204_ = self->priv->current;
+										self->priv->current = _tmp204_ + 1;
 									}
 									while (TRUE) {
-										gboolean _tmp230_ = FALSE;
-										gchar* _tmp231_;
-										gchar* _tmp232_;
-										gboolean _tmp236_;
-										gchar* _tmp237_;
-										_tmp231_ = self->priv->current;
-										_tmp232_ = self->priv->end;
-										if (_tmp231_ < _tmp232_) {
-											gchar* _tmp233_;
-											gchar _tmp234_;
-											gboolean _tmp235_ = FALSE;
-											_tmp233_ = self->priv->current;
-											_tmp234_ = _tmp233_[0];
-											_tmp235_ = g_ascii_isdigit (_tmp234_);
-											_tmp230_ = _tmp235_;
+										gboolean _tmp205_ = FALSE;
+										gchar* _tmp206_ = NULL;
+										gchar* _tmp207_ = NULL;
+										gchar* _tmp211_ = NULL;
+										_tmp206_ = self->priv->current;
+										_tmp207_ = self->priv->end;
+										if (_tmp206_ < _tmp207_) {
+											gchar* _tmp208_ = NULL;
+											gchar _tmp209_ = '\0';
+											gboolean _tmp210_ = FALSE;
+											_tmp208_ = self->priv->current;
+											_tmp209_ = _tmp208_[0];
+											_tmp210_ = g_ascii_isdigit (_tmp209_);
+											_tmp205_ = _tmp210_;
 										} else {
-											_tmp230_ = FALSE;
+											_tmp205_ = FALSE;
 										}
-										_tmp236_ = _tmp230_;
-										if (!_tmp236_) {
+										if (!_tmp205_) {
 											break;
 										}
-										_tmp237_ = self->priv->current;
-										self->priv->current = _tmp237_ + 1;
+										_tmp211_ = self->priv->current;
+										self->priv->current = _tmp211_ + 1;
 									}
 								}
-								_tmp239_ = self->priv->current;
-								_tmp240_ = self->priv->end;
-								if (_tmp239_ < _tmp240_) {
-									gchar* _tmp241_;
-									gchar _tmp242_;
-									gchar _tmp243_ = '\0';
-									_tmp241_ = self->priv->current;
-									_tmp242_ = _tmp241_[0];
-									_tmp243_ = g_ascii_tolower (_tmp242_);
-									_tmp238_ = _tmp243_ == 'f';
+								_tmp213_ = self->priv->current;
+								_tmp214_ = self->priv->end;
+								if (_tmp213_ < _tmp214_) {
+									gchar* _tmp215_ = NULL;
+									gchar _tmp216_ = '\0';
+									gchar _tmp217_ = '\0';
+									_tmp215_ = self->priv->current;
+									_tmp216_ = _tmp215_[0];
+									_tmp217_ = g_ascii_tolower (_tmp216_);
+									_tmp212_ = _tmp217_ == 'f';
 								} else {
-									_tmp238_ = FALSE;
+									_tmp212_ = FALSE;
 								}
-								_tmp244_ = _tmp238_;
-								if (_tmp244_) {
-									gchar* _tmp245_;
-									_tmp245_ = self->priv->current;
-									self->priv->current = _tmp245_ + 1;
+								if (_tmp212_) {
+									gchar* _tmp218_ = NULL;
+									_tmp218_ = self->priv->current;
+									self->priv->current = _tmp218_ + 1;
 								}
 								type = VALA_GENIE_TOKEN_TYPE_REAL_LITERAL;
 							} else {
-								gboolean _tmp246_ = FALSE;
-								gboolean _tmp247_ = FALSE;
-								gboolean _tmp248_ = FALSE;
-								gboolean _tmp249_ = FALSE;
-								gchar* _tmp250_;
-								gchar* _tmp251_;
-								gboolean _tmp254_;
-								gboolean _tmp257_;
-								gboolean _tmp260_;
-								gboolean _tmp264_;
-								_tmp250_ = self->priv->current;
-								_tmp251_ = self->priv->end;
-								if (_tmp250_ < _tmp251_) {
-									gchar* _tmp252_;
-									gchar* _tmp253_;
-									_tmp252_ = self->priv->current;
-									_tmp253_ = begin;
-									_tmp249_ = _tmp252_ == (_tmp253_ + 1);
+								gboolean _tmp219_ = FALSE;
+								gboolean _tmp220_ = FALSE;
+								gboolean _tmp221_ = FALSE;
+								gboolean _tmp222_ = FALSE;
+								gchar* _tmp223_ = NULL;
+								gchar* _tmp224_ = NULL;
+								_tmp223_ = self->priv->current;
+								_tmp224_ = self->priv->end;
+								if (_tmp223_ < _tmp224_) {
+									gchar* _tmp225_ = NULL;
+									gchar* _tmp226_ = NULL;
+									_tmp225_ = self->priv->current;
+									_tmp226_ = begin;
+									_tmp222_ = _tmp225_ == (_tmp226_ + 1);
 								} else {
-									_tmp249_ = FALSE;
+									_tmp222_ = FALSE;
 								}
-								_tmp254_ = _tmp249_;
-								if (_tmp254_) {
-									gchar* _tmp255_;
-									gchar _tmp256_;
-									_tmp255_ = begin;
-									_tmp256_ = _tmp255_[0];
-									_tmp248_ = _tmp256_ == '0';
+								if (_tmp222_) {
+									gchar* _tmp227_ = NULL;
+									gchar _tmp228_ = '\0';
+									_tmp227_ = begin;
+									_tmp228_ = _tmp227_[0];
+									_tmp221_ = _tmp228_ == '0';
 								} else {
-									_tmp248_ = FALSE;
+									_tmp221_ = FALSE;
 								}
-								_tmp257_ = _tmp248_;
-								if (_tmp257_) {
-									gchar* _tmp258_;
-									gchar _tmp259_;
-									_tmp258_ = begin;
-									_tmp259_ = _tmp258_[1];
-									_tmp247_ = _tmp259_ == 'x';
+								if (_tmp221_) {
+									gchar* _tmp229_ = NULL;
+									gchar _tmp230_ = '\0';
+									_tmp229_ = begin;
+									_tmp230_ = _tmp229_[1];
+									_tmp220_ = _tmp230_ == 'x';
 								} else {
-									_tmp247_ = FALSE;
+									_tmp220_ = FALSE;
 								}
-								_tmp260_ = _tmp247_;
-								if (_tmp260_) {
-									gchar* _tmp261_;
-									gchar _tmp262_;
-									gboolean _tmp263_ = FALSE;
-									_tmp261_ = begin;
-									_tmp262_ = _tmp261_[2];
-									_tmp263_ = g_ascii_isxdigit (_tmp262_);
-									_tmp246_ = _tmp263_;
+								if (_tmp220_) {
+									gchar* _tmp231_ = NULL;
+									gchar _tmp232_ = '\0';
+									gboolean _tmp233_ = FALSE;
+									_tmp231_ = begin;
+									_tmp232_ = _tmp231_[2];
+									_tmp233_ = g_ascii_isxdigit (_tmp232_);
+									_tmp219_ = _tmp233_;
 								} else {
-									_tmp246_ = FALSE;
+									_tmp219_ = FALSE;
 								}
-								_tmp264_ = _tmp246_;
-								if (_tmp264_) {
-									gchar* _tmp265_;
-									_tmp265_ = self->priv->current;
-									self->priv->current = _tmp265_ + 1;
+								if (_tmp219_) {
+									gchar* _tmp234_ = NULL;
+									_tmp234_ = self->priv->current;
+									self->priv->current = _tmp234_ + 1;
 									while (TRUE) {
-										gboolean _tmp266_ = FALSE;
-										gchar* _tmp267_;
-										gchar* _tmp268_;
-										gboolean _tmp272_;
-										gchar* _tmp273_;
-										_tmp267_ = self->priv->current;
-										_tmp268_ = self->priv->end;
-										if (_tmp267_ < _tmp268_) {
-											gchar* _tmp269_;
-											gchar _tmp270_;
-											gboolean _tmp271_ = FALSE;
-											_tmp269_ = self->priv->current;
-											_tmp270_ = _tmp269_[0];
-											_tmp271_ = g_ascii_isxdigit (_tmp270_);
-											_tmp266_ = _tmp271_;
+										gboolean _tmp235_ = FALSE;
+										gchar* _tmp236_ = NULL;
+										gchar* _tmp237_ = NULL;
+										gchar* _tmp241_ = NULL;
+										_tmp236_ = self->priv->current;
+										_tmp237_ = self->priv->end;
+										if (_tmp236_ < _tmp237_) {
+											gchar* _tmp238_ = NULL;
+											gchar _tmp239_ = '\0';
+											gboolean _tmp240_ = FALSE;
+											_tmp238_ = self->priv->current;
+											_tmp239_ = _tmp238_[0];
+											_tmp240_ = g_ascii_isxdigit (_tmp239_);
+											_tmp235_ = _tmp240_;
 										} else {
-											_tmp266_ = FALSE;
+											_tmp235_ = FALSE;
 										}
-										_tmp272_ = _tmp266_;
-										if (!_tmp272_) {
+										if (!_tmp235_) {
 											break;
 										}
-										_tmp273_ = self->priv->current;
-										self->priv->current = _tmp273_ + 1;
+										_tmp241_ = self->priv->current;
+										self->priv->current = _tmp241_ + 1;
 									}
 								} else {
-									gboolean _tmp274_ = FALSE;
-									gchar* _tmp275_;
-									gchar* _tmp276_;
-									gboolean _tmp280_;
-									_tmp275_ = self->priv->current;
-									_tmp276_ = self->priv->end;
-									if (_tmp275_ < _tmp276_) {
-										gchar* _tmp277_;
-										gchar _tmp278_;
-										gboolean _tmp279_ = FALSE;
-										_tmp277_ = self->priv->current;
-										_tmp278_ = _tmp277_[0];
-										_tmp279_ = vala_genie_scanner_is_ident_char (self, _tmp278_);
-										_tmp274_ = _tmp279_;
+									gboolean _tmp242_ = FALSE;
+									gchar* _tmp243_ = NULL;
+									gchar* _tmp244_ = NULL;
+									_tmp243_ = self->priv->current;
+									_tmp244_ = self->priv->end;
+									if (_tmp243_ < _tmp244_) {
+										gchar* _tmp245_ = NULL;
+										gchar _tmp246_ = '\0';
+										gboolean _tmp247_ = FALSE;
+										_tmp245_ = self->priv->current;
+										_tmp246_ = _tmp245_[0];
+										_tmp247_ = vala_genie_scanner_is_ident_char (self, _tmp246_);
+										_tmp242_ = _tmp247_;
 									} else {
-										_tmp274_ = FALSE;
+										_tmp242_ = FALSE;
 									}
-									_tmp280_ = _tmp274_;
-									if (_tmp280_) {
+									if (_tmp242_) {
 										while (TRUE) {
-											gboolean _tmp281_ = FALSE;
-											gchar* _tmp282_;
-											gchar* _tmp283_;
-											gboolean _tmp287_;
-											gchar* _tmp288_;
-											_tmp282_ = self->priv->current;
-											_tmp283_ = self->priv->end;
-											if (_tmp282_ < _tmp283_) {
-												gchar* _tmp284_;
-												gchar _tmp285_;
-												gboolean _tmp286_ = FALSE;
-												_tmp284_ = self->priv->current;
-												_tmp285_ = _tmp284_[0];
-												_tmp286_ = vala_genie_scanner_is_ident_char (self, _tmp285_);
-												_tmp281_ = _tmp286_;
+											gboolean _tmp248_ = FALSE;
+											gchar* _tmp249_ = NULL;
+											gchar* _tmp250_ = NULL;
+											gchar* _tmp254_ = NULL;
+											_tmp249_ = self->priv->current;
+											_tmp250_ = self->priv->end;
+											if (_tmp249_ < _tmp250_) {
+												gchar* _tmp251_ = NULL;
+												gchar _tmp252_ = '\0';
+												gboolean _tmp253_ = FALSE;
+												_tmp251_ = self->priv->current;
+												_tmp252_ = _tmp251_[0];
+												_tmp253_ = vala_genie_scanner_is_ident_char (self, _tmp252_);
+												_tmp248_ = _tmp253_;
 											} else {
-												_tmp281_ = FALSE;
+												_tmp248_ = FALSE;
 											}
-											_tmp287_ = _tmp281_;
-											if (!_tmp287_) {
+											if (!_tmp248_) {
 												break;
 											}
-											_tmp288_ = self->priv->current;
-											self->priv->current = _tmp288_ + 1;
+											_tmp254_ = self->priv->current;
+											self->priv->current = _tmp254_ + 1;
 										}
 										type = VALA_GENIE_TOKEN_TYPE_IDENTIFIER;
 									}
@@ -3967,224 +3869,222 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 						}
 					}
 				} else {
-					gchar* _tmp289_;
-					gchar _tmp290_;
-					_tmp289_ = self->priv->current;
-					_tmp290_ = _tmp289_[0];
-					switch (_tmp290_) {
+					gchar* _tmp255_ = NULL;
+					gchar _tmp256_ = '\0';
+					_tmp255_ = self->priv->current;
+					_tmp256_ = _tmp255_[0];
+					switch (_tmp256_) {
 						case '{':
 						{
-							gint _tmp291_;
-							ValaGenieScannerState* _tmp292_;
-							gint _tmp292__length1;
-							gchar* _tmp293_;
+							gint _tmp257_ = 0;
+							ValaGenieScannerState* _tmp258_ = NULL;
+							gint _tmp258__length1 = 0;
+							gchar* _tmp259_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_OPEN_BRACE;
-							_tmp291_ = self->priv->open_brace_count;
-							self->priv->open_brace_count = _tmp291_ + 1;
-							_tmp292_ = self->priv->state_stack;
-							_tmp292__length1 = self->priv->state_stack_length1;
+							_tmp257_ = self->priv->open_brace_count;
+							self->priv->open_brace_count = _tmp257_ + 1;
+							_tmp258_ = self->priv->state_stack;
+							_tmp258__length1 = self->priv->state_stack_length1;
 							_vala_array_add7 (&self->priv->state_stack, &self->priv->state_stack_length1, &self->priv->_state_stack_size_, VALA_GENIE_SCANNER_STATE_BRACE);
-							_tmp293_ = self->priv->current;
-							self->priv->current = _tmp293_ + 1;
+							_tmp259_ = self->priv->current;
+							self->priv->current = _tmp259_ + 1;
 							break;
 						}
 						case '}':
 						{
-							gint _tmp294_;
-							ValaGenieScannerState* _tmp295_;
-							gint _tmp295__length1;
-							gchar* _tmp297_;
+							gint _tmp260_ = 0;
+							ValaGenieScannerState* _tmp261_ = NULL;
+							gint _tmp261__length1 = 0;
+							gchar* _tmp263_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_CLOSE_BRACE;
-							_tmp294_ = self->priv->open_brace_count;
-							self->priv->open_brace_count = _tmp294_ - 1;
-							_tmp295_ = self->priv->state_stack;
-							_tmp295__length1 = self->priv->state_stack_length1;
-							if (_tmp295__length1 > 0) {
-								gint _tmp296_;
-								_tmp296_ = self->priv->state_stack_length1;
-								self->priv->state_stack_length1 = _tmp296_ - 1;
+							_tmp260_ = self->priv->open_brace_count;
+							self->priv->open_brace_count = _tmp260_ - 1;
+							_tmp261_ = self->priv->state_stack;
+							_tmp261__length1 = self->priv->state_stack_length1;
+							if (_tmp261__length1 > 0) {
+								gint _tmp262_ = 0;
+								_tmp262_ = self->priv->state_stack_length1;
+								self->priv->state_stack_length1 = _tmp262_ - 1;
 							}
-							_tmp297_ = self->priv->current;
-							self->priv->current = _tmp297_ + 1;
+							_tmp263_ = self->priv->current;
+							self->priv->current = _tmp263_ + 1;
 							break;
 						}
 						case '(':
 						{
-							gint _tmp298_;
-							ValaGenieScannerState* _tmp299_;
-							gint _tmp299__length1;
-							gchar* _tmp300_;
+							gint _tmp264_ = 0;
+							ValaGenieScannerState* _tmp265_ = NULL;
+							gint _tmp265__length1 = 0;
+							gchar* _tmp266_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_OPEN_PARENS;
-							_tmp298_ = self->priv->open_parens_count;
-							self->priv->open_parens_count = _tmp298_ + 1;
-							_tmp299_ = self->priv->state_stack;
-							_tmp299__length1 = self->priv->state_stack_length1;
+							_tmp264_ = self->priv->open_parens_count;
+							self->priv->open_parens_count = _tmp264_ + 1;
+							_tmp265_ = self->priv->state_stack;
+							_tmp265__length1 = self->priv->state_stack_length1;
 							_vala_array_add8 (&self->priv->state_stack, &self->priv->state_stack_length1, &self->priv->_state_stack_size_, VALA_GENIE_SCANNER_STATE_PARENS);
-							_tmp300_ = self->priv->current;
-							self->priv->current = _tmp300_ + 1;
+							_tmp266_ = self->priv->current;
+							self->priv->current = _tmp266_ + 1;
 							break;
 						}
 						case ')':
 						{
-							gint _tmp301_;
-							gchar* _tmp302_;
-							ValaGenieScannerState* _tmp303_;
-							gint _tmp303__length1;
-							gboolean _tmp305_ = FALSE;
+							gint _tmp267_ = 0;
+							gchar* _tmp268_ = NULL;
+							ValaGenieScannerState* _tmp269_ = NULL;
+							gint _tmp269__length1 = 0;
+							gboolean _tmp271_ = FALSE;
 							type = VALA_GENIE_TOKEN_TYPE_CLOSE_PARENS;
-							_tmp301_ = self->priv->open_parens_count;
-							self->priv->open_parens_count = _tmp301_ - 1;
-							_tmp302_ = self->priv->current;
-							self->priv->current = _tmp302_ + 1;
-							_tmp303_ = self->priv->state_stack;
-							_tmp303__length1 = self->priv->state_stack_length1;
-							if (_tmp303__length1 > 0) {
-								gint _tmp304_;
-								_tmp304_ = self->priv->state_stack_length1;
-								self->priv->state_stack_length1 = _tmp304_ - 1;
+							_tmp267_ = self->priv->open_parens_count;
+							self->priv->open_parens_count = _tmp267_ - 1;
+							_tmp268_ = self->priv->current;
+							self->priv->current = _tmp268_ + 1;
+							_tmp269_ = self->priv->state_stack;
+							_tmp269__length1 = self->priv->state_stack_length1;
+							if (_tmp269__length1 > 0) {
+								gint _tmp270_ = 0;
+								_tmp270_ = self->priv->state_stack_length1;
+								self->priv->state_stack_length1 = _tmp270_ - 1;
 							}
-							_tmp305_ = vala_genie_scanner_in_template (self);
-							if (_tmp305_) {
+							_tmp271_ = vala_genie_scanner_in_template (self);
+							if (_tmp271_) {
 								type = VALA_GENIE_TOKEN_TYPE_COMMA;
 							}
 							break;
 						}
 						case '[':
 						{
-							ValaGenieScannerState* _tmp306_;
-							gint _tmp306__length1;
-							gchar* _tmp307_;
+							ValaGenieScannerState* _tmp272_ = NULL;
+							gint _tmp272__length1 = 0;
+							gchar* _tmp273_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_OPEN_BRACKET;
-							_tmp306_ = self->priv->state_stack;
-							_tmp306__length1 = self->priv->state_stack_length1;
+							_tmp272_ = self->priv->state_stack;
+							_tmp272__length1 = self->priv->state_stack_length1;
 							_vala_array_add9 (&self->priv->state_stack, &self->priv->state_stack_length1, &self->priv->_state_stack_size_, VALA_GENIE_SCANNER_STATE_BRACKET);
-							_tmp307_ = self->priv->current;
-							self->priv->current = _tmp307_ + 1;
+							_tmp273_ = self->priv->current;
+							self->priv->current = _tmp273_ + 1;
 							break;
 						}
 						case ']':
 						{
-							ValaGenieScannerState* _tmp308_;
-							gint _tmp308__length1;
-							gchar* _tmp310_;
+							ValaGenieScannerState* _tmp274_ = NULL;
+							gint _tmp274__length1 = 0;
+							gchar* _tmp276_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_CLOSE_BRACKET;
-							_tmp308_ = self->priv->state_stack;
-							_tmp308__length1 = self->priv->state_stack_length1;
-							if (_tmp308__length1 > 0) {
-								gint _tmp309_;
-								_tmp309_ = self->priv->state_stack_length1;
-								self->priv->state_stack_length1 = _tmp309_ - 1;
+							_tmp274_ = self->priv->state_stack;
+							_tmp274__length1 = self->priv->state_stack_length1;
+							if (_tmp274__length1 > 0) {
+								gint _tmp275_ = 0;
+								_tmp275_ = self->priv->state_stack_length1;
+								self->priv->state_stack_length1 = _tmp275_ - 1;
 							}
-							_tmp310_ = self->priv->current;
-							self->priv->current = _tmp310_ + 1;
+							_tmp276_ = self->priv->current;
+							self->priv->current = _tmp276_ + 1;
 							break;
 						}
 						case '.':
 						{
-							gchar* _tmp311_;
-							gchar* _tmp312_;
-							gchar* _tmp313_;
+							gchar* _tmp277_ = NULL;
+							gchar* _tmp278_ = NULL;
+							gchar* _tmp279_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_DOT;
-							_tmp311_ = self->priv->current;
-							self->priv->current = _tmp311_ + 1;
-							_tmp312_ = self->priv->current;
-							_tmp313_ = self->priv->end;
-							if (_tmp312_ < (_tmp313_ - 1)) {
-								gboolean _tmp314_ = FALSE;
-								gchar* _tmp315_;
-								gchar _tmp316_;
-								gboolean _tmp319_;
-								_tmp315_ = self->priv->current;
-								_tmp316_ = _tmp315_[0];
-								if (_tmp316_ == '.') {
-									gchar* _tmp317_;
-									gchar _tmp318_;
-									_tmp317_ = self->priv->current;
-									_tmp318_ = _tmp317_[1];
-									_tmp314_ = _tmp318_ == '.';
+							_tmp277_ = self->priv->current;
+							self->priv->current = _tmp277_ + 1;
+							_tmp278_ = self->priv->current;
+							_tmp279_ = self->priv->end;
+							if (_tmp278_ < (_tmp279_ - 1)) {
+								gboolean _tmp280_ = FALSE;
+								gchar* _tmp281_ = NULL;
+								gchar _tmp282_ = '\0';
+								_tmp281_ = self->priv->current;
+								_tmp282_ = _tmp281_[0];
+								if (_tmp282_ == '.') {
+									gchar* _tmp283_ = NULL;
+									gchar _tmp284_ = '\0';
+									_tmp283_ = self->priv->current;
+									_tmp284_ = _tmp283_[1];
+									_tmp280_ = _tmp284_ == '.';
 								} else {
-									_tmp314_ = FALSE;
+									_tmp280_ = FALSE;
 								}
-								_tmp319_ = _tmp314_;
-								if (_tmp319_) {
-									gchar* _tmp320_;
+								if (_tmp280_) {
+									gchar* _tmp285_ = NULL;
 									type = VALA_GENIE_TOKEN_TYPE_ELLIPSIS;
-									_tmp320_ = self->priv->current;
-									self->priv->current = _tmp320_ + 2;
+									_tmp285_ = self->priv->current;
+									self->priv->current = _tmp285_ + 2;
 								}
 							}
 							break;
 						}
 						case ':':
 						{
-							gchar* _tmp321_;
+							gchar* _tmp286_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_COLON;
-							_tmp321_ = self->priv->current;
-							self->priv->current = _tmp321_ + 1;
+							_tmp286_ = self->priv->current;
+							self->priv->current = _tmp286_ + 1;
 							break;
 						}
 						case ',':
 						{
-							gchar* _tmp322_;
+							gchar* _tmp287_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_COMMA;
-							_tmp322_ = self->priv->current;
-							self->priv->current = _tmp322_ + 1;
+							_tmp287_ = self->priv->current;
+							self->priv->current = _tmp287_ + 1;
 							break;
 						}
 						case ';':
 						{
-							gchar* _tmp323_;
+							gchar* _tmp288_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_SEMICOLON;
-							_tmp323_ = self->priv->current;
-							self->priv->current = _tmp323_ + 1;
+							_tmp288_ = self->priv->current;
+							self->priv->current = _tmp288_ + 1;
 							break;
 						}
 						case '#':
 						{
-							gchar* _tmp324_;
+							gchar* _tmp289_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_HASH;
-							_tmp324_ = self->priv->current;
-							self->priv->current = _tmp324_ + 1;
+							_tmp289_ = self->priv->current;
+							self->priv->current = _tmp289_ + 1;
 							break;
 						}
 						case '?':
 						{
-							gchar* _tmp325_;
+							gchar* _tmp290_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_INTERR;
-							_tmp325_ = self->priv->current;
-							self->priv->current = _tmp325_ + 1;
+							_tmp290_ = self->priv->current;
+							self->priv->current = _tmp290_ + 1;
 							break;
 						}
 						case '|':
 						{
-							gchar* _tmp326_;
-							gchar* _tmp327_;
-							gchar* _tmp328_;
+							gchar* _tmp291_ = NULL;
+							gchar* _tmp292_ = NULL;
+							gchar* _tmp293_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_BITWISE_OR;
-							_tmp326_ = self->priv->current;
-							self->priv->current = _tmp326_ + 1;
-							_tmp327_ = self->priv->current;
-							_tmp328_ = self->priv->end;
-							if (_tmp327_ < _tmp328_) {
-								gchar* _tmp329_;
-								gchar _tmp330_;
-								_tmp329_ = self->priv->current;
-								_tmp330_ = _tmp329_[0];
-								switch (_tmp330_) {
+							_tmp291_ = self->priv->current;
+							self->priv->current = _tmp291_ + 1;
+							_tmp292_ = self->priv->current;
+							_tmp293_ = self->priv->end;
+							if (_tmp292_ < _tmp293_) {
+								gchar* _tmp294_ = NULL;
+								gchar _tmp295_ = '\0';
+								_tmp294_ = self->priv->current;
+								_tmp295_ = _tmp294_[0];
+								switch (_tmp295_) {
 									case '=':
 									{
-										gchar* _tmp331_;
+										gchar* _tmp296_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_ASSIGN_BITWISE_OR;
-										_tmp331_ = self->priv->current;
-										self->priv->current = _tmp331_ + 1;
+										_tmp296_ = self->priv->current;
+										self->priv->current = _tmp296_ + 1;
 										break;
 									}
 									case '|':
 									{
-										gchar* _tmp332_;
+										gchar* _tmp297_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_OP_OR;
-										_tmp332_ = self->priv->current;
-										self->priv->current = _tmp332_ + 1;
+										_tmp297_ = self->priv->current;
+										self->priv->current = _tmp297_ + 1;
 										break;
 									}
 									default:
@@ -4195,34 +4095,34 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 						}
 						case '&':
 						{
-							gchar* _tmp333_;
-							gchar* _tmp334_;
-							gchar* _tmp335_;
+							gchar* _tmp298_ = NULL;
+							gchar* _tmp299_ = NULL;
+							gchar* _tmp300_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_BITWISE_AND;
-							_tmp333_ = self->priv->current;
-							self->priv->current = _tmp333_ + 1;
-							_tmp334_ = self->priv->current;
-							_tmp335_ = self->priv->end;
-							if (_tmp334_ < _tmp335_) {
-								gchar* _tmp336_;
-								gchar _tmp337_;
-								_tmp336_ = self->priv->current;
-								_tmp337_ = _tmp336_[0];
-								switch (_tmp337_) {
+							_tmp298_ = self->priv->current;
+							self->priv->current = _tmp298_ + 1;
+							_tmp299_ = self->priv->current;
+							_tmp300_ = self->priv->end;
+							if (_tmp299_ < _tmp300_) {
+								gchar* _tmp301_ = NULL;
+								gchar _tmp302_ = '\0';
+								_tmp301_ = self->priv->current;
+								_tmp302_ = _tmp301_[0];
+								switch (_tmp302_) {
 									case '=':
 									{
-										gchar* _tmp338_;
+										gchar* _tmp303_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_ASSIGN_BITWISE_AND;
-										_tmp338_ = self->priv->current;
-										self->priv->current = _tmp338_ + 1;
+										_tmp303_ = self->priv->current;
+										self->priv->current = _tmp303_ + 1;
 										break;
 									}
 									case '&':
 									{
-										gchar* _tmp339_;
+										gchar* _tmp304_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_OP_AND;
-										_tmp339_ = self->priv->current;
-										self->priv->current = _tmp339_ + 1;
+										_tmp304_ = self->priv->current;
+										self->priv->current = _tmp304_ + 1;
 										break;
 									}
 									default:
@@ -4233,72 +4133,70 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 						}
 						case '^':
 						{
-							gchar* _tmp340_;
-							gboolean _tmp341_ = FALSE;
-							gchar* _tmp342_;
-							gchar* _tmp343_;
-							gboolean _tmp346_;
+							gchar* _tmp305_ = NULL;
+							gboolean _tmp306_ = FALSE;
+							gchar* _tmp307_ = NULL;
+							gchar* _tmp308_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_CARRET;
-							_tmp340_ = self->priv->current;
-							self->priv->current = _tmp340_ + 1;
-							_tmp342_ = self->priv->current;
-							_tmp343_ = self->priv->end;
-							if (_tmp342_ < _tmp343_) {
-								gchar* _tmp344_;
-								gchar _tmp345_;
-								_tmp344_ = self->priv->current;
-								_tmp345_ = _tmp344_[0];
-								_tmp341_ = _tmp345_ == '=';
+							_tmp305_ = self->priv->current;
+							self->priv->current = _tmp305_ + 1;
+							_tmp307_ = self->priv->current;
+							_tmp308_ = self->priv->end;
+							if (_tmp307_ < _tmp308_) {
+								gchar* _tmp309_ = NULL;
+								gchar _tmp310_ = '\0';
+								_tmp309_ = self->priv->current;
+								_tmp310_ = _tmp309_[0];
+								_tmp306_ = _tmp310_ == '=';
 							} else {
-								_tmp341_ = FALSE;
+								_tmp306_ = FALSE;
 							}
-							_tmp346_ = _tmp341_;
-							if (_tmp346_) {
-								gchar* _tmp347_;
+							if (_tmp306_) {
+								gchar* _tmp311_ = NULL;
 								type = VALA_GENIE_TOKEN_TYPE_ASSIGN_BITWISE_XOR;
-								_tmp347_ = self->priv->current;
-								self->priv->current = _tmp347_ + 1;
+								_tmp311_ = self->priv->current;
+								self->priv->current = _tmp311_ + 1;
 							}
 							break;
 						}
 						case '~':
 						{
-							gchar* _tmp348_;
+							gchar* _tmp312_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_TILDE;
-							_tmp348_ = self->priv->current;
-							self->priv->current = _tmp348_ + 1;
+							_tmp312_ = self->priv->current;
+							self->priv->current = _tmp312_ + 1;
 							break;
 						}
 						case '=':
 						{
-							gchar* _tmp349_;
-							gchar* _tmp350_;
-							gchar* _tmp351_;
+							gchar* _tmp313_ = NULL;
+							gchar* _tmp314_ = NULL;
+							gchar* _tmp315_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_ASSIGN;
-							_tmp349_ = self->priv->current;
-							self->priv->current = _tmp349_ + 1;
-							_tmp350_ = self->priv->current;
-							_tmp351_ = self->priv->end;
-							if (_tmp350_ < _tmp351_) {
-								gchar* _tmp352_;
-								gchar _tmp353_;
-								_tmp352_ = self->priv->current;
-								_tmp353_ = _tmp352_[0];
-								switch (_tmp353_) {
+							_tmp313_ = self->priv->current;
+							self->priv->current = _tmp313_ + 1;
+							_tmp314_ = self->priv->current;
+							_tmp315_ = self->priv->end;
+							if (_tmp314_ < _tmp315_) {
+								gchar* _tmp316_ = NULL;
+								gchar _tmp317_ = '\0';
+								_tmp316_ = self->priv->current;
+								_tmp317_ = _tmp316_[0];
+								switch (_tmp317_) {
 									case '=':
 									{
-										gchar* _tmp354_;
+										gchar* _tmp318_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_OP_EQ;
-										_tmp354_ = self->priv->current;
-										self->priv->current = _tmp354_ + 1;
+										_tmp318_ = self->priv->current;
+										self->priv->current = _tmp318_ + 1;
 										break;
 									}
 									case '>':
 									{
-										gchar* _tmp355_;
+										gchar* _tmp319_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_LAMBDA;
-										_tmp355_ = self->priv->current;
-										self->priv->current = _tmp355_ + 1;
+										_tmp319_ = self->priv->current;
+										self->priv->current = _tmp319_ + 1;
 										break;
 									}
 									default:
@@ -4309,55 +4207,53 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 						}
 						case '<':
 						{
-							gchar* _tmp356_;
-							gchar* _tmp357_;
-							gchar* _tmp358_;
+							gchar* _tmp320_ = NULL;
+							gchar* _tmp321_ = NULL;
+							gchar* _tmp322_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_OP_LT;
-							_tmp356_ = self->priv->current;
-							self->priv->current = _tmp356_ + 1;
-							_tmp357_ = self->priv->current;
-							_tmp358_ = self->priv->end;
-							if (_tmp357_ < _tmp358_) {
-								gchar* _tmp359_;
-								gchar _tmp360_;
-								_tmp359_ = self->priv->current;
-								_tmp360_ = _tmp359_[0];
-								switch (_tmp360_) {
+							_tmp320_ = self->priv->current;
+							self->priv->current = _tmp320_ + 1;
+							_tmp321_ = self->priv->current;
+							_tmp322_ = self->priv->end;
+							if (_tmp321_ < _tmp322_) {
+								gchar* _tmp323_ = NULL;
+								gchar _tmp324_ = '\0';
+								_tmp323_ = self->priv->current;
+								_tmp324_ = _tmp323_[0];
+								switch (_tmp324_) {
 									case '=':
 									{
-										gchar* _tmp361_;
+										gchar* _tmp325_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_OP_LE;
-										_tmp361_ = self->priv->current;
-										self->priv->current = _tmp361_ + 1;
+										_tmp325_ = self->priv->current;
+										self->priv->current = _tmp325_ + 1;
 										break;
 									}
 									case '<':
 									{
-										gchar* _tmp362_;
-										gboolean _tmp363_ = FALSE;
-										gchar* _tmp364_;
-										gchar* _tmp365_;
-										gboolean _tmp368_;
+										gchar* _tmp326_ = NULL;
+										gboolean _tmp327_ = FALSE;
+										gchar* _tmp328_ = NULL;
+										gchar* _tmp329_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_OP_SHIFT_LEFT;
-										_tmp362_ = self->priv->current;
-										self->priv->current = _tmp362_ + 1;
-										_tmp364_ = self->priv->current;
-										_tmp365_ = self->priv->end;
-										if (_tmp364_ < _tmp365_) {
-											gchar* _tmp366_;
-											gchar _tmp367_;
-											_tmp366_ = self->priv->current;
-											_tmp367_ = _tmp366_[0];
-											_tmp363_ = _tmp367_ == '=';
+										_tmp326_ = self->priv->current;
+										self->priv->current = _tmp326_ + 1;
+										_tmp328_ = self->priv->current;
+										_tmp329_ = self->priv->end;
+										if (_tmp328_ < _tmp329_) {
+											gchar* _tmp330_ = NULL;
+											gchar _tmp331_ = '\0';
+											_tmp330_ = self->priv->current;
+											_tmp331_ = _tmp330_[0];
+											_tmp327_ = _tmp331_ == '=';
 										} else {
-											_tmp363_ = FALSE;
+											_tmp327_ = FALSE;
 										}
-										_tmp368_ = _tmp363_;
-										if (_tmp368_) {
-											gchar* _tmp369_;
+										if (_tmp327_) {
+											gchar* _tmp332_ = NULL;
 											type = VALA_GENIE_TOKEN_TYPE_ASSIGN_SHIFT_LEFT;
-											_tmp369_ = self->priv->current;
-											self->priv->current = _tmp369_ + 1;
+											_tmp332_ = self->priv->current;
+											self->priv->current = _tmp332_ + 1;
 										}
 										break;
 									}
@@ -4369,94 +4265,90 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 						}
 						case '>':
 						{
-							gchar* _tmp370_;
-							gboolean _tmp371_ = FALSE;
-							gchar* _tmp372_;
-							gchar* _tmp373_;
-							gboolean _tmp376_;
+							gchar* _tmp333_ = NULL;
+							gboolean _tmp334_ = FALSE;
+							gchar* _tmp335_ = NULL;
+							gchar* _tmp336_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_OP_GT;
-							_tmp370_ = self->priv->current;
-							self->priv->current = _tmp370_ + 1;
-							_tmp372_ = self->priv->current;
-							_tmp373_ = self->priv->end;
-							if (_tmp372_ < _tmp373_) {
-								gchar* _tmp374_;
-								gchar _tmp375_;
-								_tmp374_ = self->priv->current;
-								_tmp375_ = _tmp374_[0];
-								_tmp371_ = _tmp375_ == '=';
+							_tmp333_ = self->priv->current;
+							self->priv->current = _tmp333_ + 1;
+							_tmp335_ = self->priv->current;
+							_tmp336_ = self->priv->end;
+							if (_tmp335_ < _tmp336_) {
+								gchar* _tmp337_ = NULL;
+								gchar _tmp338_ = '\0';
+								_tmp337_ = self->priv->current;
+								_tmp338_ = _tmp337_[0];
+								_tmp334_ = _tmp338_ == '=';
 							} else {
-								_tmp371_ = FALSE;
+								_tmp334_ = FALSE;
 							}
-							_tmp376_ = _tmp371_;
-							if (_tmp376_) {
-								gchar* _tmp377_;
+							if (_tmp334_) {
+								gchar* _tmp339_ = NULL;
 								type = VALA_GENIE_TOKEN_TYPE_OP_GE;
-								_tmp377_ = self->priv->current;
-								self->priv->current = _tmp377_ + 1;
+								_tmp339_ = self->priv->current;
+								self->priv->current = _tmp339_ + 1;
 							}
 							break;
 						}
 						case '!':
 						{
-							gchar* _tmp378_;
-							gboolean _tmp379_ = FALSE;
-							gchar* _tmp380_;
-							gchar* _tmp381_;
-							gboolean _tmp384_;
+							gchar* _tmp340_ = NULL;
+							gboolean _tmp341_ = FALSE;
+							gchar* _tmp342_ = NULL;
+							gchar* _tmp343_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_OP_NEG;
-							_tmp378_ = self->priv->current;
-							self->priv->current = _tmp378_ + 1;
-							_tmp380_ = self->priv->current;
-							_tmp381_ = self->priv->end;
-							if (_tmp380_ < _tmp381_) {
-								gchar* _tmp382_;
-								gchar _tmp383_;
-								_tmp382_ = self->priv->current;
-								_tmp383_ = _tmp382_[0];
-								_tmp379_ = _tmp383_ == '=';
+							_tmp340_ = self->priv->current;
+							self->priv->current = _tmp340_ + 1;
+							_tmp342_ = self->priv->current;
+							_tmp343_ = self->priv->end;
+							if (_tmp342_ < _tmp343_) {
+								gchar* _tmp344_ = NULL;
+								gchar _tmp345_ = '\0';
+								_tmp344_ = self->priv->current;
+								_tmp345_ = _tmp344_[0];
+								_tmp341_ = _tmp345_ == '=';
 							} else {
-								_tmp379_ = FALSE;
+								_tmp341_ = FALSE;
 							}
-							_tmp384_ = _tmp379_;
-							if (_tmp384_) {
-								gchar* _tmp385_;
+							if (_tmp341_) {
+								gchar* _tmp346_ = NULL;
 								type = VALA_GENIE_TOKEN_TYPE_OP_NE;
-								_tmp385_ = self->priv->current;
-								self->priv->current = _tmp385_ + 1;
+								_tmp346_ = self->priv->current;
+								self->priv->current = _tmp346_ + 1;
 							}
 							break;
 						}
 						case '+':
 						{
-							gchar* _tmp386_;
-							gchar* _tmp387_;
-							gchar* _tmp388_;
+							gchar* _tmp347_ = NULL;
+							gchar* _tmp348_ = NULL;
+							gchar* _tmp349_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_PLUS;
-							_tmp386_ = self->priv->current;
-							self->priv->current = _tmp386_ + 1;
-							_tmp387_ = self->priv->current;
-							_tmp388_ = self->priv->end;
-							if (_tmp387_ < _tmp388_) {
-								gchar* _tmp389_;
-								gchar _tmp390_;
-								_tmp389_ = self->priv->current;
-								_tmp390_ = _tmp389_[0];
-								switch (_tmp390_) {
+							_tmp347_ = self->priv->current;
+							self->priv->current = _tmp347_ + 1;
+							_tmp348_ = self->priv->current;
+							_tmp349_ = self->priv->end;
+							if (_tmp348_ < _tmp349_) {
+								gchar* _tmp350_ = NULL;
+								gchar _tmp351_ = '\0';
+								_tmp350_ = self->priv->current;
+								_tmp351_ = _tmp350_[0];
+								switch (_tmp351_) {
 									case '=':
 									{
-										gchar* _tmp391_;
+										gchar* _tmp352_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_ASSIGN_ADD;
-										_tmp391_ = self->priv->current;
-										self->priv->current = _tmp391_ + 1;
+										_tmp352_ = self->priv->current;
+										self->priv->current = _tmp352_ + 1;
 										break;
 									}
 									case '+':
 									{
-										gchar* _tmp392_;
+										gchar* _tmp353_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_OP_INC;
-										_tmp392_ = self->priv->current;
-										self->priv->current = _tmp392_ + 1;
+										_tmp353_ = self->priv->current;
+										self->priv->current = _tmp353_ + 1;
 										break;
 									}
 									default:
@@ -4467,42 +4359,42 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 						}
 						case '-':
 						{
-							gchar* _tmp393_;
-							gchar* _tmp394_;
-							gchar* _tmp395_;
+							gchar* _tmp354_ = NULL;
+							gchar* _tmp355_ = NULL;
+							gchar* _tmp356_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_MINUS;
-							_tmp393_ = self->priv->current;
-							self->priv->current = _tmp393_ + 1;
-							_tmp394_ = self->priv->current;
-							_tmp395_ = self->priv->end;
-							if (_tmp394_ < _tmp395_) {
-								gchar* _tmp396_;
-								gchar _tmp397_;
-								_tmp396_ = self->priv->current;
-								_tmp397_ = _tmp396_[0];
-								switch (_tmp397_) {
+							_tmp354_ = self->priv->current;
+							self->priv->current = _tmp354_ + 1;
+							_tmp355_ = self->priv->current;
+							_tmp356_ = self->priv->end;
+							if (_tmp355_ < _tmp356_) {
+								gchar* _tmp357_ = NULL;
+								gchar _tmp358_ = '\0';
+								_tmp357_ = self->priv->current;
+								_tmp358_ = _tmp357_[0];
+								switch (_tmp358_) {
 									case '=':
 									{
-										gchar* _tmp398_;
+										gchar* _tmp359_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_ASSIGN_SUB;
-										_tmp398_ = self->priv->current;
-										self->priv->current = _tmp398_ + 1;
+										_tmp359_ = self->priv->current;
+										self->priv->current = _tmp359_ + 1;
 										break;
 									}
 									case '-':
 									{
-										gchar* _tmp399_;
+										gchar* _tmp360_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_OP_DEC;
-										_tmp399_ = self->priv->current;
-										self->priv->current = _tmp399_ + 1;
+										_tmp360_ = self->priv->current;
+										self->priv->current = _tmp360_ + 1;
 										break;
 									}
 									case '>':
 									{
-										gchar* _tmp400_;
+										gchar* _tmp361_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_OP_PTR;
-										_tmp400_ = self->priv->current;
-										self->priv->current = _tmp400_ + 1;
+										_tmp361_ = self->priv->current;
+										self->priv->current = _tmp361_ + 1;
 										break;
 									}
 									default:
@@ -4513,39 +4405,37 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 						}
 						case '*':
 						{
-							gchar* _tmp401_;
-							gboolean _tmp402_ = FALSE;
-							gchar* _tmp403_;
-							gchar* _tmp404_;
-							gboolean _tmp407_;
+							gchar* _tmp362_ = NULL;
+							gboolean _tmp363_ = FALSE;
+							gchar* _tmp364_ = NULL;
+							gchar* _tmp365_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_STAR;
-							_tmp401_ = self->priv->current;
-							self->priv->current = _tmp401_ + 1;
-							_tmp403_ = self->priv->current;
-							_tmp404_ = self->priv->end;
-							if (_tmp403_ < _tmp404_) {
-								gchar* _tmp405_;
-								gchar _tmp406_;
-								_tmp405_ = self->priv->current;
-								_tmp406_ = _tmp405_[0];
-								_tmp402_ = _tmp406_ == '=';
+							_tmp362_ = self->priv->current;
+							self->priv->current = _tmp362_ + 1;
+							_tmp364_ = self->priv->current;
+							_tmp365_ = self->priv->end;
+							if (_tmp364_ < _tmp365_) {
+								gchar* _tmp366_ = NULL;
+								gchar _tmp367_ = '\0';
+								_tmp366_ = self->priv->current;
+								_tmp367_ = _tmp366_[0];
+								_tmp363_ = _tmp367_ == '=';
 							} else {
-								_tmp402_ = FALSE;
+								_tmp363_ = FALSE;
 							}
-							_tmp407_ = _tmp402_;
-							if (_tmp407_) {
-								gchar* _tmp408_;
+							if (_tmp363_) {
+								gchar* _tmp368_ = NULL;
 								type = VALA_GENIE_TOKEN_TYPE_ASSIGN_MUL;
-								_tmp408_ = self->priv->current;
-								self->priv->current = _tmp408_ + 1;
+								_tmp368_ = self->priv->current;
+								self->priv->current = _tmp368_ + 1;
 							}
 							break;
 						}
 						case '/':
 						{
-							ValaGenieTokenType _tmp409_;
-							_tmp409_ = self->priv->last_token;
-							switch (_tmp409_) {
+							ValaGenieTokenType _tmp369_ = 0;
+							_tmp369_ = self->priv->last_token;
+							switch (_tmp369_) {
 								case VALA_GENIE_TOKEN_TYPE_ASSIGN:
 								case VALA_GENIE_TOKEN_TYPE_COMMA:
 								case VALA_GENIE_TOKEN_TYPE_MINUS:
@@ -4564,44 +4454,42 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 								case VALA_GENIE_TOKEN_TYPE_PLUS:
 								case VALA_GENIE_TOKEN_TYPE_RETURN:
 								{
-									ValaGenieScannerState* _tmp410_;
-									gint _tmp410__length1;
-									gchar* _tmp411_;
+									ValaGenieScannerState* _tmp370_ = NULL;
+									gint _tmp370__length1 = 0;
+									gchar* _tmp371_ = NULL;
 									type = VALA_GENIE_TOKEN_TYPE_OPEN_REGEX_LITERAL;
-									_tmp410_ = self->priv->state_stack;
-									_tmp410__length1 = self->priv->state_stack_length1;
+									_tmp370_ = self->priv->state_stack;
+									_tmp370__length1 = self->priv->state_stack_length1;
 									_vala_array_add10 (&self->priv->state_stack, &self->priv->state_stack_length1, &self->priv->_state_stack_size_, VALA_GENIE_SCANNER_STATE_REGEX_LITERAL);
-									_tmp411_ = self->priv->current;
-									self->priv->current = _tmp411_ + 1;
+									_tmp371_ = self->priv->current;
+									self->priv->current = _tmp371_ + 1;
 									break;
 								}
 								default:
 								{
-									gchar* _tmp412_;
-									gboolean _tmp413_ = FALSE;
-									gchar* _tmp414_;
-									gchar* _tmp415_;
-									gboolean _tmp418_;
+									gchar* _tmp372_ = NULL;
+									gboolean _tmp373_ = FALSE;
+									gchar* _tmp374_ = NULL;
+									gchar* _tmp375_ = NULL;
 									type = VALA_GENIE_TOKEN_TYPE_DIV;
-									_tmp412_ = self->priv->current;
-									self->priv->current = _tmp412_ + 1;
-									_tmp414_ = self->priv->current;
-									_tmp415_ = self->priv->end;
-									if (_tmp414_ < _tmp415_) {
-										gchar* _tmp416_;
-										gchar _tmp417_;
-										_tmp416_ = self->priv->current;
-										_tmp417_ = _tmp416_[0];
-										_tmp413_ = _tmp417_ == '=';
+									_tmp372_ = self->priv->current;
+									self->priv->current = _tmp372_ + 1;
+									_tmp374_ = self->priv->current;
+									_tmp375_ = self->priv->end;
+									if (_tmp374_ < _tmp375_) {
+										gchar* _tmp376_ = NULL;
+										gchar _tmp377_ = '\0';
+										_tmp376_ = self->priv->current;
+										_tmp377_ = _tmp376_[0];
+										_tmp373_ = _tmp377_ == '=';
 									} else {
-										_tmp413_ = FALSE;
+										_tmp373_ = FALSE;
 									}
-									_tmp418_ = _tmp413_;
-									if (_tmp418_) {
-										gchar* _tmp419_;
+									if (_tmp373_) {
+										gchar* _tmp378_ = NULL;
 										type = VALA_GENIE_TOKEN_TYPE_ASSIGN_DIV;
-										_tmp419_ = self->priv->current;
-										self->priv->current = _tmp419_ + 1;
+										_tmp378_ = self->priv->current;
+										self->priv->current = _tmp378_ + 1;
 									}
 									break;
 								}
@@ -4610,223 +4498,207 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 						}
 						case '%':
 						{
-							gchar* _tmp420_;
-							gboolean _tmp421_ = FALSE;
-							gchar* _tmp422_;
-							gchar* _tmp423_;
-							gboolean _tmp426_;
+							gchar* _tmp379_ = NULL;
+							gboolean _tmp380_ = FALSE;
+							gchar* _tmp381_ = NULL;
+							gchar* _tmp382_ = NULL;
 							type = VALA_GENIE_TOKEN_TYPE_PERCENT;
-							_tmp420_ = self->priv->current;
-							self->priv->current = _tmp420_ + 1;
-							_tmp422_ = self->priv->current;
-							_tmp423_ = self->priv->end;
-							if (_tmp422_ < _tmp423_) {
-								gchar* _tmp424_;
-								gchar _tmp425_;
-								_tmp424_ = self->priv->current;
-								_tmp425_ = _tmp424_[0];
-								_tmp421_ = _tmp425_ == '=';
+							_tmp379_ = self->priv->current;
+							self->priv->current = _tmp379_ + 1;
+							_tmp381_ = self->priv->current;
+							_tmp382_ = self->priv->end;
+							if (_tmp381_ < _tmp382_) {
+								gchar* _tmp383_ = NULL;
+								gchar _tmp384_ = '\0';
+								_tmp383_ = self->priv->current;
+								_tmp384_ = _tmp383_[0];
+								_tmp380_ = _tmp384_ == '=';
 							} else {
-								_tmp421_ = FALSE;
+								_tmp380_ = FALSE;
 							}
-							_tmp426_ = _tmp421_;
-							if (_tmp426_) {
-								gchar* _tmp427_;
+							if (_tmp380_) {
+								gchar* _tmp385_ = NULL;
 								type = VALA_GENIE_TOKEN_TYPE_ASSIGN_PERCENT;
-								_tmp427_ = self->priv->current;
-								self->priv->current = _tmp427_ + 1;
+								_tmp385_ = self->priv->current;
+								self->priv->current = _tmp385_ + 1;
 							}
 							break;
 						}
 						case '\'':
 						case '"':
 						{
-							gchar* _tmp428_;
-							gchar _tmp429_;
-							gchar* _tmp487_;
-							gchar* _tmp550_;
-							gchar* _tmp551_;
-							_tmp428_ = begin;
-							_tmp429_ = _tmp428_[0];
-							if (_tmp429_ == '\'') {
+							gchar* _tmp386_ = NULL;
+							gchar _tmp387_ = '\0';
+							gchar* _tmp438_ = NULL;
+							gchar* _tmp497_ = NULL;
+							gchar* _tmp498_ = NULL;
+							_tmp386_ = begin;
+							_tmp387_ = _tmp386_[0];
+							if (_tmp387_ == '\'') {
 								type = VALA_GENIE_TOKEN_TYPE_CHARACTER_LITERAL;
 							} else {
-								gboolean _tmp430_ = FALSE;
-								gboolean _tmp431_ = FALSE;
-								gchar* _tmp432_;
-								gchar* _tmp433_;
-								gboolean _tmp436_;
-								gboolean _tmp439_;
-								_tmp432_ = self->priv->current;
-								_tmp433_ = self->priv->end;
-								if (_tmp432_ < (_tmp433_ - 6)) {
-									gchar* _tmp434_;
-									gchar _tmp435_;
-									_tmp434_ = begin;
-									_tmp435_ = _tmp434_[1];
-									_tmp431_ = _tmp435_ == '"';
+								gboolean _tmp388_ = FALSE;
+								gboolean _tmp389_ = FALSE;
+								gchar* _tmp390_ = NULL;
+								gchar* _tmp391_ = NULL;
+								_tmp390_ = self->priv->current;
+								_tmp391_ = self->priv->end;
+								if (_tmp390_ < (_tmp391_ - 6)) {
+									gchar* _tmp392_ = NULL;
+									gchar _tmp393_ = '\0';
+									_tmp392_ = begin;
+									_tmp393_ = _tmp392_[1];
+									_tmp389_ = _tmp393_ == '"';
 								} else {
-									_tmp431_ = FALSE;
+									_tmp389_ = FALSE;
 								}
-								_tmp436_ = _tmp431_;
-								if (_tmp436_) {
-									gchar* _tmp437_;
-									gchar _tmp438_;
-									_tmp437_ = begin;
-									_tmp438_ = _tmp437_[2];
-									_tmp430_ = _tmp438_ == '"';
+								if (_tmp389_) {
+									gchar* _tmp394_ = NULL;
+									gchar _tmp395_ = '\0';
+									_tmp394_ = begin;
+									_tmp395_ = _tmp394_[2];
+									_tmp388_ = _tmp395_ == '"';
 								} else {
-									_tmp430_ = FALSE;
+									_tmp388_ = FALSE;
 								}
-								_tmp439_ = _tmp430_;
-								if (_tmp439_) {
-									gchar* _tmp440_;
-									gboolean _tmp473_ = FALSE;
-									gboolean _tmp474_ = FALSE;
-									gchar* _tmp475_;
-									gchar _tmp476_;
-									gboolean _tmp479_;
-									gboolean _tmp482_;
+								if (_tmp388_) {
+									gchar* _tmp396_ = NULL;
+									gboolean _tmp426_ = FALSE;
+									gboolean _tmp427_ = FALSE;
+									gchar* _tmp428_ = NULL;
+									gchar _tmp429_ = '\0';
 									type = VALA_GENIE_TOKEN_TYPE_VERBATIM_STRING_LITERAL;
 									token_length_in_chars = 6;
-									_tmp440_ = self->priv->current;
-									self->priv->current = _tmp440_ + 3;
+									_tmp396_ = self->priv->current;
+									self->priv->current = _tmp396_ + 3;
 									while (TRUE) {
-										gchar* _tmp441_;
-										gchar* _tmp442_;
-										gboolean _tmp443_ = FALSE;
-										gboolean _tmp444_ = FALSE;
-										gboolean _tmp445_ = FALSE;
-										gchar* _tmp446_;
-										gchar _tmp447_;
-										gboolean _tmp450_;
-										gboolean _tmp453_;
-										gboolean _tmp456_;
-										_tmp441_ = self->priv->current;
-										_tmp442_ = self->priv->end;
-										if (!(_tmp441_ < (_tmp442_ - 4))) {
+										gchar* _tmp397_ = NULL;
+										gchar* _tmp398_ = NULL;
+										gboolean _tmp399_ = FALSE;
+										gboolean _tmp400_ = FALSE;
+										gboolean _tmp401_ = FALSE;
+										gchar* _tmp402_ = NULL;
+										gchar _tmp403_ = '\0';
+										_tmp397_ = self->priv->current;
+										_tmp398_ = self->priv->end;
+										if (!(_tmp397_ < (_tmp398_ - 4))) {
 											break;
 										}
-										_tmp446_ = self->priv->current;
-										_tmp447_ = _tmp446_[0];
-										if (_tmp447_ == '"') {
-											gchar* _tmp448_;
-											gchar _tmp449_;
-											_tmp448_ = self->priv->current;
-											_tmp449_ = _tmp448_[1];
-											_tmp445_ = _tmp449_ == '"';
+										_tmp402_ = self->priv->current;
+										_tmp403_ = _tmp402_[0];
+										if (_tmp403_ == '"') {
+											gchar* _tmp404_ = NULL;
+											gchar _tmp405_ = '\0';
+											_tmp404_ = self->priv->current;
+											_tmp405_ = _tmp404_[1];
+											_tmp401_ = _tmp405_ == '"';
 										} else {
-											_tmp445_ = FALSE;
+											_tmp401_ = FALSE;
 										}
-										_tmp450_ = _tmp445_;
-										if (_tmp450_) {
-											gchar* _tmp451_;
-											gchar _tmp452_;
-											_tmp451_ = self->priv->current;
-											_tmp452_ = _tmp451_[2];
-											_tmp444_ = _tmp452_ == '"';
+										if (_tmp401_) {
+											gchar* _tmp406_ = NULL;
+											gchar _tmp407_ = '\0';
+											_tmp406_ = self->priv->current;
+											_tmp407_ = _tmp406_[2];
+											_tmp400_ = _tmp407_ == '"';
 										} else {
-											_tmp444_ = FALSE;
+											_tmp400_ = FALSE;
 										}
-										_tmp453_ = _tmp444_;
-										if (_tmp453_) {
-											gchar* _tmp454_;
-											gchar _tmp455_;
-											_tmp454_ = self->priv->current;
-											_tmp455_ = _tmp454_[3];
-											_tmp443_ = _tmp455_ != '"';
+										if (_tmp400_) {
+											gchar* _tmp408_ = NULL;
+											gchar _tmp409_ = '\0';
+											_tmp408_ = self->priv->current;
+											_tmp409_ = _tmp408_[3];
+											_tmp399_ = _tmp409_ != '"';
 										} else {
-											_tmp443_ = FALSE;
+											_tmp399_ = FALSE;
 										}
-										_tmp456_ = _tmp443_;
-										if (_tmp456_) {
+										if (_tmp399_) {
 											break;
 										} else {
-											gchar* _tmp457_;
-											gchar _tmp458_;
-											_tmp457_ = self->priv->current;
-											_tmp458_ = _tmp457_[0];
-											if (_tmp458_ == '\n') {
-												gchar* _tmp459_;
-												gint _tmp460_;
-												_tmp459_ = self->priv->current;
-												self->priv->current = _tmp459_ + 1;
-												_tmp460_ = self->priv->line;
-												self->priv->line = _tmp460_ + 1;
+											gchar* _tmp410_ = NULL;
+											gchar _tmp411_ = '\0';
+											_tmp410_ = self->priv->current;
+											_tmp411_ = _tmp410_[0];
+											if (_tmp411_ == '\n') {
+												gchar* _tmp412_ = NULL;
+												gint _tmp413_ = 0;
+												_tmp412_ = self->priv->current;
+												self->priv->current = _tmp412_ + 1;
+												_tmp413_ = self->priv->line;
+												self->priv->line = _tmp413_ + 1;
 												self->priv->column = 1;
 												token_length_in_chars = 3;
 											} else {
-												gchar* _tmp461_;
-												gchar* _tmp462_;
-												gchar* _tmp463_;
-												gunichar _tmp464_ = 0U;
-												gunichar u;
-												gunichar _tmp465_;
-												_tmp461_ = self->priv->current;
-												_tmp462_ = self->priv->end;
-												_tmp463_ = self->priv->current;
-												_tmp464_ = g_utf8_get_char_validated ((const gchar*) _tmp461_, (gssize) ((glong) (_tmp462_ - _tmp463_)));
-												u = _tmp464_;
-												_tmp465_ = u;
-												if (_tmp465_ != ((gunichar) (-1))) {
-													gchar* _tmp466_;
-													gunichar _tmp467_;
-													gint _tmp468_ = 0;
-													gint _tmp469_;
-													_tmp466_ = self->priv->current;
-													_tmp467_ = u;
-													_tmp468_ = g_unichar_to_utf8 (_tmp467_, NULL);
-													self->priv->current = _tmp466_ + _tmp468_;
-													_tmp469_ = token_length_in_chars;
-													token_length_in_chars = _tmp469_ + 1;
+												gunichar u = 0U;
+												gchar* _tmp414_ = NULL;
+												gchar* _tmp415_ = NULL;
+												gchar* _tmp416_ = NULL;
+												gunichar _tmp417_ = 0U;
+												gunichar _tmp418_ = 0U;
+												_tmp414_ = self->priv->current;
+												_tmp415_ = self->priv->end;
+												_tmp416_ = self->priv->current;
+												_tmp417_ = g_utf8_get_char_validated ((const gchar*) _tmp414_, (gssize) ((glong) (_tmp415_ - _tmp416_)));
+												u = _tmp417_;
+												_tmp418_ = u;
+												if (_tmp418_ != ((gunichar) (-1))) {
+													gchar* _tmp419_ = NULL;
+													gunichar _tmp420_ = 0U;
+													gint _tmp421_ = 0;
+													gint _tmp422_ = 0;
+													_tmp419_ = self->priv->current;
+													_tmp420_ = u;
+													_tmp421_ = g_unichar_to_utf8 (_tmp420_, NULL);
+													self->priv->current = _tmp419_ + _tmp421_;
+													_tmp422_ = token_length_in_chars;
+													token_length_in_chars = _tmp422_ + 1;
 												} else {
-													gint _tmp470_;
-													ValaSourceReference* _tmp471_ = NULL;
-													ValaSourceReference* _tmp472_;
-													_tmp470_ = token_length_in_chars;
-													_tmp471_ = vala_genie_scanner_get_source_reference (self, _tmp470_, 0);
-													_tmp472_ = _tmp471_;
-													vala_report_error (_tmp472_, "invalid UTF-8 character");
-													_vala_source_reference_unref0 (_tmp472_);
+													gint _tmp423_ = 0;
+													ValaSourceReference* _tmp424_ = NULL;
+													ValaSourceReference* _tmp425_ = NULL;
+													_tmp423_ = token_length_in_chars;
+													_tmp424_ = vala_genie_scanner_get_source_reference (self, _tmp423_, 0);
+													_tmp425_ = _tmp424_;
+													vala_report_error (_tmp425_, "invalid UTF-8 character");
+													_vala_source_reference_unref0 (_tmp425_);
 												}
 											}
 										}
 									}
-									_tmp475_ = self->priv->current;
-									_tmp476_ = _tmp475_[0];
-									if (_tmp476_ == '"') {
-										gchar* _tmp477_;
-										gchar _tmp478_;
-										_tmp477_ = self->priv->current;
-										_tmp478_ = _tmp477_[1];
-										_tmp474_ = _tmp478_ == '"';
+									_tmp428_ = self->priv->current;
+									_tmp429_ = _tmp428_[0];
+									if (_tmp429_ == '"') {
+										gchar* _tmp430_ = NULL;
+										gchar _tmp431_ = '\0';
+										_tmp430_ = self->priv->current;
+										_tmp431_ = _tmp430_[1];
+										_tmp427_ = _tmp431_ == '"';
 									} else {
-										_tmp474_ = FALSE;
+										_tmp427_ = FALSE;
 									}
-									_tmp479_ = _tmp474_;
-									if (_tmp479_) {
-										gchar* _tmp480_;
-										gchar _tmp481_;
-										_tmp480_ = self->priv->current;
-										_tmp481_ = _tmp480_[2];
-										_tmp473_ = _tmp481_ == '"';
+									if (_tmp427_) {
+										gchar* _tmp432_ = NULL;
+										gchar _tmp433_ = '\0';
+										_tmp432_ = self->priv->current;
+										_tmp433_ = _tmp432_[2];
+										_tmp426_ = _tmp433_ == '"';
 									} else {
-										_tmp473_ = FALSE;
+										_tmp426_ = FALSE;
 									}
-									_tmp482_ = _tmp473_;
-									if (_tmp482_) {
-										gchar* _tmp483_;
-										_tmp483_ = self->priv->current;
-										self->priv->current = _tmp483_ + 3;
+									if (_tmp426_) {
+										gchar* _tmp434_ = NULL;
+										_tmp434_ = self->priv->current;
+										self->priv->current = _tmp434_ + 3;
 									} else {
-										gint _tmp484_;
-										ValaSourceReference* _tmp485_ = NULL;
-										ValaSourceReference* _tmp486_;
-										_tmp484_ = token_length_in_chars;
-										_tmp485_ = vala_genie_scanner_get_source_reference (self, _tmp484_, 0);
-										_tmp486_ = _tmp485_;
-										vala_report_error (_tmp486_, "syntax error, expected \"\"\"");
-										_vala_source_reference_unref0 (_tmp486_);
+										gint _tmp435_ = 0;
+										ValaSourceReference* _tmp436_ = NULL;
+										ValaSourceReference* _tmp437_ = NULL;
+										_tmp435_ = token_length_in_chars;
+										_tmp436_ = vala_genie_scanner_get_source_reference (self, _tmp435_, 0);
+										_tmp437_ = _tmp436_;
+										vala_report_error (_tmp437_, "syntax error, expected \"\"\"");
+										_vala_source_reference_unref0 (_tmp437_);
 									}
 									break;
 								} else {
@@ -4834,61 +4706,57 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 								}
 							}
 							token_length_in_chars = 2;
-							_tmp487_ = self->priv->current;
-							self->priv->current = _tmp487_ + 1;
+							_tmp438_ = self->priv->current;
+							self->priv->current = _tmp438_ + 1;
 							while (TRUE) {
-								gboolean _tmp488_ = FALSE;
-								gchar* _tmp489_;
-								gchar* _tmp490_;
-								gboolean _tmp495_;
-								gchar* _tmp496_;
-								gchar _tmp497_;
-								gboolean _tmp537_ = FALSE;
-								gboolean _tmp538_ = FALSE;
-								gchar* _tmp539_;
-								gchar* _tmp540_;
-								gboolean _tmp543_;
-								gboolean _tmp546_;
-								_tmp489_ = self->priv->current;
-								_tmp490_ = self->priv->end;
-								if (_tmp489_ < _tmp490_) {
-									gchar* _tmp491_;
-									gchar _tmp492_;
-									gchar* _tmp493_;
-									gchar _tmp494_;
-									_tmp491_ = self->priv->current;
-									_tmp492_ = _tmp491_[0];
-									_tmp493_ = begin;
-									_tmp494_ = _tmp493_[0];
-									_tmp488_ = _tmp492_ != _tmp494_;
+								gboolean _tmp439_ = FALSE;
+								gchar* _tmp440_ = NULL;
+								gchar* _tmp441_ = NULL;
+								gchar* _tmp446_ = NULL;
+								gchar _tmp447_ = '\0';
+								gboolean _tmp486_ = FALSE;
+								gboolean _tmp487_ = FALSE;
+								gchar* _tmp488_ = NULL;
+								gchar* _tmp489_ = NULL;
+								_tmp440_ = self->priv->current;
+								_tmp441_ = self->priv->end;
+								if (_tmp440_ < _tmp441_) {
+									gchar* _tmp442_ = NULL;
+									gchar _tmp443_ = '\0';
+									gchar* _tmp444_ = NULL;
+									gchar _tmp445_ = '\0';
+									_tmp442_ = self->priv->current;
+									_tmp443_ = _tmp442_[0];
+									_tmp444_ = begin;
+									_tmp445_ = _tmp444_[0];
+									_tmp439_ = _tmp443_ != _tmp445_;
 								} else {
-									_tmp488_ = FALSE;
+									_tmp439_ = FALSE;
 								}
-								_tmp495_ = _tmp488_;
-								if (!_tmp495_) {
+								if (!_tmp439_) {
 									break;
 								}
-								_tmp496_ = self->priv->current;
-								_tmp497_ = _tmp496_[0];
-								if (_tmp497_ == '\\') {
-									gchar* _tmp498_;
-									gint _tmp499_;
-									gchar* _tmp500_;
-									gchar* _tmp501_;
-									gchar* _tmp502_;
-									gchar _tmp503_;
-									_tmp498_ = self->priv->current;
-									self->priv->current = _tmp498_ + 1;
-									_tmp499_ = token_length_in_chars;
-									token_length_in_chars = _tmp499_ + 1;
-									_tmp500_ = self->priv->current;
-									_tmp501_ = self->priv->end;
-									if (_tmp500_ >= _tmp501_) {
+								_tmp446_ = self->priv->current;
+								_tmp447_ = _tmp446_[0];
+								if (_tmp447_ == '\\') {
+									gchar* _tmp448_ = NULL;
+									gint _tmp449_ = 0;
+									gchar* _tmp450_ = NULL;
+									gchar* _tmp451_ = NULL;
+									gchar* _tmp452_ = NULL;
+									gchar _tmp453_ = '\0';
+									_tmp448_ = self->priv->current;
+									self->priv->current = _tmp448_ + 1;
+									_tmp449_ = token_length_in_chars;
+									token_length_in_chars = _tmp449_ + 1;
+									_tmp450_ = self->priv->current;
+									_tmp451_ = self->priv->end;
+									if (_tmp450_ >= _tmp451_) {
 										break;
 									}
-									_tmp502_ = self->priv->current;
-									_tmp503_ = _tmp502_[0];
-									switch (_tmp503_) {
+									_tmp452_ = self->priv->current;
+									_tmp453_ = _tmp452_[0];
+									switch (_tmp453_) {
 										case '\'':
 										case '"':
 										case '\\':
@@ -4899,228 +4767,224 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 										case 'r':
 										case 't':
 										{
-											gchar* _tmp504_;
-											gint _tmp505_;
-											_tmp504_ = self->priv->current;
-											self->priv->current = _tmp504_ + 1;
-											_tmp505_ = token_length_in_chars;
-											token_length_in_chars = _tmp505_ + 1;
+											gchar* _tmp454_ = NULL;
+											gint _tmp455_ = 0;
+											_tmp454_ = self->priv->current;
+											self->priv->current = _tmp454_ + 1;
+											_tmp455_ = token_length_in_chars;
+											token_length_in_chars = _tmp455_ + 1;
 											break;
 										}
 										case 'x':
 										{
-											gchar* _tmp506_;
-											gint _tmp507_;
-											_tmp506_ = self->priv->current;
-											self->priv->current = _tmp506_ + 1;
-											_tmp507_ = token_length_in_chars;
-											token_length_in_chars = _tmp507_ + 1;
+											gchar* _tmp456_ = NULL;
+											gint _tmp457_ = 0;
+											_tmp456_ = self->priv->current;
+											self->priv->current = _tmp456_ + 1;
+											_tmp457_ = token_length_in_chars;
+											token_length_in_chars = _tmp457_ + 1;
 											while (TRUE) {
-												gboolean _tmp508_ = FALSE;
-												gchar* _tmp509_;
-												gchar* _tmp510_;
-												gboolean _tmp514_;
-												gchar* _tmp515_;
-												gint _tmp516_;
-												_tmp509_ = self->priv->current;
-												_tmp510_ = self->priv->end;
-												if (_tmp509_ < _tmp510_) {
-													gchar* _tmp511_;
-													gchar _tmp512_;
-													gboolean _tmp513_ = FALSE;
-													_tmp511_ = self->priv->current;
-													_tmp512_ = _tmp511_[0];
-													_tmp513_ = g_ascii_isxdigit (_tmp512_);
-													_tmp508_ = _tmp513_;
+												gboolean _tmp458_ = FALSE;
+												gchar* _tmp459_ = NULL;
+												gchar* _tmp460_ = NULL;
+												gchar* _tmp464_ = NULL;
+												gint _tmp465_ = 0;
+												_tmp459_ = self->priv->current;
+												_tmp460_ = self->priv->end;
+												if (_tmp459_ < _tmp460_) {
+													gchar* _tmp461_ = NULL;
+													gchar _tmp462_ = '\0';
+													gboolean _tmp463_ = FALSE;
+													_tmp461_ = self->priv->current;
+													_tmp462_ = _tmp461_[0];
+													_tmp463_ = g_ascii_isxdigit (_tmp462_);
+													_tmp458_ = _tmp463_;
 												} else {
-													_tmp508_ = FALSE;
+													_tmp458_ = FALSE;
 												}
-												_tmp514_ = _tmp508_;
-												if (!_tmp514_) {
+												if (!_tmp458_) {
 													break;
 												}
-												_tmp515_ = self->priv->current;
-												self->priv->current = _tmp515_ + 1;
-												_tmp516_ = token_length_in_chars;
-												token_length_in_chars = _tmp516_ + 1;
+												_tmp464_ = self->priv->current;
+												self->priv->current = _tmp464_ + 1;
+												_tmp465_ = token_length_in_chars;
+												token_length_in_chars = _tmp465_ + 1;
 											}
 											break;
 										}
 										default:
 										{
-											gint _tmp517_;
-											ValaSourceReference* _tmp518_ = NULL;
-											ValaSourceReference* _tmp519_;
-											_tmp517_ = token_length_in_chars;
-											_tmp518_ = vala_genie_scanner_get_source_reference (self, _tmp517_, 0);
-											_tmp519_ = _tmp518_;
-											vala_report_error (_tmp519_, "invalid escape sequence");
-											_vala_source_reference_unref0 (_tmp519_);
+											gint _tmp466_ = 0;
+											ValaSourceReference* _tmp467_ = NULL;
+											ValaSourceReference* _tmp468_ = NULL;
+											_tmp466_ = token_length_in_chars;
+											_tmp467_ = vala_genie_scanner_get_source_reference (self, _tmp466_, 0);
+											_tmp468_ = _tmp467_;
+											vala_report_error (_tmp468_, "invalid escape sequence");
+											_vala_source_reference_unref0 (_tmp468_);
 											break;
 										}
 									}
 								} else {
-									gchar* _tmp520_;
-									gchar _tmp521_;
-									_tmp520_ = self->priv->current;
-									_tmp521_ = _tmp520_[0];
-									if (_tmp521_ == '\n') {
-										gchar* _tmp522_;
-										gint _tmp523_;
-										_tmp522_ = self->priv->current;
-										self->priv->current = _tmp522_ + 1;
-										_tmp523_ = self->priv->line;
-										self->priv->line = _tmp523_ + 1;
+									gchar* _tmp469_ = NULL;
+									gchar _tmp470_ = '\0';
+									_tmp469_ = self->priv->current;
+									_tmp470_ = _tmp469_[0];
+									if (_tmp470_ == '\n') {
+										gchar* _tmp471_ = NULL;
+										gint _tmp472_ = 0;
+										_tmp471_ = self->priv->current;
+										self->priv->current = _tmp471_ + 1;
+										_tmp472_ = self->priv->line;
+										self->priv->line = _tmp472_ + 1;
 										self->priv->column = 1;
 										token_length_in_chars = 1;
 									} else {
-										gchar* _tmp524_;
-										gchar* _tmp525_;
-										gchar* _tmp526_;
-										gunichar _tmp527_ = 0U;
-										gunichar u;
-										gunichar _tmp528_;
-										_tmp524_ = self->priv->current;
-										_tmp525_ = self->priv->end;
-										_tmp526_ = self->priv->current;
-										_tmp527_ = g_utf8_get_char_validated ((const gchar*) _tmp524_, (gssize) ((glong) (_tmp525_ - _tmp526_)));
-										u = _tmp527_;
-										_tmp528_ = u;
-										if (_tmp528_ != ((gunichar) (-1))) {
-											gchar* _tmp529_;
-											gunichar _tmp530_;
-											gint _tmp531_ = 0;
-											gint _tmp532_;
-											_tmp529_ = self->priv->current;
-											_tmp530_ = u;
-											_tmp531_ = g_unichar_to_utf8 (_tmp530_, NULL);
-											self->priv->current = _tmp529_ + _tmp531_;
-											_tmp532_ = token_length_in_chars;
-											token_length_in_chars = _tmp532_ + 1;
+										gunichar u = 0U;
+										gchar* _tmp473_ = NULL;
+										gchar* _tmp474_ = NULL;
+										gchar* _tmp475_ = NULL;
+										gunichar _tmp476_ = 0U;
+										gunichar _tmp477_ = 0U;
+										_tmp473_ = self->priv->current;
+										_tmp474_ = self->priv->end;
+										_tmp475_ = self->priv->current;
+										_tmp476_ = g_utf8_get_char_validated ((const gchar*) _tmp473_, (gssize) ((glong) (_tmp474_ - _tmp475_)));
+										u = _tmp476_;
+										_tmp477_ = u;
+										if (_tmp477_ != ((gunichar) (-1))) {
+											gchar* _tmp478_ = NULL;
+											gunichar _tmp479_ = 0U;
+											gint _tmp480_ = 0;
+											gint _tmp481_ = 0;
+											_tmp478_ = self->priv->current;
+											_tmp479_ = u;
+											_tmp480_ = g_unichar_to_utf8 (_tmp479_, NULL);
+											self->priv->current = _tmp478_ + _tmp480_;
+											_tmp481_ = token_length_in_chars;
+											token_length_in_chars = _tmp481_ + 1;
 										} else {
-											gchar* _tmp533_;
-											gint _tmp534_;
-											ValaSourceReference* _tmp535_ = NULL;
-											ValaSourceReference* _tmp536_;
-											_tmp533_ = self->priv->current;
-											self->priv->current = _tmp533_ + 1;
-											_tmp534_ = token_length_in_chars;
-											_tmp535_ = vala_genie_scanner_get_source_reference (self, _tmp534_, 0);
-											_tmp536_ = _tmp535_;
-											vala_report_error (_tmp536_, "invalid UTF-8 character");
-											_vala_source_reference_unref0 (_tmp536_);
+											gchar* _tmp482_ = NULL;
+											gint _tmp483_ = 0;
+											ValaSourceReference* _tmp484_ = NULL;
+											ValaSourceReference* _tmp485_ = NULL;
+											_tmp482_ = self->priv->current;
+											self->priv->current = _tmp482_ + 1;
+											_tmp483_ = token_length_in_chars;
+											_tmp484_ = vala_genie_scanner_get_source_reference (self, _tmp483_, 0);
+											_tmp485_ = _tmp484_;
+											vala_report_error (_tmp485_, "invalid UTF-8 character");
+											_vala_source_reference_unref0 (_tmp485_);
 										}
 									}
 								}
-								_tmp539_ = self->priv->current;
-								_tmp540_ = self->priv->end;
-								if (_tmp539_ < _tmp540_) {
-									gchar* _tmp541_;
-									gchar _tmp542_;
-									_tmp541_ = begin;
-									_tmp542_ = _tmp541_[0];
-									_tmp538_ = _tmp542_ == '\'';
+								_tmp488_ = self->priv->current;
+								_tmp489_ = self->priv->end;
+								if (_tmp488_ < _tmp489_) {
+									gchar* _tmp490_ = NULL;
+									gchar _tmp491_ = '\0';
+									_tmp490_ = begin;
+									_tmp491_ = _tmp490_[0];
+									_tmp487_ = _tmp491_ == '\'';
 								} else {
-									_tmp538_ = FALSE;
+									_tmp487_ = FALSE;
 								}
-								_tmp543_ = _tmp538_;
-								if (_tmp543_) {
-									gchar* _tmp544_;
-									gchar _tmp545_;
-									_tmp544_ = self->priv->current;
-									_tmp545_ = _tmp544_[0];
-									_tmp537_ = _tmp545_ != '\'';
+								if (_tmp487_) {
+									gchar* _tmp492_ = NULL;
+									gchar _tmp493_ = '\0';
+									_tmp492_ = self->priv->current;
+									_tmp493_ = _tmp492_[0];
+									_tmp486_ = _tmp493_ != '\'';
 								} else {
-									_tmp537_ = FALSE;
+									_tmp486_ = FALSE;
 								}
-								_tmp546_ = _tmp537_;
-								if (_tmp546_) {
-									gint _tmp547_;
-									ValaSourceReference* _tmp548_ = NULL;
-									ValaSourceReference* _tmp549_;
-									_tmp547_ = token_length_in_chars;
-									_tmp548_ = vala_genie_scanner_get_source_reference (self, _tmp547_, 0);
-									_tmp549_ = _tmp548_;
-									vala_report_error (_tmp549_, "invalid character literal");
-									_vala_source_reference_unref0 (_tmp549_);
+								if (_tmp486_) {
+									gint _tmp494_ = 0;
+									ValaSourceReference* _tmp495_ = NULL;
+									ValaSourceReference* _tmp496_ = NULL;
+									_tmp494_ = token_length_in_chars;
+									_tmp495_ = vala_genie_scanner_get_source_reference (self, _tmp494_, 0);
+									_tmp496_ = _tmp495_;
+									vala_report_error (_tmp496_, "invalid character literal");
+									_vala_source_reference_unref0 (_tmp496_);
 								}
 							}
-							_tmp550_ = self->priv->current;
-							_tmp551_ = self->priv->end;
-							if (_tmp550_ < _tmp551_) {
-								gchar* _tmp552_;
-								_tmp552_ = self->priv->current;
-								self->priv->current = _tmp552_ + 1;
+							_tmp497_ = self->priv->current;
+							_tmp498_ = self->priv->end;
+							if (_tmp497_ < _tmp498_) {
+								gchar* _tmp499_ = NULL;
+								_tmp499_ = self->priv->current;
+								self->priv->current = _tmp499_ + 1;
 							} else {
-								gint _tmp553_;
-								ValaSourceReference* _tmp554_ = NULL;
-								ValaSourceReference* _tmp555_;
-								gchar* _tmp556_;
-								gchar _tmp557_;
-								gchar* _tmp558_ = NULL;
-								gchar* _tmp559_;
-								_tmp553_ = token_length_in_chars;
-								_tmp554_ = vala_genie_scanner_get_source_reference (self, _tmp553_, 0);
-								_tmp555_ = _tmp554_;
-								_tmp556_ = begin;
-								_tmp557_ = _tmp556_[0];
-								_tmp558_ = g_strdup_printf ("syntax error, expected %c", (gint) _tmp557_);
-								_tmp559_ = _tmp558_;
-								vala_report_error (_tmp555_, _tmp559_);
-								_g_free0 (_tmp559_);
-								_vala_source_reference_unref0 (_tmp555_);
+								gint _tmp500_ = 0;
+								ValaSourceReference* _tmp501_ = NULL;
+								ValaSourceReference* _tmp502_ = NULL;
+								gchar* _tmp503_ = NULL;
+								gchar _tmp504_ = '\0';
+								gchar* _tmp505_ = NULL;
+								gchar* _tmp506_ = NULL;
+								_tmp500_ = token_length_in_chars;
+								_tmp501_ = vala_genie_scanner_get_source_reference (self, _tmp500_, 0);
+								_tmp502_ = _tmp501_;
+								_tmp503_ = begin;
+								_tmp504_ = _tmp503_[0];
+								_tmp505_ = g_strdup_printf ("syntax error, expected %c", (gint) _tmp504_);
+								_tmp506_ = _tmp505_;
+								vala_report_error (_tmp502_, _tmp506_);
+								_g_free0 (_tmp506_);
+								_vala_source_reference_unref0 (_tmp502_);
 							}
 							break;
 						}
 						default:
 						{
-							gchar* _tmp560_;
-							gchar* _tmp561_;
-							gchar* _tmp562_;
-							gunichar _tmp563_ = 0U;
-							gunichar u;
-							gunichar _tmp564_;
-							gint _tmp573_;
-							ValaSourceLocation _tmp574_ = {0};
-							ValaSourceLocation _tmp575_ = {0};
-							ValaGenieTokenType _tmp576_ = 0;
-							_tmp560_ = self->priv->current;
-							_tmp561_ = self->priv->end;
-							_tmp562_ = self->priv->current;
-							_tmp563_ = g_utf8_get_char_validated ((const gchar*) _tmp560_, (gssize) ((glong) (_tmp561_ - _tmp562_)));
-							u = _tmp563_;
-							_tmp564_ = u;
-							if (_tmp564_ != ((gunichar) (-1))) {
-								gchar* _tmp565_;
-								gunichar _tmp566_;
-								gint _tmp567_ = 0;
-								ValaSourceReference* _tmp568_ = NULL;
-								ValaSourceReference* _tmp569_;
-								_tmp565_ = self->priv->current;
-								_tmp566_ = u;
-								_tmp567_ = g_unichar_to_utf8 (_tmp566_, NULL);
-								self->priv->current = _tmp565_ + _tmp567_;
-								_tmp568_ = vala_genie_scanner_get_source_reference (self, 0, 0);
-								_tmp569_ = _tmp568_;
-								vala_report_error (_tmp569_, "syntax error, unexpected character");
-								_vala_source_reference_unref0 (_tmp569_);
+							gunichar u = 0U;
+							gchar* _tmp507_ = NULL;
+							gchar* _tmp508_ = NULL;
+							gchar* _tmp509_ = NULL;
+							gunichar _tmp510_ = 0U;
+							gunichar _tmp511_ = 0U;
+							gint _tmp520_ = 0;
+							ValaSourceLocation _tmp521_ = {0};
+							ValaSourceLocation _tmp522_ = {0};
+							ValaGenieTokenType _tmp523_ = 0;
+							_tmp507_ = self->priv->current;
+							_tmp508_ = self->priv->end;
+							_tmp509_ = self->priv->current;
+							_tmp510_ = g_utf8_get_char_validated ((const gchar*) _tmp507_, (gssize) ((glong) (_tmp508_ - _tmp509_)));
+							u = _tmp510_;
+							_tmp511_ = u;
+							if (_tmp511_ != ((gunichar) (-1))) {
+								gchar* _tmp512_ = NULL;
+								gunichar _tmp513_ = 0U;
+								gint _tmp514_ = 0;
+								ValaSourceReference* _tmp515_ = NULL;
+								ValaSourceReference* _tmp516_ = NULL;
+								_tmp512_ = self->priv->current;
+								_tmp513_ = u;
+								_tmp514_ = g_unichar_to_utf8 (_tmp513_, NULL);
+								self->priv->current = _tmp512_ + _tmp514_;
+								_tmp515_ = vala_genie_scanner_get_source_reference (self, 0, 0);
+								_tmp516_ = _tmp515_;
+								vala_report_error (_tmp516_, "syntax error, unexpected character");
+								_vala_source_reference_unref0 (_tmp516_);
 							} else {
-								gchar* _tmp570_;
-								ValaSourceReference* _tmp571_ = NULL;
-								ValaSourceReference* _tmp572_;
-								_tmp570_ = self->priv->current;
-								self->priv->current = _tmp570_ + 1;
-								_tmp571_ = vala_genie_scanner_get_source_reference (self, 0, 0);
-								_tmp572_ = _tmp571_;
-								vala_report_error (_tmp572_, "invalid UTF-8 character");
-								_vala_source_reference_unref0 (_tmp572_);
+								gchar* _tmp517_ = NULL;
+								ValaSourceReference* _tmp518_ = NULL;
+								ValaSourceReference* _tmp519_ = NULL;
+								_tmp517_ = self->priv->current;
+								self->priv->current = _tmp517_ + 1;
+								_tmp518_ = vala_genie_scanner_get_source_reference (self, 0, 0);
+								_tmp519_ = _tmp518_;
+								vala_report_error (_tmp519_, "invalid UTF-8 character");
+								_vala_source_reference_unref0 (_tmp519_);
 							}
-							_tmp573_ = self->priv->column;
-							self->priv->column = _tmp573_ + 1;
-							_tmp576_ = vala_genie_scanner_read_token (self, &_tmp574_, &_tmp575_);
-							_vala_token_begin = _tmp574_;
-							_vala_token_end = _tmp575_;
-							result = _tmp576_;
+							_tmp520_ = self->priv->column;
+							self->priv->column = _tmp520_ + 1;
+							_tmp523_ = vala_genie_scanner_read_token (self, &_tmp521_, &_tmp522_);
+							_vala_token_begin = _tmp521_;
+							_vala_token_end = _tmp522_;
+							result = _tmp523_;
 							if (token_begin) {
 								*token_begin = _vala_token_begin;
 							}
@@ -5134,28 +4998,28 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 			}
 		}
 	}
-	_tmp577_ = token_length_in_chars;
-	if (_tmp577_ < 0) {
-		gint _tmp578_;
-		gchar* _tmp579_;
-		gchar* _tmp580_;
-		_tmp578_ = self->priv->column;
-		_tmp579_ = self->priv->current;
-		_tmp580_ = begin;
-		self->priv->column = _tmp578_ + ((gint) (_tmp579_ - _tmp580_));
+	_tmp524_ = token_length_in_chars;
+	if (_tmp524_ < 0) {
+		gint _tmp525_ = 0;
+		gchar* _tmp526_ = NULL;
+		gchar* _tmp527_ = NULL;
+		_tmp525_ = self->priv->column;
+		_tmp526_ = self->priv->current;
+		_tmp527_ = begin;
+		self->priv->column = _tmp525_ + ((gint) (_tmp526_ - _tmp527_));
 	} else {
-		gint _tmp581_;
-		gint _tmp582_;
-		_tmp581_ = self->priv->column;
-		_tmp582_ = token_length_in_chars;
-		self->priv->column = _tmp581_ + _tmp582_;
+		gint _tmp528_ = 0;
+		gint _tmp529_ = 0;
+		_tmp528_ = self->priv->column;
+		_tmp529_ = token_length_in_chars;
+		self->priv->column = _tmp528_ + _tmp529_;
 	}
-	_tmp583_ = self->priv->current;
-	_tmp584_ = self->priv->line;
-	_tmp585_ = self->priv->column;
-	vala_source_location_init (&_vala_token_end, _tmp583_, _tmp584_, _tmp585_ - 1);
-	_tmp586_ = type;
-	self->priv->last_token = _tmp586_;
+	_tmp530_ = self->priv->current;
+	_tmp531_ = self->priv->line;
+	_tmp532_ = self->priv->column;
+	vala_source_location_init (&_vala_token_end, _tmp530_, _tmp531_, _tmp532_ - 1);
+	_tmp533_ = type;
+	self->priv->last_token = _tmp533_;
 	result = type;
 	if (token_begin) {
 		*token_begin = _vala_token_begin;
@@ -5169,99 +5033,93 @@ ValaGenieTokenType vala_genie_scanner_read_token (ValaGenieScanner* self, ValaSo
 
 static gint vala_genie_scanner_count_tabs (ValaGenieScanner* self) {
 	gint result = 0;
-	gint tab_count;
-	gint _tmp0_;
-	gboolean _tmp21_ = FALSE;
-	gchar* _tmp22_;
-	gchar* _tmp23_;
-	gboolean _tmp26_;
+	gint tab_count = 0;
+	gint _tmp0_ = 0;
+	gboolean _tmp19_ = FALSE;
+	gchar* _tmp20_ = NULL;
+	gchar* _tmp21_ = NULL;
 	g_return_val_if_fail (self != NULL, 0);
 	tab_count = 0;
 	_tmp0_ = self->priv->_indent_spaces;
 	if (_tmp0_ == 0) {
 		while (TRUE) {
 			gboolean _tmp1_ = FALSE;
-			gchar* _tmp2_;
-			gchar* _tmp3_;
-			gboolean _tmp6_;
-			gchar* _tmp7_;
-			gint _tmp8_;
-			gint _tmp9_;
+			gchar* _tmp2_ = NULL;
+			gchar* _tmp3_ = NULL;
+			gchar* _tmp6_ = NULL;
+			gint _tmp7_ = 0;
+			gint _tmp8_ = 0;
 			_tmp2_ = self->priv->current;
 			_tmp3_ = self->priv->end;
 			if (_tmp2_ < _tmp3_) {
-				gchar* _tmp4_;
-				gchar _tmp5_;
+				gchar* _tmp4_ = NULL;
+				gchar _tmp5_ = '\0';
 				_tmp4_ = self->priv->current;
 				_tmp5_ = _tmp4_[0];
 				_tmp1_ = _tmp5_ == '\t';
 			} else {
 				_tmp1_ = FALSE;
 			}
-			_tmp6_ = _tmp1_;
-			if (!_tmp6_) {
+			if (!_tmp1_) {
 				break;
 			}
-			_tmp7_ = self->priv->current;
-			self->priv->current = _tmp7_ + 1;
-			_tmp8_ = self->priv->column;
-			self->priv->column = _tmp8_ + 1;
-			_tmp9_ = tab_count;
-			tab_count = _tmp9_ + 1;
+			_tmp6_ = self->priv->current;
+			self->priv->current = _tmp6_ + 1;
+			_tmp7_ = self->priv->column;
+			self->priv->column = _tmp7_ + 1;
+			_tmp8_ = tab_count;
+			tab_count = _tmp8_ + 1;
 		}
 	} else {
-		gint space_count;
-		gint _tmp19_;
-		gint _tmp20_;
+		gint space_count = 0;
+		gint _tmp17_ = 0;
+		gint _tmp18_ = 0;
 		space_count = 0;
 		while (TRUE) {
-			gboolean _tmp10_ = FALSE;
-			gchar* _tmp11_;
-			gchar* _tmp12_;
-			gboolean _tmp15_;
-			gchar* _tmp16_;
-			gint _tmp17_;
-			gint _tmp18_;
-			_tmp11_ = self->priv->current;
-			_tmp12_ = self->priv->end;
-			if (_tmp11_ < _tmp12_) {
-				gchar* _tmp13_;
-				gchar _tmp14_;
-				_tmp13_ = self->priv->current;
-				_tmp14_ = _tmp13_[0];
-				_tmp10_ = _tmp14_ == ' ';
+			gboolean _tmp9_ = FALSE;
+			gchar* _tmp10_ = NULL;
+			gchar* _tmp11_ = NULL;
+			gchar* _tmp14_ = NULL;
+			gint _tmp15_ = 0;
+			gint _tmp16_ = 0;
+			_tmp10_ = self->priv->current;
+			_tmp11_ = self->priv->end;
+			if (_tmp10_ < _tmp11_) {
+				gchar* _tmp12_ = NULL;
+				gchar _tmp13_ = '\0';
+				_tmp12_ = self->priv->current;
+				_tmp13_ = _tmp12_[0];
+				_tmp9_ = _tmp13_ == ' ';
 			} else {
-				_tmp10_ = FALSE;
+				_tmp9_ = FALSE;
 			}
-			_tmp15_ = _tmp10_;
-			if (!_tmp15_) {
+			if (!_tmp9_) {
 				break;
 			}
-			_tmp16_ = self->priv->current;
-			self->priv->current = _tmp16_ + 1;
-			_tmp17_ = self->priv->column;
-			self->priv->column = _tmp17_ + 1;
-			_tmp18_ = space_count;
-			space_count = _tmp18_ + 1;
+			_tmp14_ = self->priv->current;
+			self->priv->current = _tmp14_ + 1;
+			_tmp15_ = self->priv->column;
+			self->priv->column = _tmp15_ + 1;
+			_tmp16_ = space_count;
+			space_count = _tmp16_ + 1;
 		}
-		_tmp19_ = space_count;
-		_tmp20_ = self->priv->_indent_spaces;
-		tab_count = _tmp19_ / _tmp20_;
+		_tmp17_ = space_count;
+		_tmp18_ = self->priv->_indent_spaces;
+		tab_count = _tmp17_ / _tmp18_;
 	}
 	vala_genie_scanner_space (self);
-	_tmp22_ = self->priv->current;
-	_tmp23_ = self->priv->end;
-	if (_tmp22_ < _tmp23_) {
-		gchar* _tmp24_;
-		gchar _tmp25_;
-		_tmp24_ = self->priv->current;
-		_tmp25_ = _tmp24_[0];
-		_tmp21_ = _tmp25_ == '\n';
+	_tmp20_ = self->priv->current;
+	_tmp21_ = self->priv->end;
+	if (_tmp20_ < _tmp21_) {
+		gchar* _tmp22_ = NULL;
+		gchar _tmp23_ = '\0';
+		_tmp22_ = self->priv->current;
+		_tmp23_ = _tmp22_[0];
+		_tmp19_ = _tmp23_ == '\n';
 	} else {
-		_tmp21_ = FALSE;
+		_tmp19_ = FALSE;
 	}
-	_tmp26_ = _tmp21_;
-	if (_tmp26_) {
+	if (_tmp19_) {
 		result = -1;
 		return result;
 	}
@@ -5272,12 +5130,12 @@ static gint vala_genie_scanner_count_tabs (ValaGenieScanner* self) {
 
 static gboolean vala_genie_scanner_matches (gchar* begin, const gchar* keyword) {
 	gboolean result = FALSE;
-	const gchar* _tmp0_;
-	gchar* keyword_array;
-	const gchar* _tmp1_;
-	gint _tmp2_;
-	gint _tmp3_;
-	glong len;
+	gchar* keyword_array = NULL;
+	const gchar* _tmp0_ = NULL;
+	glong len = 0L;
+	const gchar* _tmp1_ = NULL;
+	gint _tmp2_ = 0;
+	gint _tmp3_ = 0;
 	g_return_val_if_fail (keyword != NULL, FALSE);
 	_tmp0_ = keyword;
 	keyword_array = (gchar*) _tmp0_;
@@ -5286,40 +5144,38 @@ static gboolean vala_genie_scanner_matches (gchar* begin, const gchar* keyword) 
 	_tmp3_ = _tmp2_;
 	len = (glong) _tmp3_;
 	{
-		gint i;
+		gint i = 0;
 		i = 0;
 		{
-			gboolean _tmp4_;
+			gboolean _tmp4_ = FALSE;
 			_tmp4_ = TRUE;
 			while (TRUE) {
-				gboolean _tmp5_;
-				gint _tmp7_;
-				glong _tmp8_;
-				gchar* _tmp9_;
-				gint _tmp10_;
-				gchar _tmp11_;
-				gchar* _tmp12_;
-				gint _tmp13_;
-				gchar _tmp14_;
-				_tmp5_ = _tmp4_;
-				if (!_tmp5_) {
-					gint _tmp6_;
-					_tmp6_ = i;
-					i = _tmp6_ + 1;
+				gint _tmp6_ = 0;
+				glong _tmp7_ = 0L;
+				gchar* _tmp8_ = NULL;
+				gint _tmp9_ = 0;
+				gchar _tmp10_ = '\0';
+				gchar* _tmp11_ = NULL;
+				gint _tmp12_ = 0;
+				gchar _tmp13_ = '\0';
+				if (!_tmp4_) {
+					gint _tmp5_ = 0;
+					_tmp5_ = i;
+					i = _tmp5_ + 1;
 				}
 				_tmp4_ = FALSE;
-				_tmp7_ = i;
-				_tmp8_ = len;
-				if (!(((glong) _tmp7_) < _tmp8_)) {
+				_tmp6_ = i;
+				_tmp7_ = len;
+				if (!(((glong) _tmp6_) < _tmp7_)) {
 					break;
 				}
-				_tmp9_ = begin;
-				_tmp10_ = i;
-				_tmp11_ = _tmp9_[_tmp10_];
-				_tmp12_ = keyword_array;
-				_tmp13_ = i;
-				_tmp14_ = _tmp12_[_tmp13_];
-				if (_tmp11_ != _tmp14_) {
+				_tmp8_ = begin;
+				_tmp9_ = i;
+				_tmp10_ = _tmp8_[_tmp9_];
+				_tmp11_ = keyword_array;
+				_tmp12_ = i;
+				_tmp13_ = _tmp11_[_tmp12_];
+				if (_tmp10_ != _tmp13_) {
 					result = FALSE;
 					return result;
 				}
@@ -5333,28 +5189,24 @@ static gboolean vala_genie_scanner_matches (gchar* begin, const gchar* keyword) 
 
 static gboolean vala_genie_scanner_whitespace (ValaGenieScanner* self) {
 	gboolean result = FALSE;
-	gboolean found;
-	gboolean _tmp13_ = FALSE;
-	gboolean _tmp14_ = FALSE;
-	gint _tmp15_;
-	gboolean _tmp18_;
-	gboolean _tmp21_;
+	gboolean found = FALSE;
+	gboolean _tmp11_ = FALSE;
+	gboolean _tmp12_ = FALSE;
+	gint _tmp13_ = 0;
 	g_return_val_if_fail (self != NULL, FALSE);
 	found = FALSE;
 	while (TRUE) {
 		gboolean _tmp0_ = FALSE;
 		gboolean _tmp1_ = FALSE;
-		gchar* _tmp2_;
-		gchar* _tmp3_;
-		gboolean _tmp7_;
-		gboolean _tmp10_;
-		gchar* _tmp11_;
-		gint _tmp12_;
+		gchar* _tmp2_ = NULL;
+		gchar* _tmp3_ = NULL;
+		gchar* _tmp9_ = NULL;
+		gint _tmp10_ = 0;
 		_tmp2_ = self->priv->current;
 		_tmp3_ = self->priv->end;
 		if (_tmp2_ < _tmp3_) {
-			gchar* _tmp4_;
-			gchar _tmp5_;
+			gchar* _tmp4_ = NULL;
+			gchar _tmp5_ = '\0';
 			gboolean _tmp6_ = FALSE;
 			_tmp4_ = self->priv->current;
 			_tmp5_ = _tmp4_[0];
@@ -5363,48 +5215,44 @@ static gboolean vala_genie_scanner_whitespace (ValaGenieScanner* self) {
 		} else {
 			_tmp1_ = FALSE;
 		}
-		_tmp7_ = _tmp1_;
-		if (_tmp7_) {
-			gchar* _tmp8_;
-			gchar _tmp9_;
-			_tmp8_ = self->priv->current;
-			_tmp9_ = _tmp8_[0];
-			_tmp0_ = _tmp9_ != '\n';
+		if (_tmp1_) {
+			gchar* _tmp7_ = NULL;
+			gchar _tmp8_ = '\0';
+			_tmp7_ = self->priv->current;
+			_tmp8_ = _tmp7_[0];
+			_tmp0_ = _tmp8_ != '\n';
 		} else {
 			_tmp0_ = FALSE;
 		}
-		_tmp10_ = _tmp0_;
-		if (!_tmp10_) {
+		if (!_tmp0_) {
 			break;
 		}
 		found = TRUE;
-		_tmp11_ = self->priv->current;
-		self->priv->current = _tmp11_ + 1;
-		_tmp12_ = self->priv->column;
-		self->priv->column = _tmp12_ + 1;
+		_tmp9_ = self->priv->current;
+		self->priv->current = _tmp9_ + 1;
+		_tmp10_ = self->priv->column;
+		self->priv->column = _tmp10_ + 1;
 	}
-	_tmp15_ = self->priv->column;
-	if (_tmp15_ == 1) {
-		gchar* _tmp16_;
-		gchar* _tmp17_;
+	_tmp13_ = self->priv->column;
+	if (_tmp13_ == 1) {
+		gchar* _tmp14_ = NULL;
+		gchar* _tmp15_ = NULL;
+		_tmp14_ = self->priv->current;
+		_tmp15_ = self->priv->end;
+		_tmp12_ = _tmp14_ < _tmp15_;
+	} else {
+		_tmp12_ = FALSE;
+	}
+	if (_tmp12_) {
+		gchar* _tmp16_ = NULL;
+		gchar _tmp17_ = '\0';
 		_tmp16_ = self->priv->current;
-		_tmp17_ = self->priv->end;
-		_tmp14_ = _tmp16_ < _tmp17_;
+		_tmp17_ = _tmp16_[0];
+		_tmp11_ = _tmp17_ == '#';
 	} else {
-		_tmp14_ = FALSE;
+		_tmp11_ = FALSE;
 	}
-	_tmp18_ = _tmp14_;
-	if (_tmp18_) {
-		gchar* _tmp19_;
-		gchar _tmp20_;
-		_tmp19_ = self->priv->current;
-		_tmp20_ = _tmp19_[0];
-		_tmp13_ = _tmp20_ == '#';
-	} else {
-		_tmp13_ = FALSE;
-	}
-	_tmp21_ = _tmp13_;
-	if (_tmp21_) {
+	if (_tmp11_) {
 		vala_genie_scanner_pp_directive (self);
 		result = TRUE;
 		return result;
@@ -5416,8 +5264,8 @@ static gboolean vala_genie_scanner_whitespace (ValaGenieScanner* self) {
 
 static inline gboolean vala_genie_scanner_newline (ValaGenieScanner* self) {
 	gboolean result = FALSE;
-	gchar* _tmp0_;
-	gchar _tmp1_;
+	gchar* _tmp0_ = NULL;
+	gchar _tmp1_ = '\0';
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->current;
 	_tmp1_ = _tmp0_[0];
@@ -5432,13 +5280,13 @@ static inline gboolean vala_genie_scanner_newline (ValaGenieScanner* self) {
 
 static gboolean vala_genie_scanner_skip_newlines (ValaGenieScanner* self) {
 	gboolean result = FALSE;
-	gboolean new_lines;
+	gboolean new_lines = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	new_lines = FALSE;
 	while (TRUE) {
 		gboolean _tmp0_ = FALSE;
-		gchar* _tmp1_;
-		gint _tmp2_;
+		gchar* _tmp1_ = NULL;
+		gint _tmp2_ = 0;
 		_tmp0_ = vala_genie_scanner_newline (self);
 		if (!_tmp0_) {
 			break;
@@ -5458,24 +5306,24 @@ static gboolean vala_genie_scanner_skip_newlines (ValaGenieScanner* self) {
 
 static glong string_strnlen (gchar* str, glong maxlen) {
 	glong result = 0L;
-	gchar* _tmp0_;
-	glong _tmp1_;
+	gchar* end = NULL;
+	gchar* _tmp0_ = NULL;
+	glong _tmp1_ = 0L;
 	gchar* _tmp2_ = NULL;
-	gchar* end;
-	gchar* _tmp3_;
+	gchar* _tmp3_ = NULL;
 	_tmp0_ = str;
 	_tmp1_ = maxlen;
 	_tmp2_ = memchr (_tmp0_, 0, (gsize) _tmp1_);
 	end = _tmp2_;
 	_tmp3_ = end;
 	if (_tmp3_ == NULL) {
-		glong _tmp4_;
+		glong _tmp4_ = 0L;
 		_tmp4_ = maxlen;
 		result = _tmp4_;
 		return result;
 	} else {
-		gchar* _tmp5_;
-		gchar* _tmp6_;
+		gchar* _tmp5_ = NULL;
+		gchar* _tmp6_ = NULL;
 		_tmp5_ = end;
 		_tmp6_ = str;
 		result = (glong) (_tmp5_ - _tmp6_);
@@ -5488,74 +5336,72 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 	gchar* result = NULL;
 	glong string_length = 0L;
 	gboolean _tmp0_ = FALSE;
-	glong _tmp1_;
-	gboolean _tmp3_;
-	glong _tmp9_;
-	glong _tmp15_;
-	glong _tmp18_;
-	glong _tmp19_;
-	glong _tmp20_;
-	glong _tmp21_;
-	glong _tmp22_;
-	gchar* _tmp23_ = NULL;
+	glong _tmp1_ = 0L;
+	glong _tmp8_ = 0L;
+	glong _tmp14_ = 0L;
+	glong _tmp17_ = 0L;
+	glong _tmp18_ = 0L;
+	glong _tmp19_ = 0L;
+	glong _tmp20_ = 0L;
+	glong _tmp21_ = 0L;
+	gchar* _tmp22_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp1_ = offset;
 	if (_tmp1_ >= ((glong) 0)) {
-		glong _tmp2_;
+		glong _tmp2_ = 0L;
 		_tmp2_ = len;
 		_tmp0_ = _tmp2_ >= ((glong) 0);
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp3_ = _tmp0_;
-	if (_tmp3_) {
-		glong _tmp4_;
-		glong _tmp5_;
-		glong _tmp6_ = 0L;
-		_tmp4_ = offset;
-		_tmp5_ = len;
-		_tmp6_ = string_strnlen ((gchar*) self, _tmp4_ + _tmp5_);
-		string_length = _tmp6_;
+	if (_tmp0_) {
+		glong _tmp3_ = 0L;
+		glong _tmp4_ = 0L;
+		glong _tmp5_ = 0L;
+		_tmp3_ = offset;
+		_tmp4_ = len;
+		_tmp5_ = string_strnlen ((gchar*) self, _tmp3_ + _tmp4_);
+		string_length = _tmp5_;
 	} else {
-		gint _tmp7_;
-		gint _tmp8_;
-		_tmp7_ = strlen (self);
-		_tmp8_ = _tmp7_;
-		string_length = (glong) _tmp8_;
+		gint _tmp6_ = 0;
+		gint _tmp7_ = 0;
+		_tmp6_ = strlen (self);
+		_tmp7_ = _tmp6_;
+		string_length = (glong) _tmp7_;
 	}
-	_tmp9_ = offset;
-	if (_tmp9_ < ((glong) 0)) {
-		glong _tmp10_;
-		glong _tmp11_;
-		glong _tmp12_;
-		_tmp10_ = string_length;
+	_tmp8_ = offset;
+	if (_tmp8_ < ((glong) 0)) {
+		glong _tmp9_ = 0L;
+		glong _tmp10_ = 0L;
+		glong _tmp11_ = 0L;
+		_tmp9_ = string_length;
+		_tmp10_ = offset;
+		offset = _tmp9_ + _tmp10_;
 		_tmp11_ = offset;
-		offset = _tmp10_ + _tmp11_;
-		_tmp12_ = offset;
-		g_return_val_if_fail (_tmp12_ >= ((glong) 0), NULL);
+		g_return_val_if_fail (_tmp11_ >= ((glong) 0), NULL);
 	} else {
-		glong _tmp13_;
-		glong _tmp14_;
-		_tmp13_ = offset;
-		_tmp14_ = string_length;
-		g_return_val_if_fail (_tmp13_ <= _tmp14_, NULL);
+		glong _tmp12_ = 0L;
+		glong _tmp13_ = 0L;
+		_tmp12_ = offset;
+		_tmp13_ = string_length;
+		g_return_val_if_fail (_tmp12_ <= _tmp13_, NULL);
 	}
-	_tmp15_ = len;
-	if (_tmp15_ < ((glong) 0)) {
-		glong _tmp16_;
-		glong _tmp17_;
-		_tmp16_ = string_length;
-		_tmp17_ = offset;
-		len = _tmp16_ - _tmp17_;
+	_tmp14_ = len;
+	if (_tmp14_ < ((glong) 0)) {
+		glong _tmp15_ = 0L;
+		glong _tmp16_ = 0L;
+		_tmp15_ = string_length;
+		_tmp16_ = offset;
+		len = _tmp15_ - _tmp16_;
 	}
-	_tmp18_ = offset;
-	_tmp19_ = len;
-	_tmp20_ = string_length;
-	g_return_val_if_fail ((_tmp18_ + _tmp19_) <= _tmp20_, NULL);
-	_tmp21_ = offset;
-	_tmp22_ = len;
-	_tmp23_ = g_strndup (((gchar*) self) + _tmp21_, (gsize) _tmp22_);
-	result = _tmp23_;
+	_tmp17_ = offset;
+	_tmp18_ = len;
+	_tmp19_ = string_length;
+	g_return_val_if_fail ((_tmp17_ + _tmp18_) <= _tmp19_, NULL);
+	_tmp20_ = offset;
+	_tmp21_ = len;
+	_tmp22_ = g_strndup (((gchar*) self) + _tmp20_, (gsize) _tmp21_);
+	result = _tmp22_;
 	return result;
 }
 
@@ -5565,286 +5411,266 @@ static gboolean vala_genie_scanner_comment (ValaGenieScanner* self, gboolean fil
 	gboolean _tmp0_ = FALSE;
 	gboolean _tmp1_ = FALSE;
 	gboolean _tmp2_ = FALSE;
-	gchar* _tmp3_;
-	gboolean _tmp6_;
-	gboolean _tmp9_;
-	gboolean _tmp16_;
-	gchar* _tmp17_;
-	gchar _tmp18_;
+	gchar* _tmp3_ = NULL;
+	gchar* _tmp13_ = NULL;
+	gchar _tmp14_ = '\0';
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp3_ = self->priv->current;
 	if (_tmp3_ == NULL) {
 		_tmp2_ = TRUE;
 	} else {
-		gchar* _tmp4_;
-		gchar* _tmp5_;
+		gchar* _tmp4_ = NULL;
+		gchar* _tmp5_ = NULL;
 		_tmp4_ = self->priv->current;
 		_tmp5_ = self->priv->end;
 		_tmp2_ = _tmp4_ > (_tmp5_ - 2);
 	}
-	_tmp6_ = _tmp2_;
-	if (_tmp6_) {
+	if (_tmp2_) {
 		_tmp1_ = TRUE;
 	} else {
-		gchar* _tmp7_;
-		gchar _tmp8_;
-		_tmp7_ = self->priv->current;
-		_tmp8_ = _tmp7_[0];
-		_tmp1_ = _tmp8_ != '/';
+		gchar* _tmp6_ = NULL;
+		gchar _tmp7_ = '\0';
+		_tmp6_ = self->priv->current;
+		_tmp7_ = _tmp6_[0];
+		_tmp1_ = _tmp7_ != '/';
 	}
-	_tmp9_ = _tmp1_;
-	if (_tmp9_) {
+	if (_tmp1_) {
 		_tmp0_ = TRUE;
 	} else {
-		gboolean _tmp10_ = FALSE;
-		gchar* _tmp11_;
-		gchar _tmp12_;
-		gboolean _tmp15_;
-		_tmp11_ = self->priv->current;
-		_tmp12_ = _tmp11_[1];
-		if (_tmp12_ != '/') {
-			gchar* _tmp13_;
-			gchar _tmp14_;
-			_tmp13_ = self->priv->current;
-			_tmp14_ = _tmp13_[1];
-			_tmp10_ = _tmp14_ != '*';
+		gboolean _tmp8_ = FALSE;
+		gchar* _tmp9_ = NULL;
+		gchar _tmp10_ = '\0';
+		_tmp9_ = self->priv->current;
+		_tmp10_ = _tmp9_[1];
+		if (_tmp10_ != '/') {
+			gchar* _tmp11_ = NULL;
+			gchar _tmp12_ = '\0';
+			_tmp11_ = self->priv->current;
+			_tmp12_ = _tmp11_[1];
+			_tmp8_ = _tmp12_ != '*';
 		} else {
-			_tmp10_ = FALSE;
+			_tmp8_ = FALSE;
 		}
-		_tmp15_ = _tmp10_;
-		_tmp0_ = _tmp15_;
+		_tmp0_ = _tmp8_;
 	}
-	_tmp16_ = _tmp0_;
-	if (_tmp16_) {
+	if (_tmp0_) {
 		result = FALSE;
 		return result;
 	}
-	_tmp17_ = self->priv->current;
-	_tmp18_ = _tmp17_[1];
-	if (_tmp18_ == '/') {
-		ValaSourceReference* source_reference;
-		gboolean _tmp19_;
-		gchar* _tmp21_;
-		gboolean _tmp29_ = FALSE;
-		gchar* _tmp30_;
-		gchar _tmp31_;
-		gboolean _tmp33_;
-		ValaSourceReference* _tmp36_;
+	_tmp13_ = self->priv->current;
+	_tmp14_ = _tmp13_[1];
+	if (_tmp14_ == '/') {
+		ValaSourceReference* source_reference = NULL;
+		gboolean _tmp15_ = FALSE;
+		gchar* _tmp17_ = NULL;
+		gboolean _tmp24_ = FALSE;
+		gchar* _tmp25_ = NULL;
+		gchar _tmp26_ = '\0';
+		ValaSourceReference* _tmp30_ = NULL;
 		source_reference = NULL;
-		_tmp19_ = file_comment;
-		if (_tmp19_) {
-			ValaSourceReference* _tmp20_ = NULL;
-			_tmp20_ = vala_genie_scanner_get_source_reference (self, 0, 0);
+		_tmp15_ = file_comment;
+		if (_tmp15_) {
+			ValaSourceReference* _tmp16_ = NULL;
+			_tmp16_ = vala_genie_scanner_get_source_reference (self, 0, 0);
 			_vala_source_reference_unref0 (source_reference);
-			source_reference = _tmp20_;
+			source_reference = _tmp16_;
 		}
-		_tmp21_ = self->priv->current;
-		self->priv->current = _tmp21_ + 2;
+		_tmp17_ = self->priv->current;
+		self->priv->current = _tmp17_ + 2;
 		while (TRUE) {
-			gboolean _tmp22_ = FALSE;
-			gchar* _tmp23_;
-			gchar* _tmp24_;
-			gboolean _tmp27_;
-			gchar* _tmp28_;
-			_tmp23_ = self->priv->current;
-			_tmp24_ = self->priv->end;
-			if (_tmp23_ < _tmp24_) {
-				gchar* _tmp25_;
-				gchar _tmp26_;
-				_tmp25_ = self->priv->current;
-				_tmp26_ = _tmp25_[0];
-				_tmp22_ = _tmp26_ != '\n';
+			gboolean _tmp18_ = FALSE;
+			gchar* _tmp19_ = NULL;
+			gchar* _tmp20_ = NULL;
+			gchar* _tmp23_ = NULL;
+			_tmp19_ = self->priv->current;
+			_tmp20_ = self->priv->end;
+			if (_tmp19_ < _tmp20_) {
+				gchar* _tmp21_ = NULL;
+				gchar _tmp22_ = '\0';
+				_tmp21_ = self->priv->current;
+				_tmp22_ = _tmp21_[0];
+				_tmp18_ = _tmp22_ != '\n';
 			} else {
-				_tmp22_ = FALSE;
+				_tmp18_ = FALSE;
 			}
-			_tmp27_ = _tmp22_;
-			if (!_tmp27_) {
+			if (!_tmp18_) {
 				break;
 			}
+			_tmp23_ = self->priv->current;
+			self->priv->current = _tmp23_ + 1;
+		}
+		_tmp25_ = self->priv->current;
+		_tmp26_ = _tmp25_[0];
+		if (_tmp26_ == '\n') {
+			ValaGenieTokenType _tmp27_ = 0;
+			_tmp27_ = self->priv->last_token;
+			_tmp24_ = _tmp27_ == VALA_GENIE_TOKEN_TYPE_EOL;
+		} else {
+			_tmp24_ = FALSE;
+		}
+		if (_tmp24_) {
+			gchar* _tmp28_ = NULL;
+			gint _tmp29_ = 0;
 			_tmp28_ = self->priv->current;
 			self->priv->current = _tmp28_ + 1;
-		}
-		_tmp30_ = self->priv->current;
-		_tmp31_ = _tmp30_[0];
-		if (_tmp31_ == '\n') {
-			ValaGenieTokenType _tmp32_;
-			_tmp32_ = self->priv->last_token;
-			_tmp29_ = _tmp32_ == VALA_GENIE_TOKEN_TYPE_EOL;
-		} else {
-			_tmp29_ = FALSE;
-		}
-		_tmp33_ = _tmp29_;
-		if (_tmp33_) {
-			gchar* _tmp34_;
-			gint _tmp35_;
-			_tmp34_ = self->priv->current;
-			self->priv->current = _tmp34_ + 1;
-			_tmp35_ = self->priv->line;
-			self->priv->line = _tmp35_ + 1;
+			_tmp29_ = self->priv->line;
+			self->priv->line = _tmp29_ + 1;
 			self->priv->column = 1;
 			self->priv->current_indent_level = 0;
 		}
-		_tmp36_ = source_reference;
-		if (_tmp36_ != NULL) {
-			gchar* _tmp37_;
-			gchar* _tmp38_;
-			gchar* _tmp39_;
-			gchar* _tmp40_ = NULL;
-			gchar* _tmp41_;
-			ValaSourceReference* _tmp42_;
-			gboolean _tmp43_;
-			_tmp37_ = self->priv->begin;
-			_tmp38_ = self->priv->current;
-			_tmp39_ = self->priv->begin;
-			_tmp40_ = string_substring ((const gchar*) _tmp37_, (glong) 0, (glong) (_tmp38_ - _tmp39_));
-			_tmp41_ = _tmp40_;
-			_tmp42_ = source_reference;
-			_tmp43_ = file_comment;
-			vala_genie_scanner_push_comment (self, _tmp41_, _tmp42_, _tmp43_);
-			_g_free0 (_tmp41_);
+		_tmp30_ = source_reference;
+		if (_tmp30_ != NULL) {
+			gchar* _tmp31_ = NULL;
+			gchar* _tmp32_ = NULL;
+			gchar* _tmp33_ = NULL;
+			gchar* _tmp34_ = NULL;
+			gchar* _tmp35_ = NULL;
+			ValaSourceReference* _tmp36_ = NULL;
+			gboolean _tmp37_ = FALSE;
+			_tmp31_ = self->priv->begin;
+			_tmp32_ = self->priv->current;
+			_tmp33_ = self->priv->begin;
+			_tmp34_ = string_substring ((const gchar*) _tmp31_, (glong) 0, (glong) (_tmp32_ - _tmp33_));
+			_tmp35_ = _tmp34_;
+			_tmp36_ = source_reference;
+			_tmp37_ = file_comment;
+			vala_genie_scanner_push_comment (self, _tmp35_, _tmp36_, _tmp37_);
+			_g_free0 (_tmp35_);
 		}
 		_vala_source_reference_unref0 (source_reference);
 	} else {
-		ValaSourceReference* source_reference;
-		gboolean _tmp44_ = FALSE;
-		gboolean _tmp45_;
-		gboolean _tmp48_;
-		gboolean _tmp49_ = FALSE;
-		gchar* _tmp50_;
-		gchar _tmp51_;
-		gboolean _tmp53_;
-		gchar* _tmp55_;
-		gchar* _tmp56_;
-		gchar* begin;
-		gchar* _tmp72_;
-		gchar* _tmp73_;
-		ValaSourceReference* _tmp76_;
-		gchar* _tmp84_;
-		gint _tmp85_;
+		ValaSourceReference* source_reference = NULL;
+		gboolean _tmp38_ = FALSE;
+		gboolean _tmp39_ = FALSE;
+		gboolean _tmp42_ = FALSE;
+		gchar* _tmp43_ = NULL;
+		gchar _tmp44_ = '\0';
+		gchar* _tmp47_ = NULL;
+		gchar* begin = NULL;
+		gchar* _tmp48_ = NULL;
+		gchar* _tmp62_ = NULL;
+		gchar* _tmp63_ = NULL;
+		ValaSourceReference* _tmp66_ = NULL;
+		gchar* _tmp74_ = NULL;
+		gint _tmp75_ = 0;
 		source_reference = NULL;
-		_tmp45_ = file_comment;
-		if (_tmp45_) {
-			gchar* _tmp46_;
-			gchar _tmp47_;
-			_tmp46_ = self->priv->current;
-			_tmp47_ = _tmp46_[2];
-			_tmp44_ = _tmp47_ == '*';
+		_tmp39_ = file_comment;
+		if (_tmp39_) {
+			gchar* _tmp40_ = NULL;
+			gchar _tmp41_ = '\0';
+			_tmp40_ = self->priv->current;
+			_tmp41_ = _tmp40_[2];
+			_tmp38_ = _tmp41_ == '*';
 		} else {
-			_tmp44_ = FALSE;
+			_tmp38_ = FALSE;
 		}
-		_tmp48_ = _tmp44_;
-		if (_tmp48_) {
+		if (_tmp38_) {
 			result = FALSE;
 			_vala_source_reference_unref0 (source_reference);
 			return result;
 		}
-		_tmp50_ = self->priv->current;
-		_tmp51_ = _tmp50_[2];
-		if (_tmp51_ == '*') {
-			_tmp49_ = TRUE;
+		_tmp43_ = self->priv->current;
+		_tmp44_ = _tmp43_[2];
+		if (_tmp44_ == '*') {
+			_tmp42_ = TRUE;
 		} else {
-			gboolean _tmp52_;
-			_tmp52_ = file_comment;
-			_tmp49_ = _tmp52_;
+			gboolean _tmp45_ = FALSE;
+			_tmp45_ = file_comment;
+			_tmp42_ = _tmp45_;
 		}
-		_tmp53_ = _tmp49_;
-		if (_tmp53_) {
-			ValaSourceReference* _tmp54_ = NULL;
-			_tmp54_ = vala_genie_scanner_get_source_reference (self, 0, 0);
+		if (_tmp42_) {
+			ValaSourceReference* _tmp46_ = NULL;
+			_tmp46_ = vala_genie_scanner_get_source_reference (self, 0, 0);
 			_vala_source_reference_unref0 (source_reference);
-			source_reference = _tmp54_;
+			source_reference = _tmp46_;
 		}
-		_tmp55_ = self->priv->current;
-		self->priv->current = _tmp55_ + 2;
-		_tmp56_ = self->priv->current;
-		begin = _tmp56_;
+		_tmp47_ = self->priv->current;
+		self->priv->current = _tmp47_ + 2;
+		_tmp48_ = self->priv->current;
+		begin = _tmp48_;
 		while (TRUE) {
-			gboolean _tmp57_ = FALSE;
-			gchar* _tmp58_;
-			gchar* _tmp59_;
-			gboolean _tmp66_;
-			gchar* _tmp67_;
-			gchar _tmp68_;
-			gchar* _tmp70_;
-			gint _tmp71_;
-			_tmp58_ = self->priv->current;
-			_tmp59_ = self->priv->end;
-			if (_tmp58_ < (_tmp59_ - 1)) {
-				gboolean _tmp60_ = FALSE;
-				gchar* _tmp61_;
-				gchar _tmp62_;
-				gboolean _tmp65_;
-				_tmp61_ = self->priv->current;
-				_tmp62_ = _tmp61_[0];
-				if (_tmp62_ != '*') {
-					_tmp60_ = TRUE;
+			gboolean _tmp49_ = FALSE;
+			gchar* _tmp50_ = NULL;
+			gchar* _tmp51_ = NULL;
+			gchar* _tmp57_ = NULL;
+			gchar _tmp58_ = '\0';
+			gchar* _tmp60_ = NULL;
+			gint _tmp61_ = 0;
+			_tmp50_ = self->priv->current;
+			_tmp51_ = self->priv->end;
+			if (_tmp50_ < (_tmp51_ - 1)) {
+				gboolean _tmp52_ = FALSE;
+				gchar* _tmp53_ = NULL;
+				gchar _tmp54_ = '\0';
+				_tmp53_ = self->priv->current;
+				_tmp54_ = _tmp53_[0];
+				if (_tmp54_ != '*') {
+					_tmp52_ = TRUE;
 				} else {
-					gchar* _tmp63_;
-					gchar _tmp64_;
-					_tmp63_ = self->priv->current;
-					_tmp64_ = _tmp63_[1];
-					_tmp60_ = _tmp64_ != '/';
+					gchar* _tmp55_ = NULL;
+					gchar _tmp56_ = '\0';
+					_tmp55_ = self->priv->current;
+					_tmp56_ = _tmp55_[1];
+					_tmp52_ = _tmp56_ != '/';
 				}
-				_tmp65_ = _tmp60_;
-				_tmp57_ = _tmp65_;
+				_tmp49_ = _tmp52_;
 			} else {
-				_tmp57_ = FALSE;
+				_tmp49_ = FALSE;
 			}
-			_tmp66_ = _tmp57_;
-			if (!_tmp66_) {
+			if (!_tmp49_) {
 				break;
 			}
-			_tmp67_ = self->priv->current;
-			_tmp68_ = _tmp67_[0];
-			if (_tmp68_ == '\n') {
-				gint _tmp69_;
-				_tmp69_ = self->priv->line;
-				self->priv->line = _tmp69_ + 1;
+			_tmp57_ = self->priv->current;
+			_tmp58_ = _tmp57_[0];
+			if (_tmp58_ == '\n') {
+				gint _tmp59_ = 0;
+				_tmp59_ = self->priv->line;
+				self->priv->line = _tmp59_ + 1;
 				self->priv->column = 0;
 			}
-			_tmp70_ = self->priv->current;
-			self->priv->current = _tmp70_ + 1;
-			_tmp71_ = self->priv->column;
-			self->priv->column = _tmp71_ + 1;
+			_tmp60_ = self->priv->current;
+			self->priv->current = _tmp60_ + 1;
+			_tmp61_ = self->priv->column;
+			self->priv->column = _tmp61_ + 1;
 		}
-		_tmp72_ = self->priv->current;
-		_tmp73_ = self->priv->end;
-		if (_tmp72_ == (_tmp73_ - 1)) {
-			ValaSourceReference* _tmp74_ = NULL;
-			ValaSourceReference* _tmp75_;
-			_tmp74_ = vala_genie_scanner_get_source_reference (self, 0, 0);
-			_tmp75_ = _tmp74_;
-			vala_report_error (_tmp75_, "syntax error, expected */");
-			_vala_source_reference_unref0 (_tmp75_);
+		_tmp62_ = self->priv->current;
+		_tmp63_ = self->priv->end;
+		if (_tmp62_ == (_tmp63_ - 1)) {
+			ValaSourceReference* _tmp64_ = NULL;
+			ValaSourceReference* _tmp65_ = NULL;
+			_tmp64_ = vala_genie_scanner_get_source_reference (self, 0, 0);
+			_tmp65_ = _tmp64_;
+			vala_report_error (_tmp65_, "syntax error, expected */");
+			_vala_source_reference_unref0 (_tmp65_);
 			result = TRUE;
 			_vala_source_reference_unref0 (source_reference);
 			return result;
 		}
-		_tmp76_ = source_reference;
-		if (_tmp76_ != NULL) {
-			gchar* _tmp77_;
-			gchar* _tmp78_;
-			gchar* _tmp79_;
-			gchar* _tmp80_ = NULL;
-			gchar* comment;
-			const gchar* _tmp81_;
-			ValaSourceReference* _tmp82_;
-			gboolean _tmp83_;
-			_tmp77_ = begin;
-			_tmp78_ = self->priv->current;
-			_tmp79_ = begin;
-			_tmp80_ = string_substring ((const gchar*) _tmp77_, (glong) 0, (glong) (_tmp78_ - _tmp79_));
-			comment = _tmp80_;
-			_tmp81_ = comment;
-			_tmp82_ = source_reference;
-			_tmp83_ = file_comment;
-			vala_genie_scanner_push_comment (self, _tmp81_, _tmp82_, _tmp83_);
+		_tmp66_ = source_reference;
+		if (_tmp66_ != NULL) {
+			gchar* comment = NULL;
+			gchar* _tmp67_ = NULL;
+			gchar* _tmp68_ = NULL;
+			gchar* _tmp69_ = NULL;
+			gchar* _tmp70_ = NULL;
+			const gchar* _tmp71_ = NULL;
+			ValaSourceReference* _tmp72_ = NULL;
+			gboolean _tmp73_ = FALSE;
+			_tmp67_ = begin;
+			_tmp68_ = self->priv->current;
+			_tmp69_ = begin;
+			_tmp70_ = string_substring ((const gchar*) _tmp67_, (glong) 0, (glong) (_tmp68_ - _tmp69_));
+			comment = _tmp70_;
+			_tmp71_ = comment;
+			_tmp72_ = source_reference;
+			_tmp73_ = file_comment;
+			vala_genie_scanner_push_comment (self, _tmp71_, _tmp72_, _tmp73_);
 			_g_free0 (comment);
 		}
-		_tmp84_ = self->priv->current;
-		self->priv->current = _tmp84_ + 2;
-		_tmp85_ = self->priv->column;
-		self->priv->column = _tmp85_ + 2;
+		_tmp74_ = self->priv->current;
+		self->priv->current = _tmp74_ + 2;
+		_tmp75_ = self->priv->column;
+		self->priv->column = _tmp75_ + 2;
 		_vala_source_reference_unref0 (source_reference);
 	}
 	result = TRUE;
@@ -5854,35 +5680,33 @@ static gboolean vala_genie_scanner_comment (ValaGenieScanner* self, gboolean fil
 
 static gboolean vala_genie_scanner_skip_tabs (ValaGenieScanner* self) {
 	gboolean result = FALSE;
-	gboolean found;
+	gboolean found = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	found = FALSE;
 	while (TRUE) {
 		gboolean _tmp0_ = FALSE;
-		gchar* _tmp1_;
-		gchar* _tmp2_;
-		gboolean _tmp5_;
-		gchar* _tmp6_;
-		gint _tmp7_;
+		gchar* _tmp1_ = NULL;
+		gchar* _tmp2_ = NULL;
+		gchar* _tmp5_ = NULL;
+		gint _tmp6_ = 0;
 		_tmp1_ = self->priv->current;
 		_tmp2_ = self->priv->end;
 		if (_tmp1_ < _tmp2_) {
-			gchar* _tmp3_;
-			gchar _tmp4_;
+			gchar* _tmp3_ = NULL;
+			gchar _tmp4_ = '\0';
 			_tmp3_ = self->priv->current;
 			_tmp4_ = _tmp3_[0];
 			_tmp0_ = _tmp4_ == '\t';
 		} else {
 			_tmp0_ = FALSE;
 		}
-		_tmp5_ = _tmp0_;
-		if (!_tmp5_) {
+		if (!_tmp0_) {
 			break;
 		}
-		_tmp6_ = self->priv->current;
-		self->priv->current = _tmp6_ + 1;
-		_tmp7_ = self->priv->column;
-		self->priv->column = _tmp7_ + 1;
+		_tmp5_ = self->priv->current;
+		self->priv->current = _tmp5_ + 1;
+		_tmp6_ = self->priv->column;
+		self->priv->column = _tmp6_ + 1;
 		found = TRUE;
 	}
 	result = found;
@@ -5896,8 +5720,6 @@ static void vala_genie_scanner_skip_space_tabs (ValaGenieScanner* self) {
 		gboolean _tmp0_ = FALSE;
 		gboolean _tmp1_ = FALSE;
 		gboolean _tmp2_ = FALSE;
-		gboolean _tmp4_;
-		gboolean _tmp6_;
 		_tmp2_ = vala_genie_scanner_whitespace (self);
 		if (_tmp2_) {
 			_tmp1_ = TRUE;
@@ -5906,16 +5728,14 @@ static void vala_genie_scanner_skip_space_tabs (ValaGenieScanner* self) {
 			_tmp3_ = vala_genie_scanner_skip_tabs (self);
 			_tmp1_ = _tmp3_;
 		}
-		_tmp4_ = _tmp1_;
-		if (_tmp4_) {
+		if (_tmp1_) {
 			_tmp0_ = TRUE;
 		} else {
-			gboolean _tmp5_ = FALSE;
-			_tmp5_ = vala_genie_scanner_comment (self, FALSE);
-			_tmp0_ = _tmp5_;
+			gboolean _tmp4_ = FALSE;
+			_tmp4_ = vala_genie_scanner_comment (self, FALSE);
+			_tmp0_ = _tmp4_;
 		}
-		_tmp6_ = _tmp0_;
-		if (!_tmp6_) {
+		if (!_tmp0_) {
 			break;
 		}
 	}
@@ -5927,7 +5747,6 @@ static void vala_genie_scanner_space (ValaGenieScanner* self) {
 	while (TRUE) {
 		gboolean _tmp0_ = FALSE;
 		gboolean _tmp1_ = FALSE;
-		gboolean _tmp3_;
 		_tmp1_ = vala_genie_scanner_whitespace (self);
 		if (_tmp1_) {
 			_tmp0_ = TRUE;
@@ -5936,8 +5755,7 @@ static void vala_genie_scanner_space (ValaGenieScanner* self) {
 			_tmp2_ = vala_genie_scanner_comment (self, FALSE);
 			_tmp0_ = _tmp2_;
 		}
-		_tmp3_ = _tmp0_;
-		if (!_tmp3_) {
+		if (!_tmp0_) {
 			break;
 		}
 	}
@@ -5949,7 +5767,6 @@ void vala_genie_scanner_parse_file_comments (ValaGenieScanner* self) {
 	while (TRUE) {
 		gboolean _tmp0_ = FALSE;
 		gboolean _tmp1_ = FALSE;
-		gboolean _tmp3_;
 		_tmp1_ = vala_genie_scanner_whitespace (self);
 		if (_tmp1_) {
 			_tmp0_ = TRUE;
@@ -5958,8 +5775,7 @@ void vala_genie_scanner_parse_file_comments (ValaGenieScanner* self) {
 			_tmp2_ = vala_genie_scanner_comment (self, TRUE);
 			_tmp0_ = _tmp2_;
 		}
-		_tmp3_ = _tmp0_;
-		if (!_tmp3_) {
+		if (!_tmp0_) {
 			break;
 		}
 	}
@@ -5968,8 +5784,8 @@ void vala_genie_scanner_parse_file_comments (ValaGenieScanner* self) {
 
 static gchar string_get (const gchar* self, glong index) {
 	gchar result = '\0';
-	glong _tmp0_;
-	gchar _tmp1_;
+	glong _tmp0_ = 0L;
+	gchar _tmp1_ = '\0';
 	g_return_val_if_fail (self != NULL, '\0');
 	_tmp0_ = index;
 	_tmp1_ = ((gchar*) self)[_tmp0_];
@@ -5979,23 +5795,23 @@ static gchar string_get (const gchar* self, glong index) {
 
 
 static void vala_genie_scanner_push_comment (ValaGenieScanner* self, const gchar* comment_item, ValaSourceReference* source_reference, gboolean file_comment) {
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	gchar _tmp1_ = '\0';
-	gboolean _tmp8_;
+	gboolean _tmp8_ = FALSE;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (comment_item != NULL);
 	g_return_if_fail (source_reference != NULL);
 	_tmp0_ = comment_item;
 	_tmp1_ = string_get (_tmp0_, (glong) 0);
 	if (_tmp1_ == '*') {
-		ValaComment* _tmp2_;
-		const gchar* _tmp5_;
-		ValaSourceReference* _tmp6_;
-		ValaComment* _tmp7_;
+		ValaComment* _tmp2_ = NULL;
+		const gchar* _tmp5_ = NULL;
+		ValaSourceReference* _tmp6_ = NULL;
+		ValaComment* _tmp7_ = NULL;
 		_tmp2_ = self->priv->_comment;
 		if (_tmp2_ != NULL) {
-			ValaSourceFile* _tmp3_;
-			ValaComment* _tmp4_;
+			ValaSourceFile* _tmp3_ = NULL;
+			ValaComment* _tmp4_ = NULL;
 			_tmp3_ = self->priv->_source_file;
 			_tmp4_ = self->priv->_comment;
 			vala_source_file_add_comment (_tmp3_, _tmp4_);
@@ -6008,11 +5824,11 @@ static void vala_genie_scanner_push_comment (ValaGenieScanner* self, const gchar
 	}
 	_tmp8_ = file_comment;
 	if (_tmp8_) {
-		ValaSourceFile* _tmp9_;
-		const gchar* _tmp10_;
-		ValaSourceReference* _tmp11_;
-		ValaComment* _tmp12_;
-		ValaComment* _tmp13_;
+		ValaSourceFile* _tmp9_ = NULL;
+		const gchar* _tmp10_ = NULL;
+		ValaSourceReference* _tmp11_ = NULL;
+		ValaComment* _tmp12_ = NULL;
+		ValaComment* _tmp13_ = NULL;
 		_tmp9_ = self->priv->_source_file;
 		_tmp10_ = comment_item;
 		_tmp11_ = source_reference;
@@ -6038,10 +5854,10 @@ static gpointer _vala_comment_ref0 (gpointer self) {
 
 ValaComment* vala_genie_scanner_pop_comment (ValaGenieScanner* self) {
 	ValaComment* result = NULL;
-	ValaComment* _tmp0_;
-	ValaComment* _tmp1_;
-	ValaComment* _tmp2_;
-	ValaComment* comment;
+	ValaComment* _tmp0_ = NULL;
+	ValaComment* comment = NULL;
+	ValaComment* _tmp1_ = NULL;
+	ValaComment* _tmp2_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_comment;
 	if (_tmp0_ == NULL) {
@@ -6060,23 +5876,21 @@ ValaComment* vala_genie_scanner_pop_comment (ValaGenieScanner* self) {
 
 static gboolean vala_genie_scanner_pp_whitespace (ValaGenieScanner* self) {
 	gboolean result = FALSE;
-	gboolean found;
+	gboolean found = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	found = FALSE;
 	while (TRUE) {
 		gboolean _tmp0_ = FALSE;
 		gboolean _tmp1_ = FALSE;
-		gchar* _tmp2_;
-		gchar* _tmp3_;
-		gboolean _tmp7_;
-		gboolean _tmp10_;
-		gchar* _tmp11_;
-		gint _tmp12_;
+		gchar* _tmp2_ = NULL;
+		gchar* _tmp3_ = NULL;
+		gchar* _tmp9_ = NULL;
+		gint _tmp10_ = 0;
 		_tmp2_ = self->priv->current;
 		_tmp3_ = self->priv->end;
 		if (_tmp2_ < _tmp3_) {
-			gchar* _tmp4_;
-			gchar _tmp5_;
+			gchar* _tmp4_ = NULL;
+			gchar _tmp5_ = '\0';
 			gboolean _tmp6_ = FALSE;
 			_tmp4_ = self->priv->current;
 			_tmp5_ = _tmp4_[0];
@@ -6085,25 +5899,23 @@ static gboolean vala_genie_scanner_pp_whitespace (ValaGenieScanner* self) {
 		} else {
 			_tmp1_ = FALSE;
 		}
-		_tmp7_ = _tmp1_;
-		if (_tmp7_) {
-			gchar* _tmp8_;
-			gchar _tmp9_;
-			_tmp8_ = self->priv->current;
-			_tmp9_ = _tmp8_[0];
-			_tmp0_ = _tmp9_ != '\n';
+		if (_tmp1_) {
+			gchar* _tmp7_ = NULL;
+			gchar _tmp8_ = '\0';
+			_tmp7_ = self->priv->current;
+			_tmp8_ = _tmp7_[0];
+			_tmp0_ = _tmp8_ != '\n';
 		} else {
 			_tmp0_ = FALSE;
 		}
-		_tmp10_ = _tmp0_;
-		if (!_tmp10_) {
+		if (!_tmp0_) {
 			break;
 		}
 		found = TRUE;
-		_tmp11_ = self->priv->current;
-		self->priv->current = _tmp11_ + 1;
-		_tmp12_ = self->priv->column;
-		self->priv->column = _tmp12_ + 1;
+		_tmp9_ = self->priv->current;
+		self->priv->current = _tmp9_ + 1;
+		_tmp10_ = self->priv->column;
+		self->priv->column = _tmp10_ + 1;
 	}
 	result = found;
 	return result;
@@ -6115,7 +5927,6 @@ static void vala_genie_scanner_pp_space (ValaGenieScanner* self) {
 	while (TRUE) {
 		gboolean _tmp0_ = FALSE;
 		gboolean _tmp1_ = FALSE;
-		gboolean _tmp3_;
 		_tmp1_ = vala_genie_scanner_pp_whitespace (self);
 		if (_tmp1_) {
 			_tmp0_ = TRUE;
@@ -6124,8 +5935,7 @@ static void vala_genie_scanner_pp_space (ValaGenieScanner* self) {
 			_tmp2_ = vala_genie_scanner_comment (self, FALSE);
 			_tmp0_ = _tmp2_;
 		}
-		_tmp3_ = _tmp0_;
-		if (!_tmp3_) {
+		if (!_tmp0_) {
 			break;
 		}
 	}
@@ -6133,18 +5943,16 @@ static void vala_genie_scanner_pp_space (ValaGenieScanner* self) {
 
 
 static void vala_genie_scanner_pp_directive (ValaGenieScanner* self) {
-	gchar* _tmp0_;
-	gint _tmp1_;
-	gchar* _tmp2_;
-	gchar* begin;
-	gint len;
-	gboolean _tmp13_ = FALSE;
-	gint _tmp14_;
-	gboolean _tmp17_;
-	gboolean _tmp37_ = FALSE;
-	ValaGenieScannerConditional* _tmp38_;
-	gint _tmp38__length1;
-	gboolean _tmp43_;
+	gchar* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	gchar* begin = NULL;
+	gchar* _tmp2_ = NULL;
+	gint len = 0;
+	gboolean _tmp12_ = FALSE;
+	gint _tmp13_ = 0;
+	gboolean _tmp32_ = FALSE;
+	ValaGenieScannerConditional* _tmp33_ = NULL;
+	gint _tmp33__length1 = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = self->priv->current;
 	self->priv->current = _tmp0_ + 1;
@@ -6156,17 +5964,16 @@ static void vala_genie_scanner_pp_directive (ValaGenieScanner* self) {
 	len = 0;
 	while (TRUE) {
 		gboolean _tmp3_ = FALSE;
-		gchar* _tmp4_;
-		gchar* _tmp5_;
-		gboolean _tmp9_;
-		gchar* _tmp10_;
-		gint _tmp11_;
-		gint _tmp12_;
+		gchar* _tmp4_ = NULL;
+		gchar* _tmp5_ = NULL;
+		gchar* _tmp9_ = NULL;
+		gint _tmp10_ = 0;
+		gint _tmp11_ = 0;
 		_tmp4_ = self->priv->current;
 		_tmp5_ = self->priv->end;
 		if (_tmp4_ < _tmp5_) {
-			gchar* _tmp6_;
-			gchar _tmp7_;
+			gchar* _tmp6_ = NULL;
+			gchar _tmp7_ = '\0';
 			gboolean _tmp8_ = FALSE;
 			_tmp6_ = self->priv->current;
 			_tmp7_ = _tmp6_[0];
@@ -6175,189 +5982,176 @@ static void vala_genie_scanner_pp_directive (ValaGenieScanner* self) {
 		} else {
 			_tmp3_ = FALSE;
 		}
-		_tmp9_ = _tmp3_;
-		if (!_tmp9_) {
+		if (!_tmp3_) {
 			break;
 		}
-		_tmp10_ = self->priv->current;
-		self->priv->current = _tmp10_ + 1;
-		_tmp11_ = self->priv->column;
-		self->priv->column = _tmp11_ + 1;
-		_tmp12_ = len;
-		len = _tmp12_ + 1;
+		_tmp9_ = self->priv->current;
+		self->priv->current = _tmp9_ + 1;
+		_tmp10_ = self->priv->column;
+		self->priv->column = _tmp10_ + 1;
+		_tmp11_ = len;
+		len = _tmp11_ + 1;
 	}
-	_tmp14_ = len;
-	if (_tmp14_ == 2) {
-		gchar* _tmp15_;
-		gboolean _tmp16_ = FALSE;
-		_tmp15_ = begin;
-		_tmp16_ = vala_genie_scanner_matches (_tmp15_, "if");
-		_tmp13_ = _tmp16_;
+	_tmp13_ = len;
+	if (_tmp13_ == 2) {
+		gchar* _tmp14_ = NULL;
+		gboolean _tmp15_ = FALSE;
+		_tmp14_ = begin;
+		_tmp15_ = vala_genie_scanner_matches (_tmp14_, "if");
+		_tmp12_ = _tmp15_;
 	} else {
-		_tmp13_ = FALSE;
+		_tmp12_ = FALSE;
 	}
-	_tmp17_ = _tmp13_;
-	if (_tmp17_) {
+	if (_tmp12_) {
 		vala_genie_scanner_parse_pp_if (self);
 	} else {
-		gboolean _tmp18_ = FALSE;
-		gint _tmp19_;
-		gboolean _tmp22_;
-		_tmp19_ = len;
-		if (_tmp19_ == 4) {
-			gchar* _tmp20_;
-			gboolean _tmp21_ = FALSE;
-			_tmp20_ = begin;
-			_tmp21_ = vala_genie_scanner_matches (_tmp20_, "elif");
-			_tmp18_ = _tmp21_;
+		gboolean _tmp16_ = FALSE;
+		gint _tmp17_ = 0;
+		_tmp17_ = len;
+		if (_tmp17_ == 4) {
+			gchar* _tmp18_ = NULL;
+			gboolean _tmp19_ = FALSE;
+			_tmp18_ = begin;
+			_tmp19_ = vala_genie_scanner_matches (_tmp18_, "elif");
+			_tmp16_ = _tmp19_;
 		} else {
-			_tmp18_ = FALSE;
+			_tmp16_ = FALSE;
 		}
-		_tmp22_ = _tmp18_;
-		if (_tmp22_) {
+		if (_tmp16_) {
 			vala_genie_scanner_parse_pp_elif (self);
 		} else {
-			gboolean _tmp23_ = FALSE;
-			gint _tmp24_;
-			gboolean _tmp27_;
-			_tmp24_ = len;
-			if (_tmp24_ == 4) {
-				gchar* _tmp25_;
-				gboolean _tmp26_ = FALSE;
-				_tmp25_ = begin;
-				_tmp26_ = vala_genie_scanner_matches (_tmp25_, "else");
-				_tmp23_ = _tmp26_;
+			gboolean _tmp20_ = FALSE;
+			gint _tmp21_ = 0;
+			_tmp21_ = len;
+			if (_tmp21_ == 4) {
+				gchar* _tmp22_ = NULL;
+				gboolean _tmp23_ = FALSE;
+				_tmp22_ = begin;
+				_tmp23_ = vala_genie_scanner_matches (_tmp22_, "else");
+				_tmp20_ = _tmp23_;
 			} else {
-				_tmp23_ = FALSE;
+				_tmp20_ = FALSE;
 			}
-			_tmp27_ = _tmp23_;
-			if (_tmp27_) {
+			if (_tmp20_) {
 				vala_genie_scanner_parse_pp_else (self);
 			} else {
-				gboolean _tmp28_ = FALSE;
-				gint _tmp29_;
-				gboolean _tmp32_;
-				_tmp29_ = len;
-				if (_tmp29_ == 5) {
-					gchar* _tmp30_;
-					gboolean _tmp31_ = FALSE;
-					_tmp30_ = begin;
-					_tmp31_ = vala_genie_scanner_matches (_tmp30_, "endif");
-					_tmp28_ = _tmp31_;
+				gboolean _tmp24_ = FALSE;
+				gint _tmp25_ = 0;
+				_tmp25_ = len;
+				if (_tmp25_ == 5) {
+					gchar* _tmp26_ = NULL;
+					gboolean _tmp27_ = FALSE;
+					_tmp26_ = begin;
+					_tmp27_ = vala_genie_scanner_matches (_tmp26_, "endif");
+					_tmp24_ = _tmp27_;
 				} else {
-					_tmp28_ = FALSE;
+					_tmp24_ = FALSE;
 				}
-				_tmp32_ = _tmp28_;
-				if (_tmp32_) {
+				if (_tmp24_) {
 					vala_genie_scanner_parse_pp_endif (self);
 				} else {
-					gint _tmp33_;
-					gint _tmp34_;
-					ValaSourceReference* _tmp35_ = NULL;
-					ValaSourceReference* _tmp36_;
-					_tmp33_ = len;
-					_tmp34_ = len;
-					_tmp35_ = vala_genie_scanner_get_source_reference (self, -_tmp33_, _tmp34_);
-					_tmp36_ = _tmp35_;
-					vala_report_error (_tmp36_, "syntax error, invalid preprocessing directive");
-					_vala_source_reference_unref0 (_tmp36_);
+					gint _tmp28_ = 0;
+					gint _tmp29_ = 0;
+					ValaSourceReference* _tmp30_ = NULL;
+					ValaSourceReference* _tmp31_ = NULL;
+					_tmp28_ = len;
+					_tmp29_ = len;
+					_tmp30_ = vala_genie_scanner_get_source_reference (self, -_tmp28_, _tmp29_);
+					_tmp31_ = _tmp30_;
+					vala_report_error (_tmp31_, "syntax error, invalid preprocessing directive");
+					_vala_source_reference_unref0 (_tmp31_);
 				}
 			}
 		}
 	}
-	_tmp38_ = self->priv->conditional_stack;
-	_tmp38__length1 = self->priv->conditional_stack_length1;
-	if (_tmp38__length1 > 0) {
-		ValaGenieScannerConditional* _tmp39_;
-		gint _tmp39__length1;
-		ValaGenieScannerConditional* _tmp40_;
-		gint _tmp40__length1;
-		ValaGenieScannerConditional _tmp41_;
-		gboolean _tmp42_;
-		_tmp39_ = self->priv->conditional_stack;
-		_tmp39__length1 = self->priv->conditional_stack_length1;
-		_tmp40_ = self->priv->conditional_stack;
-		_tmp40__length1 = self->priv->conditional_stack_length1;
-		_tmp41_ = _tmp39_[_tmp40__length1 - 1];
-		_tmp42_ = _tmp41_.skip_section;
-		_tmp37_ = _tmp42_;
+	_tmp33_ = self->priv->conditional_stack;
+	_tmp33__length1 = self->priv->conditional_stack_length1;
+	if (_tmp33__length1 > 0) {
+		ValaGenieScannerConditional* _tmp34_ = NULL;
+		gint _tmp34__length1 = 0;
+		ValaGenieScannerConditional* _tmp35_ = NULL;
+		gint _tmp35__length1 = 0;
+		ValaGenieScannerConditional _tmp36_ = {0};
+		gboolean _tmp37_ = FALSE;
+		_tmp34_ = self->priv->conditional_stack;
+		_tmp34__length1 = self->priv->conditional_stack_length1;
+		_tmp35_ = self->priv->conditional_stack;
+		_tmp35__length1 = self->priv->conditional_stack_length1;
+		_tmp36_ = _tmp34_[_tmp35__length1 - 1];
+		_tmp37_ = _tmp36_.skip_section;
+		_tmp32_ = _tmp37_;
 	} else {
-		_tmp37_ = FALSE;
+		_tmp32_ = FALSE;
 	}
-	_tmp43_ = _tmp37_;
-	if (_tmp43_) {
-		gboolean bol;
+	if (_tmp32_) {
+		gboolean bol = FALSE;
 		bol = FALSE;
 		while (TRUE) {
-			gchar* _tmp44_;
-			gchar* _tmp45_;
-			gboolean _tmp46_ = FALSE;
-			gboolean _tmp47_ = FALSE;
-			gboolean _tmp48_;
-			gboolean _tmp51_;
-			gboolean _tmp54_;
-			gchar* _tmp57_;
-			gchar _tmp58_;
-			gchar* _tmp63_;
-			gint _tmp64_;
-			_tmp44_ = self->priv->current;
-			_tmp45_ = self->priv->end;
-			if (!(_tmp44_ < _tmp45_)) {
+			gchar* _tmp38_ = NULL;
+			gchar* _tmp39_ = NULL;
+			gboolean _tmp40_ = FALSE;
+			gboolean _tmp41_ = FALSE;
+			gboolean _tmp42_ = FALSE;
+			gchar* _tmp49_ = NULL;
+			gchar _tmp50_ = '\0';
+			gchar* _tmp55_ = NULL;
+			gint _tmp56_ = 0;
+			_tmp38_ = self->priv->current;
+			_tmp39_ = self->priv->end;
+			if (!(_tmp38_ < _tmp39_)) {
 				break;
 			}
-			_tmp48_ = bol;
-			if (_tmp48_) {
-				gchar* _tmp49_;
-				gchar* _tmp50_;
-				_tmp49_ = self->priv->current;
-				_tmp50_ = self->priv->end;
-				_tmp47_ = _tmp49_ < _tmp50_;
+			_tmp42_ = bol;
+			if (_tmp42_) {
+				gchar* _tmp43_ = NULL;
+				gchar* _tmp44_ = NULL;
+				_tmp43_ = self->priv->current;
+				_tmp44_ = self->priv->end;
+				_tmp41_ = _tmp43_ < _tmp44_;
 			} else {
-				_tmp47_ = FALSE;
+				_tmp41_ = FALSE;
 			}
-			_tmp51_ = _tmp47_;
-			if (_tmp51_) {
-				gchar* _tmp52_;
-				gchar _tmp53_;
-				_tmp52_ = self->priv->current;
-				_tmp53_ = _tmp52_[0];
-				_tmp46_ = _tmp53_ == '#';
+			if (_tmp41_) {
+				gchar* _tmp45_ = NULL;
+				gchar _tmp46_ = '\0';
+				_tmp45_ = self->priv->current;
+				_tmp46_ = _tmp45_[0];
+				_tmp40_ = _tmp46_ == '#';
 			} else {
-				_tmp46_ = FALSE;
+				_tmp40_ = FALSE;
 			}
-			_tmp54_ = _tmp46_;
-			if (_tmp54_) {
-				gchar* _tmp55_;
-				gint _tmp56_;
-				_tmp55_ = self->priv->current;
-				_tmp56_ = self->priv->column;
-				self->priv->current = _tmp55_ - (_tmp56_ - 1);
+			if (_tmp40_) {
+				gchar* _tmp47_ = NULL;
+				gint _tmp48_ = 0;
+				_tmp47_ = self->priv->current;
+				_tmp48_ = self->priv->column;
+				self->priv->current = _tmp47_ - (_tmp48_ - 1);
 				self->priv->column = 1;
 				return;
 			}
-			_tmp57_ = self->priv->current;
-			_tmp58_ = _tmp57_[0];
-			if (_tmp58_ == '\n') {
-				gint _tmp59_;
-				_tmp59_ = self->priv->line;
-				self->priv->line = _tmp59_ + 1;
+			_tmp49_ = self->priv->current;
+			_tmp50_ = _tmp49_[0];
+			if (_tmp50_ == '\n') {
+				gint _tmp51_ = 0;
+				_tmp51_ = self->priv->line;
+				self->priv->line = _tmp51_ + 1;
 				self->priv->column = 0;
 				bol = TRUE;
 			} else {
-				gchar* _tmp60_;
-				gchar _tmp61_;
-				gboolean _tmp62_ = FALSE;
-				_tmp60_ = self->priv->current;
-				_tmp61_ = _tmp60_[0];
-				_tmp62_ = g_ascii_isspace (_tmp61_);
-				if (!_tmp62_) {
+				gchar* _tmp52_ = NULL;
+				gchar _tmp53_ = '\0';
+				gboolean _tmp54_ = FALSE;
+				_tmp52_ = self->priv->current;
+				_tmp53_ = _tmp52_[0];
+				_tmp54_ = g_ascii_isspace (_tmp53_);
+				if (!_tmp54_) {
 					bol = FALSE;
 				}
 			}
-			_tmp63_ = self->priv->current;
-			self->priv->current = _tmp63_ + 1;
-			_tmp64_ = self->priv->column;
-			self->priv->column = _tmp64_ + 1;
+			_tmp55_ = self->priv->current;
+			self->priv->current = _tmp55_ + 1;
+			_tmp56_ = self->priv->column;
+			self->priv->column = _tmp56_ + 1;
 		}
 	}
 }
@@ -6365,9 +6159,8 @@ static void vala_genie_scanner_pp_directive (ValaGenieScanner* self) {
 
 static void vala_genie_scanner_pp_eol (ValaGenieScanner* self) {
 	gboolean _tmp0_ = FALSE;
-	gchar* _tmp1_;
-	gchar* _tmp2_;
-	gboolean _tmp5_;
+	gchar* _tmp1_ = NULL;
+	gchar* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	vala_genie_scanner_pp_space (self);
 	_tmp1_ = self->priv->current;
@@ -6375,20 +6168,19 @@ static void vala_genie_scanner_pp_eol (ValaGenieScanner* self) {
 	if (_tmp1_ >= _tmp2_) {
 		_tmp0_ = TRUE;
 	} else {
-		gchar* _tmp3_;
-		gchar _tmp4_;
+		gchar* _tmp3_ = NULL;
+		gchar _tmp4_ = '\0';
 		_tmp3_ = self->priv->current;
 		_tmp4_ = _tmp3_[0];
 		_tmp0_ = _tmp4_ != '\n';
 	}
-	_tmp5_ = _tmp0_;
-	if (_tmp5_) {
+	if (_tmp0_) {
+		ValaSourceReference* _tmp5_ = NULL;
 		ValaSourceReference* _tmp6_ = NULL;
-		ValaSourceReference* _tmp7_;
-		_tmp6_ = vala_genie_scanner_get_source_reference (self, 0, 0);
-		_tmp7_ = _tmp6_;
-		vala_report_error (_tmp7_, "syntax error, expected newline");
-		_vala_source_reference_unref0 (_tmp7_);
+		_tmp5_ = vala_genie_scanner_get_source_reference (self, 0, 0);
+		_tmp6_ = _tmp5_;
+		vala_report_error (_tmp6_, "syntax error, expected newline");
+		_vala_source_reference_unref0 (_tmp6_);
 	}
 }
 
@@ -6403,14 +6195,13 @@ static void _vala_array_add11 (ValaGenieScannerConditional** array, int* length,
 
 
 static void vala_genie_scanner_parse_pp_if (ValaGenieScanner* self) {
+	gboolean condition = FALSE;
 	gboolean _tmp0_ = FALSE;
-	gboolean condition;
-	ValaGenieScannerConditional* _tmp1_;
-	gint _tmp1__length1;
+	ValaGenieScannerConditional* _tmp1_ = NULL;
+	gint _tmp1__length1 = 0;
 	ValaGenieScannerConditional _tmp2_ = {0};
 	gboolean _tmp3_ = FALSE;
-	gboolean _tmp4_;
-	gboolean _tmp12_;
+	gboolean _tmp4_ = FALSE;
 	g_return_if_fail (self != NULL);
 	vala_genie_scanner_pp_space (self);
 	_tmp0_ = vala_genie_scanner_parse_pp_expression (self);
@@ -6423,20 +6214,19 @@ static void vala_genie_scanner_parse_pp_if (ValaGenieScanner* self) {
 	_tmp4_ = condition;
 	if (_tmp4_) {
 		gboolean _tmp5_ = FALSE;
-		ValaGenieScannerConditional* _tmp6_;
-		gint _tmp6__length1;
-		gboolean _tmp11_;
+		ValaGenieScannerConditional* _tmp6_ = NULL;
+		gint _tmp6__length1 = 0;
 		_tmp6_ = self->priv->conditional_stack;
 		_tmp6__length1 = self->priv->conditional_stack_length1;
 		if (_tmp6__length1 == 1) {
 			_tmp5_ = TRUE;
 		} else {
-			ValaGenieScannerConditional* _tmp7_;
-			gint _tmp7__length1;
-			ValaGenieScannerConditional* _tmp8_;
-			gint _tmp8__length1;
-			ValaGenieScannerConditional _tmp9_;
-			gboolean _tmp10_;
+			ValaGenieScannerConditional* _tmp7_ = NULL;
+			gint _tmp7__length1 = 0;
+			ValaGenieScannerConditional* _tmp8_ = NULL;
+			gint _tmp8__length1 = 0;
+			ValaGenieScannerConditional _tmp9_ = {0};
+			gboolean _tmp10_ = FALSE;
 			_tmp7_ = self->priv->conditional_stack;
 			_tmp7__length1 = self->priv->conditional_stack_length1;
 			_tmp8_ = self->priv->conditional_stack;
@@ -6445,48 +6235,43 @@ static void vala_genie_scanner_parse_pp_if (ValaGenieScanner* self) {
 			_tmp10_ = _tmp9_.skip_section;
 			_tmp5_ = !_tmp10_;
 		}
-		_tmp11_ = _tmp5_;
-		_tmp3_ = _tmp11_;
+		_tmp3_ = _tmp5_;
 	} else {
 		_tmp3_ = FALSE;
 	}
-	_tmp12_ = _tmp3_;
-	if (_tmp12_) {
-		ValaGenieScannerConditional* _tmp13_;
-		gint _tmp13__length1;
-		ValaGenieScannerConditional* _tmp14_;
-		gint _tmp14__length1;
+	if (_tmp3_) {
+		ValaGenieScannerConditional* _tmp11_ = NULL;
+		gint _tmp11__length1 = 0;
+		ValaGenieScannerConditional* _tmp12_ = NULL;
+		gint _tmp12__length1 = 0;
+		_tmp11_ = self->priv->conditional_stack;
+		_tmp11__length1 = self->priv->conditional_stack_length1;
+		_tmp12_ = self->priv->conditional_stack;
+		_tmp12__length1 = self->priv->conditional_stack_length1;
+		_tmp11_[_tmp12__length1 - 1].matched = TRUE;
+	} else {
+		ValaGenieScannerConditional* _tmp13_ = NULL;
+		gint _tmp13__length1 = 0;
+		ValaGenieScannerConditional* _tmp14_ = NULL;
+		gint _tmp14__length1 = 0;
 		_tmp13_ = self->priv->conditional_stack;
 		_tmp13__length1 = self->priv->conditional_stack_length1;
 		_tmp14_ = self->priv->conditional_stack;
 		_tmp14__length1 = self->priv->conditional_stack_length1;
-		_tmp13_[_tmp14__length1 - 1].matched = TRUE;
-	} else {
-		ValaGenieScannerConditional* _tmp15_;
-		gint _tmp15__length1;
-		ValaGenieScannerConditional* _tmp16_;
-		gint _tmp16__length1;
-		_tmp15_ = self->priv->conditional_stack;
-		_tmp15__length1 = self->priv->conditional_stack_length1;
-		_tmp16_ = self->priv->conditional_stack;
-		_tmp16__length1 = self->priv->conditional_stack_length1;
-		_tmp15_[_tmp16__length1 - 1].skip_section = TRUE;
+		_tmp13_[_tmp14__length1 - 1].skip_section = TRUE;
 	}
 }
 
 
 static void vala_genie_scanner_parse_pp_elif (ValaGenieScanner* self) {
+	gboolean condition = FALSE;
 	gboolean _tmp0_ = FALSE;
-	gboolean condition;
 	gboolean _tmp1_ = FALSE;
-	ValaGenieScannerConditional* _tmp2_;
-	gint _tmp2__length1;
-	gboolean _tmp7_;
+	ValaGenieScannerConditional* _tmp2_ = NULL;
+	gint _tmp2__length1 = 0;
+	gboolean _tmp9_ = FALSE;
 	gboolean _tmp10_ = FALSE;
 	gboolean _tmp11_ = FALSE;
-	gboolean _tmp12_;
-	gboolean _tmp17_;
-	gboolean _tmp25_;
 	g_return_if_fail (self != NULL);
 	vala_genie_scanner_pp_space (self);
 	_tmp0_ = vala_genie_scanner_parse_pp_expression (self);
@@ -6497,12 +6282,12 @@ static void vala_genie_scanner_parse_pp_elif (ValaGenieScanner* self) {
 	if (_tmp2__length1 == 0) {
 		_tmp1_ = TRUE;
 	} else {
-		ValaGenieScannerConditional* _tmp3_;
-		gint _tmp3__length1;
-		ValaGenieScannerConditional* _tmp4_;
-		gint _tmp4__length1;
-		ValaGenieScannerConditional _tmp5_;
-		gboolean _tmp6_;
+		ValaGenieScannerConditional* _tmp3_ = NULL;
+		gint _tmp3__length1 = 0;
+		ValaGenieScannerConditional* _tmp4_ = NULL;
+		gint _tmp4__length1 = 0;
+		ValaGenieScannerConditional _tmp5_ = {0};
+		gboolean _tmp6_ = FALSE;
 		_tmp3_ = self->priv->conditional_stack;
 		_tmp3__length1 = self->priv->conditional_stack_length1;
 		_tmp4_ = self->priv->conditional_stack;
@@ -6511,187 +6296,69 @@ static void vala_genie_scanner_parse_pp_elif (ValaGenieScanner* self) {
 		_tmp6_ = _tmp5_.else_found;
 		_tmp1_ = _tmp6_;
 	}
-	_tmp7_ = _tmp1_;
-	if (_tmp7_) {
-		ValaSourceReference* _tmp8_ = NULL;
-		ValaSourceReference* _tmp9_;
-		_tmp8_ = vala_genie_scanner_get_source_reference (self, 0, 0);
-		_tmp9_ = _tmp8_;
-		vala_report_error (_tmp9_, "syntax error, unexpected #elif");
-		_vala_source_reference_unref0 (_tmp9_);
-		return;
-	}
-	_tmp12_ = condition;
-	if (_tmp12_) {
-		ValaGenieScannerConditional* _tmp13_;
-		gint _tmp13__length1;
-		ValaGenieScannerConditional* _tmp14_;
-		gint _tmp14__length1;
-		ValaGenieScannerConditional _tmp15_;
-		gboolean _tmp16_;
-		_tmp13_ = self->priv->conditional_stack;
-		_tmp13__length1 = self->priv->conditional_stack_length1;
-		_tmp14_ = self->priv->conditional_stack;
-		_tmp14__length1 = self->priv->conditional_stack_length1;
-		_tmp15_ = _tmp13_[_tmp14__length1 - 1];
-		_tmp16_ = _tmp15_.matched;
-		_tmp11_ = !_tmp16_;
-	} else {
-		_tmp11_ = FALSE;
-	}
-	_tmp17_ = _tmp11_;
-	if (_tmp17_) {
-		gboolean _tmp18_ = FALSE;
-		ValaGenieScannerConditional* _tmp19_;
-		gint _tmp19__length1;
-		gboolean _tmp24_;
-		_tmp19_ = self->priv->conditional_stack;
-		_tmp19__length1 = self->priv->conditional_stack_length1;
-		if (_tmp19__length1 == 1) {
-			_tmp18_ = TRUE;
-		} else {
-			ValaGenieScannerConditional* _tmp20_;
-			gint _tmp20__length1;
-			ValaGenieScannerConditional* _tmp21_;
-			gint _tmp21__length1;
-			ValaGenieScannerConditional _tmp22_;
-			gboolean _tmp23_;
-			_tmp20_ = self->priv->conditional_stack;
-			_tmp20__length1 = self->priv->conditional_stack_length1;
-			_tmp21_ = self->priv->conditional_stack;
-			_tmp21__length1 = self->priv->conditional_stack_length1;
-			_tmp22_ = _tmp20_[_tmp21__length1 - 2];
-			_tmp23_ = _tmp22_.skip_section;
-			_tmp18_ = !_tmp23_;
-		}
-		_tmp24_ = _tmp18_;
-		_tmp10_ = _tmp24_;
-	} else {
-		_tmp10_ = FALSE;
-	}
-	_tmp25_ = _tmp10_;
-	if (_tmp25_) {
-		ValaGenieScannerConditional* _tmp26_;
-		gint _tmp26__length1;
-		ValaGenieScannerConditional* _tmp27_;
-		gint _tmp27__length1;
-		ValaGenieScannerConditional* _tmp28_;
-		gint _tmp28__length1;
-		ValaGenieScannerConditional* _tmp29_;
-		gint _tmp29__length1;
-		_tmp26_ = self->priv->conditional_stack;
-		_tmp26__length1 = self->priv->conditional_stack_length1;
-		_tmp27_ = self->priv->conditional_stack;
-		_tmp27__length1 = self->priv->conditional_stack_length1;
-		_tmp26_[_tmp27__length1 - 1].matched = TRUE;
-		_tmp28_ = self->priv->conditional_stack;
-		_tmp28__length1 = self->priv->conditional_stack_length1;
-		_tmp29_ = self->priv->conditional_stack;
-		_tmp29__length1 = self->priv->conditional_stack_length1;
-		_tmp28_[_tmp29__length1 - 1].skip_section = FALSE;
-	} else {
-		ValaGenieScannerConditional* _tmp30_;
-		gint _tmp30__length1;
-		ValaGenieScannerConditional* _tmp31_;
-		gint _tmp31__length1;
-		_tmp30_ = self->priv->conditional_stack;
-		_tmp30__length1 = self->priv->conditional_stack_length1;
-		_tmp31_ = self->priv->conditional_stack;
-		_tmp31__length1 = self->priv->conditional_stack_length1;
-		_tmp30_[_tmp31__length1 - 1].skip_section = TRUE;
-	}
-}
-
-
-static void vala_genie_scanner_parse_pp_else (ValaGenieScanner* self) {
-	gboolean _tmp0_ = FALSE;
-	ValaGenieScannerConditional* _tmp1_;
-	gint _tmp1__length1;
-	gboolean _tmp6_;
-	gboolean _tmp9_ = FALSE;
-	ValaGenieScannerConditional* _tmp10_;
-	gint _tmp10__length1;
-	ValaGenieScannerConditional* _tmp11_;
-	gint _tmp11__length1;
-	ValaGenieScannerConditional _tmp12_;
-	gboolean _tmp13_;
-	gboolean _tmp21_;
-	g_return_if_fail (self != NULL);
-	vala_genie_scanner_pp_eol (self);
-	_tmp1_ = self->priv->conditional_stack;
-	_tmp1__length1 = self->priv->conditional_stack_length1;
-	if (_tmp1__length1 == 0) {
-		_tmp0_ = TRUE;
-	} else {
-		ValaGenieScannerConditional* _tmp2_;
-		gint _tmp2__length1;
-		ValaGenieScannerConditional* _tmp3_;
-		gint _tmp3__length1;
-		ValaGenieScannerConditional _tmp4_;
-		gboolean _tmp5_;
-		_tmp2_ = self->priv->conditional_stack;
-		_tmp2__length1 = self->priv->conditional_stack_length1;
-		_tmp3_ = self->priv->conditional_stack;
-		_tmp3__length1 = self->priv->conditional_stack_length1;
-		_tmp4_ = _tmp2_[_tmp3__length1 - 1];
-		_tmp5_ = _tmp4_.else_found;
-		_tmp0_ = _tmp5_;
-	}
-	_tmp6_ = _tmp0_;
-	if (_tmp6_) {
+	if (_tmp1_) {
 		ValaSourceReference* _tmp7_ = NULL;
-		ValaSourceReference* _tmp8_;
+		ValaSourceReference* _tmp8_ = NULL;
 		_tmp7_ = vala_genie_scanner_get_source_reference (self, 0, 0);
 		_tmp8_ = _tmp7_;
-		vala_report_error (_tmp8_, "syntax error, unexpected #else");
+		vala_report_error (_tmp8_, "syntax error, unexpected #elif");
 		_vala_source_reference_unref0 (_tmp8_);
 		return;
 	}
-	_tmp10_ = self->priv->conditional_stack;
-	_tmp10__length1 = self->priv->conditional_stack_length1;
-	_tmp11_ = self->priv->conditional_stack;
-	_tmp11__length1 = self->priv->conditional_stack_length1;
-	_tmp12_ = _tmp10_[_tmp11__length1 - 1];
-	_tmp13_ = _tmp12_.matched;
-	if (!_tmp13_) {
-		gboolean _tmp14_ = FALSE;
-		ValaGenieScannerConditional* _tmp15_;
-		gint _tmp15__length1;
-		gboolean _tmp20_;
-		_tmp15_ = self->priv->conditional_stack;
-		_tmp15__length1 = self->priv->conditional_stack_length1;
-		if (_tmp15__length1 == 1) {
-			_tmp14_ = TRUE;
+	_tmp11_ = condition;
+	if (_tmp11_) {
+		ValaGenieScannerConditional* _tmp12_ = NULL;
+		gint _tmp12__length1 = 0;
+		ValaGenieScannerConditional* _tmp13_ = NULL;
+		gint _tmp13__length1 = 0;
+		ValaGenieScannerConditional _tmp14_ = {0};
+		gboolean _tmp15_ = FALSE;
+		_tmp12_ = self->priv->conditional_stack;
+		_tmp12__length1 = self->priv->conditional_stack_length1;
+		_tmp13_ = self->priv->conditional_stack;
+		_tmp13__length1 = self->priv->conditional_stack_length1;
+		_tmp14_ = _tmp12_[_tmp13__length1 - 1];
+		_tmp15_ = _tmp14_.matched;
+		_tmp10_ = !_tmp15_;
+	} else {
+		_tmp10_ = FALSE;
+	}
+	if (_tmp10_) {
+		gboolean _tmp16_ = FALSE;
+		ValaGenieScannerConditional* _tmp17_ = NULL;
+		gint _tmp17__length1 = 0;
+		_tmp17_ = self->priv->conditional_stack;
+		_tmp17__length1 = self->priv->conditional_stack_length1;
+		if (_tmp17__length1 == 1) {
+			_tmp16_ = TRUE;
 		} else {
-			ValaGenieScannerConditional* _tmp16_;
-			gint _tmp16__length1;
-			ValaGenieScannerConditional* _tmp17_;
-			gint _tmp17__length1;
-			ValaGenieScannerConditional _tmp18_;
-			gboolean _tmp19_;
-			_tmp16_ = self->priv->conditional_stack;
-			_tmp16__length1 = self->priv->conditional_stack_length1;
-			_tmp17_ = self->priv->conditional_stack;
-			_tmp17__length1 = self->priv->conditional_stack_length1;
-			_tmp18_ = _tmp16_[_tmp17__length1 - 2];
-			_tmp19_ = _tmp18_.skip_section;
-			_tmp14_ = !_tmp19_;
+			ValaGenieScannerConditional* _tmp18_ = NULL;
+			gint _tmp18__length1 = 0;
+			ValaGenieScannerConditional* _tmp19_ = NULL;
+			gint _tmp19__length1 = 0;
+			ValaGenieScannerConditional _tmp20_ = {0};
+			gboolean _tmp21_ = FALSE;
+			_tmp18_ = self->priv->conditional_stack;
+			_tmp18__length1 = self->priv->conditional_stack_length1;
+			_tmp19_ = self->priv->conditional_stack;
+			_tmp19__length1 = self->priv->conditional_stack_length1;
+			_tmp20_ = _tmp18_[_tmp19__length1 - 2];
+			_tmp21_ = _tmp20_.skip_section;
+			_tmp16_ = !_tmp21_;
 		}
-		_tmp20_ = _tmp14_;
-		_tmp9_ = _tmp20_;
+		_tmp9_ = _tmp16_;
 	} else {
 		_tmp9_ = FALSE;
 	}
-	_tmp21_ = _tmp9_;
-	if (_tmp21_) {
-		ValaGenieScannerConditional* _tmp22_;
-		gint _tmp22__length1;
-		ValaGenieScannerConditional* _tmp23_;
-		gint _tmp23__length1;
-		ValaGenieScannerConditional* _tmp24_;
-		gint _tmp24__length1;
-		ValaGenieScannerConditional* _tmp25_;
-		gint _tmp25__length1;
+	if (_tmp9_) {
+		ValaGenieScannerConditional* _tmp22_ = NULL;
+		gint _tmp22__length1 = 0;
+		ValaGenieScannerConditional* _tmp23_ = NULL;
+		gint _tmp23__length1 = 0;
+		ValaGenieScannerConditional* _tmp24_ = NULL;
+		gint _tmp24__length1 = 0;
+		ValaGenieScannerConditional* _tmp25_ = NULL;
+		gint _tmp25__length1 = 0;
 		_tmp22_ = self->priv->conditional_stack;
 		_tmp22__length1 = self->priv->conditional_stack_length1;
 		_tmp23_ = self->priv->conditional_stack;
@@ -6703,10 +6370,10 @@ static void vala_genie_scanner_parse_pp_else (ValaGenieScanner* self) {
 		_tmp25__length1 = self->priv->conditional_stack_length1;
 		_tmp24_[_tmp25__length1 - 1].skip_section = FALSE;
 	} else {
-		ValaGenieScannerConditional* _tmp26_;
-		gint _tmp26__length1;
-		ValaGenieScannerConditional* _tmp27_;
-		gint _tmp27__length1;
+		ValaGenieScannerConditional* _tmp26_ = NULL;
+		gint _tmp26__length1 = 0;
+		ValaGenieScannerConditional* _tmp27_ = NULL;
+		gint _tmp27__length1 = 0;
 		_tmp26_ = self->priv->conditional_stack;
 		_tmp26__length1 = self->priv->conditional_stack_length1;
 		_tmp27_ = self->priv->conditional_stack;
@@ -6716,17 +6383,124 @@ static void vala_genie_scanner_parse_pp_else (ValaGenieScanner* self) {
 }
 
 
+static void vala_genie_scanner_parse_pp_else (ValaGenieScanner* self) {
+	gboolean _tmp0_ = FALSE;
+	ValaGenieScannerConditional* _tmp1_ = NULL;
+	gint _tmp1__length1 = 0;
+	gboolean _tmp8_ = FALSE;
+	ValaGenieScannerConditional* _tmp9_ = NULL;
+	gint _tmp9__length1 = 0;
+	ValaGenieScannerConditional* _tmp10_ = NULL;
+	gint _tmp10__length1 = 0;
+	ValaGenieScannerConditional _tmp11_ = {0};
+	gboolean _tmp12_ = FALSE;
+	g_return_if_fail (self != NULL);
+	vala_genie_scanner_pp_eol (self);
+	_tmp1_ = self->priv->conditional_stack;
+	_tmp1__length1 = self->priv->conditional_stack_length1;
+	if (_tmp1__length1 == 0) {
+		_tmp0_ = TRUE;
+	} else {
+		ValaGenieScannerConditional* _tmp2_ = NULL;
+		gint _tmp2__length1 = 0;
+		ValaGenieScannerConditional* _tmp3_ = NULL;
+		gint _tmp3__length1 = 0;
+		ValaGenieScannerConditional _tmp4_ = {0};
+		gboolean _tmp5_ = FALSE;
+		_tmp2_ = self->priv->conditional_stack;
+		_tmp2__length1 = self->priv->conditional_stack_length1;
+		_tmp3_ = self->priv->conditional_stack;
+		_tmp3__length1 = self->priv->conditional_stack_length1;
+		_tmp4_ = _tmp2_[_tmp3__length1 - 1];
+		_tmp5_ = _tmp4_.else_found;
+		_tmp0_ = _tmp5_;
+	}
+	if (_tmp0_) {
+		ValaSourceReference* _tmp6_ = NULL;
+		ValaSourceReference* _tmp7_ = NULL;
+		_tmp6_ = vala_genie_scanner_get_source_reference (self, 0, 0);
+		_tmp7_ = _tmp6_;
+		vala_report_error (_tmp7_, "syntax error, unexpected #else");
+		_vala_source_reference_unref0 (_tmp7_);
+		return;
+	}
+	_tmp9_ = self->priv->conditional_stack;
+	_tmp9__length1 = self->priv->conditional_stack_length1;
+	_tmp10_ = self->priv->conditional_stack;
+	_tmp10__length1 = self->priv->conditional_stack_length1;
+	_tmp11_ = _tmp9_[_tmp10__length1 - 1];
+	_tmp12_ = _tmp11_.matched;
+	if (!_tmp12_) {
+		gboolean _tmp13_ = FALSE;
+		ValaGenieScannerConditional* _tmp14_ = NULL;
+		gint _tmp14__length1 = 0;
+		_tmp14_ = self->priv->conditional_stack;
+		_tmp14__length1 = self->priv->conditional_stack_length1;
+		if (_tmp14__length1 == 1) {
+			_tmp13_ = TRUE;
+		} else {
+			ValaGenieScannerConditional* _tmp15_ = NULL;
+			gint _tmp15__length1 = 0;
+			ValaGenieScannerConditional* _tmp16_ = NULL;
+			gint _tmp16__length1 = 0;
+			ValaGenieScannerConditional _tmp17_ = {0};
+			gboolean _tmp18_ = FALSE;
+			_tmp15_ = self->priv->conditional_stack;
+			_tmp15__length1 = self->priv->conditional_stack_length1;
+			_tmp16_ = self->priv->conditional_stack;
+			_tmp16__length1 = self->priv->conditional_stack_length1;
+			_tmp17_ = _tmp15_[_tmp16__length1 - 2];
+			_tmp18_ = _tmp17_.skip_section;
+			_tmp13_ = !_tmp18_;
+		}
+		_tmp8_ = _tmp13_;
+	} else {
+		_tmp8_ = FALSE;
+	}
+	if (_tmp8_) {
+		ValaGenieScannerConditional* _tmp19_ = NULL;
+		gint _tmp19__length1 = 0;
+		ValaGenieScannerConditional* _tmp20_ = NULL;
+		gint _tmp20__length1 = 0;
+		ValaGenieScannerConditional* _tmp21_ = NULL;
+		gint _tmp21__length1 = 0;
+		ValaGenieScannerConditional* _tmp22_ = NULL;
+		gint _tmp22__length1 = 0;
+		_tmp19_ = self->priv->conditional_stack;
+		_tmp19__length1 = self->priv->conditional_stack_length1;
+		_tmp20_ = self->priv->conditional_stack;
+		_tmp20__length1 = self->priv->conditional_stack_length1;
+		_tmp19_[_tmp20__length1 - 1].matched = TRUE;
+		_tmp21_ = self->priv->conditional_stack;
+		_tmp21__length1 = self->priv->conditional_stack_length1;
+		_tmp22_ = self->priv->conditional_stack;
+		_tmp22__length1 = self->priv->conditional_stack_length1;
+		_tmp21_[_tmp22__length1 - 1].skip_section = FALSE;
+	} else {
+		ValaGenieScannerConditional* _tmp23_ = NULL;
+		gint _tmp23__length1 = 0;
+		ValaGenieScannerConditional* _tmp24_ = NULL;
+		gint _tmp24__length1 = 0;
+		_tmp23_ = self->priv->conditional_stack;
+		_tmp23__length1 = self->priv->conditional_stack_length1;
+		_tmp24_ = self->priv->conditional_stack;
+		_tmp24__length1 = self->priv->conditional_stack_length1;
+		_tmp23_[_tmp24__length1 - 1].skip_section = TRUE;
+	}
+}
+
+
 static void vala_genie_scanner_parse_pp_endif (ValaGenieScanner* self) {
-	ValaGenieScannerConditional* _tmp0_;
-	gint _tmp0__length1;
-	gint _tmp3_;
+	ValaGenieScannerConditional* _tmp0_ = NULL;
+	gint _tmp0__length1 = 0;
+	gint _tmp3_ = 0;
 	g_return_if_fail (self != NULL);
 	vala_genie_scanner_pp_eol (self);
 	_tmp0_ = self->priv->conditional_stack;
 	_tmp0__length1 = self->priv->conditional_stack_length1;
 	if (_tmp0__length1 == 0) {
 		ValaSourceReference* _tmp1_ = NULL;
-		ValaSourceReference* _tmp2_;
+		ValaSourceReference* _tmp2_ = NULL;
 		_tmp1_ = vala_genie_scanner_get_source_reference (self, 0, 0);
 		_tmp2_ = _tmp1_;
 		vala_report_error (_tmp2_, "syntax error, unexpected #endif");
@@ -6740,30 +6514,29 @@ static void vala_genie_scanner_parse_pp_endif (ValaGenieScanner* self) {
 
 static gboolean vala_genie_scanner_parse_pp_symbol (ValaGenieScanner* self) {
 	gboolean result = FALSE;
-	gint len;
-	gint _tmp10_;
-	gchar* _tmp13_;
-	gint _tmp14_;
-	gint _tmp15_;
-	gchar* _tmp16_ = NULL;
-	gchar* identifier;
+	gint len = 0;
+	gint _tmp9_ = 0;
+	gchar* identifier = NULL;
+	gchar* _tmp12_ = NULL;
+	gint _tmp13_ = 0;
+	gint _tmp14_ = 0;
+	gchar* _tmp15_ = NULL;
 	gboolean defined = FALSE;
-	const gchar* _tmp17_;
+	const gchar* _tmp16_ = NULL;
 	g_return_val_if_fail (self != NULL, FALSE);
 	len = 0;
 	while (TRUE) {
 		gboolean _tmp0_ = FALSE;
-		gchar* _tmp1_;
-		gchar* _tmp2_;
-		gboolean _tmp6_;
-		gchar* _tmp7_;
-		gint _tmp8_;
-		gint _tmp9_;
+		gchar* _tmp1_ = NULL;
+		gchar* _tmp2_ = NULL;
+		gchar* _tmp6_ = NULL;
+		gint _tmp7_ = 0;
+		gint _tmp8_ = 0;
 		_tmp1_ = self->priv->current;
 		_tmp2_ = self->priv->end;
 		if (_tmp1_ < _tmp2_) {
-			gchar* _tmp3_;
-			gchar _tmp4_;
+			gchar* _tmp3_ = NULL;
+			gchar _tmp4_ = '\0';
 			gboolean _tmp5_ = FALSE;
 			_tmp3_ = self->priv->current;
 			_tmp4_ = _tmp3_[0];
@@ -6772,53 +6545,52 @@ static gboolean vala_genie_scanner_parse_pp_symbol (ValaGenieScanner* self) {
 		} else {
 			_tmp0_ = FALSE;
 		}
-		_tmp6_ = _tmp0_;
-		if (!_tmp6_) {
+		if (!_tmp0_) {
 			break;
 		}
-		_tmp7_ = self->priv->current;
-		self->priv->current = _tmp7_ + 1;
-		_tmp8_ = self->priv->column;
-		self->priv->column = _tmp8_ + 1;
-		_tmp9_ = len;
-		len = _tmp9_ + 1;
+		_tmp6_ = self->priv->current;
+		self->priv->current = _tmp6_ + 1;
+		_tmp7_ = self->priv->column;
+		self->priv->column = _tmp7_ + 1;
+		_tmp8_ = len;
+		len = _tmp8_ + 1;
 	}
-	_tmp10_ = len;
-	if (_tmp10_ == 0) {
+	_tmp9_ = len;
+	if (_tmp9_ == 0) {
+		ValaSourceReference* _tmp10_ = NULL;
 		ValaSourceReference* _tmp11_ = NULL;
-		ValaSourceReference* _tmp12_;
-		_tmp11_ = vala_genie_scanner_get_source_reference (self, 0, 0);
-		_tmp12_ = _tmp11_;
-		vala_report_error (_tmp12_, "syntax error, expected identifier");
-		_vala_source_reference_unref0 (_tmp12_);
+		_tmp10_ = vala_genie_scanner_get_source_reference (self, 0, 0);
+		_tmp11_ = _tmp10_;
+		vala_report_error (_tmp11_, "syntax error, expected identifier");
+		_vala_source_reference_unref0 (_tmp11_);
 		result = FALSE;
 		return result;
 	}
-	_tmp13_ = self->priv->current;
+	_tmp12_ = self->priv->current;
+	_tmp13_ = len;
 	_tmp14_ = len;
-	_tmp15_ = len;
-	_tmp16_ = string_substring ((const gchar*) (_tmp13_ - _tmp14_), (glong) 0, (glong) _tmp15_);
-	identifier = _tmp16_;
-	_tmp17_ = identifier;
-	if (g_strcmp0 (_tmp17_, "true") == 0) {
+	_tmp15_ = string_substring ((const gchar*) (_tmp12_ - _tmp13_), (glong) 0, (glong) _tmp14_);
+	identifier = _tmp15_;
+	_tmp16_ = identifier;
+	if (g_strcmp0 (_tmp16_, "true") == 0) {
 		defined = TRUE;
 	} else {
-		const gchar* _tmp18_;
-		_tmp18_ = identifier;
-		if (g_strcmp0 (_tmp18_, "false") == 0) {
+		const gchar* _tmp17_ = NULL;
+		_tmp17_ = identifier;
+		if (g_strcmp0 (_tmp17_, "false") == 0) {
 			defined = FALSE;
 		} else {
-			ValaSourceFile* _tmp19_;
-			ValaCodeContext* _tmp20_;
-			ValaCodeContext* _tmp21_;
-			const gchar* _tmp22_;
-			gboolean _tmp23_ = FALSE;
-			_tmp19_ = self->priv->_source_file;
-			_tmp20_ = vala_source_file_get_context (_tmp19_);
-			_tmp21_ = _tmp20_;
-			_tmp22_ = identifier;
-			_tmp23_ = vala_code_context_is_defined (_tmp21_, _tmp22_);
-			defined = _tmp23_;
+			ValaSourceFile* _tmp18_ = NULL;
+			ValaCodeContext* _tmp19_ = NULL;
+			ValaCodeContext* _tmp20_ = NULL;
+			const gchar* _tmp21_ = NULL;
+			gboolean _tmp22_ = FALSE;
+			_tmp18_ = self->priv->_source_file;
+			_tmp19_ = vala_source_file_get_context (_tmp18_);
+			_tmp20_ = _tmp19_;
+			_tmp21_ = identifier;
+			_tmp22_ = vala_code_context_is_defined (_tmp20_, _tmp21_);
+			defined = _tmp22_;
 		}
 	}
 	result = defined;
@@ -6829,21 +6601,21 @@ static gboolean vala_genie_scanner_parse_pp_symbol (ValaGenieScanner* self) {
 
 static gboolean vala_genie_scanner_parse_pp_primary_expression (ValaGenieScanner* self) {
 	gboolean result = FALSE;
-	gchar* _tmp0_;
-	gchar* _tmp1_;
+	gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->current;
 	_tmp1_ = self->priv->end;
 	if (_tmp0_ >= _tmp1_) {
 		ValaSourceReference* _tmp2_ = NULL;
-		ValaSourceReference* _tmp3_;
+		ValaSourceReference* _tmp3_ = NULL;
 		_tmp2_ = vala_genie_scanner_get_source_reference (self, 0, 0);
 		_tmp3_ = _tmp2_;
 		vala_report_error (_tmp3_, "syntax error, expected identifier");
 		_vala_source_reference_unref0 (_tmp3_);
 	} else {
-		gchar* _tmp4_;
-		gchar _tmp5_;
+		gchar* _tmp4_ = NULL;
+		gchar _tmp5_ = '\0';
 		gboolean _tmp6_ = FALSE;
 		_tmp4_ = self->priv->current;
 		_tmp5_ = _tmp4_[0];
@@ -6854,19 +6626,18 @@ static gboolean vala_genie_scanner_parse_pp_primary_expression (ValaGenieScanner
 			result = _tmp7_;
 			return result;
 		} else {
-			gchar* _tmp8_;
-			gchar _tmp9_;
+			gchar* _tmp8_ = NULL;
+			gchar _tmp9_ = '\0';
 			_tmp8_ = self->priv->current;
 			_tmp9_ = _tmp8_[0];
 			if (_tmp9_ == '(') {
-				gchar* _tmp10_;
-				gint _tmp11_;
+				gchar* _tmp10_ = NULL;
+				gint _tmp11_ = 0;
+				gboolean _result_ = FALSE;
 				gboolean _tmp12_ = FALSE;
-				gboolean _result_;
 				gboolean _tmp13_ = FALSE;
-				gchar* _tmp14_;
-				gchar* _tmp15_;
-				gboolean _tmp18_;
+				gchar* _tmp14_ = NULL;
+				gchar* _tmp15_ = NULL;
 				_tmp10_ = self->priv->current;
 				self->priv->current = _tmp10_ + 1;
 				_tmp11_ = self->priv->column;
@@ -6878,39 +6649,38 @@ static gboolean vala_genie_scanner_parse_pp_primary_expression (ValaGenieScanner
 				_tmp14_ = self->priv->current;
 				_tmp15_ = self->priv->end;
 				if (_tmp14_ < _tmp15_) {
-					gchar* _tmp16_;
-					gchar _tmp17_;
+					gchar* _tmp16_ = NULL;
+					gchar _tmp17_ = '\0';
 					_tmp16_ = self->priv->current;
 					_tmp17_ = _tmp16_[0];
 					_tmp13_ = _tmp17_ == ')';
 				} else {
 					_tmp13_ = FALSE;
 				}
-				_tmp18_ = _tmp13_;
-				if (_tmp18_) {
-					gchar* _tmp19_;
-					gint _tmp20_;
-					_tmp19_ = self->priv->current;
-					self->priv->current = _tmp19_ + 1;
-					_tmp20_ = self->priv->column;
-					self->priv->column = _tmp20_ + 1;
+				if (_tmp13_) {
+					gchar* _tmp18_ = NULL;
+					gint _tmp19_ = 0;
+					_tmp18_ = self->priv->current;
+					self->priv->current = _tmp18_ + 1;
+					_tmp19_ = self->priv->column;
+					self->priv->column = _tmp19_ + 1;
 				} else {
+					ValaSourceReference* _tmp20_ = NULL;
 					ValaSourceReference* _tmp21_ = NULL;
-					ValaSourceReference* _tmp22_;
-					_tmp21_ = vala_genie_scanner_get_source_reference (self, 0, 0);
-					_tmp22_ = _tmp21_;
-					vala_report_error (_tmp22_, "syntax error, expected `)'");
-					_vala_source_reference_unref0 (_tmp22_);
+					_tmp20_ = vala_genie_scanner_get_source_reference (self, 0, 0);
+					_tmp21_ = _tmp20_;
+					vala_report_error (_tmp21_, "syntax error, expected `)'");
+					_vala_source_reference_unref0 (_tmp21_);
 				}
 				result = _result_;
 				return result;
 			} else {
+				ValaSourceReference* _tmp22_ = NULL;
 				ValaSourceReference* _tmp23_ = NULL;
-				ValaSourceReference* _tmp24_;
-				_tmp23_ = vala_genie_scanner_get_source_reference (self, 0, 0);
-				_tmp24_ = _tmp23_;
-				vala_report_error (_tmp24_, "syntax error, expected identifier");
-				_vala_source_reference_unref0 (_tmp24_);
+				_tmp22_ = vala_genie_scanner_get_source_reference (self, 0, 0);
+				_tmp23_ = _tmp22_;
+				vala_report_error (_tmp23_, "syntax error, expected identifier");
+				_vala_source_reference_unref0 (_tmp23_);
 			}
 		}
 	}
@@ -6922,46 +6692,44 @@ static gboolean vala_genie_scanner_parse_pp_primary_expression (ValaGenieScanner
 static gboolean vala_genie_scanner_parse_pp_unary_expression (ValaGenieScanner* self) {
 	gboolean result = FALSE;
 	gboolean _tmp0_ = FALSE;
-	gchar* _tmp1_;
-	gchar* _tmp2_;
-	gboolean _tmp5_;
-	gboolean _tmp9_ = FALSE;
+	gchar* _tmp1_ = NULL;
+	gchar* _tmp2_ = NULL;
+	gboolean _tmp8_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp1_ = self->priv->current;
 	_tmp2_ = self->priv->end;
 	if (_tmp1_ < _tmp2_) {
-		gchar* _tmp3_;
-		gchar _tmp4_;
+		gchar* _tmp3_ = NULL;
+		gchar _tmp4_ = '\0';
 		_tmp3_ = self->priv->current;
 		_tmp4_ = _tmp3_[0];
 		_tmp0_ = _tmp4_ == '!';
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp5_ = _tmp0_;
-	if (_tmp5_) {
-		gchar* _tmp6_;
-		gint _tmp7_;
-		gboolean _tmp8_ = FALSE;
-		_tmp6_ = self->priv->current;
-		self->priv->current = _tmp6_ + 1;
-		_tmp7_ = self->priv->column;
-		self->priv->column = _tmp7_ + 1;
+	if (_tmp0_) {
+		gchar* _tmp5_ = NULL;
+		gint _tmp6_ = 0;
+		gboolean _tmp7_ = FALSE;
+		_tmp5_ = self->priv->current;
+		self->priv->current = _tmp5_ + 1;
+		_tmp6_ = self->priv->column;
+		self->priv->column = _tmp6_ + 1;
 		vala_genie_scanner_pp_space (self);
-		_tmp8_ = vala_genie_scanner_parse_pp_unary_expression (self);
-		result = !_tmp8_;
+		_tmp7_ = vala_genie_scanner_parse_pp_unary_expression (self);
+		result = !_tmp7_;
 		return result;
 	}
-	_tmp9_ = vala_genie_scanner_parse_pp_primary_expression (self);
-	result = _tmp9_;
+	_tmp8_ = vala_genie_scanner_parse_pp_primary_expression (self);
+	result = _tmp8_;
 	return result;
 }
 
 
 static gboolean vala_genie_scanner_parse_pp_equality_expression (ValaGenieScanner* self) {
 	gboolean result = FALSE;
+	gboolean left = FALSE;
 	gboolean _tmp0_ = FALSE;
-	gboolean left;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = vala_genie_scanner_parse_pp_unary_expression (self);
 	left = _tmp0_;
@@ -6969,95 +6737,87 @@ static gboolean vala_genie_scanner_parse_pp_equality_expression (ValaGenieScanne
 	while (TRUE) {
 		gboolean _tmp1_ = FALSE;
 		gboolean _tmp2_ = FALSE;
-		gchar* _tmp3_;
-		gchar* _tmp4_;
-		gboolean _tmp7_;
-		gboolean _tmp10_;
+		gchar* _tmp3_ = NULL;
+		gchar* _tmp4_ = NULL;
 		_tmp3_ = self->priv->current;
 		_tmp4_ = self->priv->end;
 		if (_tmp3_ < (_tmp4_ - 1)) {
-			gchar* _tmp5_;
-			gchar _tmp6_;
+			gchar* _tmp5_ = NULL;
+			gchar _tmp6_ = '\0';
 			_tmp5_ = self->priv->current;
 			_tmp6_ = _tmp5_[0];
 			_tmp2_ = _tmp6_ == '=';
 		} else {
 			_tmp2_ = FALSE;
 		}
-		_tmp7_ = _tmp2_;
-		if (_tmp7_) {
-			gchar* _tmp8_;
-			gchar _tmp9_;
-			_tmp8_ = self->priv->current;
-			_tmp9_ = _tmp8_[1];
-			_tmp1_ = _tmp9_ == '=';
+		if (_tmp2_) {
+			gchar* _tmp7_ = NULL;
+			gchar _tmp8_ = '\0';
+			_tmp7_ = self->priv->current;
+			_tmp8_ = _tmp7_[1];
+			_tmp1_ = _tmp8_ == '=';
 		} else {
 			_tmp1_ = FALSE;
 		}
-		_tmp10_ = _tmp1_;
-		if (_tmp10_) {
-			gchar* _tmp11_;
-			gint _tmp12_;
+		if (_tmp1_) {
+			gchar* _tmp9_ = NULL;
+			gint _tmp10_ = 0;
+			gboolean right = FALSE;
+			gboolean _tmp11_ = FALSE;
+			gboolean _tmp12_ = FALSE;
 			gboolean _tmp13_ = FALSE;
-			gboolean right;
-			gboolean _tmp14_;
-			gboolean _tmp15_;
-			_tmp11_ = self->priv->current;
-			self->priv->current = _tmp11_ + 2;
-			_tmp12_ = self->priv->column;
-			self->priv->column = _tmp12_ + 2;
+			_tmp9_ = self->priv->current;
+			self->priv->current = _tmp9_ + 2;
+			_tmp10_ = self->priv->column;
+			self->priv->column = _tmp10_ + 2;
 			vala_genie_scanner_pp_space (self);
-			_tmp13_ = vala_genie_scanner_parse_pp_unary_expression (self);
-			right = _tmp13_;
-			_tmp14_ = left;
-			_tmp15_ = right;
-			left = _tmp14_ == _tmp15_;
+			_tmp11_ = vala_genie_scanner_parse_pp_unary_expression (self);
+			right = _tmp11_;
+			_tmp12_ = left;
+			_tmp13_ = right;
+			left = _tmp12_ == _tmp13_;
 		} else {
-			gboolean _tmp16_ = FALSE;
-			gboolean _tmp17_ = FALSE;
-			gchar* _tmp18_;
-			gchar* _tmp19_;
-			gboolean _tmp22_;
-			gboolean _tmp25_;
-			_tmp18_ = self->priv->current;
-			_tmp19_ = self->priv->end;
-			if (_tmp18_ < (_tmp19_ - 1)) {
-				gchar* _tmp20_;
-				gchar _tmp21_;
+			gboolean _tmp14_ = FALSE;
+			gboolean _tmp15_ = FALSE;
+			gchar* _tmp16_ = NULL;
+			gchar* _tmp17_ = NULL;
+			_tmp16_ = self->priv->current;
+			_tmp17_ = self->priv->end;
+			if (_tmp16_ < (_tmp17_ - 1)) {
+				gchar* _tmp18_ = NULL;
+				gchar _tmp19_ = '\0';
+				_tmp18_ = self->priv->current;
+				_tmp19_ = _tmp18_[0];
+				_tmp15_ = _tmp19_ == '!';
+			} else {
+				_tmp15_ = FALSE;
+			}
+			if (_tmp15_) {
+				gchar* _tmp20_ = NULL;
+				gchar _tmp21_ = '\0';
 				_tmp20_ = self->priv->current;
-				_tmp21_ = _tmp20_[0];
-				_tmp17_ = _tmp21_ == '!';
+				_tmp21_ = _tmp20_[1];
+				_tmp14_ = _tmp21_ == '=';
 			} else {
-				_tmp17_ = FALSE;
+				_tmp14_ = FALSE;
 			}
-			_tmp22_ = _tmp17_;
-			if (_tmp22_) {
-				gchar* _tmp23_;
-				gchar _tmp24_;
-				_tmp23_ = self->priv->current;
-				_tmp24_ = _tmp23_[1];
-				_tmp16_ = _tmp24_ == '=';
-			} else {
-				_tmp16_ = FALSE;
-			}
-			_tmp25_ = _tmp16_;
-			if (_tmp25_) {
-				gchar* _tmp26_;
-				gint _tmp27_;
-				gboolean _tmp28_ = FALSE;
-				gboolean right;
-				gboolean _tmp29_;
-				gboolean _tmp30_;
-				_tmp26_ = self->priv->current;
-				self->priv->current = _tmp26_ + 2;
-				_tmp27_ = self->priv->column;
-				self->priv->column = _tmp27_ + 2;
+			if (_tmp14_) {
+				gchar* _tmp22_ = NULL;
+				gint _tmp23_ = 0;
+				gboolean right = FALSE;
+				gboolean _tmp24_ = FALSE;
+				gboolean _tmp25_ = FALSE;
+				gboolean _tmp26_ = FALSE;
+				_tmp22_ = self->priv->current;
+				self->priv->current = _tmp22_ + 2;
+				_tmp23_ = self->priv->column;
+				self->priv->column = _tmp23_ + 2;
 				vala_genie_scanner_pp_space (self);
-				_tmp28_ = vala_genie_scanner_parse_pp_unary_expression (self);
-				right = _tmp28_;
-				_tmp29_ = left;
-				_tmp30_ = right;
-				left = _tmp29_ != _tmp30_;
+				_tmp24_ = vala_genie_scanner_parse_pp_unary_expression (self);
+				right = _tmp24_;
+				_tmp25_ = left;
+				_tmp26_ = right;
+				left = _tmp25_ != _tmp26_;
 			} else {
 				break;
 			}
@@ -7070,8 +6830,8 @@ static gboolean vala_genie_scanner_parse_pp_equality_expression (ValaGenieScanne
 
 static gboolean vala_genie_scanner_parse_pp_and_expression (ValaGenieScanner* self) {
 	gboolean result = FALSE;
+	gboolean left = FALSE;
 	gboolean _tmp0_ = FALSE;
-	gboolean left;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = vala_genie_scanner_parse_pp_equality_expression (self);
 	left = _tmp0_;
@@ -7079,59 +6839,53 @@ static gboolean vala_genie_scanner_parse_pp_and_expression (ValaGenieScanner* se
 	while (TRUE) {
 		gboolean _tmp1_ = FALSE;
 		gboolean _tmp2_ = FALSE;
-		gchar* _tmp3_;
-		gchar* _tmp4_;
-		gboolean _tmp7_;
-		gboolean _tmp10_;
-		gchar* _tmp11_;
-		gint _tmp12_;
+		gchar* _tmp3_ = NULL;
+		gchar* _tmp4_ = NULL;
+		gchar* _tmp9_ = NULL;
+		gint _tmp10_ = 0;
+		gboolean right = FALSE;
+		gboolean _tmp11_ = FALSE;
+		gboolean _tmp12_ = FALSE;
 		gboolean _tmp13_ = FALSE;
-		gboolean right;
-		gboolean _tmp14_ = FALSE;
-		gboolean _tmp15_;
-		gboolean _tmp17_;
 		_tmp3_ = self->priv->current;
 		_tmp4_ = self->priv->end;
 		if (_tmp3_ < (_tmp4_ - 1)) {
-			gchar* _tmp5_;
-			gchar _tmp6_;
+			gchar* _tmp5_ = NULL;
+			gchar _tmp6_ = '\0';
 			_tmp5_ = self->priv->current;
 			_tmp6_ = _tmp5_[0];
 			_tmp2_ = _tmp6_ == '&';
 		} else {
 			_tmp2_ = FALSE;
 		}
-		_tmp7_ = _tmp2_;
-		if (_tmp7_) {
-			gchar* _tmp8_;
-			gchar _tmp9_;
-			_tmp8_ = self->priv->current;
-			_tmp9_ = _tmp8_[1];
-			_tmp1_ = _tmp9_ == '&';
+		if (_tmp2_) {
+			gchar* _tmp7_ = NULL;
+			gchar _tmp8_ = '\0';
+			_tmp7_ = self->priv->current;
+			_tmp8_ = _tmp7_[1];
+			_tmp1_ = _tmp8_ == '&';
 		} else {
 			_tmp1_ = FALSE;
 		}
-		_tmp10_ = _tmp1_;
-		if (!_tmp10_) {
+		if (!_tmp1_) {
 			break;
 		}
-		_tmp11_ = self->priv->current;
-		self->priv->current = _tmp11_ + 2;
-		_tmp12_ = self->priv->column;
-		self->priv->column = _tmp12_ + 2;
+		_tmp9_ = self->priv->current;
+		self->priv->current = _tmp9_ + 2;
+		_tmp10_ = self->priv->column;
+		self->priv->column = _tmp10_ + 2;
 		vala_genie_scanner_pp_space (self);
-		_tmp13_ = vala_genie_scanner_parse_pp_equality_expression (self);
-		right = _tmp13_;
-		_tmp15_ = left;
-		if (_tmp15_) {
-			gboolean _tmp16_;
-			_tmp16_ = right;
-			_tmp14_ = _tmp16_;
+		_tmp11_ = vala_genie_scanner_parse_pp_equality_expression (self);
+		right = _tmp11_;
+		_tmp13_ = left;
+		if (_tmp13_) {
+			gboolean _tmp14_ = FALSE;
+			_tmp14_ = right;
+			_tmp12_ = _tmp14_;
 		} else {
-			_tmp14_ = FALSE;
+			_tmp12_ = FALSE;
 		}
-		_tmp17_ = _tmp14_;
-		left = _tmp17_;
+		left = _tmp12_;
 	}
 	result = left;
 	return result;
@@ -7140,8 +6894,8 @@ static gboolean vala_genie_scanner_parse_pp_and_expression (ValaGenieScanner* se
 
 static gboolean vala_genie_scanner_parse_pp_or_expression (ValaGenieScanner* self) {
 	gboolean result = FALSE;
+	gboolean left = FALSE;
 	gboolean _tmp0_ = FALSE;
-	gboolean left;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = vala_genie_scanner_parse_pp_and_expression (self);
 	left = _tmp0_;
@@ -7149,59 +6903,53 @@ static gboolean vala_genie_scanner_parse_pp_or_expression (ValaGenieScanner* sel
 	while (TRUE) {
 		gboolean _tmp1_ = FALSE;
 		gboolean _tmp2_ = FALSE;
-		gchar* _tmp3_;
-		gchar* _tmp4_;
-		gboolean _tmp7_;
-		gboolean _tmp10_;
-		gchar* _tmp11_;
-		gint _tmp12_;
+		gchar* _tmp3_ = NULL;
+		gchar* _tmp4_ = NULL;
+		gchar* _tmp9_ = NULL;
+		gint _tmp10_ = 0;
+		gboolean right = FALSE;
+		gboolean _tmp11_ = FALSE;
+		gboolean _tmp12_ = FALSE;
 		gboolean _tmp13_ = FALSE;
-		gboolean right;
-		gboolean _tmp14_ = FALSE;
-		gboolean _tmp15_;
-		gboolean _tmp17_;
 		_tmp3_ = self->priv->current;
 		_tmp4_ = self->priv->end;
 		if (_tmp3_ < (_tmp4_ - 1)) {
-			gchar* _tmp5_;
-			gchar _tmp6_;
+			gchar* _tmp5_ = NULL;
+			gchar _tmp6_ = '\0';
 			_tmp5_ = self->priv->current;
 			_tmp6_ = _tmp5_[0];
 			_tmp2_ = _tmp6_ == '|';
 		} else {
 			_tmp2_ = FALSE;
 		}
-		_tmp7_ = _tmp2_;
-		if (_tmp7_) {
-			gchar* _tmp8_;
-			gchar _tmp9_;
-			_tmp8_ = self->priv->current;
-			_tmp9_ = _tmp8_[1];
-			_tmp1_ = _tmp9_ == '|';
+		if (_tmp2_) {
+			gchar* _tmp7_ = NULL;
+			gchar _tmp8_ = '\0';
+			_tmp7_ = self->priv->current;
+			_tmp8_ = _tmp7_[1];
+			_tmp1_ = _tmp8_ == '|';
 		} else {
 			_tmp1_ = FALSE;
 		}
-		_tmp10_ = _tmp1_;
-		if (!_tmp10_) {
+		if (!_tmp1_) {
 			break;
 		}
-		_tmp11_ = self->priv->current;
-		self->priv->current = _tmp11_ + 2;
-		_tmp12_ = self->priv->column;
-		self->priv->column = _tmp12_ + 2;
+		_tmp9_ = self->priv->current;
+		self->priv->current = _tmp9_ + 2;
+		_tmp10_ = self->priv->column;
+		self->priv->column = _tmp10_ + 2;
 		vala_genie_scanner_pp_space (self);
-		_tmp13_ = vala_genie_scanner_parse_pp_and_expression (self);
-		right = _tmp13_;
-		_tmp15_ = left;
-		if (_tmp15_) {
-			_tmp14_ = TRUE;
+		_tmp11_ = vala_genie_scanner_parse_pp_and_expression (self);
+		right = _tmp11_;
+		_tmp13_ = left;
+		if (_tmp13_) {
+			_tmp12_ = TRUE;
 		} else {
-			gboolean _tmp16_;
-			_tmp16_ = right;
-			_tmp14_ = _tmp16_;
+			gboolean _tmp14_ = FALSE;
+			_tmp14_ = right;
+			_tmp12_ = _tmp14_;
 		}
-		_tmp17_ = _tmp14_;
-		left = _tmp17_;
+		left = _tmp12_;
 	}
 	result = left;
 	return result;
@@ -7220,7 +6968,7 @@ static gboolean vala_genie_scanner_parse_pp_expression (ValaGenieScanner* self) 
 
 ValaSourceFile* vala_genie_scanner_get_source_file (ValaGenieScanner* self) {
 	ValaSourceFile* result;
-	ValaSourceFile* _tmp0_;
+	ValaSourceFile* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_source_file;
 	result = _tmp0_;
@@ -7234,8 +6982,8 @@ static gpointer _vala_source_file_ref0 (gpointer self) {
 
 
 static void vala_genie_scanner_set_source_file (ValaGenieScanner* self, ValaSourceFile* value) {
-	ValaSourceFile* _tmp0_;
-	ValaSourceFile* _tmp1_;
+	ValaSourceFile* _tmp0_ = NULL;
+	ValaSourceFile* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_source_file_ref0 (_tmp0_);
@@ -7246,7 +6994,7 @@ static void vala_genie_scanner_set_source_file (ValaGenieScanner* self, ValaSour
 
 gint vala_genie_scanner_get_indent_spaces (ValaGenieScanner* self) {
 	gint result;
-	gint _tmp0_;
+	gint _tmp0_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->_indent_spaces;
 	result = _tmp0_;
@@ -7255,7 +7003,7 @@ gint vala_genie_scanner_get_indent_spaces (ValaGenieScanner* self) {
 
 
 void vala_genie_scanner_set_indent_spaces (ValaGenieScanner* self, gint value) {
-	gint _tmp0_;
+	gint _tmp0_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_indent_spaces = _tmp0_;
@@ -7398,7 +7146,7 @@ void vala_genie_value_take_scanner (GValue* value, gpointer v_object) {
 
 static void vala_genie_scanner_class_init (ValaGenieScannerClass * klass) {
 	vala_genie_scanner_parent_class = g_type_class_peek_parent (klass);
-	VALA_GENIE_SCANNER_CLASS (klass)->finalize = vala_genie_scanner_finalize;
+	((ValaGenieScannerClass *) klass)->finalize = vala_genie_scanner_finalize;
 	g_type_class_add_private (klass, sizeof (ValaGenieScannerPrivate));
 }
 
@@ -7412,6 +7160,7 @@ static void vala_genie_scanner_instance_init (ValaGenieScanner * self) {
 static void vala_genie_scanner_finalize (ValaGenieScanner* obj) {
 	ValaGenieScanner * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_GENIE_TYPE_SCANNER, ValaGenieScanner);
+	g_signal_handlers_destroy (self);
 	_vala_source_file_unref0 (self->priv->_source_file);
 	_vala_comment_unref0 (self->priv->_comment);
 	self->priv->conditional_stack = (g_free (self->priv->conditional_stack), NULL);

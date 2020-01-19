@@ -255,10 +255,10 @@ void vala_value_take_iterable (GValue* value, gpointer v_object) {
 
 static void vala_iterable_class_init (ValaIterableClass * klass) {
 	vala_iterable_parent_class = g_type_class_peek_parent (klass);
-	VALA_ITERABLE_CLASS (klass)->finalize = vala_iterable_finalize;
+	((ValaIterableClass *) klass)->finalize = vala_iterable_finalize;
 	g_type_class_add_private (klass, sizeof (ValaIterablePrivate));
-	VALA_ITERABLE_CLASS (klass)->get_element_type = vala_iterable_real_get_element_type;
-	VALA_ITERABLE_CLASS (klass)->iterator = vala_iterable_real_iterator;
+	((ValaIterableClass *) klass)->get_element_type = vala_iterable_real_get_element_type;
+	((ValaIterableClass *) klass)->iterator = vala_iterable_real_iterator;
 }
 
 
@@ -271,6 +271,7 @@ static void vala_iterable_instance_init (ValaIterable * self) {
 static void vala_iterable_finalize (ValaIterable* obj) {
 	ValaIterable * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_ITERABLE, ValaIterable);
+	g_signal_handlers_destroy (self);
 }
 
 

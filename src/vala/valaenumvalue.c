@@ -493,10 +493,10 @@ gboolean vala_code_node_check (ValaCodeNode* self, ValaCodeContext* context);
  */
 ValaEnumValue* vala_enum_value_construct (GType object_type, const gchar* name, ValaExpression* value, ValaSourceReference* source_reference, ValaComment* comment) {
 	ValaEnumValue* self = NULL;
-	const gchar* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaSourceReference* _tmp2_;
-	ValaComment* _tmp3_;
+	const gchar* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaSourceReference* _tmp2_ = NULL;
+	ValaComment* _tmp3_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	_tmp0_ = name;
 	_tmp1_ = value;
@@ -514,7 +514,7 @@ ValaEnumValue* vala_enum_value_new (const gchar* name, ValaExpression* value, Va
 
 static void vala_enum_value_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaEnumValue * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaEnumValue*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -524,16 +524,16 @@ static void vala_enum_value_real_accept (ValaCodeNode* base, ValaCodeVisitor* vi
 
 static void vala_enum_value_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaEnumValue * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	self = (ValaEnumValue*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_constant_get_value ((ValaConstant*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_ != NULL) {
-		ValaExpression* _tmp2_;
-		ValaExpression* _tmp3_;
-		ValaCodeVisitor* _tmp4_;
+		ValaExpression* _tmp2_ = NULL;
+		ValaExpression* _tmp3_ = NULL;
+		ValaCodeVisitor* _tmp4_ = NULL;
 		_tmp2_ = vala_constant_get_value ((ValaConstant*) self);
 		_tmp3_ = _tmp2_;
 		_tmp4_ = visitor;
@@ -545,19 +545,19 @@ static void vala_enum_value_real_accept_children (ValaCodeNode* base, ValaCodeVi
 static gboolean vala_enum_value_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaEnumValue * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaExpression* _tmp4_;
-	ValaExpression* _tmp5_;
-	gboolean _tmp9_;
-	gboolean _tmp10_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaExpression* _tmp4_ = NULL;
+	ValaExpression* _tmp5_ = NULL;
+	gboolean _tmp9_ = FALSE;
+	gboolean _tmp10_ = FALSE;
 	self = (ValaEnumValue*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -567,9 +567,9 @@ static gboolean vala_enum_value_real_check (ValaCodeNode* base, ValaCodeContext*
 	_tmp4_ = vala_constant_get_value ((ValaConstant*) self);
 	_tmp5_ = _tmp4_;
 	if (_tmp5_ != NULL) {
-		ValaExpression* _tmp6_;
-		ValaExpression* _tmp7_;
-		ValaCodeContext* _tmp8_;
+		ValaExpression* _tmp6_ = NULL;
+		ValaExpression* _tmp7_ = NULL;
+		ValaCodeContext* _tmp8_ = NULL;
 		_tmp6_ = vala_constant_get_value ((ValaConstant*) self);
 		_tmp7_ = _tmp6_;
 		_tmp8_ = context;
@@ -584,9 +584,9 @@ static gboolean vala_enum_value_real_check (ValaCodeNode* base, ValaCodeContext*
 
 static void vala_enum_value_class_init (ValaEnumValueClass * klass) {
 	vala_enum_value_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_enum_value_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_enum_value_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_enum_value_real_check;
+	((ValaCodeNodeClass *) klass)->accept = vala_enum_value_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_enum_value_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = vala_enum_value_real_check;
 }
 
 

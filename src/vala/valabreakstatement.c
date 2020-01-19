@@ -244,7 +244,7 @@ static void vala_break_statement_real_emit (ValaCodeNode* base, ValaCodeGenerato
  */
 ValaBreakStatement* vala_break_statement_construct (GType object_type, ValaSourceReference* source) {
 	ValaBreakStatement* self = NULL;
-	ValaSourceReference* _tmp0_;
+	ValaSourceReference* _tmp0_ = NULL;
 	self = (ValaBreakStatement*) vala_code_node_construct (object_type);
 	_tmp0_ = source;
 	vala_code_node_set_source_reference ((ValaCodeNode*) self, _tmp0_);
@@ -259,7 +259,7 @@ ValaBreakStatement* vala_break_statement_new (ValaSourceReference* source) {
 
 static void vala_break_statement_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaBreakStatement * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaBreakStatement*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -269,7 +269,7 @@ static void vala_break_statement_real_accept (ValaCodeNode* base, ValaCodeVisito
 
 static void vala_break_statement_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaBreakStatement * self;
-	ValaCodeGenerator* _tmp0_;
+	ValaCodeGenerator* _tmp0_ = NULL;
 	self = (ValaBreakStatement*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = codegen;
@@ -279,8 +279,8 @@ static void vala_break_statement_real_emit (ValaCodeNode* base, ValaCodeGenerato
 
 static void vala_break_statement_class_init (ValaBreakStatementClass * klass) {
 	vala_break_statement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_break_statement_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_break_statement_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_break_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->emit = vala_break_statement_real_emit;
 }
 
 

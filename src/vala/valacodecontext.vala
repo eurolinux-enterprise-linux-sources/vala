@@ -42,6 +42,11 @@ public class Vala.CodeContext {
 	public bool deprecated { get; set; }
 
 	/**
+	 * Hide the symbols marked as internal
+	 */
+	public bool hide_internal { get; set; }
+
+	/**
 	 * Do not warn when using experimental features.
 	 */
 	public bool experimental { get; set; }
@@ -169,6 +174,11 @@ public class Vala.CodeContext {
 	public bool use_fast_vapi { get; set; }
 
 	/**
+	 * Include comments in generated vapi.
+	 */
+	public bool vapi_comments { get; set; }
+
+	/**
 	 * Returns true if the target version of glib is greater than or 
 	 * equal to the specified version.
 	 */
@@ -187,6 +197,8 @@ public class Vala.CodeContext {
 	public string entry_point_name { get; set; }
 
 	public bool run_output { get; set; }
+
+	public string[] gresources;
 
 	private List<SourceFile> source_files = new ArrayList<SourceFile> ();
 	private List<string> c_source_files = new ArrayList<string> ();
@@ -329,7 +341,7 @@ public class Vala.CodeContext {
 	 */
 	public bool add_external_package (string pkg) {
 		if (has_package (pkg)) {
-			// ignore multiple occurences of the same package
+			// ignore multiple occurrences of the same package
 			return true;
 		}
 

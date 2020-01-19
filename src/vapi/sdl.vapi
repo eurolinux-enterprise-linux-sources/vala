@@ -3,9 +3,9 @@ namespace SDL {
 	///
 	/// Initialization
 	///
-	[Flags, CCode (cname="int", cprefix="SDL_INIT_")]
+	[Flags, CCode (cname="int", cprefix="SDL_INIT_", has_type_id = false)]
 	public enum InitFlag {
-		TIMER, AUDIO, VIDEO, CDROM, JOYSTICK, 
+		TIMER, AUDIO, VIDEO, CDROM, JOYSTICK,
 		NOPARACHUTE, EVENTTHREAD, EVERYTHING
 	}// InitFlag
 
@@ -38,9 +38,9 @@ namespace SDL {
 	///
 	/// Error
 	///
-	[CCode (cname="int", cprefix="SDL_")]
+	[CCode (cname="int", cprefix="SDL_", has_type_id = false)]
 	public enum Error {
-		ENOMEM, EFREAD, EFWRITE, EFSEEK, 
+		ENOMEM, EFREAD, EFWRITE, EFSEEK,
 		UNSUPPORTED, LASTERROR
 	}// Error
 
@@ -60,7 +60,7 @@ namespace SDL {
 	///
 	/// Video
 	///
-	[CCode (cname="int", cprefix="SDL_ALPHA_")]
+	[CCode (cname="int", cprefix="SDL_ALPHA_", has_type_id = false)]
 	public enum Opacity {
 		OPAQUE, TRANSPARENT
 	}// Opacity
@@ -90,10 +90,10 @@ namespace SDL {
 		}
 	}// Video
 
-	[Flags, CCode (cname="int", cprefix="SDL_")]
+	[Flags, CCode (cname="int", cprefix="SDL_", has_type_id = false)]
 	public enum SurfaceFlag {
-		SWSURFACE, HWSURFACE, ASYNCBLIT, ANYFORMAT, HWPALETTE, DOUBLEBUF, 
-		FULLSCREEN, OPENGL, OPENGLBLIT, RESIZABLE, NOFRAME, HWACCEL, 
+		SWSURFACE, HWSURFACE, ASYNCBLIT, ANYFORMAT, HWPALETTE, DOUBLEBUF,
+		FULLSCREEN, OPENGL, OPENGLBLIT, RESIZABLE, NOFRAME, HWACCEL,
 		SRCCOLORKEY, RLEACCEL, SRCALPHA
 	}// SurfaceFlag
 
@@ -109,11 +109,11 @@ namespace SDL {
 		public int ref_count;
 
 		[CCode (cname="SDL_CreateRGBSurface")]
-		public Surface.RGB(uint32 flags, int width, int height, int depth, 
+		public Surface.RGB(uint32 flags, int width, int height, int depth,
 			uint32 rmask, uint32 gmask, uint32 bmask, uint32 amask);
 
 		[CCode (cname="SDL_CreateRGBSurfaceFrom")]
-		public Surface.from_RGB(void* pixels, int width, int height, int depth, 
+		public Surface.from_RGB(void* pixels, int width, int height, int depth,
 			int pitch, uint32 rmask, uint32 gmask, uint32 bmask, uint32 amask);
 
 		[CCode (cname="SDL_LoadBMP_RW")]
@@ -216,7 +216,7 @@ namespace SDL {
 
 	[CCode (cname="SDL_Rect", has_type_id=false)]
 	public struct Rect {
-		public int16 x; 
+		public int16 x;
 		public int16 y;
 		public uint16 w;
 		public uint16 h;
@@ -231,7 +231,7 @@ namespace SDL {
 		public uchar unused;
 	}// Color
 
-	[CCode (cname="int", cprefix="SDL_")]
+	[CCode (cname="int", cprefix="SDL_", has_type_id = false)]
 	public enum PaletteFlags {
 		LOGPAL, PHYSPAL
 	}// PaletteFlags
@@ -267,9 +267,9 @@ namespace SDL {
 		public static unowned VideoInfo get();
 	}// VideoInfo
 
-	[CCode (cname="int", cprefix="SDL_")]
+	[CCode (cname="int", cprefix="SDL_", has_type_id = false)]
 	public enum OverlayFormat {
-		YV12_OVERLAY, IYUV_OVERLAY, YUY2_OVERLAY, 
+		YV12_OVERLAY, IYUV_OVERLAY, YUY2_OVERLAY,
 		UYVY_OVERLAY, YVYU_OVERLAY
 	}// OverlayFormat
 
@@ -317,12 +317,12 @@ namespace SDL {
 	///
 	/// OpenGL
 	///
-	[CCode (cname="int", cprefix="SDL_GL_")]
+	[CCode (cname="int", cprefix="SDL_GL_", has_type_id = false)]
 	public enum GLattr {
-		RED_SIZE, GREEN_SIZE, BLUE_SIZE, ALPHA_SIZE, 
-		BUFFER_SIZE, DOUBLEBUFFER, DEPTH_SIZE, STENCIL_SIZE, 
-		ACCUM_RED_SIZE, ACCUM_GREEN_SIZE, ACCUM_BLUE_SIZE, 
-		ACCUM_ALPHA_SIZE, STEREO, MULTISAMPLEBUFFERS, 
+		RED_SIZE, GREEN_SIZE, BLUE_SIZE, ALPHA_SIZE,
+		BUFFER_SIZE, DOUBLEBUFFER, DEPTH_SIZE, STENCIL_SIZE,
+		ACCUM_RED_SIZE, ACCUM_GREEN_SIZE, ACCUM_BLUE_SIZE,
+		ACCUM_ALPHA_SIZE, STEREO, MULTISAMPLEBUFFERS,
 		MULTISAMPLESAMPLES, ACCELERATED_VISUAL, SWAP_CONTROL
 	}// GLattr
 
@@ -349,7 +349,7 @@ namespace SDL {
 	///
 	/// Window manager
 	///
-	[CCode (cname="int", cprefix="SDL_GRAB_")]
+	[CCode (cname="int", cprefix="SDL_GRAB_", has_type_id = false)]
 	public enum GrabMode {
 		QUERY, OFF, ON
 	}// GrabMode
@@ -380,22 +380,22 @@ namespace SDL {
 	///
 	/// Events
 	///
-	[CCode (cname="int", cprefix="SDL_")]
+	[CCode (cname="int", cprefix="SDL_", has_type_id = false)]
 	public enum EventType {
-		NOEVENT, ACTIVEEVENT, KEYDOWN, KEYUP, MOUSEMOTION, 
-		MOUSEBUTTONDOWN, MOUSEBUTTONUP, JOYAXISMOTION, 
-		JOYBALLMOTION, JOYHATMOTION, JOYBUTTONDOWN, JOYBUTTONUP, 
-		QUIT, SYSWMEVENT, VIDEORESIZE, VIDEOEXPOSE, USEREVENT, 
+		NOEVENT, ACTIVEEVENT, KEYDOWN, KEYUP, MOUSEMOTION,
+		MOUSEBUTTONDOWN, MOUSEBUTTONUP, JOYAXISMOTION,
+		JOYBALLMOTION, JOYHATMOTION, JOYBUTTONDOWN, JOYBUTTONUP,
+		QUIT, SYSWMEVENT, VIDEORESIZE, VIDEOEXPOSE, USEREVENT,
 		NUMEVENTS
 	}// EventType
 
-	[CCode (cname="int", cprefix="SDL_")]
+	[CCode (cname="int", cprefix="SDL_", has_type_id = false)]
 	public enum EventMask {
-		ACTIVEEVENTMASK, KEYDOWNMASK, KEYUPMASK, KEYEVENTMASK, 
-		MOUSEMOTIONMASK, MOUSEBUTTONDOWNMASK, MOUSEBUTTONUPMASK, 
-		MOUSEEVENTMASK, JOYAXISMOTIONMASK, JOYBALLMOTIONMASK, 
-		JOYHATMOTIONMASK, JOYBUTTONDOWNMASK, JOYBUTTONUPMASK, 
-		JOYEVENTMASK, VIDEORESIZEMASK, VIDEOEXPOSEMASK, QUITMASK, 
+		ACTIVEEVENTMASK, KEYDOWNMASK, KEYUPMASK, KEYEVENTMASK,
+		MOUSEMOTIONMASK, MOUSEBUTTONDOWNMASK, MOUSEBUTTONUPMASK,
+		MOUSEEVENTMASK, JOYAXISMOTIONMASK, JOYBALLMOTIONMASK,
+		JOYHATMOTIONMASK, JOYBUTTONDOWNMASK, JOYBUTTONUPMASK,
+		JOYEVENTMASK, VIDEORESIZEMASK, VIDEOEXPOSEMASK, QUITMASK,
 		SYSWMEVENTMASK
 	}// EventMask
 
@@ -409,7 +409,7 @@ namespace SDL {
 		public uint16 y;
 	}// MouseButtonEvent
 
-	[CCode (cheader_filename="SDL_active.h", cname="int", cprefix="SDL_APP")]
+	[CCode (cheader_filename="SDL_active.h", cname="int", cprefix="SDL_APP", has_type_id = false)]
 	public enum ActiveState {
 		MOUSEFOCUS,
 		INPUTFOCUS,
@@ -531,7 +531,7 @@ namespace SDL {
 		public static void pump();
 
 		[CCode (cname="SDL_PeepEvents")]
-		public static void peep(Event* events, int numevents, 
+		public static void peep(Event* events, int numevents,
 			EventAction action, EventMask mask);
 
 		[CCode (cname="SDL_PollEvent")]
@@ -547,21 +547,21 @@ namespace SDL {
 		public static uchar state(uchar type, EventState state);
 	}// Event
 
-	[CCode (cname="int", cprefix="SDL_")]
+	[CCode (cname="int", cprefix="SDL_", has_type_id = false)]
 	public enum EventAction {
 		ADDEVENT, PEEKEVENT, GETEVENT
 	}// EventAction
 
-	[CCode (cname="int", cprefix="SDL_")]
+	[CCode (cname="int", cprefix="SDL_", has_type_id = false)]
 	public enum EventState {
 		QUERY, IGNORE, DISABLE, ENABLE
 	}// EventState
-	
+
 
 	///
 	/// Input
 	///
-	[CCode (cname="int", cprefix="SDL_")]
+	[CCode (cname="int", cprefix="SDL_", has_type_id = false)]
 	public enum ButtonState {
 		RELEASED, PRESSED
 	}// ButtonState
@@ -595,7 +595,7 @@ namespace SDL {
 		public static unowned string get_name(KeySymbol key);
 	}// Key
 
-	[CCode (cname="int", cprefix="SDLK_", cheader_filename="SDL_keysym.h")]
+	[CCode (cname="int", cprefix="SDLK_", cheader_filename="SDL_keysym.h", has_type_id = false)]
 	public enum KeySymbol {
 		UNKNOWN,
 		FIRST,
@@ -637,7 +637,7 @@ namespace SDL {
 		GREATER,
 		QUESTION,
 		AT,
-		/* 
+		/*
 		   Skip uppercase letters
 		 */
 		LEFTBRACKET,
@@ -852,7 +852,7 @@ namespace SDL {
 		LAST
 	}// KeySymbol
 
-	[CCode (cname="int", cprefix="KMOD_", cheader_filename="SDL_keysym.h")]
+	[CCode (cname="int", cprefix="KMOD_", cheader_filename="SDL_keysym.h", has_type_id = false)]
 	public enum KeyModifier {
 		NONE,
 		LSHIFT,
@@ -873,7 +873,7 @@ namespace SDL {
 		META
 	}// KeyModifier
 
-	[CCode (cname="int", cprefix="SDL_BUTTON_")]
+	[CCode (cname="int", cprefix="SDL_BUTTON_", has_type_id = false)]
 	public enum MouseButton {
 		LEFT, MIDDLE, RIGHT, WHEELUP, WHEELDOWN
 	}// Buttons
@@ -898,7 +898,7 @@ namespace SDL {
 		public static void warp(uint16 x, uint16 y);
 
 		[CCode (cname="SDL_CreateCursor")]
-		public Cursor(uchar* data, uchar* mask, int w, int h, 
+		public Cursor(uchar* data, uchar* mask, int w, int h,
 			int hot_x, int hot_y);
 
 		[CCode (cname="SDL_GetCursor")]
@@ -911,9 +911,9 @@ namespace SDL {
 		public static int show(int toggle);
 	}// Cursor
 
-	[CCode (cname="int", cprefix="SDL_HAT_")]
+	[CCode (cname="int", cprefix="SDL_HAT_", has_type_id = false)]
 	public enum HatValue {
-		CENTERED, UP, RIGHT, DOWN, LEFT, 
+		CENTERED, UP, RIGHT, DOWN, LEFT,
 		RIGHTUP, RIGHTDOWN, LEFTUP, LEFTDOWN
 	}// HatValue
 
@@ -970,13 +970,13 @@ namespace SDL {
 	///
 	/// Audio
 	///
-	[CCode (cname="int", cprefix="AUDIO_")]
+	[CCode (cname="int", cprefix="AUDIO_", has_type_id = false)]
 	public enum AudioFormat {
-		U8, S8, U16LSB, S16LSB, U16MSB, S16MSB, U16, S16, 
+		U8, S8, U16LSB, S16LSB, U16MSB, S16MSB, U16, S16,
 		U16SYS, S16SYS
 	}// AudioFormat
 
-	[CCode (cname="int", cprefix="SDL_AUDIO_")]
+	[CCode (cname="int", cprefix="SDL_AUDIO_", has_type_id = false)]
 	public enum AudioStatus {
 		STOPPED, PLAYING, PAUSED
 	}// AudioStatus
@@ -984,7 +984,7 @@ namespace SDL {
 	[CCode (instance_pos = 0.1)]
 	public delegate void AudioCallback(uint8[] stream);
 
-	[CCode (cname="SDL_AudioSpec")]
+	[CCode (cname="SDL_AudioSpec", has_type_id = false)]
 	public struct AudioSpec {
 		public int freq;
 		public AudioFormat format;
@@ -1013,8 +1013,8 @@ namespace SDL {
 		public int filter_index;
 
 		[CCode (cname="SDL_BuildAudioCVT")]
-		public static int build(AudioConverter cvt, AudioFormat src_format, 
-			uchar src_channels, int src_rate, AudioFormat dst_format, 
+		public static int build(AudioConverter cvt, AudioFormat src_format,
+			uchar src_channels, int src_rate, AudioFormat dst_format,
 			uchar dst_channels, int dst_rate);
 
 		[CCode (cname="SDL_ConvertAudio")]
@@ -1028,7 +1028,7 @@ namespace SDL {
 
 		[CCode (cname="SDL_AudioDriverName")]
 		public static unowned string driver_name(string namebuf, int maxlen);
-		
+
 		[CCode (cname="SDL_OpenAudio")]
 		public static int open(AudioSpec desired, out AudioSpec obtained);
 
@@ -1039,7 +1039,7 @@ namespace SDL {
 		public static void pause(int pause_on);
 
 		[CCode (cname="SDL_LoadWAV_RW")]
-		public static unowned AudioSpec? load(RWops src, int freesrc=0, ref AudioSpec spec, out uint8[] audio_buf);
+		public static unowned AudioSpec? load(RWops src, int freesrc, ref AudioSpec spec, out uint8[] audio_buf);
 
 		[CCode (cname="SDL_FreeWAV")]
 		public static void free(uchar* audio_buf);

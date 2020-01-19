@@ -157,8 +157,8 @@ static void vala_ccode_macro_replacement_finalize (ValaCCodeNode* obj);
 
 ValaCCodeMacroReplacement* vala_ccode_macro_replacement_construct (GType object_type, const gchar* name, const gchar* replacement) {
 	ValaCCodeMacroReplacement* self = NULL;
-	const gchar* _tmp0_;
-	const gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (replacement != NULL, NULL);
 	self = (ValaCCodeMacroReplacement*) vala_ccode_node_construct (object_type);
@@ -177,8 +177,8 @@ ValaCCodeMacroReplacement* vala_ccode_macro_replacement_new (const gchar* name, 
 
 ValaCCodeMacroReplacement* vala_ccode_macro_replacement_construct_with_expression (GType object_type, const gchar* name, ValaCCodeExpression* replacement_expression) {
 	ValaCCodeMacroReplacement* self = NULL;
-	const gchar* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (replacement_expression != NULL, NULL);
 	self = (ValaCCodeMacroReplacement*) vala_ccode_node_construct (object_type);
@@ -197,13 +197,13 @@ ValaCCodeMacroReplacement* vala_ccode_macro_replacement_new_with_expression (con
 
 static void vala_ccode_macro_replacement_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeMacroReplacement * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	ValaCCodeWriter* _tmp2_;
-	const gchar* _tmp3_;
-	ValaCCodeWriter* _tmp4_;
-	const gchar* _tmp5_;
-	ValaCCodeWriter* _tmp10_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	ValaCCodeWriter* _tmp2_ = NULL;
+	const gchar* _tmp3_ = NULL;
+	ValaCCodeWriter* _tmp4_ = NULL;
+	const gchar* _tmp5_ = NULL;
+	ValaCCodeWriter* _tmp10_ = NULL;
 	self = (ValaCCodeMacroReplacement*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -217,14 +217,14 @@ static void vala_ccode_macro_replacement_real_write (ValaCCodeNode* base, ValaCC
 	vala_ccode_writer_write_string (_tmp4_, " ");
 	_tmp5_ = self->priv->_replacement;
 	if (_tmp5_ != NULL) {
-		ValaCCodeWriter* _tmp6_;
-		const gchar* _tmp7_;
+		ValaCCodeWriter* _tmp6_ = NULL;
+		const gchar* _tmp7_ = NULL;
 		_tmp6_ = writer;
 		_tmp7_ = self->priv->_replacement;
 		vala_ccode_writer_write_string (_tmp6_, _tmp7_);
 	} else {
-		ValaCCodeExpression* _tmp8_;
-		ValaCCodeWriter* _tmp9_;
+		ValaCCodeExpression* _tmp8_ = NULL;
+		ValaCCodeWriter* _tmp9_ = NULL;
 		_tmp8_ = self->priv->_replacement_expression;
 		_tmp9_ = writer;
 		vala_ccode_expression_write_inner (_tmp8_, _tmp9_);
@@ -236,7 +236,7 @@ static void vala_ccode_macro_replacement_real_write (ValaCCodeNode* base, ValaCC
 
 const gchar* vala_ccode_macro_replacement_get_name (ValaCCodeMacroReplacement* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_name;
 	result = _tmp0_;
@@ -245,8 +245,8 @@ const gchar* vala_ccode_macro_replacement_get_name (ValaCCodeMacroReplacement* s
 
 
 void vala_ccode_macro_replacement_set_name (ValaCCodeMacroReplacement* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -257,7 +257,7 @@ void vala_ccode_macro_replacement_set_name (ValaCCodeMacroReplacement* self, con
 
 const gchar* vala_ccode_macro_replacement_get_replacement (ValaCCodeMacroReplacement* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_replacement;
 	result = _tmp0_;
@@ -266,8 +266,8 @@ const gchar* vala_ccode_macro_replacement_get_replacement (ValaCCodeMacroReplace
 
 
 void vala_ccode_macro_replacement_set_replacement (ValaCCodeMacroReplacement* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -278,7 +278,7 @@ void vala_ccode_macro_replacement_set_replacement (ValaCCodeMacroReplacement* se
 
 ValaCCodeExpression* vala_ccode_macro_replacement_get_replacement_expression (ValaCCodeMacroReplacement* self) {
 	ValaCCodeExpression* result;
-	ValaCCodeExpression* _tmp0_;
+	ValaCCodeExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_replacement_expression;
 	result = _tmp0_;
@@ -292,8 +292,8 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 
 void vala_ccode_macro_replacement_set_replacement_expression (ValaCCodeMacroReplacement* self, ValaCCodeExpression* value) {
-	ValaCCodeExpression* _tmp0_;
-	ValaCCodeExpression* _tmp1_;
+	ValaCCodeExpression* _tmp0_ = NULL;
+	ValaCCodeExpression* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -304,9 +304,9 @@ void vala_ccode_macro_replacement_set_replacement_expression (ValaCCodeMacroRepl
 
 static void vala_ccode_macro_replacement_class_init (ValaCCodeMacroReplacementClass * klass) {
 	vala_ccode_macro_replacement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_macro_replacement_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_macro_replacement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeMacroReplacementPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_macro_replacement_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_macro_replacement_real_write;
 }
 
 

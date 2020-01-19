@@ -159,8 +159,8 @@ void vala_ccode_node_write_declaration (ValaCCodeNode* self, ValaCCodeWriter* wr
  * @param writer a C code writer
  */
 static void vala_ccode_node_real_write_combined (ValaCCodeNode* self, ValaCCodeWriter* writer) {
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
 	vala_ccode_node_write_declaration (self, _tmp0_);
@@ -184,7 +184,7 @@ ValaCCodeNode* vala_ccode_node_construct (GType object_type) {
 
 ValaCCodeLineDirective* vala_ccode_node_get_line (ValaCCodeNode* self) {
 	ValaCCodeLineDirective* result;
-	ValaCCodeLineDirective* _tmp0_;
+	ValaCCodeLineDirective* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_line;
 	result = _tmp0_;
@@ -198,8 +198,8 @@ static gpointer _vala_ccode_node_ref0 (gpointer self) {
 
 
 void vala_ccode_node_set_line (ValaCCodeNode* self, ValaCCodeLineDirective* value) {
-	ValaCCodeLineDirective* _tmp0_;
-	ValaCCodeLineDirective* _tmp1_;
+	ValaCCodeLineDirective* _tmp0_ = NULL;
+	ValaCCodeLineDirective* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_ccode_node_ref0 (_tmp0_);
@@ -320,11 +320,11 @@ void vala_value_take_ccode_node (GValue* value, gpointer v_object) {
 
 static void vala_ccode_node_class_init (ValaCCodeNodeClass * klass) {
 	vala_ccode_node_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_node_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_node_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeNodePrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_node_real_write;
-	VALA_CCODE_NODE_CLASS (klass)->write_declaration = vala_ccode_node_real_write_declaration;
-	VALA_CCODE_NODE_CLASS (klass)->write_combined = vala_ccode_node_real_write_combined;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_node_real_write;
+	((ValaCCodeNodeClass *) klass)->write_declaration = vala_ccode_node_real_write_declaration;
+	((ValaCCodeNodeClass *) klass)->write_combined = vala_ccode_node_real_write_combined;
 }
 
 
@@ -337,6 +337,7 @@ static void vala_ccode_node_instance_init (ValaCCodeNode * self) {
 static void vala_ccode_node_finalize (ValaCCodeNode* obj) {
 	ValaCCodeNode * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_CCODE_NODE, ValaCCodeNode);
+	g_signal_handlers_destroy (self);
 	_vala_ccode_node_unref0 (self->priv->_line);
 }
 

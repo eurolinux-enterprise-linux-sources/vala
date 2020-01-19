@@ -109,9 +109,9 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self);
 static gchar** _vala_array_dup1 (gchar** self, int length);
 static gchar** _vala_array_dup2 (gchar** self, int length);
 static gchar** _vala_array_dup3 (gchar** self, int length);
+GType vala_gidl_parser_get_type (void) G_GNUC_CONST;
 ValaGIdlParser* vala_gidl_parser_new (void);
 ValaGIdlParser* vala_gidl_parser_construct (GType object_type);
-GType vala_gidl_parser_get_type (void) G_GNUC_CONST;
 void vala_gidl_parser_parse (ValaGIdlParser* self, ValaCodeContext* context);
 static gboolean _vala_string_array_contains (gchar** stack, int stack_length, gchar* needle);
 static gint vala_vapi_gen_main (gchar** args, int args_length1);
@@ -126,9 +126,9 @@ static const GOptionEntry VALA_VAPI_GEN_options[11] = {{"vapidir", (gchar) 0, 0,
 
 static gint vala_vapi_gen_quit (ValaVAPIGen* self) {
 	gint result = 0;
-	ValaCodeContext* _tmp0_;
-	ValaReport* _tmp1_;
-	ValaReport* _tmp2_;
+	ValaCodeContext* _tmp0_ = NULL;
+	ValaReport* _tmp1_ = NULL;
+	ValaReport* _tmp2_ = NULL;
 	gint _tmp3_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->priv->context;
@@ -136,13 +136,13 @@ static gint vala_vapi_gen_quit (ValaVAPIGen* self) {
 	_tmp2_ = _tmp1_;
 	_tmp3_ = vala_report_get_errors (_tmp2_);
 	if (_tmp3_ == 0) {
-		gboolean _tmp4_;
+		gboolean _tmp4_ = FALSE;
 		_tmp4_ = vala_vapi_gen_quiet_mode;
 		if (!_tmp4_) {
-			FILE* _tmp5_;
-			ValaCodeContext* _tmp6_;
-			ValaReport* _tmp7_;
-			ValaReport* _tmp8_;
+			FILE* _tmp5_ = NULL;
+			ValaCodeContext* _tmp6_ = NULL;
+			ValaReport* _tmp7_ = NULL;
+			ValaReport* _tmp8_ = NULL;
 			gint _tmp9_ = 0;
 			_tmp5_ = stdout;
 			_tmp6_ = self->priv->context;
@@ -154,17 +154,17 @@ static gint vala_vapi_gen_quit (ValaVAPIGen* self) {
 		result = 0;
 		return result;
 	} else {
-		gboolean _tmp10_;
+		gboolean _tmp10_ = FALSE;
 		_tmp10_ = vala_vapi_gen_quiet_mode;
 		if (!_tmp10_) {
-			FILE* _tmp11_;
-			ValaCodeContext* _tmp12_;
-			ValaReport* _tmp13_;
-			ValaReport* _tmp14_;
+			FILE* _tmp11_ = NULL;
+			ValaCodeContext* _tmp12_ = NULL;
+			ValaReport* _tmp13_ = NULL;
+			ValaReport* _tmp14_ = NULL;
 			gint _tmp15_ = 0;
-			ValaCodeContext* _tmp16_;
-			ValaReport* _tmp17_;
-			ValaReport* _tmp18_;
+			ValaCodeContext* _tmp16_ = NULL;
+			ValaReport* _tmp17_ = NULL;
+			ValaReport* _tmp18_ = NULL;
 			gint _tmp19_ = 0;
 			_tmp11_ = stdout;
 			_tmp12_ = self->priv->context;
@@ -188,7 +188,7 @@ static gchar** _vala_array_dup1 (gchar** self, int length) {
 	int i;
 	result = g_new0 (gchar*, length + 1);
 	for (i = 0; i < length; i++) {
-		gchar* _tmp0_;
+		gchar* _tmp0_ = NULL;
 		_tmp0_ = g_strdup (self[i]);
 		result[i] = _tmp0_;
 	}
@@ -201,7 +201,7 @@ static gchar** _vala_array_dup2 (gchar** self, int length) {
 	int i;
 	result = g_new0 (gchar*, length + 1);
 	for (i = 0; i < length; i++) {
-		gchar* _tmp0_;
+		gchar* _tmp0_ = NULL;
 		_tmp0_ = g_strdup (self[i]);
 		result[i] = _tmp0_;
 	}
@@ -214,7 +214,7 @@ static gchar** _vala_array_dup3 (gchar** self, int length) {
 	int i;
 	result = g_new0 (gchar*, length + 1);
 	for (i = 0; i < length; i++) {
-		gchar* _tmp0_;
+		gchar* _tmp0_ = NULL;
 		_tmp0_ = g_strdup (self[i]);
 		result[i] = _tmp0_;
 	}
@@ -224,24 +224,24 @@ static gchar** _vala_array_dup3 (gchar** self, int length) {
 
 static glong string_strnlen (gchar* str, glong maxlen) {
 	glong result = 0L;
-	gchar* _tmp0_;
-	glong _tmp1_;
+	gchar* end = NULL;
+	gchar* _tmp0_ = NULL;
+	glong _tmp1_ = 0L;
 	gchar* _tmp2_ = NULL;
-	gchar* end;
-	gchar* _tmp3_;
+	gchar* _tmp3_ = NULL;
 	_tmp0_ = str;
 	_tmp1_ = maxlen;
 	_tmp2_ = memchr (_tmp0_, 0, (gsize) _tmp1_);
 	end = _tmp2_;
 	_tmp3_ = end;
 	if (_tmp3_ == NULL) {
-		glong _tmp4_;
+		glong _tmp4_ = 0L;
 		_tmp4_ = maxlen;
 		result = _tmp4_;
 		return result;
 	} else {
-		gchar* _tmp5_;
-		gchar* _tmp6_;
+		gchar* _tmp5_ = NULL;
+		gchar* _tmp6_ = NULL;
 		_tmp5_ = end;
 		_tmp6_ = str;
 		result = (glong) (_tmp5_ - _tmp6_);
@@ -254,74 +254,72 @@ static gchar* string_substring (const gchar* self, glong offset, glong len) {
 	gchar* result = NULL;
 	glong string_length = 0L;
 	gboolean _tmp0_ = FALSE;
-	glong _tmp1_;
-	gboolean _tmp3_;
-	glong _tmp9_;
-	glong _tmp15_;
-	glong _tmp18_;
-	glong _tmp19_;
-	glong _tmp20_;
-	glong _tmp21_;
-	glong _tmp22_;
-	gchar* _tmp23_ = NULL;
+	glong _tmp1_ = 0L;
+	glong _tmp8_ = 0L;
+	glong _tmp14_ = 0L;
+	glong _tmp17_ = 0L;
+	glong _tmp18_ = 0L;
+	glong _tmp19_ = 0L;
+	glong _tmp20_ = 0L;
+	glong _tmp21_ = 0L;
+	gchar* _tmp22_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp1_ = offset;
 	if (_tmp1_ >= ((glong) 0)) {
-		glong _tmp2_;
+		glong _tmp2_ = 0L;
 		_tmp2_ = len;
 		_tmp0_ = _tmp2_ >= ((glong) 0);
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp3_ = _tmp0_;
-	if (_tmp3_) {
-		glong _tmp4_;
-		glong _tmp5_;
-		glong _tmp6_ = 0L;
-		_tmp4_ = offset;
-		_tmp5_ = len;
-		_tmp6_ = string_strnlen ((gchar*) self, _tmp4_ + _tmp5_);
-		string_length = _tmp6_;
+	if (_tmp0_) {
+		glong _tmp3_ = 0L;
+		glong _tmp4_ = 0L;
+		glong _tmp5_ = 0L;
+		_tmp3_ = offset;
+		_tmp4_ = len;
+		_tmp5_ = string_strnlen ((gchar*) self, _tmp3_ + _tmp4_);
+		string_length = _tmp5_;
 	} else {
-		gint _tmp7_;
-		gint _tmp8_;
-		_tmp7_ = strlen (self);
-		_tmp8_ = _tmp7_;
-		string_length = (glong) _tmp8_;
+		gint _tmp6_ = 0;
+		gint _tmp7_ = 0;
+		_tmp6_ = strlen (self);
+		_tmp7_ = _tmp6_;
+		string_length = (glong) _tmp7_;
 	}
-	_tmp9_ = offset;
-	if (_tmp9_ < ((glong) 0)) {
-		glong _tmp10_;
-		glong _tmp11_;
-		glong _tmp12_;
-		_tmp10_ = string_length;
+	_tmp8_ = offset;
+	if (_tmp8_ < ((glong) 0)) {
+		glong _tmp9_ = 0L;
+		glong _tmp10_ = 0L;
+		glong _tmp11_ = 0L;
+		_tmp9_ = string_length;
+		_tmp10_ = offset;
+		offset = _tmp9_ + _tmp10_;
 		_tmp11_ = offset;
-		offset = _tmp10_ + _tmp11_;
-		_tmp12_ = offset;
-		g_return_val_if_fail (_tmp12_ >= ((glong) 0), NULL);
+		g_return_val_if_fail (_tmp11_ >= ((glong) 0), NULL);
 	} else {
-		glong _tmp13_;
-		glong _tmp14_;
-		_tmp13_ = offset;
-		_tmp14_ = string_length;
-		g_return_val_if_fail (_tmp13_ <= _tmp14_, NULL);
+		glong _tmp12_ = 0L;
+		glong _tmp13_ = 0L;
+		_tmp12_ = offset;
+		_tmp13_ = string_length;
+		g_return_val_if_fail (_tmp12_ <= _tmp13_, NULL);
 	}
-	_tmp15_ = len;
-	if (_tmp15_ < ((glong) 0)) {
-		glong _tmp16_;
-		glong _tmp17_;
-		_tmp16_ = string_length;
-		_tmp17_ = offset;
-		len = _tmp16_ - _tmp17_;
+	_tmp14_ = len;
+	if (_tmp14_ < ((glong) 0)) {
+		glong _tmp15_ = 0L;
+		glong _tmp16_ = 0L;
+		_tmp15_ = string_length;
+		_tmp16_ = offset;
+		len = _tmp15_ - _tmp16_;
 	}
-	_tmp18_ = offset;
-	_tmp19_ = len;
-	_tmp20_ = string_length;
-	g_return_val_if_fail ((_tmp18_ + _tmp19_) <= _tmp20_, NULL);
-	_tmp21_ = offset;
-	_tmp22_ = len;
-	_tmp23_ = g_strndup (((gchar*) self) + _tmp21_, (gsize) _tmp22_);
-	result = _tmp23_;
+	_tmp17_ = offset;
+	_tmp18_ = len;
+	_tmp19_ = string_length;
+	g_return_val_if_fail ((_tmp17_ + _tmp18_) <= _tmp19_, NULL);
+	_tmp20_ = offset;
+	_tmp21_ = len;
+	_tmp22_ = g_strndup (((gchar*) self) + _tmp20_, (gsize) _tmp21_);
+	result = _tmp22_;
 	return result;
 }
 
@@ -339,99 +337,99 @@ static gboolean _vala_string_array_contains (gchar** stack, int stack_length, gc
 
 static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 	gint result = 0;
-	ValaCodeContext* _tmp0_;
-	ValaCodeContext* _tmp1_;
-	ValaCodeContext* _tmp2_;
-	gchar** _tmp3_;
-	gint _tmp3__length1;
-	gchar** _tmp4_;
-	gint _tmp4__length1;
-	ValaCodeContext* _tmp5_;
-	gchar** _tmp6_;
-	gint _tmp6__length1;
-	gchar** _tmp7_;
-	gint _tmp7__length1;
-	ValaCodeContext* _tmp8_;
-	gchar** _tmp9_;
-	gint _tmp9__length1;
-	gchar** _tmp10_;
-	gint _tmp10__length1;
-	ValaCodeContext* _tmp11_;
-	ValaReport* _tmp12_;
-	ValaReport* _tmp13_;
-	gboolean _tmp14_;
-	ValaCodeContext* _tmp15_;
-	ValaReport* _tmp16_;
-	ValaReport* _tmp17_;
-	gboolean _tmp18_;
-	ValaCodeContext* _tmp19_;
-	ValaCodeContext* _tmp20_;
-	ValaCodeContext* _tmp21_;
-	ValaCodeContext* _tmp22_;
-	ValaReport* _tmp23_;
-	ValaReport* _tmp24_;
+	ValaCodeContext* _tmp0_ = NULL;
+	ValaCodeContext* _tmp1_ = NULL;
+	ValaCodeContext* _tmp2_ = NULL;
+	gchar** _tmp3_ = NULL;
+	gint _tmp3__length1 = 0;
+	gchar** _tmp4_ = NULL;
+	gint _tmp4__length1 = 0;
+	ValaCodeContext* _tmp5_ = NULL;
+	gchar** _tmp6_ = NULL;
+	gint _tmp6__length1 = 0;
+	gchar** _tmp7_ = NULL;
+	gint _tmp7__length1 = 0;
+	ValaCodeContext* _tmp8_ = NULL;
+	gchar** _tmp9_ = NULL;
+	gint _tmp9__length1 = 0;
+	gchar** _tmp10_ = NULL;
+	gint _tmp10__length1 = 0;
+	ValaCodeContext* _tmp11_ = NULL;
+	ValaReport* _tmp12_ = NULL;
+	ValaReport* _tmp13_ = NULL;
+	gboolean _tmp14_ = FALSE;
+	ValaCodeContext* _tmp15_ = NULL;
+	ValaReport* _tmp16_ = NULL;
+	ValaReport* _tmp17_ = NULL;
+	gboolean _tmp18_ = FALSE;
+	ValaCodeContext* _tmp19_ = NULL;
+	ValaCodeContext* _tmp20_ = NULL;
+	ValaCodeContext* _tmp21_ = NULL;
+	ValaCodeContext* _tmp22_ = NULL;
+	ValaReport* _tmp23_ = NULL;
+	ValaReport* _tmp24_ = NULL;
 	gint _tmp25_ = 0;
-	gchar** _tmp27_;
-	gint _tmp27__length1;
-	ValaCodeContext* _tmp43_;
-	ValaReport* _tmp44_;
-	ValaReport* _tmp45_;
+	gchar** _tmp27_ = NULL;
+	gint _tmp27__length1 = 0;
+	ValaCodeContext* _tmp43_ = NULL;
+	ValaReport* _tmp44_ = NULL;
+	ValaReport* _tmp45_ = NULL;
 	gint _tmp46_ = 0;
-	const gchar* _tmp48_;
-	ValaCodeContext* _tmp53_;
-	ValaReport* _tmp54_;
-	ValaReport* _tmp55_;
+	const gchar* _tmp48_ = NULL;
+	ValaCodeContext* _tmp53_ = NULL;
+	ValaReport* _tmp54_ = NULL;
+	ValaReport* _tmp55_ = NULL;
 	gint _tmp56_ = 0;
-	gchar** _tmp58_;
-	gint _tmp58__length1;
-	ValaCodeContext* _tmp63_;
-	ValaReport* _tmp64_;
-	ValaReport* _tmp65_;
+	gchar** _tmp58_ = NULL;
+	gint _tmp58__length1 = 0;
+	ValaCodeContext* _tmp63_ = NULL;
+	ValaReport* _tmp64_ = NULL;
+	ValaReport* _tmp65_ = NULL;
 	gint _tmp66_ = 0;
-	gchar** _tmp68_;
-	gint _tmp68__length1;
-	ValaCodeContext* _tmp80_;
-	ValaReport* _tmp81_;
-	ValaReport* _tmp82_;
+	gchar** _tmp68_ = NULL;
+	gint _tmp68__length1 = 0;
+	ValaCodeContext* _tmp80_ = NULL;
+	ValaReport* _tmp81_ = NULL;
+	ValaReport* _tmp82_ = NULL;
 	gint _tmp83_ = 0;
-	ValaParser* _tmp85_;
-	ValaParser* parser;
-	ValaParser* _tmp86_;
-	ValaCodeContext* _tmp87_;
-	ValaCodeContext* _tmp88_;
-	ValaReport* _tmp89_;
-	ValaReport* _tmp90_;
+	ValaParser* parser = NULL;
+	ValaParser* _tmp85_ = NULL;
+	ValaParser* _tmp86_ = NULL;
+	ValaCodeContext* _tmp87_ = NULL;
+	ValaCodeContext* _tmp88_ = NULL;
+	ValaReport* _tmp89_ = NULL;
+	ValaReport* _tmp90_ = NULL;
 	gint _tmp91_ = 0;
-	ValaGirParser* _tmp93_;
-	ValaGirParser* girparser;
-	ValaGirParser* _tmp94_;
-	ValaCodeContext* _tmp95_;
-	ValaCodeContext* _tmp96_;
-	ValaReport* _tmp97_;
-	ValaReport* _tmp98_;
+	ValaGirParser* girparser = NULL;
+	ValaGirParser* _tmp93_ = NULL;
+	ValaGirParser* _tmp94_ = NULL;
+	ValaCodeContext* _tmp95_ = NULL;
+	ValaCodeContext* _tmp96_ = NULL;
+	ValaReport* _tmp97_ = NULL;
+	ValaReport* _tmp98_ = NULL;
 	gint _tmp99_ = 0;
-	ValaGIdlParser* _tmp101_;
-	ValaGIdlParser* gidlparser;
-	ValaGIdlParser* _tmp102_;
-	ValaCodeContext* _tmp103_;
-	ValaCodeContext* _tmp104_;
-	ValaReport* _tmp105_;
-	ValaReport* _tmp106_;
+	ValaGIdlParser* gidlparser = NULL;
+	ValaGIdlParser* _tmp101_ = NULL;
+	ValaGIdlParser* _tmp102_ = NULL;
+	ValaCodeContext* _tmp103_ = NULL;
+	ValaCodeContext* _tmp104_ = NULL;
+	ValaReport* _tmp105_ = NULL;
+	ValaReport* _tmp106_ = NULL;
 	gint _tmp107_ = 0;
-	ValaCodeContext* _tmp109_;
-	ValaCodeContext* _tmp110_;
-	ValaReport* _tmp111_;
-	ValaReport* _tmp112_;
+	ValaCodeContext* _tmp109_ = NULL;
+	ValaCodeContext* _tmp110_ = NULL;
+	ValaReport* _tmp111_ = NULL;
+	ValaReport* _tmp112_ = NULL;
 	gint _tmp113_ = 0;
-	ValaCodeWriter* _tmp161_;
-	ValaCodeWriter* interface_writer;
-	const gchar* _tmp162_;
+	ValaCodeWriter* interface_writer = NULL;
+	ValaCodeWriter* _tmp161_ = NULL;
+	gchar* vapi_filename = NULL;
+	const gchar* _tmp162_ = NULL;
 	gchar* _tmp163_ = NULL;
-	gchar* vapi_filename;
-	const gchar* _tmp164_;
-	ValaCodeWriter* _tmp168_;
-	ValaCodeContext* _tmp169_;
-	const gchar* _tmp170_;
+	const gchar* _tmp164_ = NULL;
+	ValaCodeWriter* _tmp168_ = NULL;
+	ValaCodeContext* _tmp169_ = NULL;
+	const gchar* _tmp170_ = NULL;
 	gint _tmp171_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = vala_code_context_new ();
@@ -499,26 +497,26 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 		source_collection = _tmp27_;
 		source_collection_length1 = _tmp27__length1;
 		for (source_it = 0; source_it < _tmp27__length1; source_it = source_it + 1) {
-			gchar* _tmp28_;
+			gchar* _tmp28_ = NULL;
 			gchar* source = NULL;
 			_tmp28_ = g_strdup (source_collection[source_it]);
 			source = _tmp28_;
 			{
-				const gchar* _tmp29_;
+				const gchar* _tmp29_ = NULL;
 				gboolean _tmp30_ = FALSE;
-				const gchar* _tmp31_;
-				const gchar* _tmp32_;
-				gint _tmp33_;
-				gint _tmp34_;
-				gint _tmp35_;
-				gint _tmp36_;
+				gchar* depsfile = NULL;
+				const gchar* _tmp31_ = NULL;
+				const gchar* _tmp32_ = NULL;
+				gint _tmp33_ = 0;
+				gint _tmp34_ = 0;
+				gint _tmp35_ = 0;
+				gint _tmp36_ = 0;
 				gchar* _tmp37_ = NULL;
-				gchar* _tmp38_;
-				gchar* _tmp39_;
-				gchar* _tmp40_;
-				gchar* depsfile;
-				ValaCodeContext* _tmp41_;
-				const gchar* _tmp42_;
+				gchar* _tmp38_ = NULL;
+				gchar* _tmp39_ = NULL;
+				gchar* _tmp40_ = NULL;
+				ValaCodeContext* _tmp41_ = NULL;
+				const gchar* _tmp42_ = NULL;
 				_tmp29_ = source;
 				_tmp30_ = g_str_has_suffix (_tmp29_, ".gi");
 				if (!_tmp30_) {
@@ -557,11 +555,11 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 	}
 	_tmp48_ = vala_vapi_gen_library;
 	if (_tmp48_ != NULL) {
-		const gchar* _tmp49_;
-		gchar* _tmp50_;
-		gchar* depsfile;
-		ValaCodeContext* _tmp51_;
-		const gchar* _tmp52_;
+		gchar* depsfile = NULL;
+		const gchar* _tmp49_ = NULL;
+		gchar* _tmp50_ = NULL;
+		ValaCodeContext* _tmp51_ = NULL;
+		const gchar* _tmp52_ = NULL;
 		_tmp49_ = vala_vapi_gen_library;
 		_tmp50_ = g_strconcat (_tmp49_, ".deps", NULL);
 		depsfile = _tmp50_;
@@ -585,8 +583,8 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 	_tmp58_ = vala_vapi_gen_packages;
 	_tmp58__length1 = _vala_array_length (vala_vapi_gen_packages);
 	if (_tmp58_ != NULL) {
-		gchar** _tmp59_;
-		gint _tmp59__length1;
+		gchar** _tmp59_ = NULL;
+		gint _tmp59__length1 = 0;
 		_tmp59_ = vala_vapi_gen_packages;
 		_tmp59__length1 = _vala_array_length (vala_vapi_gen_packages);
 		{
@@ -597,13 +595,13 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 			package_collection = _tmp59_;
 			package_collection_length1 = _tmp59__length1;
 			for (package_it = 0; package_it < _tmp59__length1; package_it = package_it + 1) {
-				gchar* _tmp60_;
+				gchar* _tmp60_ = NULL;
 				gchar* package = NULL;
 				_tmp60_ = g_strdup (package_collection[package_it]);
 				package = _tmp60_;
 				{
-					ValaCodeContext* _tmp61_;
-					const gchar* _tmp62_;
+					ValaCodeContext* _tmp61_ = NULL;
+					const gchar* _tmp62_ = NULL;
 					_tmp61_ = self->priv->context;
 					_tmp62_ = package;
 					vala_code_context_add_external_package (_tmp61_, _tmp62_);
@@ -634,21 +632,21 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 		source_collection = _tmp68_;
 		source_collection_length1 = _tmp68__length1;
 		for (source_it = 0; source_it < _tmp68__length1; source_it = source_it + 1) {
-			gchar* _tmp69_;
+			gchar* _tmp69_ = NULL;
 			gchar* source = NULL;
 			_tmp69_ = g_strdup (source_collection[source_it]);
 			source = _tmp69_;
 			{
-				const gchar* _tmp70_;
+				const gchar* _tmp70_ = NULL;
 				gboolean _tmp71_ = FALSE;
 				_tmp70_ = source;
 				_tmp71_ = g_file_test (_tmp70_, G_FILE_TEST_EXISTS);
 				if (_tmp71_) {
-					ValaCodeContext* _tmp72_;
-					ValaCodeContext* _tmp73_;
-					const gchar* _tmp74_;
-					ValaSourceFile* _tmp75_;
-					ValaSourceFile* _tmp76_;
+					ValaCodeContext* _tmp72_ = NULL;
+					ValaCodeContext* _tmp73_ = NULL;
+					const gchar* _tmp74_ = NULL;
+					ValaSourceFile* _tmp75_ = NULL;
+					ValaSourceFile* _tmp76_ = NULL;
 					_tmp72_ = self->priv->context;
 					_tmp73_ = self->priv->context;
 					_tmp74_ = source;
@@ -657,9 +655,9 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 					vala_code_context_add_source_file (_tmp72_, _tmp76_);
 					_vala_source_file_unref0 (_tmp76_);
 				} else {
-					const gchar* _tmp77_;
+					const gchar* _tmp77_ = NULL;
 					gchar* _tmp78_ = NULL;
-					gchar* _tmp79_;
+					gchar* _tmp79_ = NULL;
 					_tmp77_ = source;
 					_tmp78_ = g_strdup_printf ("%s not found", _tmp77_);
 					_tmp79_ = _tmp78_;
@@ -747,14 +745,14 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 		return result;
 	}
 	{
-		ValaCodeContext* _tmp115_;
+		ValaList* _file_list = NULL;
+		ValaCodeContext* _tmp115_ = NULL;
 		ValaList* _tmp116_ = NULL;
-		ValaList* _file_list;
-		ValaList* _tmp117_;
-		gint _tmp118_;
-		gint _tmp119_;
-		gint _file_size;
-		gint _file_index;
+		gint _file_size = 0;
+		ValaList* _tmp117_ = NULL;
+		gint _tmp118_ = 0;
+		gint _tmp119_ = 0;
+		gint _file_index = 0;
 		_tmp115_ = self->priv->context;
 		_tmp116_ = vala_code_context_get_source_files (_tmp115_);
 		_file_list = _tmp116_;
@@ -764,22 +762,22 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 		_file_size = _tmp119_;
 		_file_index = -1;
 		while (TRUE) {
-			gint _tmp120_;
-			gint _tmp121_;
-			gint _tmp122_;
-			ValaList* _tmp123_;
-			gint _tmp124_;
+			gint _tmp120_ = 0;
+			gint _tmp121_ = 0;
+			gint _tmp122_ = 0;
+			ValaSourceFile* file = NULL;
+			ValaList* _tmp123_ = NULL;
+			gint _tmp124_ = 0;
 			gpointer _tmp125_ = NULL;
-			ValaSourceFile* file;
-			ValaSourceFile* _tmp126_;
-			const gchar* _tmp127_;
-			const gchar* _tmp128_;
+			ValaSourceFile* _tmp126_ = NULL;
+			const gchar* _tmp127_ = NULL;
+			const gchar* _tmp128_ = NULL;
 			gboolean _tmp129_ = FALSE;
-			ValaSourceFile* _tmp130_;
-			const gchar* _tmp131_;
-			const gchar* _tmp132_;
-			gchar** _tmp133_;
-			gint _tmp133__length1;
+			ValaSourceFile* _tmp130_ = NULL;
+			const gchar* _tmp131_ = NULL;
+			const gchar* _tmp132_ = NULL;
+			gchar** _tmp133_ = NULL;
+			gint _tmp133__length1 = 0;
 			_tmp120_ = _file_index;
 			_file_index = _tmp120_ + 1;
 			_tmp121_ = _file_index;
@@ -805,10 +803,10 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 			_tmp133_ = vala_vapi_gen_sources;
 			_tmp133__length1 = _vala_array_length (vala_vapi_gen_sources);
 			if (_vala_string_array_contains (_tmp133_, _tmp133__length1, _tmp132_)) {
-				ValaSourceFile* _tmp134_;
-				ValaSourceFile* _tmp135_;
-				const gchar* _tmp136_;
-				const gchar* _tmp137_;
+				ValaSourceFile* _tmp134_ = NULL;
+				ValaSourceFile* _tmp135_ = NULL;
+				const gchar* _tmp136_ = NULL;
+				const gchar* _tmp137_ = NULL;
 				gboolean _tmp138_ = FALSE;
 				_tmp134_ = file;
 				vala_source_file_set_file_type (_tmp134_, VALA_SOURCE_FILE_TYPE_SOURCE);
@@ -817,13 +815,13 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 				_tmp137_ = _tmp136_;
 				_tmp138_ = g_str_has_suffix (_tmp137_, ".gir");
 				if (_tmp138_) {
-					ValaCodeContext* _tmp139_;
-					ValaSourceFile* _tmp140_;
-					const gchar* _tmp141_;
-					const gchar* _tmp142_;
+					gchar* metadata_filename = NULL;
+					ValaCodeContext* _tmp139_ = NULL;
+					ValaSourceFile* _tmp140_ = NULL;
+					const gchar* _tmp141_ = NULL;
+					const gchar* _tmp142_ = NULL;
 					gchar* _tmp143_ = NULL;
-					gchar* metadata_filename;
-					const gchar* _tmp144_;
+					const gchar* _tmp144_ = NULL;
 					_tmp139_ = self->priv->context;
 					_tmp140_ = file;
 					_tmp141_ = vala_source_file_get_filename (_tmp140_);
@@ -833,14 +831,14 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 					_tmp144_ = metadata_filename;
 					if (_tmp144_ != NULL) {
 						{
-							ValaCodeContext* _tmp145_;
+							ValaList* _metadata_file_list = NULL;
+							ValaCodeContext* _tmp145_ = NULL;
 							ValaList* _tmp146_ = NULL;
-							ValaList* _metadata_file_list;
-							ValaList* _tmp147_;
-							gint _tmp148_;
-							gint _tmp149_;
-							gint _metadata_file_size;
-							gint _metadata_file_index;
+							gint _metadata_file_size = 0;
+							ValaList* _tmp147_ = NULL;
+							gint _tmp148_ = 0;
+							gint _tmp149_ = 0;
+							gint _metadata_file_index = 0;
 							_tmp145_ = self->priv->context;
 							_tmp146_ = vala_code_context_get_source_files (_tmp145_);
 							_metadata_file_list = _tmp146_;
@@ -850,17 +848,17 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 							_metadata_file_size = _tmp149_;
 							_metadata_file_index = -1;
 							while (TRUE) {
-								gint _tmp150_;
-								gint _tmp151_;
-								gint _tmp152_;
-								ValaList* _tmp153_;
-								gint _tmp154_;
+								gint _tmp150_ = 0;
+								gint _tmp151_ = 0;
+								gint _tmp152_ = 0;
+								ValaSourceFile* metadata_file = NULL;
+								ValaList* _tmp153_ = NULL;
+								gint _tmp154_ = 0;
 								gpointer _tmp155_ = NULL;
-								ValaSourceFile* metadata_file;
-								ValaSourceFile* _tmp156_;
-								const gchar* _tmp157_;
-								const gchar* _tmp158_;
-								const gchar* _tmp159_;
+								ValaSourceFile* _tmp156_ = NULL;
+								const gchar* _tmp157_ = NULL;
+								const gchar* _tmp158_ = NULL;
+								const gchar* _tmp159_ = NULL;
 								_tmp150_ = _metadata_file_index;
 								_metadata_file_index = _tmp150_ + 1;
 								_tmp151_ = _metadata_file_index;
@@ -877,7 +875,7 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 								_tmp158_ = _tmp157_;
 								_tmp159_ = metadata_filename;
 								if (g_strcmp0 (_tmp158_, _tmp159_) == 0) {
-									ValaSourceFile* _tmp160_;
+									ValaSourceFile* _tmp160_ = NULL;
 									_tmp160_ = metadata_file;
 									vala_source_file_set_file_type (_tmp160_, VALA_SOURCE_FILE_TYPE_SOURCE);
 								}
@@ -900,8 +898,8 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 	vapi_filename = _tmp163_;
 	_tmp164_ = vala_vapi_gen_directory;
 	if (_tmp164_ != NULL) {
-		const gchar* _tmp165_;
-		const gchar* _tmp166_;
+		const gchar* _tmp165_ = NULL;
+		const gchar* _tmp166_ = NULL;
 		gchar* _tmp167_ = NULL;
 		_tmp165_ = vala_vapi_gen_directory;
 		_tmp166_ = vapi_filename;
@@ -928,20 +926,20 @@ static gint vala_vapi_gen_run (ValaVAPIGen* self) {
 
 static gint vala_vapi_gen_main (gchar** args, int args_length1) {
 	gint result = 0;
-	gboolean _tmp10_;
-	gchar** _tmp12_;
-	gint _tmp12__length1;
-	ValaVAPIGen* _tmp14_;
-	ValaVAPIGen* vapigen;
-	ValaVAPIGen* _tmp15_;
+	gboolean _tmp10_ = FALSE;
+	gchar** _tmp12_ = NULL;
+	gint _tmp12__length1 = 0;
+	ValaVAPIGen* vapigen = NULL;
+	ValaVAPIGen* _tmp14_ = NULL;
+	ValaVAPIGen* _tmp15_ = NULL;
 	gint _tmp16_ = 0;
 	GError * _inner_error_ = NULL;
 	{
-		GOptionContext* _tmp0_;
-		GOptionContext* opt_context;
-		GOptionContext* _tmp1_;
-		GOptionContext* _tmp2_;
-		GOptionContext* _tmp3_;
+		GOptionContext* opt_context = NULL;
+		GOptionContext* _tmp0_ = NULL;
+		GOptionContext* _tmp1_ = NULL;
+		GOptionContext* _tmp2_ = NULL;
+		GOptionContext* _tmp3_ = NULL;
 		_tmp0_ = g_option_context_new ("- Vala API Generator");
 		opt_context = _tmp0_;
 		_tmp1_ = opt_context;
@@ -950,7 +948,7 @@ static gint vala_vapi_gen_main (gchar** args, int args_length1) {
 		g_option_context_add_main_entries (_tmp2_, VALA_VAPI_GEN_options, NULL);
 		_tmp3_ = opt_context;
 		g_option_context_parse (_tmp3_, &args_length1, &args, &_inner_error_);
-		if (_inner_error_ != NULL) {
+		if (G_UNLIKELY (_inner_error_ != NULL)) {
 			_g_option_context_free0 (opt_context);
 			if (_inner_error_->domain == G_OPTION_ERROR) {
 				goto __catch3_g_option_error;
@@ -966,13 +964,13 @@ static gint vala_vapi_gen_main (gchar** args, int args_length1) {
 	__catch3_g_option_error:
 	{
 		GError* e = NULL;
-		FILE* _tmp4_;
-		GError* _tmp5_;
-		const gchar* _tmp6_;
-		FILE* _tmp7_;
-		gchar** _tmp8_;
-		gint _tmp8__length1;
-		const gchar* _tmp9_;
+		FILE* _tmp4_ = NULL;
+		GError* _tmp5_ = NULL;
+		const gchar* _tmp6_ = NULL;
+		FILE* _tmp7_ = NULL;
+		gchar** _tmp8_ = NULL;
+		gint _tmp8__length1 = 0;
+		const gchar* _tmp9_ = NULL;
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		_tmp4_ = stdout;
@@ -989,14 +987,14 @@ static gint vala_vapi_gen_main (gchar** args, int args_length1) {
 		return result;
 	}
 	__finally3:
-	if (_inner_error_ != NULL) {
+	if (G_UNLIKELY (_inner_error_ != NULL)) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return 0;
 	}
 	_tmp10_ = vala_vapi_gen_version;
 	if (_tmp10_) {
-		FILE* _tmp11_;
+		FILE* _tmp11_ = NULL;
 		_tmp11_ = stdout;
 		fprintf (_tmp11_, "Vala API Generator %s\n", BUILD_VERSION);
 		result = 0;
@@ -1005,7 +1003,7 @@ static gint vala_vapi_gen_main (gchar** args, int args_length1) {
 	_tmp12_ = vala_vapi_gen_sources;
 	_tmp12__length1 = _vala_array_length (vala_vapi_gen_sources);
 	if (_tmp12_ == NULL) {
-		FILE* _tmp13_;
+		FILE* _tmp13_ = NULL;
 		_tmp13_ = stderr;
 		fprintf (_tmp13_, "No source file specified.\n");
 		result = 1;
@@ -1022,7 +1020,9 @@ static gint vala_vapi_gen_main (gchar** args, int args_length1) {
 
 
 int main (int argc, char ** argv) {
+#if !GLIB_CHECK_VERSION (2,35,0)
 	g_type_init ();
+#endif
 	return vala_vapi_gen_main (argv, argc);
 }
 

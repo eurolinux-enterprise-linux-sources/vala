@@ -1292,14 +1292,14 @@ ValaCodeGenerator* vala_code_generator_construct (GType object_type) {
 
 static void vala_code_generator_class_init (ValaCodeGeneratorClass * klass) {
 	vala_code_generator_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_GENERATOR_CLASS (klass)->emit = vala_code_generator_real_emit;
-	VALA_CODE_GENERATOR_CLASS (klass)->create_local = vala_code_generator_real_create_local;
-	VALA_CODE_GENERATOR_CLASS (klass)->load_local = vala_code_generator_real_load_local;
-	VALA_CODE_GENERATOR_CLASS (klass)->store_local = vala_code_generator_real_store_local;
-	VALA_CODE_GENERATOR_CLASS (klass)->load_parameter = vala_code_generator_real_load_parameter;
-	VALA_CODE_GENERATOR_CLASS (klass)->store_parameter = vala_code_generator_real_store_parameter;
-	VALA_CODE_GENERATOR_CLASS (klass)->load_field = vala_code_generator_real_load_field;
-	VALA_CODE_GENERATOR_CLASS (klass)->store_field = vala_code_generator_real_store_field;
+	((ValaCodeGeneratorClass *) klass)->emit = vala_code_generator_real_emit;
+	((ValaCodeGeneratorClass *) klass)->create_local = vala_code_generator_real_create_local;
+	((ValaCodeGeneratorClass *) klass)->load_local = vala_code_generator_real_load_local;
+	((ValaCodeGeneratorClass *) klass)->store_local = vala_code_generator_real_store_local;
+	((ValaCodeGeneratorClass *) klass)->load_parameter = vala_code_generator_real_load_parameter;
+	((ValaCodeGeneratorClass *) klass)->store_parameter = vala_code_generator_real_store_parameter;
+	((ValaCodeGeneratorClass *) klass)->load_field = vala_code_generator_real_load_field;
+	((ValaCodeGeneratorClass *) klass)->store_field = vala_code_generator_real_store_field;
 }
 
 

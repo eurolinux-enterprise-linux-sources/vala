@@ -224,8 +224,6 @@ ValaList* vala_ccode_fragment_get_children (ValaCCodeFragment* self);
 const gchar* vala_ccode_function_get_name (ValaCCodeFunction* self);
 static gchar* vala_ccode_file_get_define_for_filename (const gchar* filename);
 gboolean vala_ccode_file_store (ValaCCodeFile* self, const gchar* filename, const gchar* source_filename, gboolean write_version, gboolean line_directives, const gchar* begin_decls, const gchar* end_decls);
-ValaCCodeWriter* vala_ccode_writer_new (const gchar* filename, const gchar* source_filename);
-ValaCCodeWriter* vala_ccode_writer_construct (GType object_type, const gchar* filename, const gchar* source_filename);
 gpointer vala_ccode_writer_ref (gpointer instance);
 void vala_ccode_writer_unref (gpointer instance);
 GParamSpec* vala_param_spec_ccode_writer (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
@@ -233,6 +231,8 @@ void vala_value_set_ccode_writer (GValue* value, gpointer v_object);
 void vala_value_take_ccode_writer (GValue* value, gpointer v_object);
 gpointer vala_value_get_ccode_writer (const GValue* value);
 GType vala_ccode_writer_get_type (void) G_GNUC_CONST;
+ValaCCodeWriter* vala_ccode_writer_new (const gchar* filename, const gchar* source_filename);
+ValaCCodeWriter* vala_ccode_writer_construct (GType object_type, const gchar* filename, const gchar* source_filename);
 gboolean vala_ccode_writer_open (ValaCCodeWriter* self, gboolean write_version);
 gboolean vala_ccode_file_get_is_header (ValaCCodeFile* self);
 void vala_ccode_writer_set_line_directives (ValaCCodeWriter* self, gboolean value);
@@ -240,10 +240,10 @@ void vala_ccode_node_write (ValaCCodeNode* self, ValaCCodeWriter* writer);
 void vala_ccode_writer_write_newline (ValaCCodeWriter* self);
 void vala_ccode_node_write_combined (ValaCCodeNode* self, ValaCCodeWriter* writer);
 void vala_ccode_node_write_declaration (ValaCCodeNode* self, ValaCCodeWriter* writer);
+GType vala_ccode_once_section_get_type (void) G_GNUC_CONST;
 const gchar* vala_ccode_writer_get_filename (ValaCCodeWriter* self);
 ValaCCodeOnceSection* vala_ccode_once_section_new (const gchar* def);
 ValaCCodeOnceSection* vala_ccode_once_section_construct (GType object_type, const gchar* def);
-GType vala_ccode_once_section_get_type (void) G_GNUC_CONST;
 ValaCCodeNewline* vala_ccode_newline_new (void);
 ValaCCodeNewline* vala_ccode_newline_construct (GType object_type);
 GType vala_ccode_newline_get_type (void) G_GNUC_CONST;
@@ -260,11 +260,11 @@ static void vala_ccode_file_finalize (ValaCCodeFile* obj);
 
 gboolean vala_ccode_file_add_declaration (ValaCCodeFile* self, const gchar* name) {
 	gboolean result = FALSE;
-	ValaSet* _tmp0_;
-	const gchar* _tmp1_;
+	ValaSet* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
-	ValaSet* _tmp3_;
-	const gchar* _tmp4_;
+	ValaSet* _tmp3_ = NULL;
+	const gchar* _tmp4_ = NULL;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
 	_tmp0_ = self->priv->declarations;
@@ -283,8 +283,8 @@ gboolean vala_ccode_file_add_declaration (ValaCCodeFile* self, const gchar* name
 
 
 void vala_ccode_file_add_comment (ValaCCodeFile* self, ValaCCodeComment* comment) {
-	ValaCCodeFragment* _tmp0_;
-	ValaCCodeComment* _tmp1_;
+	ValaCCodeFragment* _tmp0_ = NULL;
+	ValaCCodeComment* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (comment != NULL);
 	_tmp0_ = self->priv->comments;
@@ -294,8 +294,8 @@ void vala_ccode_file_add_comment (ValaCCodeFile* self, ValaCCodeComment* comment
 
 
 void vala_ccode_file_add_include (ValaCCodeFile* self, const gchar* filename, gboolean local) {
-	ValaSet* _tmp0_;
-	const gchar* _tmp1_;
+	ValaSet* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (filename != NULL);
@@ -303,13 +303,13 @@ void vala_ccode_file_add_include (ValaCCodeFile* self, const gchar* filename, gb
 	_tmp1_ = filename;
 	_tmp2_ = vala_collection_contains ((ValaCollection*) _tmp0_, _tmp1_);
 	if (!_tmp2_) {
-		ValaCCodeFragment* _tmp3_;
-		const gchar* _tmp4_;
-		gboolean _tmp5_;
-		ValaCCodeIncludeDirective* _tmp6_;
-		ValaCCodeIncludeDirective* _tmp7_;
-		ValaSet* _tmp8_;
-		const gchar* _tmp9_;
+		ValaCCodeFragment* _tmp3_ = NULL;
+		const gchar* _tmp4_ = NULL;
+		gboolean _tmp5_ = FALSE;
+		ValaCCodeIncludeDirective* _tmp6_ = NULL;
+		ValaCCodeIncludeDirective* _tmp7_ = NULL;
+		ValaSet* _tmp8_ = NULL;
+		const gchar* _tmp9_ = NULL;
 		_tmp3_ = self->priv->include_directives;
 		_tmp4_ = filename;
 		_tmp5_ = local;
@@ -325,8 +325,8 @@ void vala_ccode_file_add_include (ValaCCodeFile* self, const gchar* filename, gb
 
 
 void vala_ccode_file_add_type_declaration (ValaCCodeFile* self, ValaCCodeNode* node) {
-	ValaCCodeFragment* _tmp0_;
-	ValaCCodeNode* _tmp1_;
+	ValaCCodeFragment* _tmp0_ = NULL;
+	ValaCCodeNode* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (node != NULL);
 	_tmp0_ = self->priv->type_declaration;
@@ -336,8 +336,8 @@ void vala_ccode_file_add_type_declaration (ValaCCodeFile* self, ValaCCodeNode* n
 
 
 void vala_ccode_file_add_type_definition (ValaCCodeFile* self, ValaCCodeNode* node) {
-	ValaCCodeFragment* _tmp0_;
-	ValaCCodeNode* _tmp1_;
+	ValaCCodeFragment* _tmp0_ = NULL;
+	ValaCCodeNode* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (node != NULL);
 	_tmp0_ = self->priv->type_definition;
@@ -347,8 +347,8 @@ void vala_ccode_file_add_type_definition (ValaCCodeFile* self, ValaCCodeNode* no
 
 
 void vala_ccode_file_add_type_member_declaration (ValaCCodeFile* self, ValaCCodeNode* node) {
-	ValaCCodeFragment* _tmp0_;
-	ValaCCodeNode* _tmp1_;
+	ValaCCodeFragment* _tmp0_ = NULL;
+	ValaCCodeNode* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (node != NULL);
 	_tmp0_ = self->priv->type_member_declaration;
@@ -358,8 +358,8 @@ void vala_ccode_file_add_type_member_declaration (ValaCCodeFile* self, ValaCCode
 
 
 void vala_ccode_file_add_constant_declaration (ValaCCodeFile* self, ValaCCodeNode* node) {
-	ValaCCodeFragment* _tmp0_;
-	ValaCCodeNode* _tmp1_;
+	ValaCCodeFragment* _tmp0_ = NULL;
+	ValaCCodeNode* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (node != NULL);
 	_tmp0_ = self->priv->constant_declaration;
@@ -369,8 +369,8 @@ void vala_ccode_file_add_constant_declaration (ValaCCodeFile* self, ValaCCodeNod
 
 
 void vala_ccode_file_add_type_member_definition (ValaCCodeFile* self, ValaCCodeNode* node) {
-	ValaCCodeFragment* _tmp0_;
-	ValaCCodeNode* _tmp1_;
+	ValaCCodeFragment* _tmp0_ = NULL;
+	ValaCCodeNode* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (node != NULL);
 	_tmp0_ = self->priv->type_member_definition;
@@ -380,10 +380,10 @@ void vala_ccode_file_add_type_member_definition (ValaCCodeFile* self, ValaCCodeN
 
 
 void vala_ccode_file_add_function_declaration (ValaCCodeFile* self, ValaCCodeFunction* func) {
-	ValaCCodeFunction* _tmp0_;
+	ValaCCodeFunction* decl = NULL;
+	ValaCCodeFunction* _tmp0_ = NULL;
 	ValaCCodeFunction* _tmp1_ = NULL;
-	ValaCCodeFunction* decl;
-	ValaCCodeFragment* _tmp2_;
+	ValaCCodeFragment* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (func != NULL);
 	_tmp0_ = func;
@@ -397,8 +397,8 @@ void vala_ccode_file_add_function_declaration (ValaCCodeFile* self, ValaCCodeFun
 
 
 void vala_ccode_file_add_function (ValaCCodeFile* self, ValaCCodeFunction* func) {
-	ValaCCodeFragment* _tmp0_;
-	ValaCCodeFunction* _tmp1_;
+	ValaCCodeFragment* _tmp0_ = NULL;
+	ValaCCodeFunction* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (func != NULL);
 	_tmp0_ = self->priv->type_member_definition;
@@ -409,10 +409,10 @@ void vala_ccode_file_add_function (ValaCCodeFile* self, ValaCCodeFunction* func)
 
 ValaList* vala_ccode_file_get_symbols (ValaCCodeFile* self) {
 	ValaList* result = NULL;
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
-	ValaArrayList* symbols;
-	ValaCCodeFragment* _tmp2_;
+	ValaArrayList* symbols = NULL;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
+	ValaCCodeFragment* _tmp2_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_direct_equal;
 	_tmp1_ = vala_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, _tmp0_);
@@ -434,14 +434,14 @@ static void vala_ccode_file_get_symbols_from_fragment (ValaCCodeFile* self, Vala
 	g_return_if_fail (symbols != NULL);
 	g_return_if_fail (fragment != NULL);
 	{
-		ValaCCodeFragment* _tmp0_;
+		ValaList* _node_list = NULL;
+		ValaCCodeFragment* _tmp0_ = NULL;
 		ValaList* _tmp1_ = NULL;
-		ValaList* _node_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _node_size;
-		gint _node_index;
+		gint _node_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _node_index = 0;
 		_tmp0_ = fragment;
 		_tmp1_ = vala_ccode_fragment_get_children (_tmp0_);
 		_node_list = _tmp1_;
@@ -451,14 +451,14 @@ static void vala_ccode_file_get_symbols_from_fragment (ValaCCodeFile* self, Vala
 		_node_size = _tmp4_;
 		_node_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaCCodeNode* node = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaCCodeNode* node;
-			ValaCCodeNode* _tmp11_;
+			ValaCCodeNode* _tmp11_ = NULL;
 			_tmp5_ = _node_index;
 			_node_index = _tmp5_ + 1;
 			_tmp6_ = _node_index;
@@ -472,25 +472,25 @@ static void vala_ccode_file_get_symbols_from_fragment (ValaCCodeFile* self, Vala
 			node = (ValaCCodeNode*) _tmp10_;
 			_tmp11_ = node;
 			if (G_TYPE_CHECK_INSTANCE_TYPE (_tmp11_, VALA_TYPE_CCODE_FRAGMENT)) {
-				ValaList* _tmp12_;
-				ValaCCodeNode* _tmp13_;
+				ValaList* _tmp12_ = NULL;
+				ValaCCodeNode* _tmp13_ = NULL;
 				_tmp12_ = symbols;
 				_tmp13_ = node;
 				vala_ccode_file_get_symbols_from_fragment (self, _tmp12_, G_TYPE_CHECK_INSTANCE_CAST (_tmp13_, VALA_TYPE_CCODE_FRAGMENT, ValaCCodeFragment));
 			} else {
-				ValaCCodeNode* _tmp14_;
-				ValaCCodeFunction* _tmp15_;
-				ValaCCodeFunction* func;
-				ValaCCodeFunction* _tmp16_;
+				ValaCCodeFunction* func = NULL;
+				ValaCCodeNode* _tmp14_ = NULL;
+				ValaCCodeFunction* _tmp15_ = NULL;
+				ValaCCodeFunction* _tmp16_ = NULL;
 				_tmp14_ = node;
 				_tmp15_ = _vala_ccode_node_ref0 (G_TYPE_CHECK_INSTANCE_TYPE (_tmp14_, VALA_TYPE_CCODE_FUNCTION) ? ((ValaCCodeFunction*) _tmp14_) : NULL);
 				func = _tmp15_;
 				_tmp16_ = func;
 				if (_tmp16_ != NULL) {
-					ValaList* _tmp17_;
-					ValaCCodeFunction* _tmp18_;
-					const gchar* _tmp19_;
-					const gchar* _tmp20_;
+					ValaList* _tmp17_ = NULL;
+					ValaCCodeFunction* _tmp18_ = NULL;
+					const gchar* _tmp19_ = NULL;
+					const gchar* _tmp20_ = NULL;
 					_tmp17_ = symbols;
 					_tmp18_ = func;
 					_tmp19_ = vala_ccode_function_get_name (_tmp18_);
@@ -508,7 +508,7 @@ static void vala_ccode_file_get_symbols_from_fragment (ValaCCodeFile* self, Vala
 
 static gunichar string_get_char (const gchar* self, glong index) {
 	gunichar result = 0U;
-	glong _tmp0_;
+	glong _tmp0_ = 0L;
 	gunichar _tmp1_ = 0U;
 	g_return_val_if_fail (self != NULL, 0U);
 	_tmp0_ = index;
@@ -520,15 +520,15 @@ static gunichar string_get_char (const gchar* self, glong index) {
 
 static gchar* vala_ccode_file_get_define_for_filename (const gchar* filename) {
 	gchar* result = NULL;
-	GString* _tmp0_;
-	GString* define;
-	const gchar* _tmp1_;
-	gchar* _tmp2_;
-	gchar* i;
-	GString* _tmp20_;
-	GString* _tmp21_;
-	const gchar* _tmp22_;
-	gchar* _tmp23_;
+	GString* define = NULL;
+	GString* _tmp0_ = NULL;
+	gchar* i = NULL;
+	const gchar* _tmp1_ = NULL;
+	gchar* _tmp2_ = NULL;
+	GString* _tmp19_ = NULL;
+	GString* _tmp20_ = NULL;
+	const gchar* _tmp21_ = NULL;
+	gchar* _tmp22_ = NULL;
 	g_return_val_if_fail (filename != NULL, NULL);
 	_tmp0_ = g_string_new ("__");
 	define = _tmp0_;
@@ -536,19 +536,18 @@ static gchar* vala_ccode_file_get_define_for_filename (const gchar* filename) {
 	_tmp2_ = g_strdup (_tmp1_);
 	i = _tmp2_;
 	while (TRUE) {
-		const gchar* _tmp3_;
-		gint _tmp4_;
-		gint _tmp5_;
-		const gchar* _tmp6_;
+		const gchar* _tmp3_ = NULL;
+		gint _tmp4_ = 0;
+		gint _tmp5_ = 0;
+		gunichar c = 0U;
+		const gchar* _tmp6_ = NULL;
 		gunichar _tmp7_ = 0U;
-		gunichar c;
 		gboolean _tmp8_ = FALSE;
-		gunichar _tmp9_;
+		gunichar _tmp9_ = 0U;
 		gboolean _tmp10_ = FALSE;
-		gboolean _tmp12_;
-		const gchar* _tmp17_;
-		const gchar* _tmp18_ = NULL;
-		gchar* _tmp19_;
+		const gchar* _tmp16_ = NULL;
+		const gchar* _tmp17_ = NULL;
+		gchar* _tmp18_ = NULL;
 		_tmp3_ = i;
 		_tmp4_ = strlen (_tmp3_);
 		_tmp5_ = _tmp4_;
@@ -561,38 +560,37 @@ static gchar* vala_ccode_file_get_define_for_filename (const gchar* filename) {
 		_tmp9_ = c;
 		_tmp10_ = g_unichar_isalnum (_tmp9_);
 		if (_tmp10_) {
-			gunichar _tmp11_;
+			gunichar _tmp11_ = 0U;
 			_tmp11_ = c;
 			_tmp8_ = _tmp11_ < ((gunichar) 0x80);
 		} else {
 			_tmp8_ = FALSE;
 		}
-		_tmp12_ = _tmp8_;
-		if (_tmp12_) {
-			GString* _tmp13_;
-			gunichar _tmp14_;
-			gunichar _tmp15_ = 0U;
-			_tmp13_ = define;
-			_tmp14_ = c;
-			_tmp15_ = g_unichar_toupper (_tmp14_);
-			g_string_append_unichar (_tmp13_, _tmp15_);
+		if (_tmp8_) {
+			GString* _tmp12_ = NULL;
+			gunichar _tmp13_ = 0U;
+			gunichar _tmp14_ = 0U;
+			_tmp12_ = define;
+			_tmp13_ = c;
+			_tmp14_ = g_unichar_toupper (_tmp13_);
+			g_string_append_unichar (_tmp12_, _tmp14_);
 		} else {
-			GString* _tmp16_;
-			_tmp16_ = define;
-			g_string_append_c (_tmp16_, '_');
+			GString* _tmp15_ = NULL;
+			_tmp15_ = define;
+			g_string_append_c (_tmp15_, '_');
 		}
-		_tmp17_ = i;
-		_tmp18_ = g_utf8_next_char (_tmp17_);
-		_tmp19_ = g_strdup (_tmp18_);
+		_tmp16_ = i;
+		_tmp17_ = g_utf8_next_char (_tmp16_);
+		_tmp18_ = g_strdup (_tmp17_);
 		_g_free0 (i);
-		i = _tmp19_;
+		i = _tmp18_;
 	}
+	_tmp19_ = define;
+	g_string_append (_tmp19_, "__");
 	_tmp20_ = define;
-	g_string_append (_tmp20_, "__");
-	_tmp21_ = define;
-	_tmp22_ = _tmp21_->str;
-	_tmp23_ = g_strdup (_tmp22_);
-	result = _tmp23_;
+	_tmp21_ = _tmp20_->str;
+	_tmp22_ = g_strdup (_tmp21_);
+	result = _tmp22_;
 	_g_free0 (i);
 	_g_string_free0 (define);
 	return result;
@@ -601,15 +599,15 @@ static gchar* vala_ccode_file_get_define_for_filename (const gchar* filename) {
 
 gboolean vala_ccode_file_store (ValaCCodeFile* self, const gchar* filename, const gchar* source_filename, gboolean write_version, gboolean line_directives, const gchar* begin_decls, const gchar* end_decls) {
 	gboolean result = FALSE;
-	const gchar* _tmp0_;
-	const gchar* _tmp1_;
-	ValaCCodeWriter* _tmp2_;
-	ValaCCodeWriter* writer;
-	ValaCCodeWriter* _tmp3_;
-	gboolean _tmp4_;
+	ValaCCodeWriter* writer = NULL;
+	const gchar* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
+	ValaCCodeWriter* _tmp2_ = NULL;
+	ValaCCodeWriter* _tmp3_ = NULL;
+	gboolean _tmp4_ = FALSE;
 	gboolean _tmp5_ = FALSE;
-	gboolean _tmp6_;
-	ValaCCodeWriter* _tmp93_;
+	gboolean _tmp6_ = FALSE;
+	ValaCCodeWriter* _tmp93_ = NULL;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (filename != NULL, FALSE);
 	_tmp0_ = filename;
@@ -626,32 +624,32 @@ gboolean vala_ccode_file_store (ValaCCodeFile* self, const gchar* filename, cons
 	}
 	_tmp6_ = self->priv->_is_header;
 	if (!_tmp6_) {
-		ValaCCodeWriter* _tmp7_;
-		gboolean _tmp8_;
-		ValaCCodeFragment* _tmp9_;
-		ValaCCodeWriter* _tmp10_;
-		ValaCCodeWriter* _tmp11_;
-		ValaCCodeFragment* _tmp12_;
-		ValaCCodeWriter* _tmp13_;
-		ValaCCodeWriter* _tmp14_;
-		ValaCCodeFragment* _tmp15_;
-		ValaCCodeWriter* _tmp16_;
-		ValaCCodeWriter* _tmp17_;
-		ValaCCodeFragment* _tmp18_;
-		ValaCCodeWriter* _tmp19_;
-		ValaCCodeWriter* _tmp20_;
-		ValaCCodeFragment* _tmp21_;
-		ValaCCodeWriter* _tmp22_;
-		ValaCCodeWriter* _tmp23_;
-		ValaCCodeFragment* _tmp24_;
-		ValaCCodeWriter* _tmp25_;
-		ValaCCodeWriter* _tmp26_;
-		ValaCCodeFragment* _tmp27_;
-		ValaCCodeWriter* _tmp28_;
-		ValaCCodeWriter* _tmp29_;
-		ValaCCodeFragment* _tmp30_;
-		ValaCCodeWriter* _tmp31_;
-		ValaCCodeWriter* _tmp32_;
+		ValaCCodeWriter* _tmp7_ = NULL;
+		gboolean _tmp8_ = FALSE;
+		ValaCCodeFragment* _tmp9_ = NULL;
+		ValaCCodeWriter* _tmp10_ = NULL;
+		ValaCCodeWriter* _tmp11_ = NULL;
+		ValaCCodeFragment* _tmp12_ = NULL;
+		ValaCCodeWriter* _tmp13_ = NULL;
+		ValaCCodeWriter* _tmp14_ = NULL;
+		ValaCCodeFragment* _tmp15_ = NULL;
+		ValaCCodeWriter* _tmp16_ = NULL;
+		ValaCCodeWriter* _tmp17_ = NULL;
+		ValaCCodeFragment* _tmp18_ = NULL;
+		ValaCCodeWriter* _tmp19_ = NULL;
+		ValaCCodeWriter* _tmp20_ = NULL;
+		ValaCCodeFragment* _tmp21_ = NULL;
+		ValaCCodeWriter* _tmp22_ = NULL;
+		ValaCCodeWriter* _tmp23_ = NULL;
+		ValaCCodeFragment* _tmp24_ = NULL;
+		ValaCCodeWriter* _tmp25_ = NULL;
+		ValaCCodeWriter* _tmp26_ = NULL;
+		ValaCCodeFragment* _tmp27_ = NULL;
+		ValaCCodeWriter* _tmp28_ = NULL;
+		ValaCCodeWriter* _tmp29_ = NULL;
+		ValaCCodeFragment* _tmp30_ = NULL;
+		ValaCCodeWriter* _tmp31_ = NULL;
+		ValaCCodeWriter* _tmp32_ = NULL;
 		_tmp7_ = writer;
 		_tmp8_ = line_directives;
 		vala_ccode_writer_set_line_directives (_tmp7_, _tmp8_);
@@ -696,53 +694,53 @@ gboolean vala_ccode_file_store (ValaCCodeFile* self, const gchar* filename, cons
 		_tmp32_ = writer;
 		vala_ccode_writer_write_newline (_tmp32_);
 	} else {
-		ValaCCodeWriter* _tmp33_;
-		ValaCCodeWriter* _tmp34_;
-		const gchar* _tmp35_;
-		const gchar* _tmp36_;
+		ValaCCodeWriter* _tmp33_ = NULL;
+		ValaCCodeOnceSection* once = NULL;
+		ValaCCodeWriter* _tmp34_ = NULL;
+		const gchar* _tmp35_ = NULL;
+		const gchar* _tmp36_ = NULL;
 		gchar* _tmp37_ = NULL;
-		gchar* _tmp38_;
-		ValaCCodeOnceSection* _tmp39_;
-		ValaCCodeOnceSection* _tmp40_;
-		ValaCCodeOnceSection* once;
-		ValaCCodeOnceSection* _tmp41_;
-		ValaCCodeNewline* _tmp42_;
-		ValaCCodeNewline* _tmp43_;
-		ValaCCodeOnceSection* _tmp44_;
-		ValaCCodeFragment* _tmp45_;
-		ValaCCodeOnceSection* _tmp46_;
-		ValaCCodeNewline* _tmp47_;
-		ValaCCodeNewline* _tmp48_;
-		const gchar* _tmp49_;
-		ValaCCodeOnceSection* _tmp57_;
-		ValaCCodeNewline* _tmp58_;
-		ValaCCodeNewline* _tmp59_;
-		ValaCCodeOnceSection* _tmp60_;
-		ValaCCodeFragment* _tmp61_;
-		ValaCCodeOnceSection* _tmp62_;
-		ValaCCodeNewline* _tmp63_;
-		ValaCCodeNewline* _tmp64_;
-		ValaCCodeOnceSection* _tmp65_;
-		ValaCCodeFragment* _tmp66_;
-		ValaCCodeOnceSection* _tmp67_;
-		ValaCCodeNewline* _tmp68_;
-		ValaCCodeNewline* _tmp69_;
-		ValaCCodeOnceSection* _tmp70_;
-		ValaCCodeFragment* _tmp71_;
-		ValaCCodeOnceSection* _tmp72_;
-		ValaCCodeNewline* _tmp73_;
-		ValaCCodeNewline* _tmp74_;
-		ValaCCodeOnceSection* _tmp75_;
-		ValaCCodeFragment* _tmp76_;
-		ValaCCodeOnceSection* _tmp77_;
-		ValaCCodeNewline* _tmp78_;
-		ValaCCodeNewline* _tmp79_;
-		const gchar* _tmp80_;
-		ValaCCodeOnceSection* _tmp88_;
-		ValaCCodeNewline* _tmp89_;
-		ValaCCodeNewline* _tmp90_;
-		ValaCCodeOnceSection* _tmp91_;
-		ValaCCodeWriter* _tmp92_;
+		gchar* _tmp38_ = NULL;
+		ValaCCodeOnceSection* _tmp39_ = NULL;
+		ValaCCodeOnceSection* _tmp40_ = NULL;
+		ValaCCodeOnceSection* _tmp41_ = NULL;
+		ValaCCodeNewline* _tmp42_ = NULL;
+		ValaCCodeNewline* _tmp43_ = NULL;
+		ValaCCodeOnceSection* _tmp44_ = NULL;
+		ValaCCodeFragment* _tmp45_ = NULL;
+		ValaCCodeOnceSection* _tmp46_ = NULL;
+		ValaCCodeNewline* _tmp47_ = NULL;
+		ValaCCodeNewline* _tmp48_ = NULL;
+		const gchar* _tmp49_ = NULL;
+		ValaCCodeOnceSection* _tmp57_ = NULL;
+		ValaCCodeNewline* _tmp58_ = NULL;
+		ValaCCodeNewline* _tmp59_ = NULL;
+		ValaCCodeOnceSection* _tmp60_ = NULL;
+		ValaCCodeFragment* _tmp61_ = NULL;
+		ValaCCodeOnceSection* _tmp62_ = NULL;
+		ValaCCodeNewline* _tmp63_ = NULL;
+		ValaCCodeNewline* _tmp64_ = NULL;
+		ValaCCodeOnceSection* _tmp65_ = NULL;
+		ValaCCodeFragment* _tmp66_ = NULL;
+		ValaCCodeOnceSection* _tmp67_ = NULL;
+		ValaCCodeNewline* _tmp68_ = NULL;
+		ValaCCodeNewline* _tmp69_ = NULL;
+		ValaCCodeOnceSection* _tmp70_ = NULL;
+		ValaCCodeFragment* _tmp71_ = NULL;
+		ValaCCodeOnceSection* _tmp72_ = NULL;
+		ValaCCodeNewline* _tmp73_ = NULL;
+		ValaCCodeNewline* _tmp74_ = NULL;
+		ValaCCodeOnceSection* _tmp75_ = NULL;
+		ValaCCodeFragment* _tmp76_ = NULL;
+		ValaCCodeOnceSection* _tmp77_ = NULL;
+		ValaCCodeNewline* _tmp78_ = NULL;
+		ValaCCodeNewline* _tmp79_ = NULL;
+		const gchar* _tmp80_ = NULL;
+		ValaCCodeOnceSection* _tmp88_ = NULL;
+		ValaCCodeNewline* _tmp89_ = NULL;
+		ValaCCodeNewline* _tmp90_ = NULL;
+		ValaCCodeOnceSection* _tmp91_ = NULL;
+		ValaCCodeWriter* _tmp92_ = NULL;
 		_tmp33_ = writer;
 		vala_ccode_writer_write_newline (_tmp33_);
 		_tmp34_ = writer;
@@ -769,13 +767,13 @@ gboolean vala_ccode_file_store (ValaCCodeFile* self, const gchar* filename, cons
 		_vala_ccode_node_unref0 (_tmp48_);
 		_tmp49_ = begin_decls;
 		if (_tmp49_ != NULL) {
-			ValaCCodeOnceSection* _tmp50_;
-			const gchar* _tmp51_;
-			ValaCCodeIdentifier* _tmp52_;
-			ValaCCodeIdentifier* _tmp53_;
-			ValaCCodeOnceSection* _tmp54_;
-			ValaCCodeNewline* _tmp55_;
-			ValaCCodeNewline* _tmp56_;
+			ValaCCodeOnceSection* _tmp50_ = NULL;
+			const gchar* _tmp51_ = NULL;
+			ValaCCodeIdentifier* _tmp52_ = NULL;
+			ValaCCodeIdentifier* _tmp53_ = NULL;
+			ValaCCodeOnceSection* _tmp54_ = NULL;
+			ValaCCodeNewline* _tmp55_ = NULL;
+			ValaCCodeNewline* _tmp56_ = NULL;
 			_tmp50_ = once;
 			_tmp51_ = begin_decls;
 			_tmp52_ = vala_ccode_identifier_new (_tmp51_);
@@ -827,13 +825,13 @@ gboolean vala_ccode_file_store (ValaCCodeFile* self, const gchar* filename, cons
 		_vala_ccode_node_unref0 (_tmp79_);
 		_tmp80_ = begin_decls;
 		if (_tmp80_ != NULL) {
-			ValaCCodeOnceSection* _tmp81_;
-			const gchar* _tmp82_;
-			ValaCCodeIdentifier* _tmp83_;
-			ValaCCodeIdentifier* _tmp84_;
-			ValaCCodeOnceSection* _tmp85_;
-			ValaCCodeNewline* _tmp86_;
-			ValaCCodeNewline* _tmp87_;
+			ValaCCodeOnceSection* _tmp81_ = NULL;
+			const gchar* _tmp82_ = NULL;
+			ValaCCodeIdentifier* _tmp83_ = NULL;
+			ValaCCodeIdentifier* _tmp84_ = NULL;
+			ValaCCodeOnceSection* _tmp85_ = NULL;
+			ValaCCodeNewline* _tmp86_ = NULL;
+			ValaCCodeNewline* _tmp87_ = NULL;
 			_tmp81_ = once;
 			_tmp82_ = end_decls;
 			_tmp83_ = vala_ccode_identifier_new (_tmp82_);
@@ -878,7 +876,7 @@ ValaCCodeFile* vala_ccode_file_new (void) {
 
 gboolean vala_ccode_file_get_is_header (ValaCCodeFile* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_is_header;
 	result = _tmp0_;
@@ -887,7 +885,7 @@ gboolean vala_ccode_file_get_is_header (ValaCCodeFile* self) {
 
 
 void vala_ccode_file_set_is_header (ValaCCodeFile* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_is_header = _tmp0_;
@@ -1006,25 +1004,25 @@ void vala_value_take_ccode_file (GValue* value, gpointer v_object) {
 
 static void vala_ccode_file_class_init (ValaCCodeFileClass * klass) {
 	vala_ccode_file_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_FILE_CLASS (klass)->finalize = vala_ccode_file_finalize;
+	((ValaCCodeFileClass *) klass)->finalize = vala_ccode_file_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeFilePrivate));
 }
 
 
 static void vala_ccode_file_instance_init (ValaCCodeFile * self) {
-	GHashFunc _tmp0_;
-	GEqualFunc _tmp1_;
-	ValaHashSet* _tmp2_;
-	GHashFunc _tmp3_;
-	GEqualFunc _tmp4_;
-	ValaHashSet* _tmp5_;
-	ValaCCodeFragment* _tmp6_;
-	ValaCCodeFragment* _tmp7_;
-	ValaCCodeFragment* _tmp8_;
-	ValaCCodeFragment* _tmp9_;
-	ValaCCodeFragment* _tmp10_;
-	ValaCCodeFragment* _tmp11_;
-	ValaCCodeFragment* _tmp12_;
+	GHashFunc _tmp0_ = NULL;
+	GEqualFunc _tmp1_ = NULL;
+	ValaHashSet* _tmp2_ = NULL;
+	GHashFunc _tmp3_ = NULL;
+	GEqualFunc _tmp4_ = NULL;
+	ValaHashSet* _tmp5_ = NULL;
+	ValaCCodeFragment* _tmp6_ = NULL;
+	ValaCCodeFragment* _tmp7_ = NULL;
+	ValaCCodeFragment* _tmp8_ = NULL;
+	ValaCCodeFragment* _tmp9_ = NULL;
+	ValaCCodeFragment* _tmp10_ = NULL;
+	ValaCCodeFragment* _tmp11_ = NULL;
+	ValaCCodeFragment* _tmp12_ = NULL;
 	self->priv = VALA_CCODE_FILE_GET_PRIVATE (self);
 	_tmp0_ = g_str_hash;
 	_tmp1_ = g_str_equal;
@@ -1055,6 +1053,7 @@ static void vala_ccode_file_instance_init (ValaCCodeFile * self) {
 static void vala_ccode_file_finalize (ValaCCodeFile* obj) {
 	ValaCCodeFile * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, VALA_TYPE_CCODE_FILE, ValaCCodeFile);
+	g_signal_handlers_destroy (self);
 	_vala_iterable_unref0 (self->priv->declarations);
 	_vala_iterable_unref0 (self->priv->includes);
 	_vala_ccode_node_unref0 (self->priv->comments);

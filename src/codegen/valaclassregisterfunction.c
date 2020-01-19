@@ -136,7 +136,6 @@ ValaClass* vala_class_register_function_get_class_reference (ValaClassRegisterFu
 static gchar* vala_class_register_function_real_get_type_struct_name (ValaTypeRegisterFunction* base);
 gchar* vala_ccode_base_module_get_ccode_name (ValaCodeNode* node);
 static gchar* vala_class_register_function_real_get_base_init_func_name (ValaTypeRegisterFunction* base);
-ValaCodeContext* vala_typeregister_function_get_context (ValaTypeRegisterFunction* self);
 gchar* vala_ccode_base_module_get_ccode_lower_case_name (ValaCodeNode* node, const gchar* infix);
 static gchar* vala_class_register_function_real_get_class_finalize_func_name (ValaTypeRegisterFunction* base);
 static gchar* vala_class_register_function_real_get_base_finalize_func_name (ValaTypeRegisterFunction* base);
@@ -155,6 +154,7 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_collect_va
 static gchar* vala_class_register_function_real_get_gtype_value_table_lcopy_value_function_name (ValaTypeRegisterFunction* base);
 static ValaCCodeFragment* vala_class_register_function_real_get_type_interface_init_declaration (ValaTypeRegisterFunction* base);
 static void vala_class_register_function_real_get_type_interface_init_statements (ValaTypeRegisterFunction* base, ValaCCodeBlock* block, gboolean plugin);
+ValaCodeContext* vala_typeregister_function_get_context (ValaTypeRegisterFunction* self);
 GType vala_ccode_base_module_get_type (void) G_GNUC_CONST;
 void vala_ccode_base_module_register_dbus_info (ValaCCodeBaseModule* self, ValaCCodeBlock* block, ValaObjectTypeSymbol* bindable);
 static void vala_class_register_function_finalize (ValaTypeRegisterFunction* obj);
@@ -168,8 +168,8 @@ static void vala_class_register_function_finalize (ValaTypeRegisterFunction* obj
  */
 ValaClassRegisterFunction* vala_class_register_function_construct (GType object_type, ValaClass* cl, ValaCodeContext* context) {
 	ValaClassRegisterFunction* self = NULL;
-	ValaClass* _tmp0_;
-	ValaCodeContext* _tmp1_;
+	ValaClass* _tmp0_ = NULL;
+	ValaCodeContext* _tmp1_ = NULL;
 	g_return_val_if_fail (cl != NULL, NULL);
 	g_return_val_if_fail (context != NULL, NULL);
 	self = (ValaClassRegisterFunction*) vala_typeregister_function_construct (object_type);
@@ -194,8 +194,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 static ValaTypeSymbol* vala_class_register_function_real_get_type_declaration (ValaTypeRegisterFunction* base) {
 	ValaClassRegisterFunction * self;
 	ValaTypeSymbol* result = NULL;
-	ValaClass* _tmp0_;
-	ValaTypeSymbol* _tmp1_;
+	ValaClass* _tmp0_ = NULL;
+	ValaTypeSymbol* _tmp1_ = NULL;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp0_ = self->priv->_class_reference;
 	_tmp1_ = _vala_code_node_ref0 ((ValaTypeSymbol*) _tmp0_);
@@ -207,11 +207,11 @@ static ValaTypeSymbol* vala_class_register_function_real_get_type_declaration (V
 static gchar* vala_class_register_function_real_get_type_struct_name (ValaTypeRegisterFunction* base) {
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
-	ValaClass* _tmp0_;
+	ValaClass* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
-	gchar* _tmp2_;
+	gchar* _tmp2_ = NULL;
 	gchar* _tmp3_ = NULL;
-	gchar* _tmp4_;
+	gchar* _tmp4_ = NULL;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp0_ = self->priv->_class_reference;
 	_tmp1_ = vala_ccode_base_module_get_ccode_name ((ValaCodeNode*) _tmp0_);
@@ -227,59 +227,31 @@ static gchar* vala_class_register_function_real_get_type_struct_name (ValaTypeRe
 static gchar* vala_class_register_function_real_get_base_init_func_name (ValaTypeRegisterFunction* base) {
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
-	gboolean _tmp0_ = FALSE;
-	ValaClass* _tmp1_;
-	ValaConstructor* _tmp2_;
-	ValaConstructor* _tmp3_;
-	gboolean _tmp12_;
+	ValaClass* _tmp0_ = NULL;
+	ValaConstructor* _tmp1_ = NULL;
+	ValaConstructor* _tmp2_ = NULL;
 	self = (ValaClassRegisterFunction*) base;
-	_tmp1_ = self->priv->_class_reference;
-	_tmp2_ = vala_class_get_class_constructor (_tmp1_);
-	_tmp3_ = _tmp2_;
-	if (_tmp3_ != NULL) {
-		_tmp0_ = TRUE;
-	} else {
-		gboolean _tmp4_ = FALSE;
-		ValaCodeContext* _tmp5_;
-		ValaCodeContext* _tmp6_;
-		gboolean _tmp7_ = FALSE;
-		gboolean _tmp11_;
-		_tmp5_ = vala_typeregister_function_get_context ((ValaTypeRegisterFunction*) self);
-		_tmp6_ = _tmp5_;
-		_tmp7_ = vala_code_context_require_glib_version (_tmp6_, 2, 24);
-		if (!_tmp7_) {
-			ValaClass* _tmp8_;
-			gboolean _tmp9_;
-			gboolean _tmp10_;
-			_tmp8_ = self->priv->_class_reference;
-			_tmp9_ = vala_class_get_has_class_private_fields (_tmp8_);
-			_tmp10_ = _tmp9_;
-			_tmp4_ = _tmp10_;
-		} else {
-			_tmp4_ = FALSE;
-		}
-		_tmp11_ = _tmp4_;
-		_tmp0_ = _tmp11_;
-	}
-	_tmp12_ = _tmp0_;
-	if (_tmp12_) {
-		ValaClass* _tmp13_;
-		gchar* _tmp14_ = NULL;
-		gchar* _tmp15_;
-		gchar* _tmp16_ = NULL;
-		gchar* _tmp17_;
-		_tmp13_ = self->priv->_class_reference;
-		_tmp14_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp13_, NULL);
-		_tmp15_ = _tmp14_;
-		_tmp16_ = g_strdup_printf ("%s_base_init", _tmp15_);
-		_tmp17_ = _tmp16_;
-		_g_free0 (_tmp15_);
-		result = _tmp17_;
+	_tmp0_ = self->priv->_class_reference;
+	_tmp1_ = vala_class_get_class_constructor (_tmp0_);
+	_tmp2_ = _tmp1_;
+	if (_tmp2_ != NULL) {
+		ValaClass* _tmp3_ = NULL;
+		gchar* _tmp4_ = NULL;
+		gchar* _tmp5_ = NULL;
+		gchar* _tmp6_ = NULL;
+		gchar* _tmp7_ = NULL;
+		_tmp3_ = self->priv->_class_reference;
+		_tmp4_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp3_, NULL);
+		_tmp5_ = _tmp4_;
+		_tmp6_ = g_strdup_printf ("%s_base_init", _tmp5_);
+		_tmp7_ = _tmp6_;
+		_g_free0 (_tmp5_);
+		result = _tmp7_;
 		return result;
 	} else {
-		gchar* _tmp18_;
-		_tmp18_ = g_strdup ("NULL");
-		result = _tmp18_;
+		gchar* _tmp8_ = NULL;
+		_tmp8_ = g_strdup ("NULL");
+		result = _tmp8_;
 		return result;
 	}
 }
@@ -288,19 +260,19 @@ static gchar* vala_class_register_function_real_get_base_init_func_name (ValaTyp
 static gchar* vala_class_register_function_real_get_class_finalize_func_name (ValaTypeRegisterFunction* base) {
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
-	ValaClass* _tmp0_;
-	ValaDestructor* _tmp1_;
-	ValaDestructor* _tmp2_;
+	ValaClass* _tmp0_ = NULL;
+	ValaDestructor* _tmp1_ = NULL;
+	ValaDestructor* _tmp2_ = NULL;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp0_ = self->priv->_class_reference;
 	_tmp1_ = vala_class_get_static_destructor (_tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_ != NULL) {
-		ValaClass* _tmp3_;
+		ValaClass* _tmp3_ = NULL;
 		gchar* _tmp4_ = NULL;
-		gchar* _tmp5_;
+		gchar* _tmp5_ = NULL;
 		gchar* _tmp6_ = NULL;
-		gchar* _tmp7_;
+		gchar* _tmp7_ = NULL;
 		_tmp3_ = self->priv->_class_reference;
 		_tmp4_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp3_, NULL);
 		_tmp5_ = _tmp4_;
@@ -310,7 +282,7 @@ static gchar* vala_class_register_function_real_get_class_finalize_func_name (Va
 		result = _tmp7_;
 		return result;
 	} else {
-		gchar* _tmp8_;
+		gchar* _tmp8_ = NULL;
 		_tmp8_ = g_strdup ("NULL");
 		result = _tmp8_;
 		return result;
@@ -321,59 +293,31 @@ static gchar* vala_class_register_function_real_get_class_finalize_func_name (Va
 static gchar* vala_class_register_function_real_get_base_finalize_func_name (ValaTypeRegisterFunction* base) {
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
-	gboolean _tmp0_ = FALSE;
-	ValaClass* _tmp1_;
-	ValaDestructor* _tmp2_;
-	ValaDestructor* _tmp3_;
-	gboolean _tmp12_;
+	ValaClass* _tmp0_ = NULL;
+	ValaDestructor* _tmp1_ = NULL;
+	ValaDestructor* _tmp2_ = NULL;
 	self = (ValaClassRegisterFunction*) base;
-	_tmp1_ = self->priv->_class_reference;
-	_tmp2_ = vala_class_get_class_destructor (_tmp1_);
-	_tmp3_ = _tmp2_;
-	if (_tmp3_ != NULL) {
-		_tmp0_ = TRUE;
-	} else {
-		gboolean _tmp4_ = FALSE;
-		ValaCodeContext* _tmp5_;
-		ValaCodeContext* _tmp6_;
-		gboolean _tmp7_ = FALSE;
-		gboolean _tmp11_;
-		_tmp5_ = vala_typeregister_function_get_context ((ValaTypeRegisterFunction*) self);
-		_tmp6_ = _tmp5_;
-		_tmp7_ = vala_code_context_require_glib_version (_tmp6_, 2, 24);
-		if (!_tmp7_) {
-			ValaClass* _tmp8_;
-			gboolean _tmp9_;
-			gboolean _tmp10_;
-			_tmp8_ = self->priv->_class_reference;
-			_tmp9_ = vala_class_get_has_class_private_fields (_tmp8_);
-			_tmp10_ = _tmp9_;
-			_tmp4_ = _tmp10_;
-		} else {
-			_tmp4_ = FALSE;
-		}
-		_tmp11_ = _tmp4_;
-		_tmp0_ = _tmp11_;
-	}
-	_tmp12_ = _tmp0_;
-	if (_tmp12_) {
-		ValaClass* _tmp13_;
-		gchar* _tmp14_ = NULL;
-		gchar* _tmp15_;
-		gchar* _tmp16_ = NULL;
-		gchar* _tmp17_;
-		_tmp13_ = self->priv->_class_reference;
-		_tmp14_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp13_, NULL);
-		_tmp15_ = _tmp14_;
-		_tmp16_ = g_strdup_printf ("%s_base_finalize", _tmp15_);
-		_tmp17_ = _tmp16_;
-		_g_free0 (_tmp15_);
-		result = _tmp17_;
+	_tmp0_ = self->priv->_class_reference;
+	_tmp1_ = vala_class_get_class_destructor (_tmp0_);
+	_tmp2_ = _tmp1_;
+	if (_tmp2_ != NULL) {
+		ValaClass* _tmp3_ = NULL;
+		gchar* _tmp4_ = NULL;
+		gchar* _tmp5_ = NULL;
+		gchar* _tmp6_ = NULL;
+		gchar* _tmp7_ = NULL;
+		_tmp3_ = self->priv->_class_reference;
+		_tmp4_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp3_, NULL);
+		_tmp5_ = _tmp4_;
+		_tmp6_ = g_strdup_printf ("%s_base_finalize", _tmp5_);
+		_tmp7_ = _tmp6_;
+		_g_free0 (_tmp5_);
+		result = _tmp7_;
 		return result;
 	} else {
-		gchar* _tmp18_;
-		_tmp18_ = g_strdup ("NULL");
-		result = _tmp18_;
+		gchar* _tmp8_ = NULL;
+		_tmp8_ = g_strdup ("NULL");
+		result = _tmp8_;
 		return result;
 	}
 }
@@ -382,11 +326,11 @@ static gchar* vala_class_register_function_real_get_base_finalize_func_name (Val
 static gchar* vala_class_register_function_real_get_class_init_func_name (ValaTypeRegisterFunction* base) {
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
-	ValaClass* _tmp0_;
+	ValaClass* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
-	gchar* _tmp2_;
+	gchar* _tmp2_ = NULL;
 	gchar* _tmp3_ = NULL;
-	gchar* _tmp4_;
+	gchar* _tmp4_ = NULL;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp0_ = self->priv->_class_reference;
 	_tmp1_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp0_, NULL);
@@ -402,11 +346,11 @@ static gchar* vala_class_register_function_real_get_class_init_func_name (ValaTy
 static gchar* vala_class_register_function_real_get_instance_struct_size (ValaTypeRegisterFunction* base) {
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
-	ValaClass* _tmp0_;
+	ValaClass* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
-	gchar* _tmp2_;
+	gchar* _tmp2_ = NULL;
 	gchar* _tmp3_ = NULL;
-	gchar* _tmp4_;
+	gchar* _tmp4_ = NULL;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp0_ = self->priv->_class_reference;
 	_tmp1_ = vala_ccode_base_module_get_ccode_name ((ValaCodeNode*) _tmp0_);
@@ -422,11 +366,11 @@ static gchar* vala_class_register_function_real_get_instance_struct_size (ValaTy
 static gchar* vala_class_register_function_real_get_instance_init_func_name (ValaTypeRegisterFunction* base) {
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
-	ValaClass* _tmp0_;
+	ValaClass* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
-	gchar* _tmp2_;
+	gchar* _tmp2_ = NULL;
 	gchar* _tmp3_ = NULL;
-	gchar* _tmp4_;
+	gchar* _tmp4_ = NULL;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp0_ = self->priv->_class_reference;
 	_tmp1_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp0_, NULL);
@@ -442,9 +386,9 @@ static gchar* vala_class_register_function_real_get_instance_init_func_name (Val
 static gchar* vala_class_register_function_real_get_parent_type_name (ValaTypeRegisterFunction* base) {
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
-	ValaClass* _tmp0_;
-	ValaClass* _tmp1_;
-	ValaClass* _tmp2_;
+	ValaClass* _tmp0_ = NULL;
+	ValaClass* _tmp1_ = NULL;
+	ValaClass* _tmp2_ = NULL;
 	gchar* _tmp3_ = NULL;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp0_ = self->priv->_class_reference;
@@ -459,20 +403,20 @@ static gchar* vala_class_register_function_real_get_parent_type_name (ValaTypeRe
 static gchar* vala_class_register_function_real_get_type_flags (ValaTypeRegisterFunction* base) {
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
-	ValaClass* _tmp0_;
-	gboolean _tmp1_;
-	gboolean _tmp2_;
+	ValaClass* _tmp0_ = NULL;
+	gboolean _tmp1_ = FALSE;
+	gboolean _tmp2_ = FALSE;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp0_ = self->priv->_class_reference;
 	_tmp1_ = vala_class_get_is_abstract (_tmp0_);
 	_tmp2_ = _tmp1_;
 	if (_tmp2_) {
-		gchar* _tmp3_;
+		gchar* _tmp3_ = NULL;
 		_tmp3_ = g_strdup ("G_TYPE_FLAG_ABSTRACT");
 		result = _tmp3_;
 		return result;
 	} else {
-		gchar* _tmp4_;
+		gchar* _tmp4_ = NULL;
 		_tmp4_ = g_strdup ("0");
 		result = _tmp4_;
 		return result;
@@ -483,9 +427,9 @@ static gchar* vala_class_register_function_real_get_type_flags (ValaTypeRegister
 static ValaSymbolAccessibility vala_class_register_function_real_get_accessibility (ValaTypeRegisterFunction* base) {
 	ValaClassRegisterFunction * self;
 	ValaSymbolAccessibility result = 0;
-	ValaClass* _tmp0_;
-	ValaSymbolAccessibility _tmp1_;
-	ValaSymbolAccessibility _tmp2_;
+	ValaClass* _tmp0_ = NULL;
+	ValaSymbolAccessibility _tmp1_ = 0;
+	ValaSymbolAccessibility _tmp2_ = 0;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp0_ = self->priv->_class_reference;
 	_tmp1_ = vala_symbol_get_access ((ValaSymbol*) _tmp0_);
@@ -499,20 +443,19 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_init_funct
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
 	gboolean _tmp0_ = FALSE;
-	ValaClass* _tmp1_;
-	gboolean _tmp2_;
-	gboolean _tmp3_;
-	gboolean _tmp7_;
-	gboolean is_fundamental;
-	gboolean _tmp8_;
+	ValaClass* _tmp1_ = NULL;
+	gboolean _tmp2_ = FALSE;
+	gboolean _tmp3_ = FALSE;
+	gboolean is_fundamental = FALSE;
+	gboolean _tmp7_ = FALSE;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp1_ = self->priv->_class_reference;
 	_tmp2_ = vala_class_get_is_compact (_tmp1_);
 	_tmp3_ = _tmp2_;
 	if (!_tmp3_) {
-		ValaClass* _tmp4_;
-		ValaClass* _tmp5_;
-		ValaClass* _tmp6_;
+		ValaClass* _tmp4_ = NULL;
+		ValaClass* _tmp5_ = NULL;
+		ValaClass* _tmp6_ = NULL;
 		_tmp4_ = self->priv->_class_reference;
 		_tmp5_ = vala_class_get_base_class (_tmp4_);
 		_tmp6_ = _tmp5_;
@@ -520,22 +463,21 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_init_funct
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp7_ = _tmp0_;
-	is_fundamental = _tmp7_;
-	_tmp8_ = is_fundamental;
-	if (_tmp8_) {
-		ValaClass* _tmp9_;
+	is_fundamental = _tmp0_;
+	_tmp7_ = is_fundamental;
+	if (_tmp7_) {
+		ValaClass* _tmp8_ = NULL;
+		gchar* _tmp9_ = NULL;
 		gchar* _tmp10_ = NULL;
-		gchar* _tmp11_;
+		gchar* _tmp11_ = NULL;
 		gchar* _tmp12_ = NULL;
-		gchar* _tmp13_;
-		_tmp9_ = self->priv->_class_reference;
-		_tmp10_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp9_, "value_");
-		_tmp11_ = _tmp10_;
-		_tmp12_ = g_strdup_printf ("%s_init", _tmp11_);
-		_tmp13_ = _tmp12_;
-		_g_free0 (_tmp11_);
-		result = _tmp13_;
+		_tmp8_ = self->priv->_class_reference;
+		_tmp9_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp8_, "value_");
+		_tmp10_ = _tmp9_;
+		_tmp11_ = g_strdup_printf ("%s_init", _tmp10_);
+		_tmp12_ = _tmp11_;
+		_g_free0 (_tmp10_);
+		result = _tmp12_;
 		return result;
 	}
 	result = NULL;
@@ -547,20 +489,19 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_free_funct
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
 	gboolean _tmp0_ = FALSE;
-	ValaClass* _tmp1_;
-	gboolean _tmp2_;
-	gboolean _tmp3_;
-	gboolean _tmp7_;
-	gboolean is_fundamental;
-	gboolean _tmp8_;
+	ValaClass* _tmp1_ = NULL;
+	gboolean _tmp2_ = FALSE;
+	gboolean _tmp3_ = FALSE;
+	gboolean is_fundamental = FALSE;
+	gboolean _tmp7_ = FALSE;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp1_ = self->priv->_class_reference;
 	_tmp2_ = vala_class_get_is_compact (_tmp1_);
 	_tmp3_ = _tmp2_;
 	if (!_tmp3_) {
-		ValaClass* _tmp4_;
-		ValaClass* _tmp5_;
-		ValaClass* _tmp6_;
+		ValaClass* _tmp4_ = NULL;
+		ValaClass* _tmp5_ = NULL;
+		ValaClass* _tmp6_ = NULL;
 		_tmp4_ = self->priv->_class_reference;
 		_tmp5_ = vala_class_get_base_class (_tmp4_);
 		_tmp6_ = _tmp5_;
@@ -568,22 +509,21 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_free_funct
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp7_ = _tmp0_;
-	is_fundamental = _tmp7_;
-	_tmp8_ = is_fundamental;
-	if (_tmp8_) {
-		ValaClass* _tmp9_;
+	is_fundamental = _tmp0_;
+	_tmp7_ = is_fundamental;
+	if (_tmp7_) {
+		ValaClass* _tmp8_ = NULL;
+		gchar* _tmp9_ = NULL;
 		gchar* _tmp10_ = NULL;
-		gchar* _tmp11_;
+		gchar* _tmp11_ = NULL;
 		gchar* _tmp12_ = NULL;
-		gchar* _tmp13_;
-		_tmp9_ = self->priv->_class_reference;
-		_tmp10_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp9_, "value_");
-		_tmp11_ = _tmp10_;
-		_tmp12_ = g_strdup_printf ("%s_free_value", _tmp11_);
-		_tmp13_ = _tmp12_;
-		_g_free0 (_tmp11_);
-		result = _tmp13_;
+		_tmp8_ = self->priv->_class_reference;
+		_tmp9_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp8_, "value_");
+		_tmp10_ = _tmp9_;
+		_tmp11_ = g_strdup_printf ("%s_free_value", _tmp10_);
+		_tmp12_ = _tmp11_;
+		_g_free0 (_tmp10_);
+		result = _tmp12_;
 		return result;
 	}
 	result = NULL;
@@ -595,20 +535,19 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_copy_funct
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
 	gboolean _tmp0_ = FALSE;
-	ValaClass* _tmp1_;
-	gboolean _tmp2_;
-	gboolean _tmp3_;
-	gboolean _tmp7_;
-	gboolean is_fundamental;
-	gboolean _tmp8_;
+	ValaClass* _tmp1_ = NULL;
+	gboolean _tmp2_ = FALSE;
+	gboolean _tmp3_ = FALSE;
+	gboolean is_fundamental = FALSE;
+	gboolean _tmp7_ = FALSE;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp1_ = self->priv->_class_reference;
 	_tmp2_ = vala_class_get_is_compact (_tmp1_);
 	_tmp3_ = _tmp2_;
 	if (!_tmp3_) {
-		ValaClass* _tmp4_;
-		ValaClass* _tmp5_;
-		ValaClass* _tmp6_;
+		ValaClass* _tmp4_ = NULL;
+		ValaClass* _tmp5_ = NULL;
+		ValaClass* _tmp6_ = NULL;
 		_tmp4_ = self->priv->_class_reference;
 		_tmp5_ = vala_class_get_base_class (_tmp4_);
 		_tmp6_ = _tmp5_;
@@ -616,22 +555,21 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_copy_funct
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp7_ = _tmp0_;
-	is_fundamental = _tmp7_;
-	_tmp8_ = is_fundamental;
-	if (_tmp8_) {
-		ValaClass* _tmp9_;
+	is_fundamental = _tmp0_;
+	_tmp7_ = is_fundamental;
+	if (_tmp7_) {
+		ValaClass* _tmp8_ = NULL;
+		gchar* _tmp9_ = NULL;
 		gchar* _tmp10_ = NULL;
-		gchar* _tmp11_;
+		gchar* _tmp11_ = NULL;
 		gchar* _tmp12_ = NULL;
-		gchar* _tmp13_;
-		_tmp9_ = self->priv->_class_reference;
-		_tmp10_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp9_, "value_");
-		_tmp11_ = _tmp10_;
-		_tmp12_ = g_strdup_printf ("%s_copy_value", _tmp11_);
-		_tmp13_ = _tmp12_;
-		_g_free0 (_tmp11_);
-		result = _tmp13_;
+		_tmp8_ = self->priv->_class_reference;
+		_tmp9_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp8_, "value_");
+		_tmp10_ = _tmp9_;
+		_tmp11_ = g_strdup_printf ("%s_copy_value", _tmp10_);
+		_tmp12_ = _tmp11_;
+		_g_free0 (_tmp10_);
+		result = _tmp12_;
 		return result;
 	}
 	result = NULL;
@@ -643,20 +581,19 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_peek_point
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
 	gboolean _tmp0_ = FALSE;
-	ValaClass* _tmp1_;
-	gboolean _tmp2_;
-	gboolean _tmp3_;
-	gboolean _tmp7_;
-	gboolean is_fundamental;
-	gboolean _tmp8_;
+	ValaClass* _tmp1_ = NULL;
+	gboolean _tmp2_ = FALSE;
+	gboolean _tmp3_ = FALSE;
+	gboolean is_fundamental = FALSE;
+	gboolean _tmp7_ = FALSE;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp1_ = self->priv->_class_reference;
 	_tmp2_ = vala_class_get_is_compact (_tmp1_);
 	_tmp3_ = _tmp2_;
 	if (!_tmp3_) {
-		ValaClass* _tmp4_;
-		ValaClass* _tmp5_;
-		ValaClass* _tmp6_;
+		ValaClass* _tmp4_ = NULL;
+		ValaClass* _tmp5_ = NULL;
+		ValaClass* _tmp6_ = NULL;
 		_tmp4_ = self->priv->_class_reference;
 		_tmp5_ = vala_class_get_base_class (_tmp4_);
 		_tmp6_ = _tmp5_;
@@ -664,22 +601,21 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_peek_point
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp7_ = _tmp0_;
-	is_fundamental = _tmp7_;
-	_tmp8_ = is_fundamental;
-	if (_tmp8_) {
-		ValaClass* _tmp9_;
+	is_fundamental = _tmp0_;
+	_tmp7_ = is_fundamental;
+	if (_tmp7_) {
+		ValaClass* _tmp8_ = NULL;
+		gchar* _tmp9_ = NULL;
 		gchar* _tmp10_ = NULL;
-		gchar* _tmp11_;
+		gchar* _tmp11_ = NULL;
 		gchar* _tmp12_ = NULL;
-		gchar* _tmp13_;
-		_tmp9_ = self->priv->_class_reference;
-		_tmp10_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp9_, "value_");
-		_tmp11_ = _tmp10_;
-		_tmp12_ = g_strdup_printf ("%s_peek_pointer", _tmp11_);
-		_tmp13_ = _tmp12_;
-		_g_free0 (_tmp11_);
-		result = _tmp13_;
+		_tmp8_ = self->priv->_class_reference;
+		_tmp9_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp8_, "value_");
+		_tmp10_ = _tmp9_;
+		_tmp11_ = g_strdup_printf ("%s_peek_pointer", _tmp10_);
+		_tmp12_ = _tmp11_;
+		_g_free0 (_tmp10_);
+		result = _tmp12_;
 		return result;
 	}
 	result = NULL;
@@ -691,20 +627,19 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_collect_va
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
 	gboolean _tmp0_ = FALSE;
-	ValaClass* _tmp1_;
-	gboolean _tmp2_;
-	gboolean _tmp3_;
-	gboolean _tmp7_;
-	gboolean is_fundamental;
-	gboolean _tmp8_;
+	ValaClass* _tmp1_ = NULL;
+	gboolean _tmp2_ = FALSE;
+	gboolean _tmp3_ = FALSE;
+	gboolean is_fundamental = FALSE;
+	gboolean _tmp7_ = FALSE;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp1_ = self->priv->_class_reference;
 	_tmp2_ = vala_class_get_is_compact (_tmp1_);
 	_tmp3_ = _tmp2_;
 	if (!_tmp3_) {
-		ValaClass* _tmp4_;
-		ValaClass* _tmp5_;
-		ValaClass* _tmp6_;
+		ValaClass* _tmp4_ = NULL;
+		ValaClass* _tmp5_ = NULL;
+		ValaClass* _tmp6_ = NULL;
 		_tmp4_ = self->priv->_class_reference;
 		_tmp5_ = vala_class_get_base_class (_tmp4_);
 		_tmp6_ = _tmp5_;
@@ -712,22 +647,21 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_collect_va
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp7_ = _tmp0_;
-	is_fundamental = _tmp7_;
-	_tmp8_ = is_fundamental;
-	if (_tmp8_) {
-		ValaClass* _tmp9_;
+	is_fundamental = _tmp0_;
+	_tmp7_ = is_fundamental;
+	if (_tmp7_) {
+		ValaClass* _tmp8_ = NULL;
+		gchar* _tmp9_ = NULL;
 		gchar* _tmp10_ = NULL;
-		gchar* _tmp11_;
+		gchar* _tmp11_ = NULL;
 		gchar* _tmp12_ = NULL;
-		gchar* _tmp13_;
-		_tmp9_ = self->priv->_class_reference;
-		_tmp10_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp9_, "value_");
-		_tmp11_ = _tmp10_;
-		_tmp12_ = g_strdup_printf ("%s_collect_value", _tmp11_);
-		_tmp13_ = _tmp12_;
-		_g_free0 (_tmp11_);
-		result = _tmp13_;
+		_tmp8_ = self->priv->_class_reference;
+		_tmp9_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp8_, "value_");
+		_tmp10_ = _tmp9_;
+		_tmp11_ = g_strdup_printf ("%s_collect_value", _tmp10_);
+		_tmp12_ = _tmp11_;
+		_g_free0 (_tmp10_);
+		result = _tmp12_;
 		return result;
 	}
 	result = NULL;
@@ -739,20 +673,19 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_lcopy_valu
 	ValaClassRegisterFunction * self;
 	gchar* result = NULL;
 	gboolean _tmp0_ = FALSE;
-	ValaClass* _tmp1_;
-	gboolean _tmp2_;
-	gboolean _tmp3_;
-	gboolean _tmp7_;
-	gboolean is_fundamental;
-	gboolean _tmp8_;
+	ValaClass* _tmp1_ = NULL;
+	gboolean _tmp2_ = FALSE;
+	gboolean _tmp3_ = FALSE;
+	gboolean is_fundamental = FALSE;
+	gboolean _tmp7_ = FALSE;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp1_ = self->priv->_class_reference;
 	_tmp2_ = vala_class_get_is_compact (_tmp1_);
 	_tmp3_ = _tmp2_;
 	if (!_tmp3_) {
-		ValaClass* _tmp4_;
-		ValaClass* _tmp5_;
-		ValaClass* _tmp6_;
+		ValaClass* _tmp4_ = NULL;
+		ValaClass* _tmp5_ = NULL;
+		ValaClass* _tmp6_ = NULL;
 		_tmp4_ = self->priv->_class_reference;
 		_tmp5_ = vala_class_get_base_class (_tmp4_);
 		_tmp6_ = _tmp5_;
@@ -760,22 +693,21 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_lcopy_valu
 	} else {
 		_tmp0_ = FALSE;
 	}
-	_tmp7_ = _tmp0_;
-	is_fundamental = _tmp7_;
-	_tmp8_ = is_fundamental;
-	if (_tmp8_) {
-		ValaClass* _tmp9_;
+	is_fundamental = _tmp0_;
+	_tmp7_ = is_fundamental;
+	if (_tmp7_) {
+		ValaClass* _tmp8_ = NULL;
+		gchar* _tmp9_ = NULL;
 		gchar* _tmp10_ = NULL;
-		gchar* _tmp11_;
+		gchar* _tmp11_ = NULL;
 		gchar* _tmp12_ = NULL;
-		gchar* _tmp13_;
-		_tmp9_ = self->priv->_class_reference;
-		_tmp10_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp9_, "value_");
-		_tmp11_ = _tmp10_;
-		_tmp12_ = g_strdup_printf ("%s_lcopy_value", _tmp11_);
-		_tmp13_ = _tmp12_;
-		_g_free0 (_tmp11_);
-		result = _tmp13_;
+		_tmp8_ = self->priv->_class_reference;
+		_tmp9_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp8_, "value_");
+		_tmp10_ = _tmp9_;
+		_tmp11_ = g_strdup_printf ("%s_lcopy_value", _tmp10_);
+		_tmp12_ = _tmp11_;
+		_g_free0 (_tmp10_);
+		result = _tmp12_;
 		return result;
 	}
 	result = NULL;
@@ -786,20 +718,20 @@ static gchar* vala_class_register_function_real_get_gtype_value_table_lcopy_valu
 static ValaCCodeFragment* vala_class_register_function_real_get_type_interface_init_declaration (ValaTypeRegisterFunction* base) {
 	ValaClassRegisterFunction * self;
 	ValaCCodeFragment* result = NULL;
-	ValaCCodeFragment* _tmp0_;
-	ValaCCodeFragment* frag;
+	ValaCCodeFragment* frag = NULL;
+	ValaCCodeFragment* _tmp0_ = NULL;
 	self = (ValaClassRegisterFunction*) base;
 	_tmp0_ = vala_ccode_fragment_new ();
 	frag = _tmp0_;
 	{
-		ValaClass* _tmp1_;
+		ValaList* _base_type_list = NULL;
+		ValaClass* _tmp1_ = NULL;
 		ValaList* _tmp2_ = NULL;
-		ValaList* _base_type_list;
-		ValaList* _tmp3_;
-		gint _tmp4_;
-		gint _tmp5_;
-		gint _base_type_size;
-		gint _base_type_index;
+		gint _base_type_size = 0;
+		ValaList* _tmp3_ = NULL;
+		gint _tmp4_ = 0;
+		gint _tmp5_ = 0;
+		gint _base_type_index = 0;
 		_tmp1_ = self->priv->_class_reference;
 		_tmp2_ = vala_class_get_base_types (_tmp1_);
 		_base_type_list = _tmp2_;
@@ -809,46 +741,46 @@ static ValaCCodeFragment* vala_class_register_function_real_get_type_interface_i
 		_base_type_size = _tmp5_;
 		_base_type_index = -1;
 		while (TRUE) {
-			gint _tmp6_;
-			gint _tmp7_;
-			gint _tmp8_;
-			ValaList* _tmp9_;
-			gint _tmp10_;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			gint _tmp8_ = 0;
+			ValaDataType* base_type = NULL;
+			ValaList* _tmp9_ = NULL;
+			gint _tmp10_ = 0;
 			gpointer _tmp11_ = NULL;
-			ValaDataType* base_type;
-			ValaDataType* _tmp12_;
-			ValaTypeSymbol* _tmp13_;
-			ValaTypeSymbol* _tmp14_;
-			ValaDataType* _tmp15_;
-			ValaTypeSymbol* _tmp16_;
-			ValaTypeSymbol* _tmp17_;
-			ValaInterface* _tmp18_;
-			ValaInterface* iface;
-			ValaInterface* _tmp19_;
+			ValaDataType* _tmp12_ = NULL;
+			ValaTypeSymbol* _tmp13_ = NULL;
+			ValaTypeSymbol* _tmp14_ = NULL;
+			ValaInterface* iface = NULL;
+			ValaDataType* _tmp15_ = NULL;
+			ValaTypeSymbol* _tmp16_ = NULL;
+			ValaTypeSymbol* _tmp17_ = NULL;
+			ValaInterface* _tmp18_ = NULL;
+			gchar* iface_info_name = NULL;
+			ValaInterface* _tmp19_ = NULL;
 			gchar* _tmp20_ = NULL;
-			gchar* _tmp21_;
+			gchar* _tmp21_ = NULL;
 			gchar* _tmp22_ = NULL;
-			gchar* _tmp23_;
-			gchar* iface_info_name;
-			ValaCCodeDeclaration* _tmp24_;
-			ValaCCodeDeclaration* ctypedecl;
-			ValaCCodeDeclaration* _tmp25_;
-			ValaCCodeDeclaration* _tmp26_;
-			const gchar* _tmp27_;
-			ValaClass* _tmp28_;
+			gchar* _tmp23_ = NULL;
+			ValaCCodeDeclaration* ctypedecl = NULL;
+			ValaCCodeDeclaration* _tmp24_ = NULL;
+			ValaCCodeDeclaration* _tmp25_ = NULL;
+			ValaCCodeDeclaration* _tmp26_ = NULL;
+			const gchar* _tmp27_ = NULL;
+			ValaClass* _tmp28_ = NULL;
 			gchar* _tmp29_ = NULL;
-			gchar* _tmp30_;
-			ValaInterface* _tmp31_;
+			gchar* _tmp30_ = NULL;
+			ValaInterface* _tmp31_ = NULL;
 			gchar* _tmp32_ = NULL;
-			gchar* _tmp33_;
+			gchar* _tmp33_ = NULL;
 			gchar* _tmp34_ = NULL;
-			gchar* _tmp35_;
-			ValaCCodeConstant* _tmp36_;
-			ValaCCodeConstant* _tmp37_;
-			ValaCCodeVariableDeclarator* _tmp38_;
-			ValaCCodeVariableDeclarator* _tmp39_;
-			ValaCCodeFragment* _tmp40_;
-			ValaCCodeDeclaration* _tmp41_;
+			gchar* _tmp35_ = NULL;
+			ValaCCodeConstant* _tmp36_ = NULL;
+			ValaCCodeConstant* _tmp37_ = NULL;
+			ValaCCodeVariableDeclarator* _tmp38_ = NULL;
+			ValaCCodeVariableDeclarator* _tmp39_ = NULL;
+			ValaCCodeFragment* _tmp40_ = NULL;
+			ValaCCodeDeclaration* _tmp41_ = NULL;
 			_tmp6_ = _base_type_index;
 			_base_type_index = _tmp6_ + 1;
 			_tmp7_ = _base_type_index;
@@ -921,23 +853,23 @@ static ValaCCodeFragment* vala_class_register_function_real_get_type_interface_i
 
 static void vala_class_register_function_real_get_type_interface_init_statements (ValaTypeRegisterFunction* base, ValaCCodeBlock* block, gboolean plugin) {
 	ValaClassRegisterFunction * self;
-	ValaCodeContext* _tmp83_;
-	ValaCodeContext* _tmp84_;
-	ValaCodeGenerator* _tmp85_;
-	ValaCodeGenerator* _tmp86_;
-	ValaCCodeBlock* _tmp87_;
-	ValaClass* _tmp88_;
+	ValaCodeContext* _tmp83_ = NULL;
+	ValaCodeContext* _tmp84_ = NULL;
+	ValaCodeGenerator* _tmp85_ = NULL;
+	ValaCodeGenerator* _tmp86_ = NULL;
+	ValaCCodeBlock* _tmp87_ = NULL;
+	ValaClass* _tmp88_ = NULL;
 	self = (ValaClassRegisterFunction*) base;
 	g_return_if_fail (block != NULL);
 	{
-		ValaClass* _tmp0_;
+		ValaList* _base_type_list = NULL;
+		ValaClass* _tmp0_ = NULL;
 		ValaList* _tmp1_ = NULL;
-		ValaList* _base_type_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _base_type_size;
-		gint _base_type_index;
+		gint _base_type_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _base_type_index = 0;
 		_tmp0_ = self->priv->_class_reference;
 		_tmp1_ = vala_class_get_base_types (_tmp0_);
 		_base_type_list = _tmp1_;
@@ -947,28 +879,28 @@ static void vala_class_register_function_real_get_type_interface_init_statements
 		_base_type_size = _tmp4_;
 		_base_type_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaDataType* base_type = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaDataType* base_type;
-			ValaDataType* _tmp11_;
-			ValaTypeSymbol* _tmp12_;
-			ValaTypeSymbol* _tmp13_;
-			ValaDataType* _tmp14_;
-			ValaTypeSymbol* _tmp15_;
-			ValaTypeSymbol* _tmp16_;
-			ValaInterface* _tmp17_;
-			ValaInterface* iface;
-			ValaInterface* _tmp18_;
+			ValaDataType* _tmp11_ = NULL;
+			ValaTypeSymbol* _tmp12_ = NULL;
+			ValaTypeSymbol* _tmp13_ = NULL;
+			ValaInterface* iface = NULL;
+			ValaDataType* _tmp14_ = NULL;
+			ValaTypeSymbol* _tmp15_ = NULL;
+			ValaTypeSymbol* _tmp16_ = NULL;
+			ValaInterface* _tmp17_ = NULL;
+			gchar* iface_info_name = NULL;
+			ValaInterface* _tmp18_ = NULL;
 			gchar* _tmp19_ = NULL;
-			gchar* _tmp20_;
+			gchar* _tmp20_ = NULL;
 			gchar* _tmp21_ = NULL;
-			gchar* _tmp22_;
-			gchar* iface_info_name;
-			gboolean _tmp23_;
+			gchar* _tmp22_ = NULL;
+			gboolean _tmp23_ = FALSE;
 			_tmp5_ = _base_type_index;
 			_base_type_index = _tmp5_ + 1;
 			_tmp6_ = _base_type_index;
@@ -1001,35 +933,35 @@ static void vala_class_register_function_real_get_type_interface_init_statements
 			iface_info_name = _tmp22_;
 			_tmp23_ = plugin;
 			if (!_tmp23_) {
-				ValaCCodeIdentifier* _tmp24_;
-				ValaCCodeIdentifier* _tmp25_;
-				ValaCCodeFunctionCall* _tmp26_;
-				ValaCCodeFunctionCall* _tmp27_;
-				ValaCCodeFunctionCall* reg_call;
-				ValaCCodeFunctionCall* _tmp28_;
-				ValaClass* _tmp29_;
+				ValaCCodeFunctionCall* reg_call = NULL;
+				ValaCCodeIdentifier* _tmp24_ = NULL;
+				ValaCCodeIdentifier* _tmp25_ = NULL;
+				ValaCCodeFunctionCall* _tmp26_ = NULL;
+				ValaCCodeFunctionCall* _tmp27_ = NULL;
+				ValaCCodeFunctionCall* _tmp28_ = NULL;
+				ValaClass* _tmp29_ = NULL;
 				gchar* _tmp30_ = NULL;
-				gchar* _tmp31_;
+				gchar* _tmp31_ = NULL;
 				gchar* _tmp32_ = NULL;
-				gchar* _tmp33_;
-				ValaCCodeIdentifier* _tmp34_;
-				ValaCCodeIdentifier* _tmp35_;
-				ValaCCodeFunctionCall* _tmp36_;
-				ValaInterface* _tmp37_;
+				gchar* _tmp33_ = NULL;
+				ValaCCodeIdentifier* _tmp34_ = NULL;
+				ValaCCodeIdentifier* _tmp35_ = NULL;
+				ValaCCodeFunctionCall* _tmp36_ = NULL;
+				ValaInterface* _tmp37_ = NULL;
 				gchar* _tmp38_ = NULL;
-				gchar* _tmp39_;
-				ValaCCodeIdentifier* _tmp40_;
-				ValaCCodeIdentifier* _tmp41_;
-				ValaCCodeFunctionCall* _tmp42_;
-				const gchar* _tmp43_;
+				gchar* _tmp39_ = NULL;
+				ValaCCodeIdentifier* _tmp40_ = NULL;
+				ValaCCodeIdentifier* _tmp41_ = NULL;
+				ValaCCodeFunctionCall* _tmp42_ = NULL;
+				const gchar* _tmp43_ = NULL;
 				gchar* _tmp44_ = NULL;
-				gchar* _tmp45_;
-				ValaCCodeIdentifier* _tmp46_;
-				ValaCCodeIdentifier* _tmp47_;
-				ValaCCodeBlock* _tmp48_;
-				ValaCCodeFunctionCall* _tmp49_;
-				ValaCCodeExpressionStatement* _tmp50_;
-				ValaCCodeExpressionStatement* _tmp51_;
+				gchar* _tmp45_ = NULL;
+				ValaCCodeIdentifier* _tmp46_ = NULL;
+				ValaCCodeIdentifier* _tmp47_ = NULL;
+				ValaCCodeBlock* _tmp48_ = NULL;
+				ValaCCodeFunctionCall* _tmp49_ = NULL;
+				ValaCCodeExpressionStatement* _tmp50_ = NULL;
+				ValaCCodeExpressionStatement* _tmp51_ = NULL;
 				_tmp24_ = vala_ccode_identifier_new ("g_type_add_interface_static");
 				_tmp25_ = _tmp24_;
 				_tmp26_ = vala_ccode_function_call_new ((ValaCCodeExpression*) _tmp25_);
@@ -1074,38 +1006,38 @@ static void vala_class_register_function_real_get_type_interface_init_statements
 				_vala_ccode_node_unref0 (_tmp51_);
 				_vala_ccode_node_unref0 (reg_call);
 			} else {
-				ValaCCodeIdentifier* _tmp52_;
-				ValaCCodeIdentifier* _tmp53_;
-				ValaCCodeFunctionCall* _tmp54_;
-				ValaCCodeFunctionCall* _tmp55_;
-				ValaCCodeFunctionCall* reg_call;
-				ValaCCodeFunctionCall* _tmp56_;
-				ValaCCodeIdentifier* _tmp57_;
-				ValaCCodeIdentifier* _tmp58_;
-				ValaCCodeFunctionCall* _tmp59_;
-				ValaClass* _tmp60_;
+				ValaCCodeFunctionCall* reg_call = NULL;
+				ValaCCodeIdentifier* _tmp52_ = NULL;
+				ValaCCodeIdentifier* _tmp53_ = NULL;
+				ValaCCodeFunctionCall* _tmp54_ = NULL;
+				ValaCCodeFunctionCall* _tmp55_ = NULL;
+				ValaCCodeFunctionCall* _tmp56_ = NULL;
+				ValaCCodeIdentifier* _tmp57_ = NULL;
+				ValaCCodeIdentifier* _tmp58_ = NULL;
+				ValaCCodeFunctionCall* _tmp59_ = NULL;
+				ValaClass* _tmp60_ = NULL;
 				gchar* _tmp61_ = NULL;
-				gchar* _tmp62_;
+				gchar* _tmp62_ = NULL;
 				gchar* _tmp63_ = NULL;
-				gchar* _tmp64_;
-				ValaCCodeIdentifier* _tmp65_;
-				ValaCCodeIdentifier* _tmp66_;
-				ValaCCodeFunctionCall* _tmp67_;
-				ValaInterface* _tmp68_;
+				gchar* _tmp64_ = NULL;
+				ValaCCodeIdentifier* _tmp65_ = NULL;
+				ValaCCodeIdentifier* _tmp66_ = NULL;
+				ValaCCodeFunctionCall* _tmp67_ = NULL;
+				ValaInterface* _tmp68_ = NULL;
 				gchar* _tmp69_ = NULL;
-				gchar* _tmp70_;
-				ValaCCodeIdentifier* _tmp71_;
-				ValaCCodeIdentifier* _tmp72_;
-				ValaCCodeFunctionCall* _tmp73_;
-				const gchar* _tmp74_;
+				gchar* _tmp70_ = NULL;
+				ValaCCodeIdentifier* _tmp71_ = NULL;
+				ValaCCodeIdentifier* _tmp72_ = NULL;
+				ValaCCodeFunctionCall* _tmp73_ = NULL;
+				const gchar* _tmp74_ = NULL;
 				gchar* _tmp75_ = NULL;
-				gchar* _tmp76_;
-				ValaCCodeIdentifier* _tmp77_;
-				ValaCCodeIdentifier* _tmp78_;
-				ValaCCodeBlock* _tmp79_;
-				ValaCCodeFunctionCall* _tmp80_;
-				ValaCCodeExpressionStatement* _tmp81_;
-				ValaCCodeExpressionStatement* _tmp82_;
+				gchar* _tmp76_ = NULL;
+				ValaCCodeIdentifier* _tmp77_ = NULL;
+				ValaCCodeIdentifier* _tmp78_ = NULL;
+				ValaCCodeBlock* _tmp79_ = NULL;
+				ValaCCodeFunctionCall* _tmp80_ = NULL;
+				ValaCCodeExpressionStatement* _tmp81_ = NULL;
+				ValaCCodeExpressionStatement* _tmp82_ = NULL;
 				_tmp52_ = vala_ccode_identifier_new ("g_type_module_add_interface");
 				_tmp53_ = _tmp52_;
 				_tmp54_ = vala_ccode_function_call_new ((ValaCCodeExpression*) _tmp53_);
@@ -1173,7 +1105,7 @@ static void vala_class_register_function_real_get_type_interface_init_statements
 
 ValaClass* vala_class_register_function_get_class_reference (ValaClassRegisterFunction* self) {
 	ValaClass* result;
-	ValaClass* _tmp0_;
+	ValaClass* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_class_reference;
 	result = _tmp0_;
@@ -1182,7 +1114,7 @@ ValaClass* vala_class_register_function_get_class_reference (ValaClassRegisterFu
 
 
 void vala_class_register_function_set_class_reference (ValaClassRegisterFunction* self, ValaClass* value) {
-	ValaClass* _tmp0_;
+	ValaClass* _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_class_reference = _tmp0_;
@@ -1191,27 +1123,27 @@ void vala_class_register_function_set_class_reference (ValaClassRegisterFunction
 
 static void vala_class_register_function_class_init (ValaClassRegisterFunctionClass * klass) {
 	vala_class_register_function_parent_class = g_type_class_peek_parent (klass);
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->finalize = vala_class_register_function_finalize;
+	((ValaTypeRegisterFunctionClass *) klass)->finalize = vala_class_register_function_finalize;
 	g_type_class_add_private (klass, sizeof (ValaClassRegisterFunctionPrivate));
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_type_declaration = vala_class_register_function_real_get_type_declaration;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_type_struct_name = vala_class_register_function_real_get_type_struct_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_base_init_func_name = vala_class_register_function_real_get_base_init_func_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_class_finalize_func_name = vala_class_register_function_real_get_class_finalize_func_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_base_finalize_func_name = vala_class_register_function_real_get_base_finalize_func_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_class_init_func_name = vala_class_register_function_real_get_class_init_func_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_instance_struct_size = vala_class_register_function_real_get_instance_struct_size;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_instance_init_func_name = vala_class_register_function_real_get_instance_init_func_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_parent_type_name = vala_class_register_function_real_get_parent_type_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_type_flags = vala_class_register_function_real_get_type_flags;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_accessibility = vala_class_register_function_real_get_accessibility;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_gtype_value_table_init_function_name = vala_class_register_function_real_get_gtype_value_table_init_function_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_gtype_value_table_free_function_name = vala_class_register_function_real_get_gtype_value_table_free_function_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_gtype_value_table_copy_function_name = vala_class_register_function_real_get_gtype_value_table_copy_function_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_gtype_value_table_peek_pointer_function_name = vala_class_register_function_real_get_gtype_value_table_peek_pointer_function_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_gtype_value_table_collect_value_function_name = vala_class_register_function_real_get_gtype_value_table_collect_value_function_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_gtype_value_table_lcopy_value_function_name = vala_class_register_function_real_get_gtype_value_table_lcopy_value_function_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_type_interface_init_declaration = vala_class_register_function_real_get_type_interface_init_declaration;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_type_interface_init_statements = vala_class_register_function_real_get_type_interface_init_statements;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_declaration = vala_class_register_function_real_get_type_declaration;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_struct_name = vala_class_register_function_real_get_type_struct_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_base_init_func_name = vala_class_register_function_real_get_base_init_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_class_finalize_func_name = vala_class_register_function_real_get_class_finalize_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_base_finalize_func_name = vala_class_register_function_real_get_base_finalize_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_class_init_func_name = vala_class_register_function_real_get_class_init_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_instance_struct_size = vala_class_register_function_real_get_instance_struct_size;
+	((ValaTypeRegisterFunctionClass *) klass)->get_instance_init_func_name = vala_class_register_function_real_get_instance_init_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_parent_type_name = vala_class_register_function_real_get_parent_type_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_flags = vala_class_register_function_real_get_type_flags;
+	((ValaTypeRegisterFunctionClass *) klass)->get_accessibility = vala_class_register_function_real_get_accessibility;
+	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_init_function_name = vala_class_register_function_real_get_gtype_value_table_init_function_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_free_function_name = vala_class_register_function_real_get_gtype_value_table_free_function_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_copy_function_name = vala_class_register_function_real_get_gtype_value_table_copy_function_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_peek_pointer_function_name = vala_class_register_function_real_get_gtype_value_table_peek_pointer_function_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_collect_value_function_name = vala_class_register_function_real_get_gtype_value_table_collect_value_function_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_gtype_value_table_lcopy_value_function_name = vala_class_register_function_real_get_gtype_value_table_lcopy_value_function_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_interface_init_declaration = vala_class_register_function_real_get_type_interface_init_declaration;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_interface_init_statements = vala_class_register_function_real_get_type_interface_init_statements;
 }
 
 

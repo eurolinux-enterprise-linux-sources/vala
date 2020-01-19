@@ -84,6 +84,16 @@ typedef struct _ValaCCodeDeclarationClass ValaCCodeDeclarationClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _vala_iterable_unref0(var) ((var == NULL) ? NULL : (var = (vala_iterable_unref (var), NULL)))
 
+#define VALA_TYPE_CCODE_DECLARATOR_SUFFIX (vala_ccode_declarator_suffix_get_type ())
+#define VALA_CCODE_DECLARATOR_SUFFIX(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_DECLARATOR_SUFFIX, ValaCCodeDeclaratorSuffix))
+#define VALA_CCODE_DECLARATOR_SUFFIX_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_DECLARATOR_SUFFIX, ValaCCodeDeclaratorSuffixClass))
+#define VALA_IS_CCODE_DECLARATOR_SUFFIX(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_CCODE_DECLARATOR_SUFFIX))
+#define VALA_IS_CCODE_DECLARATOR_SUFFIX_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_CCODE_DECLARATOR_SUFFIX))
+#define VALA_CCODE_DECLARATOR_SUFFIX_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_CCODE_DECLARATOR_SUFFIX, ValaCCodeDeclaratorSuffixClass))
+
+typedef struct _ValaCCodeDeclaratorSuffix ValaCCodeDeclaratorSuffix;
+typedef struct _ValaCCodeDeclaratorSuffixClass ValaCCodeDeclaratorSuffixClass;
+
 #define VALA_TYPE_CCODE_DECLARATOR (vala_ccode_declarator_get_type ())
 #define VALA_CCODE_DECLARATOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_CCODE_DECLARATOR, ValaCCodeDeclarator))
 #define VALA_CCODE_DECLARATOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_CCODE_DECLARATOR, ValaCCodeDeclaratorClass))
@@ -173,14 +183,21 @@ ValaCCodeStruct* vala_ccode_struct_construct (GType object_type, const gchar* na
 ValaCCodeNode* vala_ccode_node_construct (GType object_type);
 void vala_ccode_struct_set_name (ValaCCodeStruct* self, const gchar* value);
 void vala_ccode_struct_add_declaration (ValaCCodeStruct* self, ValaCCodeDeclaration* decl);
-void vala_ccode_struct_add_field (ValaCCodeStruct* self, const gchar* type_name, const gchar* name, const gchar* declarator_suffix);
+gpointer vala_ccode_declarator_suffix_ref (gpointer instance);
+void vala_ccode_declarator_suffix_unref (gpointer instance);
+GParamSpec* vala_param_spec_ccode_declarator_suffix (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void vala_value_set_ccode_declarator_suffix (GValue* value, gpointer v_object);
+void vala_value_take_ccode_declarator_suffix (GValue* value, gpointer v_object);
+gpointer vala_value_get_ccode_declarator_suffix (const GValue* value);
+GType vala_ccode_declarator_suffix_get_type (void) G_GNUC_CONST;
+void vala_ccode_struct_add_field (ValaCCodeStruct* self, const gchar* type_name, const gchar* name, ValaCCodeDeclaratorSuffix* declarator_suffix);
 ValaCCodeDeclaration* vala_ccode_declaration_new (const gchar* type_name);
 ValaCCodeDeclaration* vala_ccode_declaration_construct (GType object_type, const gchar* type_name);
 GType vala_ccode_declarator_get_type (void) G_GNUC_CONST;
 void vala_ccode_declaration_add_declarator (ValaCCodeDeclaration* self, ValaCCodeDeclarator* decl);
 GType vala_ccode_expression_get_type (void) G_GNUC_CONST;
-ValaCCodeVariableDeclarator* vala_ccode_variable_declarator_new (const gchar* name, ValaCCodeExpression* initializer, const gchar* declarator_suffix);
-ValaCCodeVariableDeclarator* vala_ccode_variable_declarator_construct (GType object_type, const gchar* name, ValaCCodeExpression* initializer, const gchar* declarator_suffix);
+ValaCCodeVariableDeclarator* vala_ccode_variable_declarator_new (const gchar* name, ValaCCodeExpression* initializer, ValaCCodeDeclaratorSuffix* declarator_suffix);
+ValaCCodeVariableDeclarator* vala_ccode_variable_declarator_construct (GType object_type, const gchar* name, ValaCCodeExpression* initializer, ValaCCodeDeclaratorSuffix* declarator_suffix);
 GType vala_ccode_variable_declarator_get_type (void) G_GNUC_CONST;
 static void vala_ccode_struct_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer);
 void vala_ccode_writer_write_string (ValaCCodeWriter* self, const gchar* s);
@@ -197,7 +214,7 @@ static void vala_ccode_struct_finalize (ValaCCodeNode* obj);
 
 ValaCCodeStruct* vala_ccode_struct_construct (GType object_type, const gchar* name) {
 	ValaCCodeStruct* self = NULL;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	self = (ValaCCodeStruct*) vala_ccode_node_construct (object_type);
 	_tmp0_ = name;
@@ -217,8 +234,8 @@ ValaCCodeStruct* vala_ccode_struct_new (const gchar* name) {
  * @param decl a variable declaration
  */
 void vala_ccode_struct_add_declaration (ValaCCodeStruct* self, ValaCCodeDeclaration* decl) {
-	ValaList* _tmp0_;
-	ValaCCodeDeclaration* _tmp1_;
+	ValaList* _tmp0_ = NULL;
+	ValaCCodeDeclaration* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (decl != NULL);
 	_tmp0_ = self->priv->declarations;
@@ -233,14 +250,14 @@ void vala_ccode_struct_add_declaration (ValaCCodeStruct* self, ValaCCodeDeclarat
  * @param type_name field type
  * @param name      member name
  */
-void vala_ccode_struct_add_field (ValaCCodeStruct* self, const gchar* type_name, const gchar* name, const gchar* declarator_suffix) {
-	const gchar* _tmp0_;
-	ValaCCodeDeclaration* _tmp1_;
-	ValaCCodeDeclaration* decl;
-	const gchar* _tmp2_;
-	const gchar* _tmp3_;
-	ValaCCodeVariableDeclarator* _tmp4_;
-	ValaCCodeVariableDeclarator* _tmp5_;
+void vala_ccode_struct_add_field (ValaCCodeStruct* self, const gchar* type_name, const gchar* name, ValaCCodeDeclaratorSuffix* declarator_suffix) {
+	ValaCCodeDeclaration* decl = NULL;
+	const gchar* _tmp0_ = NULL;
+	ValaCCodeDeclaration* _tmp1_ = NULL;
+	const gchar* _tmp2_ = NULL;
+	ValaCCodeDeclaratorSuffix* _tmp3_ = NULL;
+	ValaCCodeVariableDeclarator* _tmp4_ = NULL;
+	ValaCCodeVariableDeclarator* _tmp5_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (type_name != NULL);
 	g_return_if_fail (name != NULL);
@@ -265,15 +282,15 @@ static gpointer _vala_iterable_ref0 (gpointer self) {
 
 static void vala_ccode_struct_real_write (ValaCCodeNode* base, ValaCCodeWriter* writer) {
 	ValaCCodeStruct * self;
-	ValaCCodeWriter* _tmp0_;
-	ValaCCodeWriter* _tmp1_;
-	const gchar* _tmp2_;
-	ValaCCodeWriter* _tmp3_;
-	ValaCCodeWriter* _tmp17_;
-	gboolean _tmp18_;
-	ValaCCodeWriter* _tmp20_;
-	ValaCCodeWriter* _tmp21_;
-	ValaCCodeWriter* _tmp22_;
+	ValaCCodeWriter* _tmp0_ = NULL;
+	ValaCCodeWriter* _tmp1_ = NULL;
+	const gchar* _tmp2_ = NULL;
+	ValaCCodeWriter* _tmp3_ = NULL;
+	ValaCCodeWriter* _tmp17_ = NULL;
+	gboolean _tmp18_ = FALSE;
+	ValaCCodeWriter* _tmp20_ = NULL;
+	ValaCCodeWriter* _tmp21_ = NULL;
+	ValaCCodeWriter* _tmp22_ = NULL;
 	self = (ValaCCodeStruct*) base;
 	g_return_if_fail (writer != NULL);
 	_tmp0_ = writer;
@@ -284,14 +301,14 @@ static void vala_ccode_struct_real_write (ValaCCodeNode* base, ValaCCodeWriter* 
 	_tmp3_ = writer;
 	vala_ccode_writer_write_begin_block (_tmp3_);
 	{
-		ValaList* _tmp4_;
-		ValaList* _tmp5_;
-		ValaList* _decl_list;
-		ValaList* _tmp6_;
-		gint _tmp7_;
-		gint _tmp8_;
-		gint _decl_size;
-		gint _decl_index;
+		ValaList* _decl_list = NULL;
+		ValaList* _tmp4_ = NULL;
+		ValaList* _tmp5_ = NULL;
+		gint _decl_size = 0;
+		ValaList* _tmp6_ = NULL;
+		gint _tmp7_ = 0;
+		gint _tmp8_ = 0;
+		gint _decl_index = 0;
 		_tmp4_ = self->priv->declarations;
 		_tmp5_ = _vala_iterable_ref0 (_tmp4_);
 		_decl_list = _tmp5_;
@@ -301,15 +318,15 @@ static void vala_ccode_struct_real_write (ValaCCodeNode* base, ValaCCodeWriter* 
 		_decl_size = _tmp8_;
 		_decl_index = -1;
 		while (TRUE) {
-			gint _tmp9_;
-			gint _tmp10_;
-			gint _tmp11_;
-			ValaList* _tmp12_;
-			gint _tmp13_;
+			gint _tmp9_ = 0;
+			gint _tmp10_ = 0;
+			gint _tmp11_ = 0;
+			ValaCCodeDeclaration* decl = NULL;
+			ValaList* _tmp12_ = NULL;
+			gint _tmp13_ = 0;
 			gpointer _tmp14_ = NULL;
-			ValaCCodeDeclaration* decl;
-			ValaCCodeDeclaration* _tmp15_;
-			ValaCCodeWriter* _tmp16_;
+			ValaCCodeDeclaration* _tmp15_ = NULL;
+			ValaCCodeWriter* _tmp16_ = NULL;
 			_tmp9_ = _decl_index;
 			_decl_index = _tmp9_ + 1;
 			_tmp10_ = _decl_index;
@@ -332,7 +349,7 @@ static void vala_ccode_struct_real_write (ValaCCodeNode* base, ValaCCodeWriter* 
 	vala_ccode_writer_write_end_block (_tmp17_);
 	_tmp18_ = self->priv->_deprecated;
 	if (_tmp18_) {
-		ValaCCodeWriter* _tmp19_;
+		ValaCCodeWriter* _tmp19_ = NULL;
 		_tmp19_ = writer;
 		vala_ccode_writer_write_string (_tmp19_, " G_GNUC_DEPRECATED");
 	}
@@ -347,7 +364,7 @@ static void vala_ccode_struct_real_write (ValaCCodeNode* base, ValaCCodeWriter* 
 
 const gchar* vala_ccode_struct_get_name (ValaCCodeStruct* self) {
 	const gchar* result;
-	const gchar* _tmp0_;
+	const gchar* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_name;
 	result = _tmp0_;
@@ -356,8 +373,8 @@ const gchar* vala_ccode_struct_get_name (ValaCCodeStruct* self) {
 
 
 void vala_ccode_struct_set_name (ValaCCodeStruct* self, const gchar* value) {
-	const gchar* _tmp0_;
-	gchar* _tmp1_;
+	const gchar* _tmp0_ = NULL;
+	gchar* _tmp1_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = g_strdup (_tmp0_);
@@ -368,7 +385,7 @@ void vala_ccode_struct_set_name (ValaCCodeStruct* self, const gchar* value) {
 
 gboolean vala_ccode_struct_get_deprecated (ValaCCodeStruct* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_deprecated;
 	result = _tmp0_;
@@ -377,7 +394,7 @@ gboolean vala_ccode_struct_get_deprecated (ValaCCodeStruct* self) {
 
 
 void vala_ccode_struct_set_deprecated (ValaCCodeStruct* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_deprecated = _tmp0_;
@@ -386,9 +403,9 @@ void vala_ccode_struct_set_deprecated (ValaCCodeStruct* self, gboolean value) {
 
 gboolean vala_ccode_struct_get_is_empty (ValaCCodeStruct* self) {
 	gboolean result;
-	ValaList* _tmp0_;
-	gint _tmp1_;
-	gint _tmp2_;
+	ValaList* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	gint _tmp2_ = 0;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->declarations;
 	_tmp1_ = vala_collection_get_size ((ValaCollection*) _tmp0_);
@@ -400,15 +417,15 @@ gboolean vala_ccode_struct_get_is_empty (ValaCCodeStruct* self) {
 
 static void vala_ccode_struct_class_init (ValaCCodeStructClass * klass) {
 	vala_ccode_struct_parent_class = g_type_class_peek_parent (klass);
-	VALA_CCODE_NODE_CLASS (klass)->finalize = vala_ccode_struct_finalize;
+	((ValaCCodeNodeClass *) klass)->finalize = vala_ccode_struct_finalize;
 	g_type_class_add_private (klass, sizeof (ValaCCodeStructPrivate));
-	VALA_CCODE_NODE_CLASS (klass)->write = vala_ccode_struct_real_write;
+	((ValaCCodeNodeClass *) klass)->write = vala_ccode_struct_real_write;
 }
 
 
 static void vala_ccode_struct_instance_init (ValaCCodeStruct * self) {
-	GEqualFunc _tmp0_;
-	ValaArrayList* _tmp1_;
+	GEqualFunc _tmp0_ = NULL;
+	ValaArrayList* _tmp1_ = NULL;
 	self->priv = VALA_CCODE_STRUCT_GET_PRIVATE (self);
 	self->priv->_deprecated = FALSE;
 	_tmp0_ = g_direct_equal;

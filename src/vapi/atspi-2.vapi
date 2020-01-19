@@ -3,7 +3,7 @@
 [CCode (cprefix = "Atspi", gir_namespace = "Atspi", gir_version = "2.0", lower_case_cprefix = "atspi_")]
 namespace Atspi {
 	[CCode (cheader_filename = "atspi/atspi.h", type_id = "atspi_accessible_get_type ()")]
-	public class Accessible : Atspi.Object, Atspi.Action, Atspi.Collection, Atspi.Component, Atspi.Document, Atspi.EditableText, Atspi.Hypertext, Atspi.Image, Atspi.Selection, Atspi.Table, Atspi.Text, Atspi.Value {
+	public class Accessible : Atspi.Object, Atspi.Action, Atspi.Collection, Atspi.Component, Atspi.Document, Atspi.EditableText, Atspi.Hypertext, Atspi.Image, Atspi.Selection, Atspi.Table, Atspi.TableCell, Atspi.Text, Atspi.Value {
 		public weak Atspi.Accessible accessible_parent;
 		public weak GLib.HashTable<void*,void*> attributes;
 		public uint cached_properties;
@@ -16,39 +16,63 @@ namespace Atspi {
 		[CCode (has_construct_function = false)]
 		protected Accessible ();
 		public void clear_cache ();
+		[Deprecated (since = "2.10")]
 		public Atspi.Action get_action ();
+		public Atspi.Action get_action_iface ();
 		public Atspi.Accessible get_application () throws GLib.Error;
 		public string get_atspi_version () throws GLib.Error;
 		public GLib.HashTable<string,string> get_attributes () throws GLib.Error;
 		public GLib.Array<string> get_attributes_as_array () throws GLib.Error;
 		public Atspi.Accessible get_child_at_index (int child_index) throws GLib.Error;
 		public int get_child_count () throws GLib.Error;
+		[Deprecated (since = "2.10")]
 		public Atspi.Collection get_collection ();
+		public Atspi.Collection get_collection_iface ();
+		[Deprecated (since = "2.10")]
 		public Atspi.Component get_component ();
+		public Atspi.Component get_component_iface ();
 		public string get_description () throws GLib.Error;
+		[Deprecated (since = "2.10")]
 		public Atspi.Document get_document ();
+		public Atspi.Document get_document_iface ();
+		[Deprecated (since = "2.10")]
 		public Atspi.EditableText get_editable_text ();
+		public Atspi.EditableText get_editable_text_iface ();
 		public Atspi.Hyperlink get_hyperlink ();
+		[Deprecated (since = "2.10")]
 		public Atspi.Hypertext get_hypertext ();
+		public Atspi.Hypertext get_hypertext_iface ();
 		public int get_id () throws GLib.Error;
+		[Deprecated (since = "2.10")]
 		public Atspi.Image get_image ();
+		public Atspi.Image get_image_iface ();
 		public int get_index_in_parent () throws GLib.Error;
 		public GLib.Array<string> get_interfaces ();
 		public string get_localized_role_name () throws GLib.Error;
 		public string get_name () throws GLib.Error;
-		public Atspi.Accessible get_parent () throws GLib.Error;
+		public unowned string get_object_locale () throws GLib.Error;
+		public Atspi.Accessible? get_parent () throws GLib.Error;
 		public uint get_process_id () throws GLib.Error;
 		public GLib.Array<Atspi.Accessible> get_relation_set () throws GLib.Error;
 		public Atspi.Role get_role () throws GLib.Error;
 		public string get_role_name () throws GLib.Error;
+		[Deprecated (since = "2.10")]
 		public Atspi.Selection get_selection ();
+		public Atspi.Selection get_selection_iface ();
 		public Atspi.StateSet get_state_set ();
+		[Deprecated (since = "2.10")]
 		public Atspi.Table get_table ();
+		public Atspi.TableCell get_table_cell ();
+		public Atspi.Table get_table_iface ();
+		[Deprecated (since = "2.10")]
 		public Atspi.Text get_text ();
+		public Atspi.Text get_text_iface ();
 		public string get_toolkit_name () throws GLib.Error;
 		public string get_toolkit_version () throws GLib.Error;
+		[Deprecated (since = "2.10")]
 		public Atspi.Value get_value ();
-		public void set_cache_mask (int mask);
+		public Atspi.Value get_value_iface ();
+		public void set_cache_mask (Atspi.Cache mask);
 	}
 	[CCode (cheader_filename = "atspi/atspi.h", type_id = "atspi_device_listener_get_type ()")]
 	public class DeviceListener : GLib.Object {
@@ -58,7 +82,7 @@ namespace Atspi {
 		public DeviceListener (owned Atspi.DeviceListenerCB callback);
 		public void add_callback ([CCode (delegate_target_pos = 1.2, destroy_notify_pos = 1.1)] owned Atspi.DeviceListenerCB callback);
 		[NoWrapper]
-		public virtual bool device_event (Atspi.DeviceEvent arg0);
+		public virtual bool device_event (Atspi.DeviceEvent event);
 		public void remove_callback (Atspi.DeviceListenerCB callback);
 		[CCode (has_construct_function = false)]
 		public DeviceListener.simple ([CCode (destroy_notify_pos = 1.1)] owned Atspi.DeviceListenerSimpleCB callback);
@@ -86,6 +110,7 @@ namespace Atspi {
 		public static bool deregister_no_data (Atspi.EventListenerSimpleCB callback, string event_type) throws GLib.Error;
 		public bool register (string event_type) throws GLib.Error;
 		public static bool register_from_callback ([CCode (delegate_target_pos = 1.33333, destroy_notify_pos = 1.66667)] owned Atspi.EventListenerCB callback, string event_type) throws GLib.Error;
+		public bool register_full (string event_type, GLib.Array<string>? properties) throws GLib.Error;
 		public static bool register_no_data ([CCode (destroy_notify_pos = 1.5)] owned Atspi.EventListenerSimpleCB callback, string event_type) throws GLib.Error;
 		[CCode (has_construct_function = false)]
 		public EventListener.simple ([CCode (destroy_notify_pos = 1.1)] owned Atspi.EventListenerSimpleCB callback);
@@ -190,14 +215,19 @@ namespace Atspi {
 	[CCode (cheader_filename = "atspi/atspi.h", type_id = "atspi_action_get_type ()")]
 	public interface Action : GLib.Object {
 		public bool do_action (int i) throws GLib.Error;
+		public string get_action_description (int i) throws GLib.Error;
+		public string get_action_name (int i) throws GLib.Error;
+		[Deprecated (since = "2.10")]
 		public string get_description (int i) throws GLib.Error;
 		public string get_key_binding (int i) throws GLib.Error;
 		public string get_localized_name (int i) throws GLib.Error;
 		public int get_n_actions () throws GLib.Error;
+		[Deprecated (since = "2.10")]
 		public string get_name (int i) throws GLib.Error;
 	}
 	[CCode (cheader_filename = "atspi/atspi.h", type_id = "atspi_collection_get_type ()")]
 	public interface Collection : GLib.Object {
+		public Atspi.Accessible get_active_descendant () throws GLib.Error;
 		public GLib.Array<Atspi.Accessible> get_matches (Atspi.MatchRule rule, Atspi.CollectionSortOrder sortby, int count, bool traverse) throws GLib.Error;
 		public GLib.Array<Atspi.Accessible> get_matches_from (Atspi.Accessible current_object, Atspi.MatchRule rule, Atspi.CollectionSortOrder sortby, Atspi.CollectionTreeTraversalType tree, int count, bool traverse) throws GLib.Error;
 		public GLib.Array<Atspi.Accessible> get_matches_to (Atspi.Accessible current_object, Atspi.MatchRule rule, Atspi.CollectionSortOrder sortby, Atspi.CollectionTreeTraversalType tree, bool limit_scope, int count, bool traverse) throws GLib.Error;
@@ -206,7 +236,7 @@ namespace Atspi {
 	[CCode (cheader_filename = "atspi/atspi.h", type_id = "atspi_component_get_type ()")]
 	public interface Component : GLib.Object {
 		public bool contains (int x, int y, Atspi.CoordType ctype) throws GLib.Error;
-		public Atspi.Accessible get_accessible_at_point (int x, int y, Atspi.CoordType ctype) throws GLib.Error;
+		public Atspi.Accessible? get_accessible_at_point (int x, int y, Atspi.CoordType ctype) throws GLib.Error;
 		public double get_alpha () throws GLib.Error;
 		public Atspi.Rect get_extents (Atspi.CoordType ctype) throws GLib.Error;
 		public Atspi.ComponentLayer get_layer () throws GLib.Error;
@@ -220,9 +250,15 @@ namespace Atspi {
 	}
 	[CCode (cheader_filename = "atspi/atspi.h", type_id = "atspi_document_get_type ()")]
 	public interface Document : GLib.Object {
+		[Deprecated (since = "2.10")]
 		public string get_attribute_value (string attribute) throws GLib.Error;
+		[Deprecated (since = "2.10")]
 		public GLib.HashTable<string,string> get_attributes () throws GLib.Error;
+		public int get_current_page_number () throws GLib.Error;
+		public string get_document_attribute_value (string attribute) throws GLib.Error;
+		public GLib.HashTable<string,string> get_document_attributes () throws GLib.Error;
 		public string get_locale () throws GLib.Error;
+		public int get_page_count () throws GLib.Error;
 	}
 	[CCode (cheader_filename = "atspi/atspi.h", type_id = "atspi_editable_text_get_type ()")]
 	public interface EditableText : GLib.Object {
@@ -235,7 +271,7 @@ namespace Atspi {
 	}
 	[CCode (cheader_filename = "atspi/atspi.h", type_id = "atspi_hypertext_get_type ()")]
 	public interface Hypertext : GLib.Object {
-		public Atspi.Hyperlink get_link (int link_index) throws GLib.Error;
+		public Atspi.Hyperlink? get_link (int link_index) throws GLib.Error;
 		public int get_link_index (int character_offset) throws GLib.Error;
 		public int get_n_links () throws GLib.Error;
 	}
@@ -287,11 +323,24 @@ namespace Atspi {
 		public bool remove_column_selection (int column) throws GLib.Error;
 		public bool remove_row_selection (int row) throws GLib.Error;
 	}
+	[CCode (cheader_filename = "atspi/atspi.h", type_id = "atspi_table_cell_get_type ()")]
+	public interface TableCell : GLib.Object {
+		public GLib.GenericArray<Atspi.Accessible> get_column_header_cells () throws GLib.Error;
+		public int get_column_index () throws GLib.Error;
+		public int get_column_span (GLib.Error error);
+		public void get_row_column_span (out int row, out int column, out int row_span, out int column_span) throws GLib.Error;
+		public GLib.GenericArray<Atspi.Accessible> get_row_header_cells () throws GLib.Error;
+		public int get_row_index () throws GLib.Error;
+		public int get_row_span () throws GLib.Error;
+		public Atspi.Accessible get_table () throws GLib.Error;
+	}
 	[CCode (cheader_filename = "atspi/atspi.h", type_id = "atspi_text_get_type ()")]
 	public interface Text : GLib.Object {
 		public bool add_selection (int start_offset, int end_offset) throws GLib.Error;
 		public GLib.HashTable<string,string> get_attribute_run (int offset, bool include_defaults, out int start_offset, out int end_offset) throws GLib.Error;
-		public string get_attribute_value (int offset, string attribute_name) throws GLib.Error;
+		[Deprecated (since = "2.10")]
+		public string? get_attribute_value (int offset, string attribute_name) throws GLib.Error;
+		[Deprecated (since = "2.10")]
 		public GLib.HashTable<string,string> get_attributes (int offset, out int start_offset, out int end_offset) throws GLib.Error;
 		public GLib.Array<Atspi.TextRange> get_bounded_ranges (int x, int y, int width, int height, Atspi.CoordType type, Atspi.TextClipType clipTypeX, Atspi.TextClipType clipTypeY) throws GLib.Error;
 		public int get_caret_offset () throws GLib.Error;
@@ -303,9 +352,13 @@ namespace Atspi {
 		public int get_offset_at_point (int x, int y, Atspi.CoordType type) throws GLib.Error;
 		public Atspi.Rect get_range_extents (int start_offset, int end_offset, Atspi.CoordType type) throws GLib.Error;
 		public Atspi.Range get_selection (int selection_num) throws GLib.Error;
+		public Atspi.TextRange get_string_at_offset (int offset, Atspi.TextGranularity granularity) throws GLib.Error;
 		public string get_text (int start_offset, int end_offset) throws GLib.Error;
 		public Atspi.TextRange get_text_after_offset (int offset, Atspi.TextBoundaryType type) throws GLib.Error;
+		[Deprecated (since = "2.10")]
 		public Atspi.TextRange get_text_at_offset (int offset, Atspi.TextBoundaryType type) throws GLib.Error;
+		public string? get_text_attribute_value (int offset, string attribute_name) throws GLib.Error;
+		public GLib.HashTable<string,string> get_text_attributes (int offset, out int start_offset, out int end_offset) throws GLib.Error;
 		public Atspi.TextRange get_text_before_offset (int offset, Atspi.TextBoundaryType type) throws GLib.Error;
 		public bool remove_selection (int selection_num) throws GLib.Error;
 		public bool set_caret_offset (int new_offset) throws GLib.Error;
@@ -339,7 +392,7 @@ namespace Atspi {
 	[SimpleType]
 	public struct ControllerEventMask : uint {
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", type_id = "atspi_device_event_get_type ()")]
 	public struct DeviceEvent {
 		public Atspi.EventType type;
 		public uint id;
@@ -367,6 +420,13 @@ namespace Atspi {
 	[SimpleType]
 	public struct KeyMaskType : uint {
 	}
+	[CCode (cheader_filename = "atspi/atspi.h", has_type_id = false)]
+	public struct KeySet {
+		public uint keysyms;
+		public ushort keycodes;
+		public weak string keystrings;
+		public short len;
+	}
 	[CCode (cheader_filename = "atspi/atspi.h")]
 	[SimpleType]
 	public struct KeystrokeListener {
@@ -376,16 +436,10 @@ namespace Atspi {
 		public weak string name;
 		public weak string path;
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cname = "_AtspiKeySet", has_type_id = false)]
-	public struct _KeySet {
-		public uint keysyms;
-		public ushort keycodes;
-		public weak string keystrings;
-		public short len;
-	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_CACHE_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_CACHE_", type_id = "atspi_cache_get_type ()")]
 	[Flags]
 	public enum Cache {
+		INTERFACES,
 		NONE,
 		PARENT,
 		CHILDREN,
@@ -393,13 +447,12 @@ namespace Atspi {
 		DESCRIPTION,
 		STATES,
 		ROLE,
-		INTERFACES,
 		ATTRIBUTES,
 		ALL,
 		DEFAULT,
 		UNDEFINED
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_Collection_MATCH_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_Collection_MATCH_", type_id = "atspi_collection_match_type_get_type ()")]
 	public enum CollectionMatchType {
 		INVALID,
 		ALL,
@@ -408,7 +461,7 @@ namespace Atspi {
 		EMPTY,
 		LAST_DEFINED
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_Collection_SORT_ORDER_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_Collection_SORT_ORDER_", type_id = "atspi_collection_sort_order_get_type ()")]
 	public enum CollectionSortOrder {
 		INVALID,
 		CANONICAL,
@@ -419,14 +472,14 @@ namespace Atspi {
 		REVERSE_TAB,
 		LAST_DEFINED
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_Collection_TREE_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_Collection_TREE_", type_id = "atspi_collection_tree_traversal_type_get_type ()")]
 	public enum CollectionTreeTraversalType {
 		RESTRICT_CHILDREN,
 		RESTRICT_SIBLING,
 		INORDER,
 		LAST_DEFINED
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_LAYER_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_LAYER_", type_id = "atspi_component_layer_get_type ()")]
 	public enum ComponentLayer {
 		INVALID,
 		BACKGROUND,
@@ -438,7 +491,7 @@ namespace Atspi {
 		WINDOW,
 		LAST_DEFINED
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_COORD_TYPE_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_COORD_TYPE_", type_id = "atspi_coord_type_get_type ()")]
 	public enum CoordType {
 		SCREEN,
 		WINDOW
@@ -446,28 +499,30 @@ namespace Atspi {
 	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_ERROR_", has_type_id = false)]
 	public enum Error {
 		APPLICATION_GONE,
-		IPC
+		IPC,
+		SYNC_NOT_ALLOWED
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_", type_id = "atspi_event_type_get_type ()")]
 	public enum EventType {
 		KEY_PRESSED_EVENT,
 		KEY_RELEASED_EVENT,
 		BUTTON_PRESSED_EVENT,
 		BUTTON_RELEASED_EVENT
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_KEY_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_KEY_", type_id = "atspi_key_event_type_get_type ()")]
 	public enum KeyEventType {
 		PRESSED,
 		RELEASED
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_KEYLISTENER_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_KEYLISTENER_", type_id = "atspi_key_listener_sync_type_get_type ()")]
+	[Flags]
 	public enum KeyListenerSyncType {
 		NOSYNC,
 		SYNCHRONOUS,
 		CANCONSUME,
 		ALL_WINDOWS
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_KEY_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_KEY_", type_id = "atspi_key_synth_type_get_type ()")]
 	public enum KeySynthType {
 		PRESS,
 		RELEASE,
@@ -475,7 +530,7 @@ namespace Atspi {
 		SYM,
 		STRING
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_LOCALE_TYPE_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_LOCALE_TYPE_", type_id = "atspi_locale_type_get_type ()")]
 	public enum LocaleType {
 		MESSAGES,
 		COLLATE,
@@ -484,7 +539,7 @@ namespace Atspi {
 		NUMERIC,
 		TIME
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_MODIFIER_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_MODIFIER_", type_id = "atspi_modifier_type_get_type ()")]
 	public enum ModifierType {
 		SHIFT,
 		SHIFTLOCK,
@@ -495,7 +550,7 @@ namespace Atspi {
 		META3,
 		NUMLOCK
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_RELATION_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_RELATION_", type_id = "atspi_relation_type_get_type ()")]
 	public enum RelationType {
 		NULL,
 		LABEL_FOR,
@@ -518,7 +573,7 @@ namespace Atspi {
 		DESCRIBED_BY,
 		LAST_DEFINED
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_ROLE_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_ROLE_", type_id = "atspi_role_get_type ()")]
 	public enum Role {
 		INVALID,
 		ACCELERATOR_LABEL,
@@ -624,10 +679,22 @@ namespace Atspi {
 		NOTIFICATION,
 		INFO_BAR,
 		LEVEL_BAR,
+		TITLE_BAR,
+		BLOCK_QUOTE,
+		AUDIO,
+		VIDEO,
+		DEFINITION,
+		ARTICLE,
+		LANDMARK,
+		LOG,
+		MARQUEE,
+		MATH,
+		RATING,
+		TIMER,
 		LAST_DEFINED;
 		public static string get_name (Atspi.Role role);
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_STATE_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_STATE_", type_id = "atspi_state_type_get_type ()")]
 	public enum StateType {
 		INVALID,
 		ACTIVE,
@@ -670,9 +737,11 @@ namespace Atspi {
 		SELECTABLE_TEXT,
 		IS_DEFAULT,
 		VISITED,
+		CHECKABLE,
+		HAS_POPUP,
 		LAST_DEFINED
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_TEXT_BOUNDARY_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_TEXT_BOUNDARY_", type_id = "atspi_text_boundary_type_get_type ()")]
 	public enum TextBoundaryType {
 		CHAR,
 		WORD_START,
@@ -682,12 +751,20 @@ namespace Atspi {
 		LINE_START,
 		LINE_END
 	}
-	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_TEXT_CLIP_", has_type_id = false)]
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_TEXT_CLIP_", type_id = "atspi_text_clip_type_get_type ()")]
 	public enum TextClipType {
 		NONE,
 		MIN,
 		MAX,
 		BOTH
+	}
+	[CCode (cheader_filename = "atspi/atspi.h", cprefix = "ATSPI_TEXT_GRANULARITY_", type_id = "atspi_text_granularity_get_type ()")]
+	public enum TextGranularity {
+		CHAR,
+		WORD,
+		SENTENCE,
+		LINE,
+		PARAGRAPH
 	}
 	[CCode (cheader_filename = "atspi/atspi.h", instance_pos = 1.9)]
 	public delegate bool DeviceListenerCB (owned Atspi.DeviceEvent stroke);
@@ -741,6 +818,8 @@ namespace Atspi {
 	public const string DBUS_INTERFACE_SOCKET;
 	[CCode (cheader_filename = "atspi/atspi.h", cname = "ATSPI_DBUS_INTERFACE_TABLE")]
 	public const string DBUS_INTERFACE_TABLE;
+	[CCode (cheader_filename = "atspi/atspi.h", cname = "ATSPI_DBUS_INTERFACE_TABLE_CELL")]
+	public const string DBUS_INTERFACE_TABLE_CELL;
 	[CCode (cheader_filename = "atspi/atspi.h", cname = "ATSPI_DBUS_INTERFACE_TEXT")]
 	public const string DBUS_INTERFACE_TEXT;
 	[CCode (cheader_filename = "atspi/atspi.h", cname = "ATSPI_DBUS_INTERFACE_VALUE")]
@@ -792,11 +871,17 @@ namespace Atspi {
 	[CCode (cheader_filename = "atspi/atspi.h")]
 	public static int get_desktop_count ();
 	[CCode (cheader_filename = "atspi/atspi.h")]
+	public static GLib.Array<Atspi.Accessible> get_desktop_list ();
+	[CCode (cheader_filename = "atspi/atspi.h")]
 	public static int init ();
+	[CCode (cheader_filename = "atspi/atspi.h")]
+	public static bool is_initialized ();
 	[CCode (cheader_filename = "atspi/atspi.h")]
 	public static bool register_device_event_listener (Atspi.DeviceListener listener, Atspi.DeviceEventMask event_types, void* filter) throws GLib.Error;
 	[CCode (cheader_filename = "atspi/atspi.h")]
-	public static bool register_keystroke_listener (Atspi.DeviceListener listener, GLib.Array<Atspi.KeyDefinition>? key_set, Atspi.KeyMaskType modmask, Atspi.KeyEventMask event_types, int sync_type) throws GLib.Error;
+	public static bool register_keystroke_listener (Atspi.DeviceListener listener, GLib.Array<Atspi.KeyDefinition>? key_set, Atspi.KeyMaskType modmask, Atspi.KeyEventMask event_types, Atspi.KeyListenerSyncType sync_type) throws GLib.Error;
+	[CCode (cheader_filename = "atspi/atspi.h")]
+	public static void set_main_context (GLib.MainContext cnx);
 	[CCode (cheader_filename = "atspi/atspi.h")]
 	public static void set_timeout (int val, int startup_time);
 }

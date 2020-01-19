@@ -248,6 +248,17 @@ typedef struct _ValaGSignalModule ValaGSignalModule;
 typedef struct _ValaGSignalModuleClass ValaGSignalModuleClass;
 typedef struct _ValaGSignalModulePrivate ValaGSignalModulePrivate;
 
+#define VALA_TYPE_GTK_MODULE (vala_gtk_module_get_type ())
+#define VALA_GTK_MODULE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_GTK_MODULE, ValaGtkModule))
+#define VALA_GTK_MODULE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_GTK_MODULE, ValaGtkModuleClass))
+#define VALA_IS_GTK_MODULE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), VALA_TYPE_GTK_MODULE))
+#define VALA_IS_GTK_MODULE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), VALA_TYPE_GTK_MODULE))
+#define VALA_GTK_MODULE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), VALA_TYPE_GTK_MODULE, ValaGtkModuleClass))
+
+typedef struct _ValaGtkModule ValaGtkModule;
+typedef struct _ValaGtkModuleClass ValaGtkModuleClass;
+typedef struct _ValaGtkModulePrivate ValaGtkModulePrivate;
+
 #define VALA_TYPE_GASYNC_MODULE (vala_gasync_module_get_type ())
 #define VALA_GASYNC_MODULE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_GASYNC_MODULE, ValaGAsyncModule))
 #define VALA_GASYNC_MODULE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_GASYNC_MODULE, ValaGAsyncModuleClass))
@@ -406,6 +417,7 @@ struct _ValaCCodeBaseModule {
 	ValaClass* gsource_type;
 	ValaTypeSymbol* type_module_type;
 	ValaTypeSymbol* dbus_proxy_type;
+	ValaClass* gtk_widget_type;
 	gboolean in_plugin;
 	gchar* module_init_param_name;
 	gboolean gvaluecollector_h_needed;
@@ -685,6 +697,7 @@ struct _ValaGTypeModuleClass {
 	ValaGErrorModuleClass parent_class;
 	void (*generate_virtual_method_declaration) (ValaGTypeModule* self, ValaMethod* m, ValaCCodeFile* decl_space, ValaCCodeStruct* type_struct);
 	void (*generate_class_init) (ValaGTypeModule* self, ValaClass* cl);
+	void (*end_instance_init) (ValaGTypeModule* self, ValaClass* cl);
 };
 
 struct _ValaGObjectModule {
@@ -705,13 +718,22 @@ struct _ValaGSignalModuleClass {
 	ValaGObjectModuleClass parent_class;
 };
 
-struct _ValaGAsyncModule {
+struct _ValaGtkModule {
 	ValaGSignalModule parent_instance;
+	ValaGtkModulePrivate * priv;
+};
+
+struct _ValaGtkModuleClass {
+	ValaGSignalModuleClass parent_class;
+};
+
+struct _ValaGAsyncModule {
+	ValaGtkModule parent_instance;
 	ValaGAsyncModulePrivate * priv;
 };
 
 struct _ValaGAsyncModuleClass {
-	ValaGSignalModuleClass parent_class;
+	ValaGtkModuleClass parent_class;
 };
 
 struct _ValaGVariantModule {
@@ -832,6 +854,7 @@ const gchar* vala_ccode_attribute_get_copy_function (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_destroy_function (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_free_function (ValaCCodeAttribute* self);
 gboolean vala_ccode_attribute_get_free_function_address_of (ValaCCodeAttribute* self);
+const gchar* vala_ccode_attribute_get_ctype (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_type_id (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_marshaller_type_name (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_get_value_function (ValaCCodeAttribute* self);
@@ -847,8 +870,8 @@ const gchar* vala_ccode_attribute_get_finish_vfunc_name (ValaCCodeAttribute* sel
 const gchar* vala_ccode_attribute_get_finish_real_name (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_delegate_target_name (ValaCCodeAttribute* self);
 gboolean vala_ccode_attribute_get_array_length (ValaCCodeAttribute* self);
-const gchar* vala_ccode_attribute_get_array_length_type (ValaCCodeAttribute* self);
 gboolean vala_ccode_attribute_get_array_null_terminated (ValaCCodeAttribute* self);
+const gchar* vala_ccode_attribute_get_array_length_type (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_array_length_name (ValaCCodeAttribute* self);
 const gchar* vala_ccode_attribute_get_array_length_expr (ValaCCodeAttribute* self);
 gboolean vala_ccode_attribute_get_delegate_target (ValaCCodeAttribute* self);
@@ -964,6 +987,7 @@ gchar* vala_ccode_base_module_get_ccode_prefix (ValaSymbol* sym);
 gchar* vala_ccode_base_module_get_ccode_lower_case_prefix (ValaSymbol* sym);
 gchar* vala_ccode_base_module_get_ccode_lower_case_suffix (ValaSymbol* sym);
 gchar* vala_ccode_base_module_get_ccode_ref_function (ValaTypeSymbol* sym);
+gchar* vala_ccode_base_module_get_quark_name (ValaErrorDomain* edomain);
 gboolean vala_ccode_base_module_is_reference_counting (ValaTypeSymbol* sym);
 gboolean vala_ccode_base_module_get_ccode_ref_function_void (ValaClass* cl);
 gboolean vala_ccode_base_module_get_ccode_free_function_address_of (ValaClass* cl);
@@ -999,6 +1023,7 @@ gdouble vala_ccode_base_module_get_ccode_pos (ValaParameter* param);
 gchar* vala_ccode_base_module_get_ccode_type (ValaCodeNode* node);
 gboolean vala_ccode_base_module_get_ccode_simple_generics (ValaMethod* m);
 gchar* vala_ccode_base_module_get_ccode_real_name (ValaSymbol* sym);
+gchar* vala_ccode_base_module_get_ccode_constructv_name (ValaCreationMethod* m);
 gchar* vala_ccode_base_module_get_ccode_vfunc_name (ValaMethod* m);
 gchar* vala_ccode_base_module_get_ccode_finish_name (ValaMethod* m);
 gchar* vala_ccode_base_module_get_ccode_finish_vfunc_name (ValaMethod* m);
@@ -1012,7 +1037,7 @@ gchar* vala_ccode_base_module_get_ccode_sentinel (ValaMethod* m);
 gboolean vala_ccode_base_module_get_ccode_notify (ValaProperty* prop);
 gchar* vala_ccode_base_module_get_ccode_nick (ValaProperty* prop);
 gchar* vala_ccode_base_module_get_ccode_blurb (ValaProperty* prop);
-gchar* vala_ccode_base_module_get_ccode_declarator_suffix (ValaDataType* type);
+ValaCCodeDeclaratorSuffix* vala_ccode_base_module_get_ccode_declarator_suffix (ValaCCodeBaseModule* self, ValaDataType* type);
 ValaCCodeConstant* vala_ccode_base_module_get_signal_canonical_constant (ValaCCodeBaseModule* self, ValaSignal* sig, const gchar* detail);
 ValaCCodeConstant* vala_ccode_base_module_get_enum_value_canonical_cconstant (ValaEnumValue* ev);
 gboolean vala_ccode_base_module_get_signal_has_emitter (ValaCCodeBaseModule* self, ValaSignal* sig);
@@ -1099,9 +1124,10 @@ gpointer vala_value_get_ccode_compiler (const GValue* value);
 GType vala_ccode_compiler_get_type (void) G_GNUC_CONST;
 ValaCCodeCompiler* vala_ccode_compiler_new (void);
 ValaCCodeCompiler* vala_ccode_compiler_construct (GType object_type);
-void vala_ccode_compiler_compile (ValaCCodeCompiler* self, ValaCodeContext* context, const gchar* cc_command, gchar** cc_options, int cc_options_length1);
+void vala_ccode_compiler_compile (ValaCCodeCompiler* self, ValaCodeContext* context, const gchar* cc_command, gchar** cc_options, int cc_options_length1, const gchar* pkg_config_command);
 ValaCCodeControlFlowModule* vala_ccode_control_flow_module_construct (GType object_type);
 GType vala_ccode_delegate_module_get_type (void) G_GNUC_CONST;
+gchar* vala_ccode_delegate_module_generate_delegate_wrapper (ValaCCodeDelegateModule* self, ValaMethod* m, ValaDelegateType* dt, ValaCodeNode* node);
 ValaCCodeDelegateModule* vala_ccode_delegate_module_new (void);
 ValaCCodeDelegateModule* vala_ccode_delegate_module_construct (GType object_type);
 ValaCCodeMemberAccessModule* vala_ccode_member_access_module_construct (GType object_type);
@@ -1139,6 +1165,7 @@ GType vala_gerror_module_get_type (void) G_GNUC_CONST;
 GType vala_gtype_module_get_type (void) G_GNUC_CONST;
 GType vala_gobject_module_get_type (void) G_GNUC_CONST;
 GType vala_gsignal_module_get_type (void) G_GNUC_CONST;
+GType vala_gtk_module_get_type (void) G_GNUC_CONST;
 GType vala_gasync_module_get_type (void) G_GNUC_CONST;
 gchar* vala_gasync_module_generate_async_callback_wrapper (ValaGAsyncModule* self);
 ValaGAsyncModule* vala_gasync_module_new (void);
@@ -1151,15 +1178,16 @@ ValaGDBusClientModule* vala_gd_bus_client_module_new (void);
 ValaGDBusClientModule* vala_gd_bus_client_module_construct (GType object_type);
 gchar* vala_gd_bus_module_get_dbus_name (ValaTypeSymbol* symbol);
 gchar* vala_gd_bus_module_get_dbus_name_for_member (ValaSymbol* symbol);
+gboolean vala_gd_bus_module_is_dbus_visible (ValaCodeNode* node);
 gboolean vala_gd_bus_module_is_dbus_no_reply (ValaMethod* m);
+gchar* vala_gd_bus_module_dbus_result_name (ValaMethod* m);
 gboolean vala_gd_bus_module_dbus_method_uses_file_descriptor (ValaGDBusModule* self, ValaMethod* method);
 void vala_gd_bus_module_send_dbus_value (ValaGDBusModule* self, ValaDataType* type, ValaCCodeExpression* builder_expr, ValaCCodeExpression* expr, ValaSymbol* sym);
 void vala_gd_bus_module_receive_dbus_value (ValaGDBusModule* self, ValaDataType* type, ValaCCodeExpression* message_expr, ValaCCodeExpression* iter_expr, ValaCCodeExpression* target_expr, ValaSymbol* sym, ValaCCodeExpression* error_expr, gboolean* may_fail);
+ValaCCodeExpression* vala_gd_bus_module_get_interface_info (ValaGDBusModule* self, ValaObjectTypeSymbol* sym);
 ValaGDBusModule* vala_gd_bus_module_new (void);
 ValaGDBusModule* vala_gd_bus_module_construct (GType object_type);
 GType vala_gd_bus_server_module_get_type (void) G_GNUC_CONST;
-gboolean vala_gd_bus_server_module_is_dbus_visible (ValaCodeNode* node);
-gchar* vala_gd_bus_server_module_dbus_result_name (ValaMethod* m);
 ValaGDBusServerModule* vala_gd_bus_server_module_new (void);
 ValaGDBusServerModule* vala_gd_bus_server_module_construct (GType object_type);
 void vala_gerror_module_return_with_exception (ValaGErrorModule* self, ValaCCodeExpression* error_expr);
@@ -1184,15 +1212,18 @@ gchar* vala_gir_writer_get_method_return_comment (ValaGIRWriter* self, ValaMetho
 gchar* vala_gir_writer_get_signal_comment (ValaGIRWriter* self, ValaSignal* sig);
 gchar* vala_gir_writer_get_parameter_comment (ValaGIRWriter* self, ValaParameter* param);
 void vala_gir_writer_write_includes (ValaGIRWriter* self);
-void vala_gir_writer_write_file (ValaGIRWriter* self, ValaCodeContext* context, const gchar* directory, const gchar* gir_namespace, const gchar* gir_version, const gchar* package);
+void vala_gir_writer_write_file (ValaGIRWriter* self, ValaCodeContext* context, const gchar* directory, const gchar* gir_filename, const gchar* gir_namespace, const gchar* gir_version, const gchar* package);
 ValaGIRWriter* vala_gir_writer_new (void);
 ValaGIRWriter* vala_gir_writer_construct (GType object_type);
 ValaGObjectModule* vala_gobject_module_new (void);
 ValaGObjectModule* vala_gobject_module_construct (GType object_type);
+ValaGtkModule* vala_gtk_module_new (void);
+ValaGtkModule* vala_gtk_module_construct (GType object_type);
 ValaGSignalModule* vala_gsignal_module_new (void);
 ValaGSignalModule* vala_gsignal_module_construct (GType object_type);
 void vala_gtype_module_generate_virtual_method_declaration (ValaGTypeModule* self, ValaMethod* m, ValaCCodeFile* decl_space, ValaCCodeStruct* type_struct);
 void vala_gtype_module_generate_class_init (ValaGTypeModule* self, ValaClass* cl);
+void vala_gtype_module_end_instance_init (ValaGTypeModule* self, ValaClass* cl);
 ValaGTypeModule* vala_gtype_module_new (void);
 ValaGTypeModule* vala_gtype_module_construct (GType object_type);
 gchar* vala_gvariant_module_get_dbus_signature (ValaSymbol* symbol);

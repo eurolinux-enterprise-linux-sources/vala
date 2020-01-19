@@ -156,8 +156,8 @@ static void vala_interface_register_function_finalize (ValaTypeRegisterFunction*
 
 ValaInterfaceRegisterFunction* vala_interface_register_function_construct (GType object_type, ValaInterface* iface, ValaCodeContext* context) {
 	ValaInterfaceRegisterFunction* self = NULL;
-	ValaInterface* _tmp0_;
-	ValaCodeContext* _tmp1_;
+	ValaInterface* _tmp0_ = NULL;
+	ValaCodeContext* _tmp1_ = NULL;
 	g_return_val_if_fail (iface != NULL, NULL);
 	g_return_val_if_fail (context != NULL, NULL);
 	self = (ValaInterfaceRegisterFunction*) vala_typeregister_function_construct (object_type);
@@ -182,8 +182,8 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 static ValaTypeSymbol* vala_interface_register_function_real_get_type_declaration (ValaTypeRegisterFunction* base) {
 	ValaInterfaceRegisterFunction * self;
 	ValaTypeSymbol* result = NULL;
-	ValaInterface* _tmp0_;
-	ValaTypeSymbol* _tmp1_;
+	ValaInterface* _tmp0_ = NULL;
+	ValaTypeSymbol* _tmp1_ = NULL;
 	self = (ValaInterfaceRegisterFunction*) base;
 	_tmp0_ = self->priv->_interface_reference;
 	_tmp1_ = _vala_code_node_ref0 ((ValaTypeSymbol*) _tmp0_);
@@ -195,7 +195,7 @@ static ValaTypeSymbol* vala_interface_register_function_real_get_type_declaratio
 static gchar* vala_interface_register_function_real_get_type_struct_name (ValaTypeRegisterFunction* base) {
 	ValaInterfaceRegisterFunction * self;
 	gchar* result = NULL;
-	ValaInterface* _tmp0_;
+	ValaInterface* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
 	self = (ValaInterfaceRegisterFunction*) base;
 	_tmp0_ = self->priv->_interface_reference;
@@ -208,11 +208,11 @@ static gchar* vala_interface_register_function_real_get_type_struct_name (ValaTy
 static gchar* vala_interface_register_function_real_get_base_init_func_name (ValaTypeRegisterFunction* base) {
 	ValaInterfaceRegisterFunction * self;
 	gchar* result = NULL;
-	ValaInterface* _tmp0_;
+	ValaInterface* _tmp0_ = NULL;
 	gchar* _tmp1_ = NULL;
-	gchar* _tmp2_;
+	gchar* _tmp2_ = NULL;
 	gchar* _tmp3_ = NULL;
-	gchar* _tmp4_;
+	gchar* _tmp4_ = NULL;
 	self = (ValaInterfaceRegisterFunction*) base;
 	_tmp0_ = self->priv->_interface_reference;
 	_tmp1_ = vala_ccode_base_module_get_ccode_lower_case_name ((ValaCodeNode*) _tmp0_, NULL);
@@ -228,7 +228,7 @@ static gchar* vala_interface_register_function_real_get_base_init_func_name (Val
 static gchar* vala_interface_register_function_real_get_class_finalize_func_name (ValaTypeRegisterFunction* base) {
 	ValaInterfaceRegisterFunction * self;
 	gchar* result = NULL;
-	gchar* _tmp0_;
+	gchar* _tmp0_ = NULL;
 	self = (ValaInterfaceRegisterFunction*) base;
 	_tmp0_ = g_strdup ("NULL");
 	result = _tmp0_;
@@ -239,7 +239,7 @@ static gchar* vala_interface_register_function_real_get_class_finalize_func_name
 static gchar* vala_interface_register_function_real_get_base_finalize_func_name (ValaTypeRegisterFunction* base) {
 	ValaInterfaceRegisterFunction * self;
 	gchar* result = NULL;
-	gchar* _tmp0_;
+	gchar* _tmp0_ = NULL;
 	self = (ValaInterfaceRegisterFunction*) base;
 	_tmp0_ = g_strdup ("NULL");
 	result = _tmp0_;
@@ -250,7 +250,7 @@ static gchar* vala_interface_register_function_real_get_base_finalize_func_name 
 static gchar* vala_interface_register_function_real_get_class_init_func_name (ValaTypeRegisterFunction* base) {
 	ValaInterfaceRegisterFunction * self;
 	gchar* result = NULL;
-	gchar* _tmp0_;
+	gchar* _tmp0_ = NULL;
 	self = (ValaInterfaceRegisterFunction*) base;
 	_tmp0_ = g_strdup ("NULL");
 	result = _tmp0_;
@@ -261,7 +261,7 @@ static gchar* vala_interface_register_function_real_get_class_init_func_name (Va
 static gchar* vala_interface_register_function_real_get_instance_struct_size (ValaTypeRegisterFunction* base) {
 	ValaInterfaceRegisterFunction * self;
 	gchar* result = NULL;
-	gchar* _tmp0_;
+	gchar* _tmp0_ = NULL;
 	self = (ValaInterfaceRegisterFunction*) base;
 	_tmp0_ = g_strdup ("0");
 	result = _tmp0_;
@@ -272,7 +272,7 @@ static gchar* vala_interface_register_function_real_get_instance_struct_size (Va
 static gchar* vala_interface_register_function_real_get_instance_init_func_name (ValaTypeRegisterFunction* base) {
 	ValaInterfaceRegisterFunction * self;
 	gchar* result = NULL;
-	gchar* _tmp0_;
+	gchar* _tmp0_ = NULL;
 	self = (ValaInterfaceRegisterFunction*) base;
 	_tmp0_ = g_strdup ("NULL");
 	result = _tmp0_;
@@ -283,7 +283,7 @@ static gchar* vala_interface_register_function_real_get_instance_init_func_name 
 static gchar* vala_interface_register_function_real_get_parent_type_name (ValaTypeRegisterFunction* base) {
 	ValaInterfaceRegisterFunction * self;
 	gchar* result = NULL;
-	gchar* _tmp0_;
+	gchar* _tmp0_ = NULL;
 	self = (ValaInterfaceRegisterFunction*) base;
 	_tmp0_ = g_strdup ("G_TYPE_INTERFACE");
 	result = _tmp0_;
@@ -294,9 +294,9 @@ static gchar* vala_interface_register_function_real_get_parent_type_name (ValaTy
 static ValaSymbolAccessibility vala_interface_register_function_real_get_accessibility (ValaTypeRegisterFunction* base) {
 	ValaInterfaceRegisterFunction * self;
 	ValaSymbolAccessibility result = 0;
-	ValaInterface* _tmp0_;
-	ValaSymbolAccessibility _tmp1_;
-	ValaSymbolAccessibility _tmp2_;
+	ValaInterface* _tmp0_ = NULL;
+	ValaSymbolAccessibility _tmp1_ = 0;
+	ValaSymbolAccessibility _tmp2_ = 0;
 	self = (ValaInterfaceRegisterFunction*) base;
 	_tmp0_ = self->priv->_interface_reference;
 	_tmp1_ = vala_symbol_get_access ((ValaSymbol*) _tmp0_);
@@ -308,23 +308,23 @@ static ValaSymbolAccessibility vala_interface_register_function_real_get_accessi
 
 static void vala_interface_register_function_real_get_type_interface_init_statements (ValaTypeRegisterFunction* base, ValaCCodeBlock* block, gboolean plugin) {
 	ValaInterfaceRegisterFunction * self;
-	ValaCodeContext* _tmp37_;
-	ValaCodeContext* _tmp38_;
-	ValaCodeGenerator* _tmp39_;
-	ValaCodeGenerator* _tmp40_;
-	ValaCCodeBlock* _tmp41_;
-	ValaInterface* _tmp42_;
+	ValaCodeContext* _tmp37_ = NULL;
+	ValaCodeContext* _tmp38_ = NULL;
+	ValaCodeGenerator* _tmp39_ = NULL;
+	ValaCodeGenerator* _tmp40_ = NULL;
+	ValaCCodeBlock* _tmp41_ = NULL;
+	ValaInterface* _tmp42_ = NULL;
 	self = (ValaInterfaceRegisterFunction*) base;
 	g_return_if_fail (block != NULL);
 	{
-		ValaInterface* _tmp0_;
+		ValaList* _prereq_ref_list = NULL;
+		ValaInterface* _tmp0_ = NULL;
 		ValaList* _tmp1_ = NULL;
-		ValaList* _prereq_ref_list;
-		ValaList* _tmp2_;
-		gint _tmp3_;
-		gint _tmp4_;
-		gint _prereq_ref_size;
-		gint _prereq_ref_index;
+		gint _prereq_ref_size = 0;
+		ValaList* _tmp2_ = NULL;
+		gint _tmp3_ = 0;
+		gint _tmp4_ = 0;
+		gint _prereq_ref_index = 0;
 		_tmp0_ = self->priv->_interface_reference;
 		_tmp1_ = vala_interface_get_prerequisites (_tmp0_);
 		_prereq_ref_list = _tmp1_;
@@ -334,41 +334,41 @@ static void vala_interface_register_function_real_get_type_interface_init_statem
 		_prereq_ref_size = _tmp4_;
 		_prereq_ref_index = -1;
 		while (TRUE) {
-			gint _tmp5_;
-			gint _tmp6_;
-			gint _tmp7_;
-			ValaList* _tmp8_;
-			gint _tmp9_;
+			gint _tmp5_ = 0;
+			gint _tmp6_ = 0;
+			gint _tmp7_ = 0;
+			ValaDataType* prereq_ref = NULL;
+			ValaList* _tmp8_ = NULL;
+			gint _tmp9_ = 0;
 			gpointer _tmp10_ = NULL;
-			ValaDataType* prereq_ref;
-			ValaDataType* _tmp11_;
-			ValaTypeSymbol* _tmp12_;
-			ValaTypeSymbol* _tmp13_;
-			ValaTypeSymbol* _tmp14_;
-			ValaTypeSymbol* prereq;
-			ValaCCodeIdentifier* _tmp15_;
-			ValaCCodeIdentifier* _tmp16_;
-			ValaCCodeFunctionCall* _tmp17_;
-			ValaCCodeFunctionCall* _tmp18_;
-			ValaCCodeFunctionCall* func;
-			ValaCCodeFunctionCall* _tmp19_;
-			ValaInterface* _tmp20_;
+			ValaTypeSymbol* prereq = NULL;
+			ValaDataType* _tmp11_ = NULL;
+			ValaTypeSymbol* _tmp12_ = NULL;
+			ValaTypeSymbol* _tmp13_ = NULL;
+			ValaTypeSymbol* _tmp14_ = NULL;
+			ValaCCodeFunctionCall* func = NULL;
+			ValaCCodeIdentifier* _tmp15_ = NULL;
+			ValaCCodeIdentifier* _tmp16_ = NULL;
+			ValaCCodeFunctionCall* _tmp17_ = NULL;
+			ValaCCodeFunctionCall* _tmp18_ = NULL;
+			ValaCCodeFunctionCall* _tmp19_ = NULL;
+			ValaInterface* _tmp20_ = NULL;
 			gchar* _tmp21_ = NULL;
-			gchar* _tmp22_;
+			gchar* _tmp22_ = NULL;
 			gchar* _tmp23_ = NULL;
-			gchar* _tmp24_;
-			ValaCCodeIdentifier* _tmp25_;
-			ValaCCodeIdentifier* _tmp26_;
-			ValaCCodeFunctionCall* _tmp27_;
-			ValaTypeSymbol* _tmp28_;
+			gchar* _tmp24_ = NULL;
+			ValaCCodeIdentifier* _tmp25_ = NULL;
+			ValaCCodeIdentifier* _tmp26_ = NULL;
+			ValaCCodeFunctionCall* _tmp27_ = NULL;
+			ValaTypeSymbol* _tmp28_ = NULL;
 			gchar* _tmp29_ = NULL;
-			gchar* _tmp30_;
-			ValaCCodeIdentifier* _tmp31_;
-			ValaCCodeIdentifier* _tmp32_;
-			ValaCCodeBlock* _tmp33_;
-			ValaCCodeFunctionCall* _tmp34_;
-			ValaCCodeExpressionStatement* _tmp35_;
-			ValaCCodeExpressionStatement* _tmp36_;
+			gchar* _tmp30_ = NULL;
+			ValaCCodeIdentifier* _tmp31_ = NULL;
+			ValaCCodeIdentifier* _tmp32_ = NULL;
+			ValaCCodeBlock* _tmp33_ = NULL;
+			ValaCCodeFunctionCall* _tmp34_ = NULL;
+			ValaCCodeExpressionStatement* _tmp35_ = NULL;
+			ValaCCodeExpressionStatement* _tmp36_ = NULL;
 			_tmp5_ = _prereq_ref_index;
 			_prereq_ref_index = _tmp5_ + 1;
 			_tmp6_ = _prereq_ref_index;
@@ -436,7 +436,7 @@ static void vala_interface_register_function_real_get_type_interface_init_statem
 
 ValaInterface* vala_interface_register_function_get_interface_reference (ValaInterfaceRegisterFunction* self) {
 	ValaInterface* result;
-	ValaInterface* _tmp0_;
+	ValaInterface* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_interface_reference;
 	result = _tmp0_;
@@ -445,7 +445,7 @@ ValaInterface* vala_interface_register_function_get_interface_reference (ValaInt
 
 
 void vala_interface_register_function_set_interface_reference (ValaInterfaceRegisterFunction* self, ValaInterface* value) {
-	ValaInterface* _tmp0_;
+	ValaInterface* _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_interface_reference = _tmp0_;
@@ -454,19 +454,19 @@ void vala_interface_register_function_set_interface_reference (ValaInterfaceRegi
 
 static void vala_interface_register_function_class_init (ValaInterfaceRegisterFunctionClass * klass) {
 	vala_interface_register_function_parent_class = g_type_class_peek_parent (klass);
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->finalize = vala_interface_register_function_finalize;
+	((ValaTypeRegisterFunctionClass *) klass)->finalize = vala_interface_register_function_finalize;
 	g_type_class_add_private (klass, sizeof (ValaInterfaceRegisterFunctionPrivate));
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_type_declaration = vala_interface_register_function_real_get_type_declaration;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_type_struct_name = vala_interface_register_function_real_get_type_struct_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_base_init_func_name = vala_interface_register_function_real_get_base_init_func_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_class_finalize_func_name = vala_interface_register_function_real_get_class_finalize_func_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_base_finalize_func_name = vala_interface_register_function_real_get_base_finalize_func_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_class_init_func_name = vala_interface_register_function_real_get_class_init_func_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_instance_struct_size = vala_interface_register_function_real_get_instance_struct_size;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_instance_init_func_name = vala_interface_register_function_real_get_instance_init_func_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_parent_type_name = vala_interface_register_function_real_get_parent_type_name;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_accessibility = vala_interface_register_function_real_get_accessibility;
-	VALA_TYPEREGISTER_FUNCTION_CLASS (klass)->get_type_interface_init_statements = vala_interface_register_function_real_get_type_interface_init_statements;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_declaration = vala_interface_register_function_real_get_type_declaration;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_struct_name = vala_interface_register_function_real_get_type_struct_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_base_init_func_name = vala_interface_register_function_real_get_base_init_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_class_finalize_func_name = vala_interface_register_function_real_get_class_finalize_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_base_finalize_func_name = vala_interface_register_function_real_get_base_finalize_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_class_init_func_name = vala_interface_register_function_real_get_class_init_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_instance_struct_size = vala_interface_register_function_real_get_instance_struct_size;
+	((ValaTypeRegisterFunctionClass *) klass)->get_instance_init_func_name = vala_interface_register_function_real_get_instance_init_func_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_parent_type_name = vala_interface_register_function_real_get_parent_type_name;
+	((ValaTypeRegisterFunctionClass *) klass)->get_accessibility = vala_interface_register_function_real_get_accessibility;
+	((ValaTypeRegisterFunctionClass *) klass)->get_type_interface_init_statements = vala_interface_register_function_real_get_type_interface_init_statements;
 }
 
 

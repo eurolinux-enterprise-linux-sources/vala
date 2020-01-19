@@ -1164,6 +1164,7 @@ struct _ValaSemanticAnalyzer {
 	ValaDataType* unichar_type;
 	ValaDataType* double_type;
 	ValaDataType* type_type;
+	ValaDataType* va_list_type;
 	ValaClass* object_type;
 	ValaStructValueType* gvalue_type;
 	ValaObjectType* gvariant_type;
@@ -1347,8 +1348,8 @@ static void vala_boolean_literal_finalize (ValaCodeNode* obj);
  */
 ValaBooleanLiteral* vala_boolean_literal_construct (GType object_type, gboolean b, ValaSourceReference* source) {
 	ValaBooleanLiteral* self = NULL;
-	gboolean _tmp0_;
-	ValaSourceReference* _tmp1_;
+	gboolean _tmp0_ = FALSE;
+	ValaSourceReference* _tmp1_ = NULL;
 	self = (ValaBooleanLiteral*) vala_literal_construct (object_type);
 	_tmp0_ = b;
 	vala_boolean_literal_set_value (self, _tmp0_);
@@ -1365,8 +1366,8 @@ ValaBooleanLiteral* vala_boolean_literal_new (gboolean b, ValaSourceReference* s
 
 static void vala_boolean_literal_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaBooleanLiteral * self;
-	ValaCodeVisitor* _tmp0_;
-	ValaCodeVisitor* _tmp1_;
+	ValaCodeVisitor* _tmp0_ = NULL;
+	ValaCodeVisitor* _tmp1_ = NULL;
 	self = (ValaBooleanLiteral*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -1379,16 +1380,16 @@ static void vala_boolean_literal_real_accept (ValaCodeNode* base, ValaCodeVisito
 static gchar* vala_boolean_literal_real_to_string (ValaCodeNode* base) {
 	ValaBooleanLiteral * self;
 	gchar* result = NULL;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	self = (ValaBooleanLiteral*) base;
 	_tmp0_ = self->priv->_value;
 	if (_tmp0_) {
-		gchar* _tmp1_;
+		gchar* _tmp1_ = NULL;
 		_tmp1_ = g_strdup ("true");
 		result = _tmp1_;
 		return result;
 	} else {
-		gchar* _tmp2_;
+		gchar* _tmp2_ = NULL;
 		_tmp2_ = g_strdup ("false");
 		result = _tmp2_;
 		return result;
@@ -1408,21 +1409,21 @@ static gboolean vala_boolean_literal_real_is_pure (ValaExpression* base) {
 static gboolean vala_boolean_literal_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaBooleanLiteral * self;
 	gboolean result = FALSE;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	ValaCodeContext* _tmp4_;
-	ValaSemanticAnalyzer* _tmp5_;
-	ValaSemanticAnalyzer* _tmp6_;
-	ValaDataType* _tmp7_;
-	gboolean _tmp8_;
-	gboolean _tmp9_;
+	gboolean _tmp0_ = FALSE;
+	gboolean _tmp1_ = FALSE;
+	ValaCodeContext* _tmp4_ = NULL;
+	ValaSemanticAnalyzer* _tmp5_ = NULL;
+	ValaSemanticAnalyzer* _tmp6_ = NULL;
+	ValaDataType* _tmp7_ = NULL;
+	gboolean _tmp8_ = FALSE;
+	gboolean _tmp9_ = FALSE;
 	self = (ValaBooleanLiteral*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
 	_tmp0_ = vala_code_node_get_checked ((ValaCodeNode*) self);
 	_tmp1_ = _tmp0_;
 	if (_tmp1_) {
-		gboolean _tmp2_;
-		gboolean _tmp3_;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
 		_tmp2_ = vala_code_node_get_error ((ValaCodeNode*) self);
 		_tmp3_ = _tmp2_;
 		result = !_tmp3_;
@@ -1443,8 +1444,8 @@ static gboolean vala_boolean_literal_real_check (ValaCodeNode* base, ValaCodeCon
 
 static void vala_boolean_literal_real_emit (ValaCodeNode* base, ValaCodeGenerator* codegen) {
 	ValaBooleanLiteral * self;
-	ValaCodeGenerator* _tmp0_;
-	ValaCodeGenerator* _tmp1_;
+	ValaCodeGenerator* _tmp0_ = NULL;
+	ValaCodeGenerator* _tmp1_ = NULL;
 	self = (ValaBooleanLiteral*) base;
 	g_return_if_fail (codegen != NULL);
 	_tmp0_ = codegen;
@@ -1456,7 +1457,7 @@ static void vala_boolean_literal_real_emit (ValaCodeNode* base, ValaCodeGenerato
 
 gboolean vala_boolean_literal_get_value (ValaBooleanLiteral* self) {
 	gboolean result;
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->priv->_value;
 	result = _tmp0_;
@@ -1465,7 +1466,7 @@ gboolean vala_boolean_literal_get_value (ValaBooleanLiteral* self) {
 
 
 void vala_boolean_literal_set_value (ValaBooleanLiteral* self, gboolean value) {
-	gboolean _tmp0_;
+	gboolean _tmp0_ = FALSE;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	self->priv->_value = _tmp0_;
@@ -1474,13 +1475,13 @@ void vala_boolean_literal_set_value (ValaBooleanLiteral* self, gboolean value) {
 
 static void vala_boolean_literal_class_init (ValaBooleanLiteralClass * klass) {
 	vala_boolean_literal_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_boolean_literal_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_boolean_literal_finalize;
 	g_type_class_add_private (klass, sizeof (ValaBooleanLiteralPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_boolean_literal_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->to_string = vala_boolean_literal_real_to_string;
-	VALA_EXPRESSION_CLASS (klass)->is_pure = vala_boolean_literal_real_is_pure;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_boolean_literal_real_check;
-	VALA_CODE_NODE_CLASS (klass)->emit = vala_boolean_literal_real_emit;
+	((ValaCodeNodeClass *) klass)->accept = vala_boolean_literal_real_accept;
+	((ValaCodeNodeClass *) klass)->to_string = vala_boolean_literal_real_to_string;
+	((ValaExpressionClass *) klass)->is_pure = vala_boolean_literal_real_is_pure;
+	((ValaCodeNodeClass *) klass)->check = vala_boolean_literal_real_check;
+	((ValaCodeNodeClass *) klass)->emit = vala_boolean_literal_real_emit;
 }
 
 

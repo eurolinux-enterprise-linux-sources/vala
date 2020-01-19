@@ -1,8 +1,8 @@
-%global api_ver 0.20
+%global api_ver 0.26
 %global priority 90
 
 Name:           vala
-Version:        0.20.1
+Version:        0.26.1
 Release:        3%{?dist}
 Summary:        A modern programming language for GNOME
 
@@ -13,7 +13,7 @@ URL:            http://live.gnome.org/Vala
 # note: do not use a macro for directory name
 # as it breaks Colin Walters' automatic build script
 # see https://bugzilla.redhat.com/show_bug.cgi?id=609292
-Source0:        http://download.gnome.org/sources/vala/0.20/vala-%{version}.tar.xz
+Source0:        http://download.gnome.org/sources/vala/0.26/vala-%{version}.tar.xz
 Source1:        vala-mode.el
 Source2:        vala-init.el
 Source3:        emacs-vala-COPYING
@@ -159,7 +159,7 @@ do
 done
 # own this directory for third-party *.vapi files
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/vala/vapi
-rm $RPM_BUILD_ROOT%{_libdir}/libvala-%{api_ver}.la
+find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 # Emacs mode files
 mkdir -p $RPM_BUILD_ROOT%{_emacs_sitelispdir}/%{name}
@@ -177,24 +177,24 @@ cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_emacs_sitestartdir}
 for f in %{vala_binaries};
 do
     %{_sbindir}/alternatives --install %{_bindir}/$f \
-      $f %{_bindir}/$f-%{api_ver} %{priority}
+      $f %{_bindir}/$f-%{api_ver} %{priority} || :
 done
 for f in %{vala_manpages};
 do
     %{_sbindir}/alternatives --install %{_mandir}/man1/$f.1.gz \
-      $f.1.gz %{_mandir}/man1/$f-%{api_ver}.1.gz %{priority}
+      $f.1.gz %{_mandir}/man1/$f-%{api_ver}.1.gz %{priority} || :
 done
 
 %posttrans tools
 for f in %{vala_tools_binaries};
 do
     %{_sbindir}/alternatives --install %{_bindir}/$f \
-      $f %{_bindir}/$f-%{api_ver} %{priority}
+      $f %{_bindir}/$f-%{api_ver} %{priority} || :
 done
 for f in %{vala_tools_manpages};
 do
     %{_sbindir}/alternatives --install %{_mandir}/man1/$f.1.gz \
-      $f.1.gz %{_mandir}/man1/$f-%{api_ver}.1.gz %{priority}
+      $f.1.gz %{_mandir}/man1/$f-%{api_ver}.1.gz %{priority} || :
 done
 
 %preun
@@ -202,29 +202,29 @@ done
 for f in %{vala_binaries};
 do
     %{_sbindir}/alternatives --remove $f \
-      %{_bindir}/$f-%{api_ver}
+      %{_bindir}/$f-%{api_ver} || :
 done
 for f in %{vala_manpages};
 do
     %{_sbindir}/alternatives --remove $f.1.gz \
-      %{_mandir}/man1/$f-%{api_ver}.1.gz
+      %{_mandir}/man1/$f-%{api_ver}.1.gz || :
 done
 
 %preun tools
 for f in %{vala_tools_binaries};
 do
     %{_sbindir}/alternatives --remove $f \
-      %{_bindir}/$f-%{api_ver}
+      %{_bindir}/$f-%{api_ver} || :
 done
 for f in %{vala_tools_manpages};
 do
     %{_sbindir}/alternatives --remove $f.1.gz \
-      %{_mandir}/man1/$f-%{api_ver}.1.gz
+      %{_mandir}/man1/$f-%{api_ver}.1.gz || :
 done
 
 
 %files
-%doc AUTHORS ChangeLog COPYING MAINTAINERS NEWS README THANKS
+%doc AUTHORS COPYING MAINTAINERS NEWS README THANKS
 %ghost %{_bindir}/vala
 %ghost %{_bindir}/valac
 %{_bindir}/vala-%{api_ver}
@@ -243,7 +243,6 @@ done
 %{_libdir}/pkgconfig/libvala-%{api_ver}.pc
 # directory owned by filesystem
 %{_datadir}/aclocal/vala.m4
-%{_datadir}/vala/Makefile.vapigen
 
 %files tools
 %ghost %{_bindir}/vala-gen-introspect
@@ -255,6 +254,7 @@ done
 %{_libdir}/vala-%{api_ver}
 %{_datadir}/aclocal/vapigen.m4
 %{_datadir}/pkgconfig/vapigen*.pc
+%{_datadir}/vala/Makefile.vapigen
 %ghost %{_mandir}/man1/vala-gen-introspect.1.gz
 %ghost %{_mandir}/man1/vapigen.1.gz
 %{_mandir}/man1/vala-gen-introspect-%{api_ver}.1.gz
@@ -274,6 +274,18 @@ done
 
 
 %changelog
+* Thu Aug 20 2015 Matthias Clasen <mclasen@redhat.com> - 0.26.1-3
+- Make scriptlets failsafe
+  Resolves: #1247971
+
+* Wed May  6 2015 Alexander Larsson <alexl@redhat.com> - 0.26.1-2
+- Rebuild with new dependencies
+- Resolves: #1174432
+
+* Mon Oct 13 2014 Kalev Lember <kalevlember@gmail.com> - 0.26.1-1
+- Update to 0.26.1
+- Resolves: #1174432
+
 * Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 0.20.1-3
 - Mass rebuild 2014-01-24
 

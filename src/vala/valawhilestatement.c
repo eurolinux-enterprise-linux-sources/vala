@@ -191,8 +191,6 @@ typedef struct _ValaBooleanLiteralClass ValaBooleanLiteralClass;
 typedef struct _ValaBreakStatement ValaBreakStatement;
 typedef struct _ValaBreakStatementClass ValaBreakStatementClass;
 
-#define VALA_TYPE_UNARY_OPERATOR (vala_unary_operator_get_type ())
-
 #define VALA_TYPE_UNARY_EXPRESSION (vala_unary_expression_get_type ())
 #define VALA_UNARY_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_UNARY_EXPRESSION, ValaUnaryExpression))
 #define VALA_UNARY_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), VALA_TYPE_UNARY_EXPRESSION, ValaUnaryExpressionClass))
@@ -202,6 +200,8 @@ typedef struct _ValaBreakStatementClass ValaBreakStatementClass;
 
 typedef struct _ValaUnaryExpression ValaUnaryExpression;
 typedef struct _ValaUnaryExpressionClass ValaUnaryExpressionClass;
+
+#define VALA_TYPE_UNARY_OPERATOR (vala_unary_operator_get_type ())
 
 #define VALA_TYPE_IF_STATEMENT (vala_if_statement_get_type ())
 #define VALA_IF_STATEMENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), VALA_TYPE_IF_STATEMENT, ValaIfStatement))
@@ -343,19 +343,19 @@ ValaSourceReference* vala_code_node_get_source_reference (ValaCodeNode* self);
 ValaBreakStatement* vala_break_statement_new (ValaSourceReference* source);
 ValaBreakStatement* vala_break_statement_construct (GType object_type, ValaSourceReference* source);
 GType vala_break_statement_get_type (void) G_GNUC_CONST;
+GType vala_unary_expression_get_type (void) G_GNUC_CONST;
 GType vala_unary_operator_get_type (void) G_GNUC_CONST;
 ValaUnaryExpression* vala_unary_expression_new (ValaUnaryOperator op, ValaExpression* _inner, ValaSourceReference* source);
 ValaUnaryExpression* vala_unary_expression_construct (GType object_type, ValaUnaryOperator op, ValaExpression* _inner, ValaSourceReference* source);
-GType vala_unary_expression_get_type (void) G_GNUC_CONST;
 ValaBlock* vala_block_new (ValaSourceReference* source_reference);
 ValaBlock* vala_block_construct (GType object_type, ValaSourceReference* source_reference);
 void vala_block_add_statement (ValaBlock* self, ValaStatement* stmt);
+GType vala_if_statement_get_type (void) G_GNUC_CONST;
 ValaIfStatement* vala_if_statement_new (ValaExpression* cond, ValaBlock* true_stmt, ValaBlock* false_stmt, ValaSourceReference* source);
 ValaIfStatement* vala_if_statement_construct (GType object_type, ValaExpression* cond, ValaBlock* true_stmt, ValaBlock* false_stmt, ValaSourceReference* source);
-GType vala_if_statement_get_type (void) G_GNUC_CONST;
+GType vala_loop_get_type (void) G_GNUC_CONST;
 ValaLoop* vala_loop_new (ValaBlock* body, ValaSourceReference* source_reference);
 ValaLoop* vala_loop_construct (GType object_type, ValaBlock* body, ValaSourceReference* source_reference);
-GType vala_loop_get_type (void) G_GNUC_CONST;
 ValaCodeNode* vala_code_node_get_parent_node (ValaCodeNode* self);
 void vala_block_replace_statement (ValaBlock* self, ValaStatement* old_stmt, ValaStatement* new_stmt);
 gboolean vala_code_node_check (ValaCodeNode* self, ValaCodeContext* context);
@@ -373,9 +373,9 @@ static void vala_while_statement_finalize (ValaCodeNode* obj);
  */
 ValaWhileStatement* vala_while_statement_construct (GType object_type, ValaExpression* condition, ValaBlock* body, ValaSourceReference* source_reference) {
 	ValaWhileStatement* self = NULL;
-	ValaBlock* _tmp0_;
-	ValaSourceReference* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaBlock* _tmp0_ = NULL;
+	ValaSourceReference* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_val_if_fail (condition != NULL, NULL);
 	g_return_val_if_fail (body != NULL, NULL);
 	self = (ValaWhileStatement*) vala_code_node_construct (object_type);
@@ -396,7 +396,7 @@ ValaWhileStatement* vala_while_statement_new (ValaExpression* condition, ValaBlo
 
 static void vala_while_statement_real_accept (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaWhileStatement * self;
-	ValaCodeVisitor* _tmp0_;
+	ValaCodeVisitor* _tmp0_ = NULL;
 	self = (ValaWhileStatement*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = visitor;
@@ -406,15 +406,15 @@ static void vala_while_statement_real_accept (ValaCodeNode* base, ValaCodeVisito
 
 static void vala_while_statement_real_accept_children (ValaCodeNode* base, ValaCodeVisitor* visitor) {
 	ValaWhileStatement * self;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaCodeVisitor* _tmp2_;
-	ValaCodeVisitor* _tmp3_;
-	ValaExpression* _tmp4_;
-	ValaExpression* _tmp5_;
-	ValaBlock* _tmp6_;
-	ValaBlock* _tmp7_;
-	ValaCodeVisitor* _tmp8_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaCodeVisitor* _tmp2_ = NULL;
+	ValaCodeVisitor* _tmp3_ = NULL;
+	ValaExpression* _tmp4_ = NULL;
+	ValaExpression* _tmp5_ = NULL;
+	ValaBlock* _tmp6_ = NULL;
+	ValaBlock* _tmp7_ = NULL;
+	ValaCodeVisitor* _tmp8_ = NULL;
 	self = (ValaWhileStatement*) base;
 	g_return_if_fail (visitor != NULL);
 	_tmp0_ = vala_while_statement_get_condition (self);
@@ -439,12 +439,11 @@ static gpointer _vala_code_node_ref0 (gpointer self) {
 
 static gboolean vala_while_statement_always_true (ValaWhileStatement* self, ValaExpression* condition) {
 	gboolean result = FALSE;
-	ValaExpression* _tmp0_;
-	ValaBooleanLiteral* _tmp1_;
-	ValaBooleanLiteral* literal;
+	ValaBooleanLiteral* literal = NULL;
+	ValaExpression* _tmp0_ = NULL;
+	ValaBooleanLiteral* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
-	ValaBooleanLiteral* _tmp3_;
-	gboolean _tmp7_;
+	ValaBooleanLiteral* _tmp3_ = NULL;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (condition != NULL, FALSE);
 	_tmp0_ = condition;
@@ -452,9 +451,9 @@ static gboolean vala_while_statement_always_true (ValaWhileStatement* self, Vala
 	literal = _tmp1_;
 	_tmp3_ = literal;
 	if (_tmp3_ != NULL) {
-		ValaBooleanLiteral* _tmp4_;
-		gboolean _tmp5_;
-		gboolean _tmp6_;
+		ValaBooleanLiteral* _tmp4_ = NULL;
+		gboolean _tmp5_ = FALSE;
+		gboolean _tmp6_ = FALSE;
 		_tmp4_ = literal;
 		_tmp5_ = vala_boolean_literal_get_value (_tmp4_);
 		_tmp6_ = _tmp5_;
@@ -462,8 +461,7 @@ static gboolean vala_while_statement_always_true (ValaWhileStatement* self, Vala
 	} else {
 		_tmp2_ = FALSE;
 	}
-	_tmp7_ = _tmp2_;
-	result = _tmp7_;
+	result = _tmp2_;
 	_vala_code_node_unref0 (literal);
 	return result;
 }
@@ -471,12 +469,11 @@ static gboolean vala_while_statement_always_true (ValaWhileStatement* self, Vala
 
 static gboolean vala_while_statement_always_false (ValaWhileStatement* self, ValaExpression* condition) {
 	gboolean result = FALSE;
-	ValaExpression* _tmp0_;
-	ValaBooleanLiteral* _tmp1_;
-	ValaBooleanLiteral* literal;
+	ValaBooleanLiteral* literal = NULL;
+	ValaExpression* _tmp0_ = NULL;
+	ValaBooleanLiteral* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
-	ValaBooleanLiteral* _tmp3_;
-	gboolean _tmp7_;
+	ValaBooleanLiteral* _tmp3_ = NULL;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (condition != NULL, FALSE);
 	_tmp0_ = condition;
@@ -484,9 +481,9 @@ static gboolean vala_while_statement_always_false (ValaWhileStatement* self, Val
 	literal = _tmp1_;
 	_tmp3_ = literal;
 	if (_tmp3_ != NULL) {
-		ValaBooleanLiteral* _tmp4_;
-		gboolean _tmp5_;
-		gboolean _tmp6_;
+		ValaBooleanLiteral* _tmp4_ = NULL;
+		gboolean _tmp5_ = FALSE;
+		gboolean _tmp6_ = FALSE;
 		_tmp4_ = literal;
 		_tmp5_ = vala_boolean_literal_get_value (_tmp4_);
 		_tmp6_ = _tmp5_;
@@ -494,8 +491,7 @@ static gboolean vala_while_statement_always_false (ValaWhileStatement* self, Val
 	} else {
 		_tmp2_ = FALSE;
 	}
-	_tmp7_ = _tmp2_;
-	result = _tmp7_;
+	result = _tmp2_;
 	_vala_code_node_unref0 (literal);
 	return result;
 }
@@ -504,20 +500,20 @@ static gboolean vala_while_statement_always_false (ValaWhileStatement* self, Val
 static gboolean vala_while_statement_real_check (ValaCodeNode* base, ValaCodeContext* context) {
 	ValaWhileStatement * self;
 	gboolean result = FALSE;
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
 	gboolean _tmp2_ = FALSE;
-	ValaBlock* _tmp43_;
-	ValaBlock* _tmp44_;
-	ValaSourceReference* _tmp45_;
-	ValaSourceReference* _tmp46_;
-	ValaLoop* _tmp47_;
-	ValaLoop* loop;
-	ValaCodeNode* _tmp48_;
-	ValaCodeNode* _tmp49_;
-	ValaBlock* _tmp50_;
-	ValaBlock* parent_block;
-	ValaCodeContext* _tmp51_;
+	ValaLoop* loop = NULL;
+	ValaBlock* _tmp43_ = NULL;
+	ValaBlock* _tmp44_ = NULL;
+	ValaSourceReference* _tmp45_ = NULL;
+	ValaSourceReference* _tmp46_ = NULL;
+	ValaLoop* _tmp47_ = NULL;
+	ValaBlock* parent_block = NULL;
+	ValaCodeNode* _tmp48_ = NULL;
+	ValaCodeNode* _tmp49_ = NULL;
+	ValaBlock* _tmp50_ = NULL;
+	ValaCodeContext* _tmp51_ = NULL;
 	gboolean _tmp52_ = FALSE;
 	self = (ValaWhileStatement*) base;
 	g_return_val_if_fail (context != NULL, FALSE);
@@ -526,21 +522,21 @@ static gboolean vala_while_statement_real_check (ValaCodeNode* base, ValaCodeCon
 	_tmp2_ = vala_while_statement_always_true (self, _tmp1_);
 	if (_tmp2_) {
 	} else {
-		ValaExpression* _tmp3_;
-		ValaExpression* _tmp4_;
+		ValaExpression* _tmp3_ = NULL;
+		ValaExpression* _tmp4_ = NULL;
 		gboolean _tmp5_ = FALSE;
 		_tmp3_ = vala_while_statement_get_condition (self);
 		_tmp4_ = _tmp3_;
 		_tmp5_ = vala_while_statement_always_false (self, _tmp4_);
 		if (_tmp5_) {
-			ValaBlock* _tmp6_;
-			ValaBlock* _tmp7_;
-			ValaExpression* _tmp8_;
-			ValaExpression* _tmp9_;
-			ValaSourceReference* _tmp10_;
-			ValaSourceReference* _tmp11_;
-			ValaBreakStatement* _tmp12_;
-			ValaBreakStatement* _tmp13_;
+			ValaBlock* _tmp6_ = NULL;
+			ValaBlock* _tmp7_ = NULL;
+			ValaExpression* _tmp8_ = NULL;
+			ValaExpression* _tmp9_ = NULL;
+			ValaSourceReference* _tmp10_ = NULL;
+			ValaSourceReference* _tmp11_ = NULL;
+			ValaBreakStatement* _tmp12_ = NULL;
+			ValaBreakStatement* _tmp13_ = NULL;
 			_tmp6_ = vala_while_statement_get_body (self);
 			_tmp7_ = _tmp6_;
 			_tmp8_ = vala_while_statement_get_condition (self);
@@ -552,38 +548,38 @@ static gboolean vala_while_statement_real_check (ValaCodeNode* base, ValaCodeCon
 			vala_block_insert_statement (_tmp7_, 0, (ValaStatement*) _tmp13_);
 			_vala_code_node_unref0 (_tmp13_);
 		} else {
-			ValaExpression* _tmp14_;
-			ValaExpression* _tmp15_;
-			ValaExpression* _tmp16_;
-			ValaExpression* _tmp17_;
-			ValaSourceReference* _tmp18_;
-			ValaSourceReference* _tmp19_;
-			ValaUnaryExpression* _tmp20_;
-			ValaUnaryExpression* if_condition;
-			ValaExpression* _tmp21_;
-			ValaExpression* _tmp22_;
-			ValaSourceReference* _tmp23_;
-			ValaSourceReference* _tmp24_;
-			ValaBlock* _tmp25_;
-			ValaBlock* true_block;
-			ValaBlock* _tmp26_;
-			ValaExpression* _tmp27_;
-			ValaExpression* _tmp28_;
-			ValaSourceReference* _tmp29_;
-			ValaSourceReference* _tmp30_;
-			ValaBreakStatement* _tmp31_;
-			ValaBreakStatement* _tmp32_;
-			ValaUnaryExpression* _tmp33_;
-			ValaBlock* _tmp34_;
-			ValaExpression* _tmp35_;
-			ValaExpression* _tmp36_;
-			ValaSourceReference* _tmp37_;
-			ValaSourceReference* _tmp38_;
-			ValaIfStatement* _tmp39_;
-			ValaIfStatement* if_stmt;
-			ValaBlock* _tmp40_;
-			ValaBlock* _tmp41_;
-			ValaIfStatement* _tmp42_;
+			ValaUnaryExpression* if_condition = NULL;
+			ValaExpression* _tmp14_ = NULL;
+			ValaExpression* _tmp15_ = NULL;
+			ValaExpression* _tmp16_ = NULL;
+			ValaExpression* _tmp17_ = NULL;
+			ValaSourceReference* _tmp18_ = NULL;
+			ValaSourceReference* _tmp19_ = NULL;
+			ValaUnaryExpression* _tmp20_ = NULL;
+			ValaBlock* true_block = NULL;
+			ValaExpression* _tmp21_ = NULL;
+			ValaExpression* _tmp22_ = NULL;
+			ValaSourceReference* _tmp23_ = NULL;
+			ValaSourceReference* _tmp24_ = NULL;
+			ValaBlock* _tmp25_ = NULL;
+			ValaBlock* _tmp26_ = NULL;
+			ValaExpression* _tmp27_ = NULL;
+			ValaExpression* _tmp28_ = NULL;
+			ValaSourceReference* _tmp29_ = NULL;
+			ValaSourceReference* _tmp30_ = NULL;
+			ValaBreakStatement* _tmp31_ = NULL;
+			ValaBreakStatement* _tmp32_ = NULL;
+			ValaIfStatement* if_stmt = NULL;
+			ValaUnaryExpression* _tmp33_ = NULL;
+			ValaBlock* _tmp34_ = NULL;
+			ValaExpression* _tmp35_ = NULL;
+			ValaExpression* _tmp36_ = NULL;
+			ValaSourceReference* _tmp37_ = NULL;
+			ValaSourceReference* _tmp38_ = NULL;
+			ValaIfStatement* _tmp39_ = NULL;
+			ValaBlock* _tmp40_ = NULL;
+			ValaBlock* _tmp41_ = NULL;
+			ValaIfStatement* _tmp42_ = NULL;
 			_tmp14_ = vala_while_statement_get_condition (self);
 			_tmp15_ = _tmp14_;
 			_tmp16_ = vala_while_statement_get_condition (self);
@@ -646,7 +642,7 @@ static gboolean vala_while_statement_real_check (ValaCodeNode* base, ValaCodeCon
 
 ValaExpression* vala_while_statement_get_condition (ValaWhileStatement* self) {
 	ValaExpression* result;
-	ValaExpression* _tmp0_;
+	ValaExpression* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_condition;
 	result = _tmp0_;
@@ -655,9 +651,9 @@ ValaExpression* vala_while_statement_get_condition (ValaWhileStatement* self) {
 
 
 void vala_while_statement_set_condition (ValaWhileStatement* self, ValaExpression* value) {
-	ValaExpression* _tmp0_;
-	ValaExpression* _tmp1_;
-	ValaExpression* _tmp2_;
+	ValaExpression* _tmp0_ = NULL;
+	ValaExpression* _tmp1_ = NULL;
+	ValaExpression* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -670,7 +666,7 @@ void vala_while_statement_set_condition (ValaWhileStatement* self, ValaExpressio
 
 ValaBlock* vala_while_statement_get_body (ValaWhileStatement* self) {
 	ValaBlock* result;
-	ValaBlock* _tmp0_;
+	ValaBlock* _tmp0_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->_body;
 	result = _tmp0_;
@@ -679,9 +675,9 @@ ValaBlock* vala_while_statement_get_body (ValaWhileStatement* self) {
 
 
 void vala_while_statement_set_body (ValaWhileStatement* self, ValaBlock* value) {
-	ValaBlock* _tmp0_;
-	ValaBlock* _tmp1_;
-	ValaBlock* _tmp2_;
+	ValaBlock* _tmp0_ = NULL;
+	ValaBlock* _tmp1_ = NULL;
+	ValaBlock* _tmp2_ = NULL;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	_tmp1_ = _vala_code_node_ref0 (_tmp0_);
@@ -694,11 +690,11 @@ void vala_while_statement_set_body (ValaWhileStatement* self, ValaBlock* value) 
 
 static void vala_while_statement_class_init (ValaWhileStatementClass * klass) {
 	vala_while_statement_parent_class = g_type_class_peek_parent (klass);
-	VALA_CODE_NODE_CLASS (klass)->finalize = vala_while_statement_finalize;
+	((ValaCodeNodeClass *) klass)->finalize = vala_while_statement_finalize;
 	g_type_class_add_private (klass, sizeof (ValaWhileStatementPrivate));
-	VALA_CODE_NODE_CLASS (klass)->accept = vala_while_statement_real_accept;
-	VALA_CODE_NODE_CLASS (klass)->accept_children = vala_while_statement_real_accept_children;
-	VALA_CODE_NODE_CLASS (klass)->check = vala_while_statement_real_check;
+	((ValaCodeNodeClass *) klass)->accept = vala_while_statement_real_accept;
+	((ValaCodeNodeClass *) klass)->accept_children = vala_while_statement_real_accept_children;
+	((ValaCodeNodeClass *) klass)->check = vala_while_statement_real_check;
 }
 
 
